@@ -67,7 +67,7 @@ def import_bank_transactions():
 
             # TODO maybe: change codes to make matching more reliable.
             match = re.search(r'(^|\s)[0-9a-fA-F]{12}($|\s)', data[u'Reference'])
-            data[u'Our Reference'] = match.group(0).strip() if match else ''
+            data[u'Our Reference'] = match.group(0).strip().upper() if match else ''
 
             # Create a unique id to simplify import. Note that it's more robush to not include the balance in the hash
             # since then if there's a error, e.g., a missing transactions, which does happen in xero from time to time,

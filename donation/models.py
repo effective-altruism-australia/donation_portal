@@ -1,4 +1,7 @@
+import datetime
+
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -41,19 +44,34 @@ class Pledge(models.Model):
     drupal_username = models.TextField(blank=True)
     drupal_preferred_donation_method = models.TextField(blank=True)
 
+    def __unicode__(self):
+        return "Pledge of {0.amount} to {0.recipient_org} by {0.first_name} {0.last_name}, made on {1}".format(self, self.completed_time.date())
+
 
 class BankTransaction(models.Model):
-    date = models.DateField(editable=False)
-    bank_statement_text = models.TextField(blank=True, editable=False)
-    amount = models.DecimalField(decimal_places=2, max_digits=12, editable=False)
+    date = models.DateField()
+    bank_statement_text = models.TextField(blank=True,)
+    amount = models.DecimalField(decimal_places=2, max_digits=12,)
     reference = models.TextField(blank=True)
     unique_id = models.TextField(unique=True, editable=False)
+    its_a_transfer_not_a_donation = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return ("UNRECONCILED -- " if self.needs_to_be_reconciled else "") + \
+            "{0.date} -- {0.amount} -- {0.bank_statement_text}".format(self)
+
+    @property
+    def needs_to_be_reconciled(self):
+        return not (hasattr(self, 'reconciliation') or self.its_a_transfer_not_a_donation)
+
 
 
 class Reconciliation(models.Model):
-    bank_transaction = models.ForeignKey(BankTransaction)
+    bank_transaction = models.OneToOneField(BankTransaction)
     pledge = models.ForeignKey(Pledge)
     automatically_reconciled = models.BooleanField(default=False)
+    user_who_manually_reconciled = models.ForeignKey(User, blank=True, null=True, editable=False)
+    time_reconciled = models.DateTimeField(auto_now_add=True, editable=False)
 
 #    @property
 #    def receipt_sent(self):
