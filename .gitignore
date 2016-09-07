@@ -1,0 +1,62 @@
+# OS X stuff
+.Trashes/
+._*
+.AppleDouble
+.DocumentRevisions-V100
+.DS_Store
+.fseventsd
+.LSOverride
+.Spotlight-V100
+.TemporaryItems
+.VolumeIcon.icns
+# Icon must end with two carriage returns (\r)
+Icon
+
+# Windows stuff
+$RECYCLE.BIN/
+Desktop.ini
+Thumbs.db
+ehthumbs.db
+
+# Vim files
+*~
+*.swp
+
+# Emacs files
+\#*.*#
+.#*
+
+# Log files
+*.log
+logs/
+npm-debug.log*
+
+# Temp files
+*.tmp
+tmp/
+
+# PyCharm
+.idea
+
+# Rope
+.ropeproject/
+
+# Node.js
+node_modules/
+
+# Python
+*.py[cod]
+*.ipynb
+ipynb_checkpoints
+celerybeat-schedule
+venv/
+web/local_settings.py
+web/local_settings_override.py
+web/salt_settings.py
+
+# Testing
+.coverage
+coverage/
+htmlcov/
+load_testing/results/
+web/fixtures/sample-projects/test-docs/
