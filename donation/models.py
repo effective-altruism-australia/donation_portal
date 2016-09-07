@@ -49,3 +49,18 @@ class BankTransaction(models.Model):
     reference = models.TextField(blank=True)
     unique_id = models.TextField(unique=True, editable=False)
 
+
+class Reconciliation(models.Model):
+    bank_transaction = models.ForeignKey(BankTransaction)
+    pledge = models.ForeignKey(Pledge)
+    automatically_reconciled = models.BooleanField(default=False)
+
+#    @property
+#    def receipt_sent(self):
+#        return len(self.objects.receipts.empty
+
+
+class Receipt(models.Model):
+    time_sent = models.DateTimeField()
+    transaction = models.ForeignKey(Reconciliation)
+    email = models.EmailField()
