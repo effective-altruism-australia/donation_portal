@@ -42,3 +42,10 @@ class Pledge(models.Model):
     drupal_preferred_donation_method = models.TextField(blank=True)
 
 
+class BankTransaction(models.Model):
+    date = models.DateField(editable=False)
+    bank_statement_text = models.TextField(blank=True, editable=False)
+    amount = models.DecimalField(decimal_places=2, max_digits=12, editable=False)
+    reference = models.TextField(blank=True)
+    unique_id = models.TextField(unique=True, editable=False)
+
