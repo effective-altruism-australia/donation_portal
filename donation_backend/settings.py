@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import datetime
+from celery.schedules import crontab
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'kombu.transport.django',  # For use of celery with django database
     'reversion',
     'donation',
 )
@@ -115,3 +117,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# We'll just use the django database for celery
+# TODO don't do this, it's buggy apparently
+BROKER_URL = 'django://'
+
+# TODO work out when xero has the new bank transactions and just do once a day.
+CELERYBEAT_SCHEDULE = {
+    'process-transactions': {
+        'task': 'donation.tasks.process_bank_transactions',
+        'schedule': crontab(minute=0, hour='*/4')
+    },
+}
+
+CELERY_TIMEZONE = 'UTC'
+
+# TO run celery: celery -A donation_backend worker --beat -l info

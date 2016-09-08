@@ -36,7 +36,7 @@ def generate_and_send_receipts():
         unique_reference = 1000  # TODO
         receipt = render_to_string('receipt.html', {'unique_reference': unique_reference,
                                                     'pledge': reconciliation.pledge,
-                                                     'bank_transaction': reconciliation.bank_transaction,})
+                                                    'bank_transaction': reconciliation.bank_transaction,})
         pdf_receipt_location = '/tmp/EAA_Receipt_{0}.pdf'.format(unique_reference)
         pdfkit.from_string(receipt, pdf_receipt_location)
 
