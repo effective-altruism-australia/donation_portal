@@ -55,6 +55,7 @@ class BankTransaction(models.Model):
     reference = models.TextField(blank=True)
     unique_id = models.TextField(unique=True, editable=False)
     its_a_transfer_not_a_donation = models.BooleanField(default=False)
+    # TODO make a field that indicates whether the reference has been edited?
 
     def __unicode__(self):
         return ("UNRECONCILED -- " if self.needs_to_be_reconciled else "") + \
@@ -69,9 +70,13 @@ class BankTransaction(models.Model):
 class Reconciliation(models.Model):
     bank_transaction = models.OneToOneField(BankTransaction)
     pledge = models.ForeignKey(Pledge)
+    # TODO these fields aren't quite right with the intended corrections people will make
     automatically_reconciled = models.BooleanField(default=False)
     user_who_manually_reconciled = models.ForeignKey(User, blank=True, null=True, editable=False)
     time_reconciled = models.DateTimeField(auto_now_add=True, editable=False)
+
+    def __unicode__(self):
+        return "Donation of {1.amount} by {0.first_name} {0.last_name} on {1.date}".format(self.pledge, self.bank_transaction)
 
 #    @property
 #    def receipt_sent(self):
@@ -79,6 +84,7 @@ class Reconciliation(models.Model):
 
 
 class Receipt(models.Model):
-    time_sent = models.DateTimeField()
-    transaction = models.ForeignKey(Reconciliation)
+    time_sent = models.DateTimeField(auto_now_add=True)
+    reconciliation = models.ForeignKey(Reconciliation)
     email = models.EmailField()
+    receipt_html = models.TextField(blank=True)

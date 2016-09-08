@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# TODO
 SECRET_KEY = 'j$@2aydy#$lg8^bz$og0^)j%quphld#3_4gwispzlv5r2tj^sw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -72,6 +74,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'donation_backend.wsgi.application'
 
+
+EMAIL_BACKEND = 'postmark.django_backend.EmailBackend'
+POSTMARK_API_KEY = open(os.path.expanduser('~/postmark_api_key')).read().strip()
+# TODO Set up EAA at Postmark
+POSTMARK_SENDER = 'Ben Toner (Draftable) support@draftable.com'
+POSTMARK_TEST_MODE = False
+POSTMARK_TRACK_OPENS = True
+
+AUTOMATION_START_DATE = datetime.date(2016,9,5)
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases

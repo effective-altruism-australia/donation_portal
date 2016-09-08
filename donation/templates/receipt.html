@@ -230,7 +230,12 @@
         On behalf of everyone you’re helping, thank you for your gift. This receipt serves as confirmation that your tax deductible donation has been received and processed.
       </p>
       <h3><u>Details</u></h3>
-      {{ donationDetails }}
+      <p><b>Receipt number</b>: {{ unique_reference }}</p>
+      <p><b>Name</b>: {{ pledge.first_name }} {{ pledge.last_name }}</p>
+      <p><b>Email</b>: {{ pledge.email }}</p>
+      <p><b>Date received</b>: {{ bank_transaction.date }}</p>
+      <p><b>Donation Amount</b>: ${{ bank_transaction.amount}}</p>
+      <p><b>Designation</b>: {{ pledge.recipient_org }}</p>
     </div>
     <div class="receipt-footer">
       <hr>
