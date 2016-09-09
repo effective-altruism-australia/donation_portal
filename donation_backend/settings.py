@@ -22,8 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# TODO
-SECRET_KEY = 'j$@2aydy#$lg8^bz$og0^)j%quphld#3_4gwispzlv5r2tj^sw'
+SECRET_KEY = 'This gets replaced with a secret key in production'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -84,7 +83,7 @@ POSTMARK_SENDER = 'Ben Toner (Draftable) support@draftable.com'
 POSTMARK_TEST_MODE = False
 POSTMARK_TRACK_OPENS = True
 
-AUTOMATION_START_DATE = datetime.date(2016,9,5)
+AUTOMATION_START_DATE = datetime.date(2016, 9, 5)
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases

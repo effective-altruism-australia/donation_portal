@@ -65,6 +65,7 @@ def import_bank_transactions():
             if data[u'Description'] in [u'Opening Balance', u'Closing Balance']:
                 continue
 
+            # TODO separate out the detection of the reference
             # TODO maybe: change codes to make matching more reliable.
             match = re.search(r'(^|\s)[0-9a-fA-F]{12}($|\s)', data[u'Reference'])
             data[u'Our Reference'] = match.group(0).strip().upper() if match else ''
@@ -87,5 +88,10 @@ def import_bank_transactions():
             for django_field_name, xero_field_name in FIELD_MAP:
                 kwargs[django_field_name] = data[xero_field_name]
 
-            BankTransaction.objects.get_or_create(**kwargs)
-
+            # The reference is editable by us, so don't use it for lookup.
+            reference = kwargs.pop('reference')
+            try:
+                BankTransaction.objects.get(**kwargs)
+            except BankTransaction.DoesNotExist:
+                kwargs['reference'] = reference
+                BankTransaction.objects.create(**kwargs)
