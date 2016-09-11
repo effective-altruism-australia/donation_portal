@@ -68,7 +68,7 @@ def import_data_from_drupal(apps, schema_editor):
 
             kwargs[django_field] = value
 
-        Pledge(**kwargs).save()
+        Pledge(**kwargs).save()  # TODO this will create dupes if we have edited the pledge.
 
 
 class Migration(migrations.Migration):
