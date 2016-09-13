@@ -91,9 +91,9 @@ class BankTransaction(models.Model):
         super(BankTransaction, self).save(*args, **kwargs)
         updated = self.reconcile()
         if updated:
-            # We matched with a pledge. Generate a receipt object.
-            Receipt.objects.create_from_bank_transaction(self)  # Note: doesn't send it.
             super(BankTransaction, self).save(*args, **kwargs)
+            # We matched with a pledge. Generate a receipt object.
+            Receipt.objects.create_from_bank_transaction(self)
 
     def reconcile(self):
         if self.pledge is None and self.reference:
@@ -105,19 +105,26 @@ class BankTransaction(models.Model):
                 self.pledge = pledges[0]
                 return True
 
+    class NotReconciledException(Exception):
+        pass
+
     def resend_receipt(self):
         if not self.pledge:
-            raise Exception("Can't send receipt, transaction is not reconciled.")
-        Receipt.objects.create_from_bank_transaction(self).send()
+            raise BankTransaction.NotReconciledException("Can't send receipt, transaction is not reconciled.")
+        Receipt.objects.create_from_bank_transaction(self)
 
 
 class ReceiptManager(models.Manager):
     def create_from_bank_transaction(self, bank_transaction):
         if bank_transaction.date < settings.AUTOMATION_START_DATE:
             return  # no receipt for you
-        receipt = self.create(bank_transaction=bank_transaction,
-                              pledge=bank_transaction.pledge,
-                              email=bank_transaction.pledge.email)
+        return self.create(bank_transaction=bank_transaction,
+                           pledge=bank_transaction.pledge,
+                           email=bank_transaction.pledge.email)
+
+    def create(self, *args, **kwargs):
+        receipt = super(ReceiptManager, self).create(*args, **kwargs)
+        receipt.send()
         return receipt
 
 
@@ -130,52 +137,53 @@ class Receipt(models.Model):
     # The email on the pledge might get edited, so let's record the one we used here.
     email = models.EmailField()
     receipt_html = models.TextField(blank=True, editable=False)
+    failed_message = models.TextField(blank=True, editable=False, default='')
 
     @property
     def sent(self):
         return self.time_sent is not None
 
+    @property
+    def failed(self):
+        return self.failed_message != ''
+
     def send(self):
         if self.sent:
             raise Exception("Receipt already sent.")
-        self.receipt_html = render_to_string('receipt.html', {'unique_reference': self.pk,
-                                                              'pledge': self.pledge,
-                                                              'bank_transaction': self.bank_transaction,
-                                                              })
-        pdf_receipt_location = '/tmp/EAA_Receipt_{0}.pdf'.format(self.pk)
-        pdfkit.from_string(self.receipt_html, pdf_receipt_location)
+        try:
+            self.receipt_html = render_to_string('receipt.html', {'unique_reference': self.pk,
+                                                                  'pledge': self.pledge,
+                                                                  'bank_transaction': self.bank_transaction,
+                                                                  })
+            pdf_receipt_location = '/tmp/EAA_Receipt_{0}.pdf'.format(self.pk)
+            pdfkit.from_string(self.receipt_html, pdf_receipt_location)
 
-        message = EmailMessage(
-            subject='Receipt for donation to Effective Altruism Australia',
-            body="""Dear {0.first_name} {0.last_name},
+            body = render_to_string('receipt_message.txt', {'pledge': self.pledge})
+            message = EmailMessage(
+                subject='Receipt for donation to Effective Altruism Australia',
+                body=body,
+                to=["ben.toner@eaa.org.au"],  # TODO
+                from_email=settings.POSTMARK_SENDER,
+            )
+            message.attach_file(pdf_receipt_location, mimetype='application/pdf')
+            get_connection().send_messages([message])
 
-Thank you so much for your donation to Effective Altruism Australia, designated for {0.recipient_org}.
-
-Please find attached your receipt.
-
-Kind regards,
-
-Szun Tay
-Effective Altruism Australia
-""".format(self.pledge),
-            to=["ben.toner@eaa.org.au"],  # TODO
-            from_email=settings.POSTMARK_SENDER,
-        )
-        message.attach_file(pdf_receipt_location, mimetype='application/pdf')
-        get_connection().send_messages([message])
-
-        self.time_sent = datetime.datetime.now()
+            self.time_sent = datetime.datetime.now()
+        except Exception as e:
+            # TODO put it in sentry
+            self.failed_message = e.message if e.message else "Sending failed"
         self.save()
 
     @property
     def status(self):
         if self.sent:
             return "Receipt to {0.email} sent at {1}".format(self, arrow.get(self.time_sent).format('YYYY-MM-DD HH:mm:ss'))
+        elif self.failed:
+            return "Sending failed: {0.failed_message}".format(self)
         else:
-            return "Receipt will be sent to {0.email} in next few hours.".format(self)
+            return "Programming error - We shouldn't be able to get into this state."
 
     def __unicode__(self):
-        return ("Unsent r" if not self.sent else "R") + \
-                "eceipt for donation of ${1.amount} by {0.first_name} {0.last_name} on {1.date}".format(
-                    self.pledge, self.bank_transaction,
-            )
+        return ("Receipt for donation of ${0.bank_transaction.amount} by {0.pledge.first_name} {0.pledge.last_name}" +
+                " on {0.bank_transaction.date}" +
+                (" - Sending failed: {0.failed_message}" if self.failed else "")).format(self)

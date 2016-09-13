@@ -1,0 +1,10 @@
+Dear {{ pledge.first_name }} {{ pledge.last_name }},
+
+Thank you so much for your donation to Effective Altruism Australia, designated for {{ pledge.recipient_org }}.
+
+Please find attached your receipt.
+
+Kind regards,
+
+Szun Tay
+Effective Altruism Australia

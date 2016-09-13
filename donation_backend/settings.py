@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'kombu.transport.django',  # For use of celery with django database
+    'raven.contrib.django.raven_compat',
     'reversion',
     'donation',
 )

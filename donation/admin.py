@@ -1,5 +1,7 @@
 from django.contrib import admin
-from models import Pledge, BankTransaction, Receipt
+from django.contrib import messages
+
+from donation.models import Pledge, BankTransaction, Receipt
 
 from reversion.admin import VersionAdmin
 # Register your models here.
@@ -54,20 +56,20 @@ class BankTransactionAdmin(VersionAdmin):
 
     def resend_receipts(self, request, queryset):
         for bank_transaction in queryset.all():
-            bank_transaction.resend_receipt()
-        self.message_user(request, "Additional receipts sent.")
+            any_receipts_sent = False
+            try:
+                bank_transaction.resend_receipt()
+                any_receipts_sent = True
+            except BankTransaction.NotReconciledException:
+                self.message_user(request, "Cannot send receipts for unreconciled transactions.", level=messages.ERROR)
+        if any_receipts_sent:
+            self.message_user(request, "Additional receipts sent.")
     resend_receipts.short_description = "Resend receipts for selected transactions"
 
     actions = ['resend_receipts']
 
 
 class ReceiptAdmin(VersionAdmin):
-    def send_receipts(self, request, queryset):
-        for receipt in queryset.filter(time_sent__isnull=True).all():
-            receipt.send()
-        self.message_user(request, "Selected receipts sent.")
-    send_receipts.short_description = "Send receipts now"
-
     readonly_fields = ('status', )
     fields = ('status', )
     actions = ['send_receipts', ]
