@@ -127,6 +127,7 @@ BROKER_URL = 'django://'
 CELERYBEAT_SCHEDULE = {
     'process-transactions': {
         'task': 'donation.tasks.process_bank_transactions',
+        # 'schedule': datetime.timedelta(seconds=30)  # For testing
         'schedule': crontab(minute=0, hour='*/4')
     },
 }
@@ -134,3 +135,12 @@ CELERYBEAT_SCHEDULE = {
 CELERY_TIMEZONE = 'UTC'
 
 # TO run celery: celery -A donation_backend worker --beat -l info
+
+
+# Xero stuff
+SECRET_DIR = '/share/eaa/secret'  # Samuel: "Y:/share/eaa"
+XERO_RSA_KEY = open(os.path.join(SECRET_DIR, 'rsa_key.txt')).read()
+XERO_CONSUMER_KEY = open(os.path.join(SECRET_DIR, 'consumer_key.txt')).read().strip()
+XERO_DAYS_TO_IMPORT = 300  # Reduce this later.
+XERO_ACCOUNT_ID_FOR_INCOMING_DONATIONS = u'7ee22f07-ffce-4369-a9b3-dc3ce4fa7609'  # Doesn't need to be secret.
+

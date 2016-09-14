@@ -1,6 +1,7 @@
 import datetime
 import pdfkit
 import arrow
+import re
 
 from django.db import models
 from django.template.loader import render_to_string
@@ -84,13 +85,16 @@ class BankTransaction(models.Model):
         return instance
 
     def save(self, *args, **kwargs):
-        if not self._state.adding and (self.reference != self._loaded_reference):
+        if self._state.adding:
+            self.find_reference_in_bank_statement_text()
+        elif self.reference != self._loaded_reference:
             # Reference changed. Delete any existing pledge
             self.pledge = None
         # Save it immediately because there could be an exception trying to reconcile
         super(BankTransaction, self).save(*args, **kwargs)
         updated = self.reconcile()
         if updated:
+            kwargs['force_insert'] = False  # can't force_insert twice
             super(BankTransaction, self).save(*args, **kwargs)
             # We matched with a pledge. Generate a receipt object.
             Receipt.objects.create_from_bank_transaction(self)
@@ -112,6 +116,12 @@ class BankTransaction(models.Model):
         if not self.pledge:
             raise BankTransaction.NotReconciledException("Can't send receipt, transaction is not reconciled.")
         Receipt.objects.create_from_bank_transaction(self)
+
+    def find_reference_in_bank_statement_text(self):
+        # TODO do this by lookup, after switching form from drupal. We won't do that now,
+        # since we may import bank statements before pledges.
+        match = re.search(r'(^|\s)[0-9a-fA-F]{12}($|\s)', self.bank_statement_text)
+        self.reference = match.group(0).strip().upper() if match else ''
 
 
 class ReceiptManager(models.Manager):
