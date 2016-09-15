@@ -92,11 +92,11 @@ class BankTransaction(models.Model):
             self.pledge = None
         # Save it immediately because there could be an exception trying to reconcile
         super(BankTransaction, self).save(*args, **kwargs)
-        updated = self.reconcile()
-        if updated:
+        matched_with_pledge = self.reconcile()
+        if matched_with_pledge:
             kwargs['force_insert'] = False  # can't force_insert twice
             super(BankTransaction, self).save(*args, **kwargs)
-            # We matched with a pledge. Generate a receipt object.
+            # Generate a receipt object.
             Receipt.objects.create_from_bank_transaction(self)
 
     def reconcile(self):
@@ -197,3 +197,24 @@ class Receipt(models.Model):
         return ("Receipt for donation of ${0.bank_transaction.amount} by {0.pledge.first_name} {0.pledge.last_name}" +
                 " on {0.bank_transaction.date}" +
                 (" - Sending failed: {0.failed_message}" if self.failed else "")).format(self)
+
+
+class Account(models.Model):
+    # xero is the authoritative source of funds raised to date. We use this class to store information about total
+    # donations received in any given month.
+    date = models.DateTimeField()  # Should be an end of month
+    name = models.TextField()
+
+    # This is the total of account transactions in that month.
+    amount = models.DecimalField(decimal_places=2, max_digits=12)
+    # Let's just store the year to date number too, whatever
+    ytd_amount = models.DecimalField(decimal_places=2, max_digits=12)
+
+    class Meta:
+        unique_together = ('date', 'name', )
+
+
+class XeroReconciledDate(models.Model):
+    # Up to and including this date, we take total donation information from xero. After this date, we use the
+    # BankTransaction objects. The BankTransaction objects will be missing things like workplace giving.
+    date = models.DateTimeField()

@@ -1,17 +1,28 @@
 # pip install PyCrypto PyXero cryptography
 from datetime import date, timedelta
+from decimal import Decimal
 import hashlib
-
 from collections import defaultdict
+from dateutil.relativedelta import relativedelta
 from xero import Xero
 from xero.auth import PrivateCredentials
 
 from django.conf import settings
 
-from models import BankTransaction
+from donation.models import BankTransaction, Account
+
 
 credentials = PrivateCredentials(settings.XERO_CONSUMER_KEY, settings.XERO_RSA_KEY)
 xero = Xero(credentials)
+
+
+def xero_report_to_iterator(xero_report):
+    # Iterate through a report from xero. Each row is returned as a dictionary.
+    # Note that this doesn't give us the whole report, but it's enough for the
+    # the reports that we need.
+    headers = [cell[u'Value'] for cell in xero_report[0]['Rows'][0]['Cells']]
+    for row in xero_report[0]['Rows'][1]['Rows']:
+        yield dict(zip(headers, [cell[u'Value'] for cell in row[u'Cells']]))
 
 
 def import_bank_transactions():
@@ -31,13 +42,10 @@ def import_bank_transactions():
         # "bankAccountID": u'9bc4450a-ed06-4049-abbc-03e723581d18',
     }
 
-    bank_transactions = xero.reports.get('BankStatement', params=passed_params)[0]
-    xero_headers = [cell[u'Value'] for cell in bank_transactions['Rows'][0]['Cells']]
-
     rows_seen = defaultdict(int)
-    for row in bank_transactions['Rows'][1]['Rows']:
-        data = dict(zip(xero_headers, [cell[u'Value'] for cell in row[u'Cells']]))
+    bank_transactions = xero.reports.get('BankStatement', params=passed_params)
 
+    for data in xero_report_to_iterator(bank_transactions):
         # Omit "Opening Balance" and "Closing Balance"
         if data[u'Description'] in [u'Opening Balance', u'Closing Balance']:
             continue
@@ -63,3 +71,26 @@ def import_bank_transactions():
                                            bank_statement_text=bank_statement_text,
                                            amount=amount,
                                            unique_id=unique_id)
+
+
+def to_decimal(s):
+    return Decimal(s) if s else Decimal(0)
+
+
+def import_trial_balance():
+    balance_date = date(2016, 1, 31)
+    while balance_date < date.today():
+        trial_balance = xero.reports.get('TrialBalance', params={u'Date': balance_date})
+
+        for row in xero_report_to_iterator(trial_balance):
+            try:
+                account = Account.objects.get(date=balance_date, name=row[u'Account'])
+            except Account.DoesNotExist:
+                account = Account(date=balance_date, name=row[u'Account'])
+            account.amount = to_decimal(row[u'Credit']) - to_decimal(row[u'Debit'])
+            account.ytd_amount = to_decimal(row[u'YTD Credit']) - to_decimal(row[u'YTD Debit'])
+            account.save()
+
+        balance_date += relativedelta(days=1)
+        balance_date += relativedelta(months=1)
+        balance_date -= relativedelta(days=1)
