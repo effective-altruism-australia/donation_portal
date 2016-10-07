@@ -34,7 +34,7 @@ def import_bank_transactions():
         "toDate": str(to_date),
 
         # Note: you can look up the bankAccountIDs by using the xero.accounts endpoint and filtering account number.
-        "bankAccountID": settings.XERO_ACCOUNT_ID_FOR_INCOMING_DONATIONS
+        "bankAccountID": settings.XERO_INCOMING_ACCOUNT_ID
 
         # This was our old Westpac account.
         # TODO maybe do a one-time import of donations from this account if we ever do things like

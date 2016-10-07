@@ -142,5 +142,5 @@ SECRET_DIR = '/share/eaa/secret'  # Samuel: "Y:/share/eaa"
 XERO_RSA_KEY = open(os.path.join(SECRET_DIR, 'rsa_key.txt')).read()
 XERO_CONSUMER_KEY = open(os.path.join(SECRET_DIR, 'consumer_key.txt')).read().strip()
 XERO_DAYS_TO_IMPORT = 300  # Reduce this later.
-XERO_ACCOUNT_ID_FOR_INCOMING_DONATIONS = u'7ee22f07-ffce-4369-a9b3-dc3ce4fa7609'  # Doesn't need to be secret.
+XERO_INCOMING_ACCOUNT_ID = u'7ee22f07-ffce-4369-a9b3-dc3ce4fa7609'  # Doesn't need to be secret.
 
