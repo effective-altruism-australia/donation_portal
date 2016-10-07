@@ -1,0 +1,43 @@
+###################
+### Python Core ###
+###################
+
+# Python package installer
+pip>=7.1
+
+# Improve the functionality and security of Python's TLS support. This also
+# fixes SNIMissingWarning and InsecurePlatformWarning errors seen during pip
+# usage (due to its usage of the urllib3 library). For additional details see:
+# http://urllib3.readthedocs.org/en/latest/security.html#openssl-pyopenssl
+certifi
+ndg-httpsclient
+
+
+############################
+### Runtime Dependencies ###
+############################
+
+arrow
+celery==3.1.*
+cryptography
+# The 1.8 LTS release is supported through to at least April 2018
+Django==1.8.*
+django-reversion
+pdfkit
+psycopg2
+PyCrypto
+python-dateutil
+python-postmark
+pyxero
+raven
+
+
+################################
+### Development Dependencies ###
+################################
+
+ruamel.yaml
+subprocess32
+termcolor
+
+# vim: cc=80 tw=79 ts=4 sw=4 sts=4 et sr
