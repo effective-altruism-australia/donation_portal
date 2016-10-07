@@ -36,6 +36,14 @@ raven
 ### Development Dependencies ###
 ################################
 
+# This should be installed by flake8 as a dependency on Python < 3.2 yet that
+# doesn't always occur. Presumably it's a bug in the installation logic? It's
+# required for improved parsing of its configuration.
+configparser
+flake8
+flake8-blind-except
+flake8-putty
+flake8-tidy-imports
 ruamel.yaml
 subprocess32
 termcolor
