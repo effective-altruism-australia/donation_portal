@@ -30,6 +30,7 @@ python-dateutil
 python-postmark
 pyxero
 raven
+redis
 
 
 ################################

@@ -37,6 +37,7 @@ python-postmark==0.4.10
 pytz==2016.7
 pyxero==0.8.0
 raven==5.27.1
+redis==2.10.5
 requests==2.11.1
 requests-oauthlib==0.7.0
 ruamel.ordereddict==0.4.9
