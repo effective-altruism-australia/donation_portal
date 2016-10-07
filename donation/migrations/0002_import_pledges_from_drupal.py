@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(import_data_from_drupal),
+        # migrations.RunPython(import_data_from_drupal),
         # Set id to something high so we don't collide with later imports from drupal
         migrations.RunSQL('ALTER SEQUENCE donation_pledge_id_seq RESTART WITH 10000;')
     ]
