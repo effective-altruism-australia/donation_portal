@@ -29,34 +29,27 @@ ehthumbs.db
 # Log files
 *.log
 logs/
-npm-debug.log*
 
 # Temp files
 *.tmp
 tmp/
 
-# PyCharm
-.idea
+# Config files
+local_settings.py
+salt_settings.py
 
-# Rope
-.ropeproject/
-
-# Node.js
-node_modules/
+# Secrets
+secrets/
 
 # Python
 *.py[cod]
 *.ipynb
-ipynb_checkpoints
 celerybeat-schedule
+ipynb_checkpoints/
 venv/
-web/local_settings.py
-web/local_settings_override.py
-web/salt_settings.py
 
-# Testing
-.coverage
-coverage/
-htmlcov/
-load_testing/results/
-web/fixtures/sample-projects/test-docs/
+# PyCharm
+.idea/
+
+# Rope
+.ropeproject/
