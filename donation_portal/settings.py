@@ -1,5 +1,5 @@
 """
-Django settings for donation_backend project.
+Django settings for donation_portal project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.8/topics/settings/
@@ -39,7 +39,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'donation_backend.urls'
+ROOT_URLCONF = 'donation_portal.urls'
 
 TEMPLATES = [
     {
@@ -57,7 +57,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'donation_backend.wsgi.application'
+WSGI_APPLICATION = 'donation_portal.wsgi.application'
 
 
 # Database
@@ -94,7 +94,7 @@ STATIC_URL = '/static/'
 # Celery
 # http://docs.celeryproject.org/en/latest/configuration.html
 
-# To run Celery: celery -A donation_backend worker --beat -l INFO
+# To run Celery: celery -A donation_portal worker --beat -l INFO
 
 # TODO: Work out when Xero has the new bank transactions and just run daily.
 CELERYBEAT_SCHEDULE = {

@@ -1,4 +1,4 @@
-from donation_backend.eaacelery import app
+from donation_portal.eaacelery import app
 from eaaxero import import_bank_transactions, import_trial_balance
 
 
