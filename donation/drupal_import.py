@@ -7,7 +7,7 @@ import arrow
 
 from django.db.models.fields import DecimalField, DateTimeField
 
-from .models import Pledge, BankTransaction
+from .models import Pledge, BankTransaction, PartnerCharity
 
 
 FIELD_MAP = [
@@ -25,9 +25,9 @@ FIELD_MAP = [
     ('last_name', 'ea_donor_last_name'),
     ('email', 'email'),
     ('subscribe_to_updates', 'Subscribe to updates'),
-    ('payment_method_text', 'payment_method'),
+    ('payment_method', 'payment_method'),
     ('recurring', 'I want to set up recurring donations through my bank'),
-    ('recurring_frequency_text', 'recurring_donation_frequency'),
+    ('recurring_frequency', 'recurring_donation_frequency'),
     ('publish_donation', "Tell the world I've made a donation"),
     ('how_did_you_hear_about_us', 'how_did_you_hear_about_us'),
     ('share_with_givewell',
@@ -51,6 +51,8 @@ def import_from_drupal(donations_file):
 
     existing_pledges = Pledge.objects.values_list('id', flat=True)
 
+    recipient_orgs_map = {partner_charity.name: partner_charity for partner_charity in PartnerCharity.objects.all()}
+
     for pledge in pledges:
         if pledge['webform_serial'] in existing_pledges:
             continue  # already imported
@@ -67,6 +69,8 @@ def import_from_drupal(donations_file):
                 value = Decimal(value)
             elif field_type == DateTimeField:
                 value = arrow.get(value, 'MM/DD/YYYY - HH:mm').datetime
+            elif django_field == 'recipient_org':
+                value = recipient_orgs_map[value]
 
             kwargs[django_field] = value
 

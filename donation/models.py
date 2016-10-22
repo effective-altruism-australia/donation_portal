@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import datetime
 import pdfkit
 import arrow
 import re
@@ -14,36 +13,44 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
 from raven.contrib.django.raven_compat.models import client
+from enumfields import EnumField, Enum
 
-PAYMENT_CHOICES = [
-    (1, "Bank"),
-    (2, "Cheque")
-]
 
-DONATION_FREQUENCIES = [
-    (1, "Weekly"),
-    (2, "Fortnightly"),
-    (3, "Monthly")
-]
+class PartnerCharity(models.Model):
+    name = models.TextField(unique=True)
+    email = models.EmailField(help_text="Used to cc the charity on receipts")
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Partner charities"
+
+
+class PaymentMethod(Enum):
+    BANK = 1
+    CHEQUE = 2
+
+
+class RecurringFrequency(Enum):
+    WEEKLY = 1
+    FORTNIGHTLY = 2
+    MONTHLY = 3
 
 
 class Pledge(models.Model):
     completed_time = models.DateTimeField()
     ip = models.GenericIPAddressField(null=True)
     reference = models.TextField()
-    recipient_org = models.TextField()
+    recipient_org = models.ForeignKey(PartnerCharity)
     amount = models.DecimalField(decimal_places=2, max_digits=12)
     first_name = models.TextField(blank=True)
     last_name = models.TextField(blank=True)
     email = models.EmailField()
     subscribe_to_updates = models.BooleanField(default=False)
-    # TODO NOW use backing field
-    # payment_method = models.IntegerField(choices=PAYMENT_CHOICES)
-    payment_method_text = models.TextField(blank=True)
+    payment_method = EnumField(PaymentMethod, max_length=1)
     recurring = models.BooleanField()
-    # TODO NOW use backing field
-    # recurring_frequency = models.IntegerField(choices=DONATION_FREQUENCIES)
-    recurring_frequency_text = models.TextField(blank=True)
+    recurring_frequency = EnumField(RecurringFrequency, max_length=1, blank=True, null=True)
     publish_donation = models.BooleanField(default=False)
     how_did_you_hear_about_us = models.TextField(blank=True)
     share_with_givewell = models.BooleanField(default=False)
@@ -183,7 +190,7 @@ class Receipt(models.Model):
                 subject='Receipt for your donation to Effective Altruism Australia',
                 body=body,
                 to=["ben.toner@eaa.org.au"],  # TODO NOW
-                # cc=[settings.CHARITY_EMAILS[self.pledge.recipient_org]],  # TODO NOW
+                # cc=[self.pledge.recipient_org.email],  # TODO NOW
                 # There is a filter in info@eaa.org.au
                 #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
                 # that automatically archives messages sent to info+receipt and adds the label 'receipts'
@@ -206,12 +213,20 @@ class Receipt(models.Model):
         elif self.failed:
             return "Sending failed: {0.failed_message}".format(self)
         else:
-            return "Programming error - We shouldn't be able to get into this state."
+            raise Exception("Programming error - We shouldn't be able to get into this state.")
 
     def __unicode__(self):
-        return ("Receipt for donation of ${0.bank_transaction.amount} by {0.pledge.first_name} {0.pledge.last_name}" +
-                " on {0.bank_transaction.date}" +
-                (" - Sending failed: {0.failed_message}" if self.failed else "")).format(self)
+        if self.bank_transaction:
+            bank_transaction_part = ("Receipt for donation of ${0.bank_transaction.amount}" +
+                                     " on {0.bank_transaction.date}").format(self)
+        else:
+            bank_transaction_part = "Receipt for deleted bank transaction"
+        if self.pledge:
+            pledge_part = " by {0.pledge.first_name} {0.pledge.last_name}".format(self)
+        else:
+            pledge_part = " to {0.email} (pledge deleted)".format(self)
+        failed_part = " - Sending failed: {0.failed_message}".format(self) if self.failed else ""
+        return bank_transaction_part + pledge_part + failed_part
 
 
 class Account(models.Model):

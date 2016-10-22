@@ -5,24 +5,23 @@ from django.contrib import messages
 
 from reversion.admin import VersionAdmin
 
-from .models import Pledge, BankTransaction, Receipt
+from .models import Pledge, BankTransaction, Receipt, PartnerCharity
 
 
 class PledgeAdmin(VersionAdmin):
     search_fields = ('first_name', 'last_name', 'reference')
     readonly_fields = ('ip', 'completed_time')
 
-    # TODO NOW make recipient_org, frequency etc. have choices not be free text
     class Meta:
-        model = BankTransaction
+        model = Pledge
 
 
 # TODO We're not really using this as an Inline and it has confusing presentation. Better to create our own widget.
 class ReceiptInline(admin.TabularInline):
-    readonly_fields = ('status', )
+    readonly_fields = ('status',)
     model = Receipt
     extra = 0
-    fields = ('status', )
+    fields = ('status',)
     can_delete = False
 
     def has_add_permission(self, request):
@@ -34,7 +33,7 @@ class BankTransactionAdmin(VersionAdmin):
     # https://docs.djangoproject.com/en/1.8/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
 
     readonly_fields = ('date', 'amount', 'bank_statement_text', 'reconciled', 'pledge')
-    inlines = (ReceiptInline, )
+    inlines = (ReceiptInline,)
 
     class Meta:
         model = BankTransaction
@@ -48,11 +47,11 @@ class BankTransactionAdmin(VersionAdmin):
                        'reconciled',
                        'pledge',
                        )
-            }),
+        }),
         ("Do not reconcile", {
             'fields': ('its_not_a_donation',
                        )
-            }),
+        }),
     )
 
     def resend_receipts(self, request, queryset):
@@ -65,16 +64,19 @@ class BankTransactionAdmin(VersionAdmin):
                 self.message_user(request, "Cannot send receipts for unreconciled transactions.", level=messages.ERROR)
         if any_receipts_sent:
             self.message_user(request, "Additional receipts sent.")
+
     resend_receipts.short_description = "Resend receipts for selected transactions"
 
     actions = ['resend_receipts']
 
 
 class ReceiptAdmin(VersionAdmin):
-    readonly_fields = ('status', )
-    fields = ('status', )
+    readonly_fields = ('status',)
+    fields = ('status',)
     actions = ['send_receipts', ]
+
 
 admin.site.register(Pledge, PledgeAdmin)
 admin.site.register(BankTransaction, BankTransactionAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
+admin.site.register(PartnerCharity, VersionAdmin)

@@ -32,7 +32,7 @@ python-postmark
 pyxero
 raven
 redis
-
+django-enumfields
 
 ################################
 ### Development Dependencies ###
