@@ -12,7 +12,7 @@ class PledgeAdmin(VersionAdmin):
     search_fields = ('first_name', 'last_name', 'reference')
     readonly_fields = ('ip', 'completed_time')
 
-    # TODO make recipient_org, frequency etc. have choices not be free text
+    # TODO NOW make recipient_org, frequency etc. have choices not be free text
     class Meta:
         model = BankTransaction
 

@@ -96,7 +96,7 @@ STATIC_URL = '/static/'
 
 # To run Celery: celery -A donation_portal worker --beat -l INFO
 
-# TODO: Work out when Xero has the new bank transactions and just run daily.
+# We'll run this every 4 hours in case xero is late importing transactions or something
 CELERYBEAT_SCHEDULE = {
     'process-transactions': {
         'task': 'donation.tasks.process_bank_transactions',
@@ -123,5 +123,7 @@ if os.path.exists(os.path.join(os.path.dirname(__file__), "local_settings.py")):
 
 if ENABLE_SENTRY:
     INSTALLED_APPS += ('raven.contrib.django.raven_compat', )
+
+# TODO use dummy charity emails in dev pillar
 
 # vim: cc=80 tw=79 ts=4 sw=4 sts=4 et sr

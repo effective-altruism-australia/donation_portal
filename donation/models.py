@@ -4,6 +4,7 @@ import datetime
 import pdfkit
 import arrow
 import re
+import os
 
 from django.db import models
 from django.template.loader import render_to_string
@@ -11,7 +12,8 @@ from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-
+from django.utils import timezone
+from raven.contrib.django.raven_compat.models import client
 
 PAYMENT_CHOICES = [
     (1, "Bank"),
@@ -35,11 +37,11 @@ class Pledge(models.Model):
     last_name = models.TextField(blank=True)
     email = models.EmailField()
     subscribe_to_updates = models.BooleanField(default=False)
-    # TODO use backing field
+    # TODO NOW use backing field
     # payment_method = models.IntegerField(choices=PAYMENT_CHOICES)
     payment_method_text = models.TextField(blank=True)
     recurring = models.BooleanField()
-    # TODO use backing field
+    # TODO NOW use backing field
     # recurring_frequency = models.IntegerField(choices=DONATION_FREQUENCIES)
     recurring_frequency_text = models.TextField(blank=True)
     publish_donation = models.BooleanField(default=False)
@@ -55,7 +57,7 @@ class Pledge(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.completed_time:
-            self.completed_time = datetime.datetime.now()
+            self.completed_time = timezone.now()
         super(Pledge, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -173,22 +175,27 @@ class Receipt(models.Model):
                                                                   'pledge': self.pledge,
                                                                   'bank_transaction': self.bank_transaction,
                                                                   })
-            pdf_receipt_location = '/tmp/EAA_Receipt_{0}.pdf'.format(self.pk)
+            pdf_receipt_location = os.path.join(settings.MEDIA_ROOT, 'receipts', 'EAA_Receipt_{0}.pdf'.format(self.pk))
             pdfkit.from_string(self.receipt_html, pdf_receipt_location)
 
             body = render_to_string('receipt_message.txt', {'pledge': self.pledge})
             message = EmailMessage(
-                subject='Receipt for donation to Effective Altruism Australia',
+                subject='Receipt for your donation to Effective Altruism Australia',
                 body=body,
-                to=["ben.toner@eaa.org.au"],  # TODO
+                to=["ben.toner@eaa.org.au"],  # TODO NOW
+                # cc=[settings.CHARITY_EMAILS[self.pledge.recipient_org]],  # TODO NOW
+                # There is a filter in info@eaa.org.au
+                #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
+                # that automatically archives messages sent to info+receipt and adds the label 'receipts'
+                bcc=["info+receipt@eaa.org.au", ],
                 from_email=settings.POSTMARK_SENDER,
             )
             message.attach_file(pdf_receipt_location, mimetype='application/pdf')
             get_connection().send_messages([message])
 
-            self.time_sent = datetime.datetime.now()
+            self.time_sent = timezone.now()
         except Exception as e:
-            # TODO put it in sentry
+            client.captureException()
             self.failed_message = e.message if e.message else "Sending failed"
         self.save()
 

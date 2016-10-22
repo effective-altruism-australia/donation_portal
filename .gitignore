@@ -56,3 +56,6 @@ venv/
 
 # Uploaded files
 /media/uploads
+
+# Receipts
+/media/receipts
