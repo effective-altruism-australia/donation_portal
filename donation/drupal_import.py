@@ -7,7 +7,7 @@ import arrow
 
 from django.db.models.fields import DecimalField, DateTimeField
 
-from .models import Pledge
+from .models import Pledge, BankTransaction
 
 
 FIELD_MAP = [
@@ -71,3 +71,13 @@ def import_from_drupal(donations_file):
             kwargs[django_field] = value
 
         Pledge(**kwargs).save()
+
+
+def reconcile_imported_pledges():
+    # well, actually, just reconcile everything
+    references = Pledge.objects.values_list('reference', flat=True)
+    transactions_we_can_reconcile = BankTransaction.objects.filter(pledge__isnull=True,
+                                                                   its_not_a_donation=False,
+                                                                   reference__in=references)
+    for transaction in transactions_we_can_reconcile:
+        transaction.save()  # Triggers everything

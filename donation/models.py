@@ -236,5 +236,8 @@ class TransitionalDonationsFile(models.Model):
 
 @receiver(post_save, sender=TransitionalDonationsFile)
 def import_pledges(sender, instance, **kwargs):
+    # Lazy imports because circular dependencies
     from .drupal_import import import_from_drupal
+    from .tasks import reconcile_pledges_imported_from_drupal
     import_from_drupal(instance)
+    reconcile_pledges_imported_from_drupal.delay()
