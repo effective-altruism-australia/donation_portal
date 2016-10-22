@@ -15,6 +15,9 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from donation.views import upload_donations_file
+
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^upload_donations', upload_donations_file, name='upload-donations-file'),
 ]

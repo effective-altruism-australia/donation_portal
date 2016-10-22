@@ -7,7 +7,8 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 
 PAYMENT_CHOICES = [
@@ -218,3 +219,15 @@ class XeroReconciledDate(models.Model):
     # Up to and including this date, we take total donation information from xero. After this date, we use the
     # BankTransaction objects. The BankTransaction objects will be missing things like workplace giving.
     date = models.DateTimeField()
+
+
+class TransitionalDonationsFile(models.Model):
+    # The download from drupal
+    time_uploaded = models.DateTimeField(auto_now_add=True)
+    file = models.FileField(upload_to='uploads/')
+
+
+@receiver(post_save, sender=TransitionalDonationsFile)
+def import_pledges(sender, instance, **kwargs):
+    from .drupal_import import import_from_drupal
+    import_from_drupal(instance)

@@ -53,3 +53,6 @@ venv/
 
 # Rope
 .ropeproject/
+
+# Uploaded files
+/media/uploads

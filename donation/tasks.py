@@ -1,5 +1,6 @@
 from donation_portal.eaacelery import app
-from eaaxero import import_bank_transactions, import_trial_balance
+
+from .eaaxero import import_bank_transactions, import_trial_balance
 
 
 @app.task(bind=True)

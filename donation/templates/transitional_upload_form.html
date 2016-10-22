@@ -1,0 +1,24 @@
+<html>
+<head>
+</head>
+<body>
+<h1>Temporary page to upload donations from drupal</h1>
+<p>Do the following:</p>
+<ol>
+    <li>
+        Login in to the <a href="http://effectivealtruism.org.au/user">main site</a>.
+    </li>
+    <li>
+        Download the donation data using the following options: TODO. It doesn't matter what the file name is.
+    </li>
+    <li>
+        Upload the file below
+    </li>
+</ol>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
+</body>
+</html>

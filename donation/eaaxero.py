@@ -9,7 +9,7 @@ from xero.auth import PrivateCredentials
 
 from django.conf import settings
 
-from donation.models import BankTransaction, Account
+from .models import BankTransaction, Account
 
 
 credentials = PrivateCredentials(settings.XERO_CONSUMER_KEY, settings.XERO_RSA_KEY)

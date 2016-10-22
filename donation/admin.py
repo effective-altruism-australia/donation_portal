@@ -1,10 +1,9 @@
 from django.contrib import admin
 from django.contrib import messages
 
-from donation.models import Pledge, BankTransaction, Receipt
-
 from reversion.admin import VersionAdmin
-# Register your models here.
+
+from .models import Pledge, BankTransaction, Receipt
 
 
 class PledgeAdmin(VersionAdmin):
