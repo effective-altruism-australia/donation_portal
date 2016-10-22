@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import datetime
 import pdfkit
 import arrow
@@ -25,7 +27,7 @@ DONATION_FREQUENCIES = [
 
 class Pledge(models.Model):
     completed_time = models.DateTimeField()
-    ip = models.GenericIPAddressField()
+    ip = models.GenericIPAddressField(null=True)
     reference = models.TextField()
     recipient_org = models.TextField()
     amount = models.DecimalField(decimal_places=2, max_digits=12)
@@ -50,6 +52,11 @@ class Pledge(models.Model):
     drupal_uid = models.IntegerField(default=0, editable=False)
     drupal_username = models.TextField(blank=True, editable=False)
     drupal_preferred_donation_method = models.TextField(blank=True, editable=False)
+
+    def save(self, *args, **kwargs):
+        if not self.completed_time:
+            self.completed_time = datetime.datetime.now()
+        super(Pledge, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return "Pledge of ${0.amount} to {0.recipient_org} by {0.first_name} {0.last_name}, " \
