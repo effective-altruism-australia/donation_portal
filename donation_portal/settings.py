@@ -121,4 +121,7 @@ if os.path.exists(os.path.join(os.path.dirname(__file__), "local_settings.py")):
     # noinspection PyUnresolvedReferences
     from local_settings import *  # NOQA
 
+if ENABLE_SENTRY:
+    INSTALLED_APPS += ('raven.contrib.django.raven_compat', )
+
 # vim: cc=80 tw=79 ts=4 sw=4 sts=4 et sr
