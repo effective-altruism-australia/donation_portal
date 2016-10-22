@@ -8,7 +8,7 @@ from django.conf import settings
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'donation', '0001_initial'), (b'donation', '0002_import_pledges_from_drupal'), (b'donation', '0003_banktransaction'), (b'donation', '0004_auto_20160907_2107'), (b'donation', '0005_auto_20160907_2131'), (b'donation', '0006_auto_20160907_2132'), (b'donation', '0007_auto_20160907_2159'), (b'donation', '0008_auto_20160907_2310'), (b'donation', '0009_auto_20160908_0015'), (b'donation', '0010_auto_20160911_2015'), (b'donation', '0011_auto_20160911_2032'), (b'donation', '0012_banktransaction_pledge2'), (b'donation', '0013_remove_banktransaction_pledge2'), (b'donation', '0014_auto_20160911_2153'), (b'donation', '0015_auto_20160911_2307'), (b'donation', '0016_auto_20160911_2320'), (b'donation', '0017_receipt_failed_message'), (b'donation', '0018_auto_20160915_0432')]
+    # replaces = [(b'donation', '0001_initial'), (b'donation', '0002_import_pledges_from_drupal'), (b'donation', '0003_banktransaction'), (b'donation', '0004_auto_20160907_2107'), (b'donation', '0005_auto_20160907_2131'), (b'donation', '0006_auto_20160907_2132'), (b'donation', '0007_auto_20160907_2159'), (b'donation', '0008_auto_20160907_2310'), (b'donation', '0009_auto_20160908_0015'), (b'donation', '0010_auto_20160911_2015'), (b'donation', '0011_auto_20160911_2032'), (b'donation', '0012_banktransaction_pledge2'), (b'donation', '0013_remove_banktransaction_pledge2'), (b'donation', '0014_auto_20160911_2153'), (b'donation', '0015_auto_20160911_2307'), (b'donation', '0016_auto_20160911_2320'), (b'donation', '0017_receipt_failed_message'), (b'donation', '0018_auto_20160915_0432')]
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
