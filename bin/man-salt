@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+less /srv/pillar/README.md

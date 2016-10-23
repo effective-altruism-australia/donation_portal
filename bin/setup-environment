@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+sudo -H salt-call state.apply eaa.envs.dev
