@@ -6,6 +6,7 @@ import re
 import arrow
 
 from django.db.models.fields import DecimalField, DateTimeField
+from raven.contrib.django.raven_compat.models import client
 
 from .models import Pledge, BankTransaction, PartnerCharity
 
@@ -57,24 +58,27 @@ def import_from_drupal(donations_file):
         if pledge['webform_serial'] in existing_pledges:
             continue  # already imported
 
-        kwargs = {}
-        for (django_field, drupal_field) in FIELD_MAP:
-            field_type = type(Pledge._meta.get_field_by_name(django_field)[0])
+        try:
+            kwargs = {}
+            for (django_field, drupal_field) in FIELD_MAP:
+                field_type = type(Pledge._meta.get_field_by_name(django_field)[0])
 
-            value = pledge[drupal_field]
+                value = pledge[drupal_field]
 
-            # We only need to manually convert the following fields
-            if field_type == DecimalField:
-                value = re.sub('[a-zA-Z\$ /,]', '', value)
-                value = Decimal(value)
-            elif field_type == DateTimeField:
-                value = arrow.get(value, 'MM/DD/YYYY - HH:mm').datetime
-            elif django_field == 'recipient_org':
-                value = recipient_orgs_map[value]
+                # We only need to manually convert the following fields
+                if field_type == DecimalField:
+                    value = re.sub('[a-zA-Z\$ /,]', '', value)
+                    value = Decimal(value)
+                elif field_type == DateTimeField:
+                    value = arrow.get(value, 'MM/DD/YYYY - HH:mm').datetime
+                elif django_field == 'recipient_org':
+                    value = recipient_orgs_map[value]
 
-            kwargs[django_field] = value
+                kwargs[django_field] = value
 
-        Pledge(**kwargs).save()
+            Pledge(**kwargs).save()
+        except Exception:  # Deliberately broad
+            client.captureException()
 
 
 def reconcile_imported_pledges():
