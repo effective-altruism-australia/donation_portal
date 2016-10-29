@@ -185,7 +185,9 @@ class Receipt(models.Model):
             pdf_receipt_location = os.path.join(settings.MEDIA_ROOT, 'receipts', 'EAA_Receipt_{0}.pdf'.format(self.pk))
             pdfkit.from_string(self.receipt_html, pdf_receipt_location)
 
-            body = render_to_string('receipt_message.txt', {'pledge': self.pledge})
+            body = render_to_string('receipt_message.txt', {'pledge': self.pledge,
+                                                            'bank_transaction': self.bank_transaction,
+                                                            })
             message = EmailMessage(
                 subject='Receipt for your donation to Effective Altruism Australia',
                 body=body,
@@ -194,7 +196,7 @@ class Receipt(models.Model):
                 # There is a filter in info@eaa.org.au
                 #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
                 # that automatically archives messages sent to info+receipt and adds the label 'receipts'
-                bcc=["info+receipt@eaa.org.au", ],
+                # bcc=["info+receipt@eaa.org.au", ],
                 from_email=settings.POSTMARK_SENDER,
             )
             message.attach_file(pdf_receipt_location, mimetype='application/pdf')
@@ -213,7 +215,7 @@ class Receipt(models.Model):
         elif self.failed:
             return "Sending failed: {0.failed_message}".format(self)
         else:
-            raise Exception("Programming error - We shouldn't be able to get into this state.")
+            return "Sending failed. No failure message."
 
     def __unicode__(self):
         if self.bank_transaction:
