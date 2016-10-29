@@ -232,7 +232,7 @@ class Receipt(models.Model):
 class Account(models.Model):
     # xero is the authoritative source of funds raised to date. We use this class to store information about total
     # donations received in any given month.
-    date = models.DateTimeField()  # Should be an end of month
+    date = models.DateField()  # Should be an end of month
     name = models.TextField()
 
     # This is the total of account transactions in that month.
