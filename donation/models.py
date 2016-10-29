@@ -191,12 +191,13 @@ class Receipt(models.Model):
             message = EmailMessage(
                 subject='Receipt for your donation to Effective Altruism Australia',
                 body=body,
-                to=["ben.toner@eaa.org.au"],  # TODO NOW
-                # cc=[self.pledge.recipient_org.email],  # TODO NOW
+                to=[self.pledge.email],
+                cc=[self.pledge.recipient_org.email],
                 # There is a filter in info@eaa.org.au
                 #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
                 # that automatically archives messages sent to info+receipt and adds the label 'receipts'
                 # bcc=["info+receipt@eaa.org.au", ],
+                bcc=["info+receipts@eaa.org.au"],
                 from_email=settings.POSTMARK_SENDER,
             )
             message.attach_file(pdf_receipt_location, mimetype='application/pdf')
