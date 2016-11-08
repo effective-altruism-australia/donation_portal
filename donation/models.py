@@ -107,6 +107,10 @@ class BankTransaction(models.Model):
         elif self.reference != self._loaded_reference:
             # Reference changed. Delete any existing pledge
             self.pledge = None
+        # Things marked 'do_not_reconcile' should have any existing reconciliation removed
+        if self.do_not_reconcile:
+            self.pledge = None
+            self.reference = ''
         # Save it immediately because there could be an exception trying to reconcile
         super(BankTransaction, self).save(*args, **kwargs)
         matched_with_pledge = self.reconcile()

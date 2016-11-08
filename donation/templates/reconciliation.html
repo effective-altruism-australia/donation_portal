@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+        th {padding: 0 10px;}
+        td {padding: 0 10px;}
+    </style>
+</head>
+<body>
+<h1>
+    Accounting reconciliation
+</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <input type="submit" value="OK">
+    </form>
+<h2>
+    Reconciled transactions
+</h2>
+    <table>
+        <th>Charity</th>
+        <th>Amount</th>
+        {% for charity, total in totals %}
+        <tr>
+            <td>{{ charity }}</td>
+            <td>{{ total }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+<h2>
+    Unreconciled transactions
+</h2>
+    <table>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Description</th>
+        <th>Marked "Do not reconcile"</th>
+        {% for exception in exceptions %}
+        <tr>
+            <td>{{ exception.date }}</td>
+            <td>{{ exception.amount }}</td>
+            <td>{{ exception.bank_statement_text }}</td>
+            <td>{{ exception.do_not_reconcile }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
