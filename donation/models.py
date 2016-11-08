@@ -82,7 +82,7 @@ class BankTransaction(models.Model):
     amount = models.DecimalField(decimal_places=2, max_digits=12,)
     reference = models.TextField(blank=True)
     unique_id = models.TextField(unique=True, editable=False)
-    its_not_a_donation = models.BooleanField(default=False)
+    do_not_reconcile = models.BooleanField(default=False)
     pledge = models.ForeignKey(Pledge, blank=True, null=True)
     time_reconciled = models.DateTimeField(blank=True, null=True, editable=False)
 
