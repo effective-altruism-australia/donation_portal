@@ -49,7 +49,7 @@ class BankTransactionAdmin(VersionAdmin):
                        )
         }),
         ("Do not reconcile", {
-            'fields': ('its_not_a_donation',
+            'fields': ('do_not_reconcile',
                        )
         }),
     )

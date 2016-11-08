@@ -85,7 +85,7 @@ def reconcile_imported_pledges():
     # well, actually, just reconcile everything
     references = Pledge.objects.values_list('reference', flat=True)
     transactions_we_can_reconcile = BankTransaction.objects.filter(pledge__isnull=True,
-                                                                   its_not_a_donation=False,
+                                                                   do_not_reconcile=False,
                                                                    reference__in=references)
     for transaction in transactions_we_can_reconcile:
         transaction.save()  # Triggers everything

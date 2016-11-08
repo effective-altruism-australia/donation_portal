@@ -92,7 +92,7 @@ class BankTransaction(models.Model):
 
     @property
     def reconciled(self):
-        return self.pledge is not None or self.its_not_a_donation
+        return self.pledge is not None or self.do_not_reconcile
 
     # Cache value of reference field on load
     @classmethod
