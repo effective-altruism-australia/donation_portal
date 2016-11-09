@@ -32,6 +32,7 @@ class BankTransactionAdmin(VersionAdmin):
     # TODO make a filter for needs_to_be_reconciled transactions
     # https://docs.djangoproject.com/en/1.8/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
 
+    search_fields = ('bank_statement_text', )
     readonly_fields = ('date', 'amount', 'bank_statement_text', 'reconciled', 'pledge')
     inlines = (ReceiptInline,)
 

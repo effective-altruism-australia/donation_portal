@@ -47,7 +47,7 @@ def accounting_reconciliation(request):
     if BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True).exists():
         raise Exception("Error: transaction reconciled to pledge and also marked 'Do not reconcile'")
 
-    exceptions = BankTransaction.objects.filter(date__gte=start, date__lte=end).exclude(pledge__isnull=False)
+    exceptions = BankTransaction.objects.filter(date__gte=start, date__lte=end).exclude(pledge__isnull=False).order_by('date')
 
     return render(request, 'reconciliation.html', {'form': form,
                                                    'totals': sorted(totals.iteritems()),
