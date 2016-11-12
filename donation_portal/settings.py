@@ -60,21 +60,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'donation_portal.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
@@ -115,6 +100,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 if os.path.exists(os.path.join(os.path.dirname(__file__), "salt_settings.py")):
     # noinspection PyUnresolvedReferences
     from salt_settings import *  # NOQA
+else:
+    from salt_settings_example import *  # NOQA
 
 # Custom configuration settings
 if os.path.exists(os.path.join(os.path.dirname(__file__), "local_settings.py")):
