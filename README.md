@@ -15,4 +15,4 @@ and https://github.com/effective-altruism-australia/donation_portal/blob/live/do
 
 
 Note (if configuring via salt): On Ubuntu 14.04, I have to work around [this issue](https://github.com/saltstack/salt/issues/19532)
-in salt. The workaround is to grant rw permissions on /tmp/usr/0 to the user you're installing the app for.
+in salt. The workaround is to grant rw permissions on /tmp/user/0 to the user you're installing the app for.
