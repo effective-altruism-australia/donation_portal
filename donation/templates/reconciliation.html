@@ -1,3 +1,4 @@
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,13 +33,17 @@
 </h2>
     <table>
         <th>Charity</th>
-        <th>Amount</th>
+        <th style="text-align: right;">Amount</th>
         {% for charity, total in totals %}
         <tr>
             <td>{{ charity }}</td>
-            <td>{{ total }}</td>
+            <td style="text-align: right;">{{ total|floatformat:'2'|intcomma }}</td>
         </tr>
         {% endfor %}
+        <tr>
+            <td><b>Total</b></td>
+            <td><b>{{ grand_total|floatformat:'2'|intcomma }}</b></td>
+        </tr>
     </table>
 <h2>
     Transactions that are not reconciled to Pledges

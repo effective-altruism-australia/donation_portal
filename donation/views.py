@@ -51,4 +51,5 @@ def accounting_reconciliation(request):
 
     return render(request, 'reconciliation.html', {'form': form,
                                                    'totals': sorted(totals.iteritems()),
+                                                   'grand_total': sum(totals.values()),
                                                    'exceptions': exceptions})
