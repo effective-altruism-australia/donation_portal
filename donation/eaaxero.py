@@ -6,6 +6,7 @@ from collections import defaultdict
 from dateutil.relativedelta import relativedelta
 from xero import Xero
 from xero.auth import PrivateCredentials
+from xero.exceptions import XeroNotFound
 
 from django.conf import settings
 
@@ -25,7 +26,7 @@ def xero_report_to_iterator(xero_report):
         yield dict(zip(headers, [cell[u'Value'] for cell in row[u'Cells']]))
 
 
-def import_bank_transactions():
+def import_bank_transactions(manual=False):
     to_date = date.today()
     from_date = to_date - timedelta(settings.XERO_DAYS_TO_IMPORT)
 
@@ -43,7 +44,15 @@ def import_bank_transactions():
     }
 
     rows_seen = defaultdict(int)
-    bank_transactions = xero.reports.get('BankStatement', params=passed_params)
+    try:
+        bank_transactions = xero.reports.get('BankStatement', params=passed_params)
+    except XeroNotFound:
+        if manual:
+            # If user invoked this function manually, raise the exception.
+            raise
+        else:
+            # But probably xero is temporarily down. We'll get the transactions next time.
+            return
 
     for data in xero_report_to_iterator(bank_transactions):
         # Omit "Opening Balance" and "Closing Balance"

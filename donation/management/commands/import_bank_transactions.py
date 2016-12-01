@@ -7,6 +7,6 @@ class Command(BaseCommand):
     help = 'Manually import data from xero'
 
     def handle(self, *args, **options):
-        import_bank_transactions()
+        import_bank_transactions(manual=True)
         import_trial_balance()
         self.stdout.write('Successfully imported data from xero')
