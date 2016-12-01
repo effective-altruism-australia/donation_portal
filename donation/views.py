@@ -97,7 +97,9 @@ def download_transactions(request):
         ws.write_row(0, 0, template.keys())
         row = 0
         for bt_row in BankTransaction.objects.\
-                filter(date__gte=start, date__lte=end, do_not_reconcile=False).values_list(*template.values()):
+                filter(date__gte=start, date__lte=end, do_not_reconcile=False).\
+                order_by('date').\
+                values_list(*template.values()):
             row += 1
             ws.write_datetime(row, 0, bt_row[0], date_format)
             ws.write_row(row, 1, bt_row[1:])
