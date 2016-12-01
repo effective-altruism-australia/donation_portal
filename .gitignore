@@ -54,8 +54,5 @@ venv/
 # Rope
 .ropeproject/
 
-# Uploaded files
-/media/uploads
-
-# Receipts
-/media/receipts
+# Uploaded/downloaded files; receipts
+/media

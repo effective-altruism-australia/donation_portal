@@ -18,7 +18,7 @@
         td {padding: 0 10px;}
     </style>
 </head>
-<body>
+<body style="margin: 20px">
 <h1>
     Accounting reconciliation
 </h1>
@@ -46,6 +46,10 @@
             <td><b>{{ grand_total|floatformat:'2'|intcomma }}</b></td>
         </tr>
     </table>
+<h2>Download transactions</h2>
+<p>Download all transactions in a format suitable for dividing up by charity and sharing with them.</p>
+<p>You have to filter manually for the dates and charities you're interested in.</p>
+<button class="btn-primary" onclick="window.location.href = '{% url 'download-transactions' %}'">Download transactions</button>
 <h2>
     Transactions that are not reconciled to Pledges
 </h2>

@@ -1,8 +1,13 @@
-from django.http import HttpResponseRedirect
+import xlsxwriter
+from datetime import datetime, date
+import os
+
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector
 from .models import BankTransaction, PartnerCharity
@@ -26,7 +31,7 @@ def accounting_reconciliation(request):
     if request.method == 'POST':
         form = DateRangeSelector(request.POST)
         if not form.is_valid():
-            return HttpResponseRedirect(reverse('accounting_reconciliation'))
+            return HttpResponseRedirect(reverse('accounting-reconciliation'))
     else:
         form = DateRangeSelector()
 
@@ -53,3 +58,51 @@ def accounting_reconciliation(request):
                                                    'totals': sorted(totals.iteritems()),
                                                    'grand_total': sum(filter(None, totals.values())),
                                                    'exceptions': exceptions})
+
+
+@login_required()
+def download_transactions(request):
+    # TODO We don't pass parameters to this function yet.
+    # Write some javascript to restrict dates. Maybe easiest to switch out the date widgets for the jQuery UI ones.
+    if request.method != 'GET':
+        raise Http404
+
+    try:
+        start = datetime.strptime(request.GET['start'], '%Y-%m-%d').date()
+    except (KeyError, ValueError):
+        start = date(2015, 1, 1)
+
+    try:
+        end = datetime.strptime(request.GET['end'], '%Y-%m-%d').date()
+    except (KeyError, ValueError):
+        end = date.today()
+
+    path = os.path.join(settings.MEDIA_ROOT, 'downloads')
+    filename = 'EAA donations {0} to {1} downloaded {2}.xlsx'.format(start, end, datetime.now())
+    with xlsxwriter.Workbook(os.path.join(path, filename)) as wb:
+        ws = wb.add_worksheet()
+        date_format = wb.add_format({'num_format': 'dd mmm yyyy'})
+        from collections import OrderedDict
+        template = OrderedDict([
+            ('Date', 'date'),
+            ('Amount', 'amount'),
+            ('EAA Reference', 'reference'),
+            ('First Name', 'pledge__first_name'),
+            ('Last Name', 'pledge__last_name'),
+            ('Email', 'pledge__email'),
+            ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
+            ('Can publish donation', 'pledge__publish_donation'),
+            ('Designation', 'pledge__recipient_org__name')
+        ])
+        ws.write_row(0, 0, template.keys())
+        row = 0
+        for bt_row in BankTransaction.objects.\
+                filter(date__gte=start, date__lte=end, do_not_reconcile=False).values_list(*template.values()):
+            row += 1
+            ws.write_datetime(row, 0, bt_row[0], date_format)
+            ws.write_row(row, 1, bt_row[1:])
+
+    response = HttpResponse(open(os.path.join(path, filename)).read(),
+                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+    return response

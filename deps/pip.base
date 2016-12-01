@@ -33,6 +33,7 @@ pyxero
 raven
 redis
 django-enumfields
+XlsxWriter
 
 ################################
 ### Development Dependencies ###
