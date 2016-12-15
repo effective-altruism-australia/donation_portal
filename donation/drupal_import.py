@@ -8,7 +8,7 @@ import arrow
 from django.db.models.fields import DecimalField, DateTimeField
 from raven.contrib.django.raven_compat.models import client
 
-from .models import Pledge, BankTransaction, PartnerCharity
+from .models import Pledge, BankTransaction, PartnerCharity, PaymentMethod
 
 
 FIELD_MAP = [
@@ -26,7 +26,6 @@ FIELD_MAP = [
     ('last_name', 'ea_donor_last_name'),
     ('email', 'email'),
     ('subscribe_to_updates', 'Stay in touch (receive occasional emails with important updates, new research, and events near you)'),
-    ('payment_method', 'payment_method'),
     ('recurring', 'I want to set up recurring donations through my bank'),
     ('recurring_frequency', 'recurring_donation_frequency'),
     ('publish_donation', "Stay in touch (receive occasional emails with important updates, new research, and events near you)"),
@@ -75,6 +74,9 @@ def import_from_drupal(donations_file):
                     value = recipient_orgs_map[value]
 
                 kwargs[django_field] = value
+
+            # We deleted this field in drupal. Just pretend that we didn't for now.
+            kwargs['payment_method'] = PaymentMethod.BANK
 
             Pledge(**kwargs).save()
         except Exception:  # Deliberately broad
