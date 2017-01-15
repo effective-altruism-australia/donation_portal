@@ -223,7 +223,8 @@ class Receipt(models.Model):
     @property
     def status(self):
         if self.sent:
-            return "Receipt to {0.email} sent at {1}".format(self, arrow.get(self.time_sent).format('YYYY-MM-DD HH:mm:ss'))
+            return "Receipt to {0.email} sent at {1}".format(self,
+                                                             arrow.get(self.time_sent).format('YYYY-MM-DD HH:mm:ss'))
         elif self.failed:
             return "Sending failed: {0.failed_message}".format(self)
         else:
