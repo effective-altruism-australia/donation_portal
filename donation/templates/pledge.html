@@ -1,0 +1,87 @@
+{% load humanize %}
+{% load bootstrap3 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7uon3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    {{ form.media }}
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    {% bootstrap_label "How do you wish to donate?" %}
+
+    <p>
+        You can donate by bank transfer, credit card, or cheque. No transaction costs are incurred by us or you with
+        these payment methods.
+    </p>
+
+    <button type="button" class="btn btn-default btn-sm btn-pmt-method" data-toggle="collapse"
+            data-target="id_bank_transfer" id="id_btn_bank_transfer" value="1">Bank transfer</button>
+    <button type="button" class="btn btn-default btn-sm btn-pmt-method" value="2">Credit card</button>
+    <button type="button" class="btn btn-default btn-sm btn-pmt-method" value="3">Cheque</button>
+
+    <div id="id_bank_transfer">
+        <br>Donations by bank transfer take two steps to set up.<br><br>First, you must register your intent to make a
+        single,
+        or recurring, transfer to our account by completing the form below. You will receive a unique code to use in the
+        transaction.<br><br>Second, you must setup the bank transfer with your bank, using the unique code supplied.
+    </div>
+
+    <br><br>
+    {% bootstrap_label "Select the amount you'd like to donate" %}
+    <p>
+        {% for amt_text, amt_val in form.donation_amounts %}
+            <button type="button" class="btn btn-default btn-sm btn-amt" id="id_{{ amt_val }}"
+                    value={{ amt_val }}>{{ amt_text }}</button>
+        {% endfor %}
+        <button type="button" class="btn btn-default btn-sm btn-amt" data-toggle="collapse"
+                data-target="#id_formgroup_amount">Other
+        </button>
+    </p>
+
+    <form action="" method="post">{% csrf_token %}
+
+        {% for field in form %}
+            <div class="form-group" id="id_formgroup_{{ field.name }}">
+                {% if field.name in form.show_labels %}
+                    {% bootstrap_label field.label %}
+                {% endif %}
+                {% bootstrap_field field layout="vertical" vertical_field_class="col-md-3" show_label=False %}
+            </div>
+        {% endfor %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg" value="Submit">Submit</button>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>

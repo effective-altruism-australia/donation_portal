@@ -9,7 +9,7 @@ from django.db.models import Sum
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector
+from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
 from .models import BankTransaction, PartnerCharity
 
 
@@ -108,3 +108,16 @@ def download_transactions(request):
                             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     return response
+
+
+@login_required()
+def pledge(request):
+    if request.method == 'POST':
+        form = PledgeForm(request.POST)
+        if form.is_valid():
+            # file is saved
+            form.save()
+            return HttpResponseRedirect('/admin/donation/pledge/')
+    else:
+        form = PledgeForm()
+    return render(request, 'pledge.html', {'form': form})

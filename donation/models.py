@@ -29,7 +29,8 @@ class PartnerCharity(models.Model):
 
 class PaymentMethod(Enum):
     BANK = 1
-    CHEQUE = 2
+    CREDIT_CARD = 2
+    CHEQUE = 3
 
 
 class RecurringFrequency(Enum):
@@ -38,21 +39,27 @@ class RecurringFrequency(Enum):
     MONTHLY = 3
 
 
+class HowDidYouHear(Enum):
+    FRIEND = 1
+    SOCIAL_MEDIA = 2
+
+
 class Pledge(models.Model):
     completed_time = models.DateTimeField()
     ip = models.GenericIPAddressField(null=True)
     reference = models.TextField()
     recipient_org = models.ForeignKey(PartnerCharity)
     amount = models.DecimalField(decimal_places=2, max_digits=12)
-    first_name = models.TextField(blank=True)
-    last_name = models.TextField(blank=True)
+    first_name = models.CharField(max_length=100, blank=True)
+    last_name = models.CharField(max_length=100, blank=True)
     email = models.EmailField()
-    subscribe_to_updates = models.BooleanField(default=False)
+    subscribe_to_updates = models.BooleanField(default=False, verbose_name='Send me latest news and updates')
     payment_method = EnumField(PaymentMethod, max_length=1)
-    recurring = models.BooleanField()
+    recurring = models.BooleanField(default=False)
     recurring_frequency = EnumField(RecurringFrequency, max_length=1, blank=True, null=True)
     publish_donation = models.BooleanField(default=False)
-    how_did_you_hear_about_us = models.TextField(blank=True)
+    how_did_you_hear_about_us = EnumField(HowDidYouHear, max_length=1, blank=True, null=True,
+                                          verbose_name='How did you hear about us?')
     share_with_givewell = models.BooleanField(default=False)
     share_with_gwwc = models.BooleanField(default=False)
     share_with_tlycs = models.BooleanField(default=False)
@@ -216,7 +223,8 @@ class Receipt(models.Model):
     @property
     def status(self):
         if self.sent:
-            return "Receipt to {0.email} sent at {1}".format(self, arrow.get(self.time_sent).format('YYYY-MM-DD HH:mm:ss'))
+            return "Receipt to {0.email} sent at {1}".format(self,
+                                                             arrow.get(self.time_sent).format('YYYY-MM-DD HH:mm:ss'))
         elif self.failed:
             return "Sending failed: {0.failed_message}".format(self)
         else:

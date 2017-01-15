@@ -1,0 +1,13 @@
+body {
+    margin: 20px;
+}
+
+.container {
+            width: 500px;
+        }
+.btn-pmt-method {
+    width: 150px;
+    height: 34px;
+    font-size: 15px;
+    justify-content: center;
+}
