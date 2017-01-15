@@ -14,12 +14,16 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from donation.views import upload_donations_file, accounting_reconciliation, download_transactions
+from donation.views import upload_donations_file, accounting_reconciliation, download_transactions, pledge
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^upload_donations', upload_donations_file, name='upload-donations-file'),
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
     url(r'^download_transactions', download_transactions, name='download-transactions'),
+    url(r'^pledge', pledge, name='pledge')
 ]
+
+urlpatterns += staticfiles_urlpatterns()

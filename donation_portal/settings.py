@@ -25,8 +25,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'bootstrap3',
     'reversion',
     'donation',
+    'captcha',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -75,7 +77,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, "tmp/static")
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 # Celery
 # http://docs.celeryproject.org/en/latest/configuration.html
@@ -116,3 +121,7 @@ if ENABLE_SENTRY:
 AUTOMATION_START_DATE = datetime.date(2016, 10, 19)
 
 # vim: cc=80 tw=79 ts=4 sw=4 sts=4 et sr
+
+NOCAPTCHA = True
+RECAPTCHA_PUBLIC_KEY = '6LdKCxEUAAAAAGVKfiGQ-EVdcZfsIyOQAXm_nGZs'
+RECAPTCHA_PRIVATE_KEY = '6LdKCxEUAAAAAJH5LBTA4aiPRsUUVFfOShPxfVwv'

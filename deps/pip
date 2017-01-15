@@ -9,7 +9,9 @@ configparser==3.5.0
 contextlib2==0.5.4
 cryptography==1.5.2
 Django==1.8.15
+django-bootstrap3==8.0.0
 django-enumfields==0.8.2
+django-recaptcha==1.2.0
 django-reversion==2.0.6
 enum34==1.1.6
 flake8==3.0.4
