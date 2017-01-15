@@ -22,9 +22,13 @@ celery==3.1.*
 cryptography
 # The 1.8 LTS release is supported through to at least April 2018
 Django==1.8.*
+django-paypal
+django-pinpayments
 django-reversion
 gunicorn
+pandas
 pdfkit
+Pillow
 psycopg2
 PyCrypto
 python-dateutil

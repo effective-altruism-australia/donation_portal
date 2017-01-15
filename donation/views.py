@@ -9,9 +9,12 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Max, Min
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.views.generic import View, CreateView
 
-from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector
+from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
 from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account
+from pinpayments.models import PinTransaction
+from paypal.standard.forms import PayPalPaymentsForm
 
 
 @login_required()
@@ -170,3 +173,67 @@ def download_transactions(request):
                             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     return response
+
+
+# @login_required()
+class PledgeView(View):
+
+    def post(self, request):
+        form = PledgeForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+        else:
+            return Http404
+
+        if int(request.POST.get('payment_method')) == 1:
+            transaction = PinTransaction()
+            transaction.card_token = request.POST.get('card_token')
+            transaction.ip_address = request.POST.get('ip_address')
+            transaction.amount = form.cleaned_data['amount']  # Amount in dollars. Define with your own business logic.
+            transaction.currency = 'AUD'  # Pin supports AUD and USD. Fees apply for currency conversion.
+            transaction.description = 'Payment for invoice #12508'  # Define with your own business logic
+            transaction.email_address = request.POST.get('email')
+            transaction.pledge = form.instance
+            transaction.save()
+            result = transaction.process_transaction()  # Typically "Success" or an error message
+        # if transaction.succeeded:
+        #     return "We got the money!"
+        # else:
+        #     return "No money today :( Error message: %s " % result
+
+        return HttpResponseRedirect('/admin/donation/pledge/')
+
+    def get(self, request):
+        paypal_dict = {
+            "business": "placeholder@example.com",
+            "amount": "0",
+            "item_name": "Donation",
+            "notify_url": "https://www.example.com" + reverse('paypal-ipn'),
+            "return_url": "https://www.example.com/your-return-location/",
+            "cancel_return": "https://www.example.com/your-cancel-location/",
+        }
+        paypal_form = PayPalPaymentsForm(button_type='donate', initial=paypal_dict)
+        form = PledgeForm()
+        return render(request, 'pledge.html', {'form': form, 'paypalform': paypal_form}) # , 'org': org
+
+
+# class Paypal(View):
+#     def get(self, request):
+#         # What you want the button to do.
+#         paypal_dict = {
+#             "business": "receiver_email@example.com",
+#             "amount": "10000000.00",
+#             "item_name": "name of the item",
+#             "invoice": "unique-invoice-id",
+#             "notify_url": "https://www.example.com" + reverse('paypal-ipn'),
+#             "return_url": "https://www.example.com/your-return-location/",
+#             "cancel_return": "https://www.example.com/your-cancel-location/",
+#             "custom": "Upgrade all users!",  # Custom command to correlate to some function later (optional)
+#         }
+#
+#         # Create the instance.
+#         paypal_form = PayPalPaymentsForm(initial=paypal_dict)
+#         context = {"form": paypal_form}
+#         return render(request, "payment.html", context)
+

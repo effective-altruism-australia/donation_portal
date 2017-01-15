@@ -13,9 +13,11 @@ Including another URLconf
     1. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
+from django.conf import settings
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from donation.views import upload_donations_file, accounting_reconciliation, download_transactions, donation_counter
+from donation.views import upload_donations_file, accounting_reconciliation, download_transactions, donation_counter, PledgeView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -23,4 +25,11 @@ urlpatterns = [
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
     url(r'^secret_donation_counter', donation_counter, name='donation_counter'),
     url(r'^download_transactions', download_transactions, name='download-transactions'),
+    # url(r'^pledge/([0-9])/$', pledge, name='pledge')
+    url(r'^pledge', PledgeView.as_view(), name='pledge'),
+    url(r'^paypal/', include('paypal.standard.ipn.urls')),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+
+urlpatterns.append(url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}))

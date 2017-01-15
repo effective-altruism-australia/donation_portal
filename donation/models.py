@@ -4,6 +4,7 @@ import pdfkit
 import arrow
 import re
 import os
+import pandas as pd
 
 from django.db import models
 from django.template.loader import render_to_string
@@ -20,6 +21,22 @@ class PartnerCharity(models.Model):
     name = models.TextField(unique=True)
     email = models.EmailField(help_text="Used to cc the charity on receipts")
     xero_account_name = models.TextField(help_text="Exact text of incoming donation account in xero")
+    website_label = models.CharField(max_length=35, help_text='Charity name to display on website')
+    website_image = models.ImageField(upload_to='thumbnails', default='thumbnails/placeholder_image.jpg',
+                                      help_text='Upload a square image for display on the website')
+    show_on_website = models.BooleanField(default=False,
+                                          help_text='Toggle to add/remove from the website donation page')
+    order_on_website = models.IntegerField(default=0)
+    image_top_margin = models.IntegerField(default=0, help_text='Can be deleted once we figure out how to'
+                                           'centre the images properly')
+    website_description = models.CharField(max_length=250, blank=True)
+
+    def save(self, *args, **kwargs):
+        super(PartnerCharity, self).save(*args, **kwargs)
+        df = pd.DataFrame(list(PartnerCharity.objects.filter(
+            show_on_website=True).order_by('order_on_website').values('id', 'website_label', 'website_image',
+                                                                      'website_description', 'image_top_margin')))
+        df.to_json(os.path.join(settings.STATIC_ROOT, 'charity_metadata.json'))
 
     def __unicode__(self):
         return self.name
@@ -29,8 +46,9 @@ class PartnerCharity(models.Model):
 
 
 class PaymentMethod(Enum):
-    BANK = 1
-    CHEQUE = 2
+    CREDIT_CARD = 1
+    PAYPAL = 2
+    BANK = 3
 
 
 class RecurringFrequency(Enum):
@@ -39,21 +57,27 @@ class RecurringFrequency(Enum):
     MONTHLY = 3
 
 
+class HowDidYouHear(Enum):
+    FRIEND = 1
+    SOCIAL_MEDIA = 2
+
+
 class Pledge(models.Model):
     completed_time = models.DateTimeField()
     ip = models.GenericIPAddressField(null=True)
     reference = models.TextField()
     recipient_org = models.ForeignKey(PartnerCharity)
     amount = models.DecimalField(decimal_places=2, max_digits=12)
-    first_name = models.TextField(blank=True)
-    last_name = models.TextField(blank=True)
+    first_name = models.CharField(max_length=100, blank=True)
+    last_name = models.CharField(max_length=100, blank=True)
     email = models.EmailField()
-    subscribe_to_updates = models.BooleanField(default=False)
+    subscribe_to_updates = models.BooleanField(default=False, verbose_name='Send me latest news and updates')
     payment_method = EnumField(PaymentMethod, max_length=1)
-    recurring = models.BooleanField()
+    recurring = models.BooleanField(default=False)
     recurring_frequency = EnumField(RecurringFrequency, max_length=1, blank=True, null=True)
     publish_donation = models.BooleanField(default=False)
-    how_did_you_hear_about_us = models.TextField(blank=True)
+    how_did_you_hear_about_us = EnumField(HowDidYouHear, max_length=1, blank=True, null=True,
+                                          verbose_name='How did you hear about us?')
     share_with_givewell = models.BooleanField(default=False)
     share_with_gwwc = models.BooleanField(default=False)
     share_with_tlycs = models.BooleanField(default=False)
@@ -221,7 +245,8 @@ class Receipt(models.Model):
     @property
     def status(self):
         if self.sent:
-            return "Receipt to {0.email} sent at {1}".format(self, arrow.get(self.time_sent).format('YYYY-MM-DD HH:mm:ss'))
+            return "Receipt to {0.email} sent at {1}".format(self,
+                                                             arrow.get(self.time_sent).format('YYYY-MM-DD HH:mm:ss'))
         elif self.failed:
             return "Sending failed: {0.failed_message}".format(self)
         else:

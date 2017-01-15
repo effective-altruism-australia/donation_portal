@@ -1,0 +1,76 @@
+{% load i18n %}
+
+<div class="panel panel-default credit-card-box">
+    <fieldset id='pin_credit_card_details'>
+{#        <legend>{% trans "Credit Card Details" %}</legend>#}
+
+        <div class="panel-body">
+
+            {#            <div class='errors' style='display:none'>#}
+            {#                <h3></h3>#}
+            {#                <ul></ul>#}
+            {#            </div>#}
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="pin_label" for="cardName">NAME ON CARD</label>
+                        <input type="text" class="form-control cc-form" name="cardName" id="cc-name" placeholder="Full name"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="pin_label" for="cardNumber">CARD NUMBER</label>
+                        <div class="input-group">
+                            <input
+                                    type="tel"
+                                    class="form-control cc-form"
+                                    name="cardNumber"
+                                    id="cc-number"
+                                    placeholder="Valid Card Number"
+                                    autocomplete="cc-number"
+                                    autofocus
+                            />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-7 col-md-7">
+                    <div class="form-group">
+                        <label class="pin_label" for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span
+                                class="visible-xs-inline">EXP</span> DATE</label>
+                        <input
+                                type="tel"
+                                class="form-control cc-form"
+                                id="cc-expiry"
+                                name="cardExpiry"
+                                placeholder="MM / YY"
+                                autocomplete="cc-exp"
+                        />
+                    </div>
+                </div>
+
+                <div class="col-xs-5 col-md-5 pull-right">
+                    <div class="form-group">
+                        <label class="pin_label" for="cardCVC">CV CODE</label>
+                        <input
+                                type="password"
+                                class="form-control cc-form"
+                                id="cc-cvc"
+                                name="cardCVC"
+                                placeholder="CVC"
+                                autocomplete="cc-csc"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
