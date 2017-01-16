@@ -13,11 +13,15 @@ class TransitionalDonationsFileUploadForm(forms.ModelForm):
 
 
 class DateRangeSelector(forms.Form):
-    years = range(2015, arrow.now().date().year + 1)
+    def __init__(self, *args, **kwargs):
+        super(DateRangeSelector, self).__init__(*args, **kwargs)
+        years = range(2015, arrow.now().year + 1)
+        start_of_month = arrow.now().replace(months=-1).replace(day=1).date()
+        end_of_month = arrow.now().replace(day=1).replace(days=-1).date()
+        self.fields['start'].widget.years = years
+        self.fields['start'].initial = start_of_month
+        self.fields['end'].widget.years = years
+        self.fields['end'].initial = end_of_month
 
-    # Probably we want the last complete month to be the default ?
-    start_of_month = arrow.now().replace(months=-1).replace(day=1).date()
-    end_of_month = arrow.now().replace(day=1).replace(days=-1).date()
-
-    start = forms.DateField(widget=SelectDateWidget(years=years), label='Start date', initial=start_of_month)
-    end = forms.DateField(widget=SelectDateWidget(years=years), label='End date', initial=end_of_month)
+    start = forms.DateField(widget=SelectDateWidget(), label='Start date')
+    end = forms.DateField(widget=SelectDateWidget(), label='End date')
