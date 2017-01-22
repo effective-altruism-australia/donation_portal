@@ -19,6 +19,11 @@ from enumfields import EnumField, Enum
 class PartnerCharity(models.Model):
     name = models.TextField(unique=True)
     email = models.EmailField(help_text="Used to cc the charity on receipts")
+    website_label = models.CharField(max_length=20, help_text='Charity name to display on website')
+    website_image = models.ImageField(upload_to='thumbnails', default='thumbnails/placeholder_image.jpg',
+                                      help_text='Upload a square image for display on the website')
+    show_on_website = models.BooleanField(default=False,
+                                          help_text='Toggle to add/remove from the website donation page')
 
     def __unicode__(self):
         return self.name

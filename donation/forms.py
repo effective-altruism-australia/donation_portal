@@ -2,10 +2,9 @@ import arrow
 
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
+from django.forms.widgets import ChoiceInput
 
-from .models import TransitionalDonationsFile, Pledge
-
-from captcha.fields import ReCaptchaField
+from .models import TransitionalDonationsFile, Pledge, PartnerCharity
 
 
 class TransitionalDonationsFileUploadForm(forms.ModelForm):
@@ -27,16 +26,22 @@ class DateRangeSelector(forms.Form):
 
 class PledgeForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super(PledgeForm, self).__init__(*args, **kwargs)
+        self.fields['recipient_org'].queryset = PartnerCharity.objects.filter(
+            show_on_website=True,
+        )
+
     class Meta:
         model = Pledge
         fields = ['amount', 'first_name', 'last_name', 'email', 'subscribe_to_updates',
-                  'how_did_you_hear_about_us', 'payment_method', 'recipient_org']
+                  'how_did_you_hear_about_us', 'payment_method', 'recipient_org', 'recurring']
+
 
     class Media:
-        js = ('js/pledge.js',)
-        css = {'all': ('css/pledge.css',)}
+        js = ('js/pledge.js', 'js/process_steps.js')
+        css = {'all': ('css/pledge.css', 'css/process_steps.css')}
 
-    captcha = ReCaptchaField()
 
     # These values control the donation amount buttons shown
     donation_amounts = (('$100', 100),
@@ -47,4 +52,6 @@ class PledgeForm(forms.ModelForm):
 
     # The template will display labels for these fields
     show_labels = ['amount', 'how_did_you_hear_about_us']
+
+    partner_charities = PartnerCharity.objects.filter(show_on_website=True)
 

@@ -120,4 +120,5 @@ def pledge(request):
             return HttpResponseRedirect('/admin/donation/pledge/')
     else:
         form = PledgeForm()
-    return render(request, 'pledge.html', {'form': form})
+
+    return render(request, 'pledge_new.html', {'form': form}) # , 'org': org

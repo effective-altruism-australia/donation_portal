@@ -25,6 +25,7 @@ Django==1.8.*
 django-reversion
 gunicorn
 pdfkit
+Pillow
 psycopg2
 PyCrypto
 python-dateutil

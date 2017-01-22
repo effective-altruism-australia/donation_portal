@@ -13,6 +13,7 @@ Including another URLconf
     1. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -23,7 +24,10 @@ urlpatterns = [
     url(r'^upload_donations', upload_donations_file, name='upload-donations-file'),
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
     url(r'^download_transactions', download_transactions, name='download-transactions'),
+    # url(r'^pledge/([0-9])/$', pledge, name='pledge')
     url(r'^pledge', pledge, name='pledge')
 ]
 
 urlpatterns += staticfiles_urlpatterns()
+
+urlpatterns.append(url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}))

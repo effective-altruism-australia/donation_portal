@@ -32,8 +32,27 @@
 
 
 <body>
-
+{{ org }}
 <div class="container">
+
+    {% for i in '123' %}
+    <div class="col-md-4">
+    <div class="hovereffect">
+        <img class="img-responsive" src="https://eahub.org/sites/eahub.org/files/EA-Logo-redbg.png" alt="">
+            <div class="overlay">
+                <h2>Effect 13</h2>
+				<p>
+					<a class="info nextBtn" href="#">Donate now</a>
+				</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+
+
+
+    <br><br><br><br><br><br><br><br><br>
 
     {% bootstrap_label "How do you wish to donate?" %}
 
@@ -83,5 +102,6 @@
 
     </form>
 </div>
+
 </body>
 </html>
