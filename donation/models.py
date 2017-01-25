@@ -189,8 +189,12 @@ class Receipt(models.Model):
             pdf_receipt_location = os.path.join(settings.MEDIA_ROOT, 'receipts', 'EAA_Receipt_{0}.pdf'.format(self.pk))
             pdfkit.from_string(self.receipt_html, pdf_receipt_location)
 
+            now = arrow.now()
+            eofy_receipt_date = now.replace(day=31).replace(month=7).replace(years=+1 if now.month > 6 else 0).date()
+
             body = render_to_string('receipt_message.txt', {'pledge': self.pledge,
                                                             'bank_transaction': self.bank_transaction,
+                                                            'eofy_receipt_date': eofy_receipt_date,
                                                             })
             message = EmailMessage(
                 subject='Receipt for your donation to Effective Altruism Australia',
