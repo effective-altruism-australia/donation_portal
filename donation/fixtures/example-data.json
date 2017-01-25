@@ -102,6 +102,62 @@
   },
   "model": "donation.pledge",
   "pk": 4
+},
+{
+  "fields": {
+    "pledge": 1,
+    "reference": "111111111111",
+    "amount": "2.00",
+    "time_reconciled": null,
+    "date": "2016-03-05",
+    "bank_statement_text": "111111111111 blah blah",
+    "do_not_reconcile": false,
+    "unique_id": "aaa"
+  },
+  "model": "donation.banktransaction",
+  "pk": 1
+},
+{
+  "fields": {
+    "pledge": 2,
+    "reference": "222222222222",
+    "amount": "2.00",
+    "time_reconciled": null,
+    "date": "2016-03-05",
+    "bank_statement_text": "222222222222 brenton",
+    "do_not_reconcile": false,
+    "unique_id": "bbb"
+  },
+  "model": "donation.banktransaction",
+  "pk": 2
+},
+{
+  "fields": {
+    "pledge": 3,
+    "reference": "333333333333",
+    "amount": "4.00",
+    "time_reconciled": null,
+    "date": "2016-03-05",
+    "bank_statement_text": "333333333333 blah blah",
+    "do_not_reconcile": false,
+    "unique_id": "ccc"
+  },
+  "model": "donation.banktransaction",
+  "pk": 3
+},
+{
+  "fields": {
+    "pledge": null,
+    "reference": "",
+    "amount": "2.00",
+    "time_reconciled": null,
+    "date": "2016-03-05",
+    "bank_statement_text": "444444444445 blah blah",
+    "do_not_reconcile": false,
+    "unique_id": "ddd"
+  },
+  "model": "donation.banktransaction",
+  "pk": 4
 }
 ]
 
