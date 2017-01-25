@@ -1,4 +1,6 @@
-## Payment backend for Effective Altruism Australia.
+# Payment backend for Effective Altruism Australia
+
+## Configuration
 
 Configuration is via [salt](https://docs.saltstack.com/en/latest/) but we haven't open-sourced the salt pillar and
 states yet. We'll eventually open source these and add a setup script that makes getting a dev instance up and running automatic.
@@ -13,6 +15,10 @@ installs separately.
 3. Settings are split between https://github.com/effective-altruism-australia/donation_portal/blob/live/donation_portal/settings.py
 and https://github.com/effective-altruism-australia/donation_portal/blob/live/donation_portal/salt_settings_example.py.
 
-
 Note (if configuring via salt): On Ubuntu 14.04, I have to work around [this issue](https://github.com/saltstack/salt/issues/19532)
 in salt. The workaround is to grant rw permissions on /tmp/user/0 to the user you're installing the app for.
+
+## Example data
+
+To add some example data: `./manage.py loaddata example-data`
+

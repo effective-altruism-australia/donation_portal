@@ -1,0 +1,107 @@
+[
+{
+  "fields": {
+    "drupal_preferred_donation_method": "Donate by Bank Transfer (Preferred)",
+    "first_name": "Peter",
+    "last_name": "McIntyre",
+    "recurring_frequency": null,
+    "reference": "111111111111",
+    "subscribe_to_updates": true,
+    "payment_method": 1,
+    "ip": "0.0.0.0",
+    "share_with_tlycs": false,
+    "share_with_givewell": false,
+    "how_did_you_hear_about_us": "Friend",
+    "drupal_username": "",
+    "publish_donation": true,
+    "completed_time": "2016-03-04T09:07:00Z",
+    "drupal_uid": 4,
+    "amount": "2.00",
+    "recipient_org": 1,
+    "share_with_gwwc": false,
+    "recurring": false,
+    "email": "p@example.com"
+  },
+  "model": "donation.pledge",
+  "pk": 1
+},
+{
+  "fields": {
+    "drupal_preferred_donation_method": "Donate by Bank Transfer (Preferred)",
+    "first_name": "Brenton",
+    "last_name": "Mayer",
+    "recurring_frequency": null,
+    "reference": "222222222222",
+    "subscribe_to_updates": true,
+    "payment_method": 1,
+    "ip": "0.0.0.0",
+    "share_with_tlycs": false,
+    "share_with_givewell": false,
+    "how_did_you_hear_about_us": "",
+    "drupal_username": "",
+    "publish_donation": true,
+    "completed_time": "2016-03-07T20:38:00Z",
+    "drupal_uid": 0,
+    "amount": "2.00",
+    "recipient_org": 4,
+    "share_with_gwwc": false,
+    "recurring": false,
+    "email": "brentonmayer@example.com"
+  },
+  "model": "donation.pledge",
+  "pk": 2
+},
+{
+  "fields": {
+    "drupal_preferred_donation_method": "Donate by Bank Transfer (Preferred)",
+    "first_name": "Truman",
+    "last_name": "Biro",
+    "recurring_frequency": null,
+    "reference": "333333333333",
+    "subscribe_to_updates": false,
+    "payment_method": 1,
+    "ip": "0.0.0.0",
+    "share_with_tlycs": false,
+    "share_with_givewell": false,
+    "how_did_you_hear_about_us": "Friend",
+    "drupal_username": "",
+    "publish_donation": false,
+    "completed_time": "2016-03-08T10:17:00Z",
+    "drupal_uid": 0,
+    "amount": "2.00",
+    "recipient_org": 2,
+    "share_with_gwwc": false,
+    "recurring": false,
+    "email": "tbiro@example.com"
+  },
+  "model": "donation.pledge",
+  "pk": 3
+},
+{
+  "fields": {
+    "drupal_preferred_donation_method": "Donate by Bank Transfer (Preferred)",
+    "first_name": "Michael",
+    "last_name": "Dello",
+    "recurring_frequency": 3,
+    "reference": "444444444444",
+    "subscribe_to_updates": true,
+    "payment_method": 1,
+    "ip": "0.0.0.0",
+    "share_with_tlycs": false,
+    "share_with_givewell": false,
+    "how_did_you_hear_about_us": "",
+    "drupal_username": "",
+    "publish_donation": true,
+    "completed_time": "2016-05-15T19:47:00Z",
+    "drupal_uid": 0,
+    "amount": "2.00",
+    "recipient_org": 1,
+    "share_with_gwwc": false,
+    "recurring": true,
+    "email": "m@example.com"
+  },
+  "model": "donation.pledge",
+  "pk": 4
+}
+]
+
