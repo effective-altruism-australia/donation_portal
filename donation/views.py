@@ -1,16 +1,17 @@
 import xlsxwriter
 from datetime import datetime, date
 import os
+import arrow
 
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
+from django.db.models import Sum, Max
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector
-from .models import BankTransaction, PartnerCharity
+from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account
 
 
 @login_required()
@@ -24,6 +25,61 @@ def upload_donations_file(request):
     else:
         form = TransitionalDonationsFileUploadForm()
     return render(request, 'transitional_upload_form.html', {'form': form})
+
+
+def donation_counter(request):
+    if request.method == 'POST':
+        form = DateRangeSelector(request.POST)
+        if not form.is_valid():
+            return HttpResponseRedirect(reverse('donation-counter'))
+    else:
+        form = DateRangeSelector()
+
+    # There's gotta be a better way to do this
+    if hasattr(form, 'cleaned_data'):
+        start = form.cleaned_data['start']
+        end = form.cleaned_data['end']
+    else:
+        start = form.fields['start'].initial
+        end = form.fields['end'].initial
+
+    # Usually the accounting won't be quite up to date. Use Xero for transactions before xero_up_to_date_until_date
+    # and bank transactions for after
+    xero_reconciled_date = XeroReconciledDate.objects.all().aggregate(Max('date'))['date__max']
+
+    xero_start_date = start
+    xero_end_date = min(xero_reconciled_date, end)
+    django_start_date = max(arrow.get(xero_reconciled_date).replace(days=1).date(), start)
+    django_end_date = end
+
+    # TODO want daily data from xero. This will only give correct answers if you specify whole months during
+    # the period we take data from xero.
+    error_message = ''
+    if (xero_start_date <= xero_reconciled_date and xero_start_date.day != 1) or \
+                    arrow.get(xero_end_date).replace(days=1).date().day != 1:
+        error_message = "This currently only works for complete months when using data from xero." + \
+                        " Please set the start date to the start of a month and the end date to the end of a month."
+
+    totals = {partner.name: (Account.objects
+        .filter(date__gte=xero_start_date, date__lte=xero_end_date, name=partner.xero_account_name)
+        .aggregate(Sum('amount'))['amount__sum'] or 0) +
+                            (BankTransaction.objects
+        .filter(date__gte=django_start_date, date__lte=django_end_date, pledge__recipient_org=partner)
+        .aggregate(Sum('amount'))['amount__sum'] or 0)
+              for partner in PartnerCharity.objects.all().order_by('name')}
+
+    unknown_total = BankTransaction.objects.filter(date__gte=django_start_date, date__lte=django_end_date,
+                                                   do_not_reconcile=False, pledge__isnull=True, amount__gte=0) \
+                                    .aggregate(Sum('amount'))['amount__sum']
+    if unknown_total:
+        totals['Unknown as yet'] = unknown_total
+
+    return render(request, 'donation_counter.html', {'form': form,
+                                                     'totals': sorted(totals.iteritems()),
+                                                     'grand_total': sum(filter(None, totals.values())),
+                                                     'error_message': error_message,
+                                                     'xero_reconciled_date': xero_reconciled_date,
+                                                     })
 
 
 @login_required()
@@ -44,15 +100,16 @@ def accounting_reconciliation(request):
         end = form.fields['end'].initial
 
     totals = {partner.name: BankTransaction.objects
-                .filter(date__gte=start, date__lte=end, pledge__recipient_org=partner)
-                .aggregate(Sum('amount'))['amount__sum']
+        .filter(date__gte=start, date__lte=end, pledge__recipient_org=partner)
+        .aggregate(Sum('amount'))['amount__sum']
               for partner in PartnerCharity.objects.all().order_by('name')}
 
     # This shouldn't/can't happen but it will mess up the reconciliation so let's check.
     if BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True).exists():
         raise Exception("Error: transaction reconciled to pledge and also marked 'Do not reconcile'")
 
-    exceptions = BankTransaction.objects.filter(date__gte=start, date__lte=end).exclude(pledge__isnull=False).order_by('date')
+    exceptions = BankTransaction.objects.filter(date__gte=start, date__lte=end).exclude(pledge__isnull=False).order_by(
+        'date')
 
     return render(request, 'reconciliation.html', {'form': form,
                                                    'totals': sorted(totals.iteritems()),
@@ -96,9 +153,9 @@ def download_transactions(request):
         ])
         ws.write_row(0, 0, template.keys())
         row = 0
-        for bt_row in BankTransaction.objects.\
-                filter(date__gte=start, date__lte=end, do_not_reconcile=False).\
-                order_by('date').\
+        for bt_row in BankTransaction.objects. \
+                filter(date__gte=start, date__lte=end, do_not_reconcile=False). \
+                order_by('date'). \
                 values_list(*template.values()):
             row += 1
             ws.write_datetime(row, 0, bt_row[0], date_format)

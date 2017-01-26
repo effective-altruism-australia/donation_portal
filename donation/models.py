@@ -19,6 +19,7 @@ from enumfields import EnumField, Enum
 class PartnerCharity(models.Model):
     name = models.TextField(unique=True)
     email = models.EmailField(help_text="Used to cc the charity on receipts")
+    xero_account_name = models.TextField(help_text="Exact text of incoming donation account in xero")
 
     def __unicode__(self):
         return self.name
@@ -258,7 +259,10 @@ class Account(models.Model):
 class XeroReconciledDate(models.Model):
     # Up to and including this date, we take total donation information from xero. After this date, we use the
     # BankTransaction objects. The BankTransaction objects will be missing things like workplace giving.
-    date = models.DateTimeField()
+    date = models.DateField()
+
+    def __unicode__(self):
+        return str(self.date)
 
 
 class TransitionalDonationsFile(models.Model):

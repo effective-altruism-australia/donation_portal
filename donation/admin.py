@@ -5,7 +5,7 @@ from django.contrib import messages
 
 from reversion.admin import VersionAdmin
 
-from .models import Pledge, BankTransaction, Receipt, PartnerCharity
+from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate
 
 
 class PledgeAdmin(VersionAdmin):
@@ -81,3 +81,4 @@ admin.site.register(Pledge, PledgeAdmin)
 admin.site.register(BankTransaction, BankTransactionAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(PartnerCharity, VersionAdmin)
+admin.site.register(XeroReconciledDate)

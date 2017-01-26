@@ -15,11 +15,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from donation.views import upload_donations_file, accounting_reconciliation, download_transactions
+from donation.views import upload_donations_file, accounting_reconciliation, download_transactions, donation_counter
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^upload_donations', upload_donations_file, name='upload-donations-file'),
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
+    url(r'^secret_donation_counter', donation_counter, name='donation_counter'),
     url(r'^download_transactions', download_transactions, name='download-transactions'),
 ]
