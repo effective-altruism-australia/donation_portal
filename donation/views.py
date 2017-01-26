@@ -6,7 +6,7 @@ import arrow
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum, Max
+from django.db.models import Sum, Max, Min
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
@@ -74,11 +74,15 @@ def donation_counter(request):
     if unknown_total:
         totals['Unknown as yet'] = unknown_total
 
+    receipt_date = BankTransaction.objects.filter(do_not_reconcile=False, pledge__isnull=True, amount__gte=0) \
+                                  .aggregate(Min('date'))['date__min']
+
     return render(request, 'donation_counter.html', {'form': form,
                                                      'totals': sorted(totals.iteritems()),
                                                      'grand_total': sum(filter(None, totals.values())),
                                                      'error_message': error_message,
                                                      'xero_reconciled_date': xero_reconciled_date,
+                                                     'receipt_date': receipt_date,
                                                      })
 
 

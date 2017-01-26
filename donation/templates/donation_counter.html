@@ -19,9 +19,9 @@
     </style>
 </head>
 <body style="margin: 20px">
-<h1>
+<h2>
     Donation counter (for internal use only)
-</h1>
+</h2>
     <form action="" method="post">
         {% csrf_token %}
         <table>
@@ -32,7 +32,7 @@
 {% if error_message %}
 <div class="alert alert-warning">{{ error_message }}</div>
 {% endif %}
-    <table style="margin-top: 30px;">
+    <table style="margin-top: 20px;">
         <th>Charity</th>
         <th style="text-align: right;">Amount</th>
         {% for charity, total in totals %}
@@ -46,6 +46,14 @@
             <td><b>{{ grand_total|floatformat:'2'|intcomma }}</b></td>
         </tr>
     </table>
-<p style="margin-top: 30px;">Note: These totals exclude most workplace giving and cheque donations made after {{ xero_reconciled_date }}.</p>
+<p style="margin-top: 20px;">Note: These totals exclude most workplace giving and cheque donations made after {{ xero_reconciled_date }}.</p>
+<h2 style="margin-top: 40px;">Receipt status</h2>
+<p style="margin-top: 20px;">
+{% if receipt_date %}
+Receipts sent for all donations received before {{ receipt_date }}.
+{% else %}
+Receipts completely up to date!
+{% endif %}
+</p>
 </body>
 </html>
