@@ -121,4 +121,4 @@ def pledge(request):
     else:
         form = PledgeForm()
 
-    return render(request, 'pledge_new.html', {'form': form}) # , 'org': org
+    return render(request, 'pledge.html', {'form': form}) # , 'org': org
