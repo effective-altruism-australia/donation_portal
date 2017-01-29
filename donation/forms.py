@@ -17,7 +17,7 @@ class DateRangeSelector(forms.Form):
         last_month = kwargs.pop('last_month', False)
         super(DateRangeSelector, self).__init__(*args, **kwargs)
 
-        years = range(2015, arrow.now().year + 1)
+        years = range(2016, arrow.now().year + 1)
         if last_month:
             start_date = arrow.now().replace(months=-1).replace(day=1).date()
             end_date = arrow.now().replace(day=1).replace(days=-1).date()

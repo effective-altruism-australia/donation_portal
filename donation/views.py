@@ -132,7 +132,7 @@ def download_transactions(request):
     try:
         start = datetime.strptime(request.GET['start'], '%Y-%m-%d').date()
     except (KeyError, ValueError):
-        start = date(2015, 1, 1)
+        start = date(2016, 1, 1)
 
     try:
         end = datetime.strptime(request.GET['end'], '%Y-%m-%d').date()
