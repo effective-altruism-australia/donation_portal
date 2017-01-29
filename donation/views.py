@@ -52,13 +52,14 @@ def donation_counter(request):
     django_start_date = max(arrow.get(xero_reconciled_date).replace(days=1).date(), start)
     django_end_date = end
 
-    # TODO want daily data from xero. This will only give correct answers if you specify whole months during
-    # the period we take data from xero.
+    # This will only give correct answers if you specify whole months during the period we take data from xero.
+    # We don't do the accounting in a way that provides daily data so this is not possible to improve.
     error_message = ''
     if (xero_start_date <= xero_reconciled_date and xero_start_date.day != 1) or \
                     arrow.get(xero_end_date).replace(days=1).date().day != 1:
-        error_message = "This currently only works for complete months when using data from xero." + \
-                        " Please set the start date to the start of a month and the end date to the end of a month."
+        error_message = "You must specify complete months for this period because of the way we do the accounting" + \
+                        " in xero. Please set the start date to the start of a month and the end date to the end of" + \
+                        " a month."
 
     totals = {partner.name: (Account.objects
         .filter(date__gte=xero_start_date, date__lte=xero_end_date, name=partner.xero_account_name)

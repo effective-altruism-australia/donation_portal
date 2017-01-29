@@ -14,6 +14,7 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 from raven.contrib.django.raven_compat.models import client
 from enumfields import EnumField, Enum
+from eaaxero import import_trial_balance
 
 
 class PartnerCharity(models.Model):
@@ -263,6 +264,13 @@ class XeroReconciledDate(models.Model):
 
     def __unicode__(self):
         return str(self.date)
+
+
+@receiver(post_save, sender=XeroReconciledDate)
+def reload_xero_data(sender, instance, **kwargs):
+    # Reload up-to-date data from xero after advancing the date
+    # Do it on on user's thread not via celery for obviousness.
+    import_trial_balance()
 
 
 class TransitionalDonationsFile(models.Model):

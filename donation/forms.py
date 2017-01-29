@@ -22,7 +22,6 @@ class DateRangeSelector(forms.Form):
             start_date = arrow.now().replace(months=-1).replace(day=1).date()
             end_date = arrow.now().replace(day=1).replace(days=-1).date()
         else:
-            # TODO when was our first transaction
             start_date = arrow.Arrow(2016, 1, 1).date()
             end_date = arrow.now().date()
         self.fields['start'].widget.years = years
