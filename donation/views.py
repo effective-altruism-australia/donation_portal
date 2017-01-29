@@ -94,7 +94,7 @@ def accounting_reconciliation(request):
         if not form.is_valid():
             return HttpResponseRedirect(reverse('accounting-reconciliation'))
     else:
-        form = DateRangeSelector()
+        form = DateRangeSelector(last_month=True)
 
     # There's gotta be a better way to do this
     if hasattr(form, 'cleaned_data'):
