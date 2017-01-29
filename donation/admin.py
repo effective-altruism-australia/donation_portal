@@ -8,6 +8,42 @@ from reversion.admin import VersionAdmin
 from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate
 
 
+class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'reconciliation'
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'reconciliation'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return (
+            ('Unreconciled', 'Unreconciled'),
+            ('Reconciled', 'Reconciled'),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        if not self.value():
+            return BankTransaction.objects.all()
+        unreconciled = BankTransaction.objects.filter(pledge__isnull=True, do_not_reconcile=False)
+        if self.value() == 'Unreconciled':
+            return unreconciled
+        else:  # 'Reconciled'
+            return BankTransaction.objects.all().exclude(id__in=unreconciled.values('id'))
+
+
 class PledgeAdmin(VersionAdmin):
     search_fields = ('first_name', 'last_name', 'reference')
     readonly_fields = ('ip', 'completed_time')
@@ -34,7 +70,8 @@ class BankTransactionAdmin(VersionAdmin):
 
     search_fields = ('bank_statement_text', )
     readonly_fields = ('date', 'amount', 'bank_statement_text', 'reconciled', 'pledge')
-    inlines = (ReceiptInline,)
+    list_filter = (BankTransactionReconciliationListFilter, )
+    inlines = (ReceiptInline, )
 
     class Meta:
         model = BankTransaction
