@@ -22,9 +22,12 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
 
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/3.0.0/jquery.payment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/3.0.0/jquery.payment.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.min.js"></script>
 
 
     {{ form.media }}
@@ -52,227 +55,167 @@
             </div>
         </div>
     </div>
-
-<form method='post' action='.' class='pin'>
-{#    <form method='post' action=''>#}
-{#        {% csrf_token %}#}
-        <div class="row setup-content" id="step-1">
-            <div class="col-xs-6 col-md-offset-3">
-                <div class="col-md-12">
+    {#    <form method='post' action=''>#}
+    {#        {% csrf_token %}#}
+    <div class="row setup-content" id="step-1">
+        <div class="col-xs-6 col-md-offset-3">
+            <div class="col-md-12">
 
 
-                    <div class="row top-buffer">
-                        {% for charity in form.partner_charities %}
-                            <div class="col-md-4 col-buffer">
-                                <div class="hovereffect">
-                                    <img class="img-responsive img-charity" src={{ charity.website_image.url }} alt="">
-                                    <div class="overlay">
-                                        <h2>{{ charity.website_label }}</h2>
+                <div class="row top-buffer">
+                    {% for charity in form.partner_charities %}
+                        <div class="col-md-4 col-buffer">
+                            <div class="hovereffect">
+                                <img class="img-responsive img-charity" src={{ charity.website_image.url }} alt="">
+                                <div class="overlay">
+                                    <h2>{{ charity.website_label }}</h2>
 
-                                            <a id="id_1234" class="info nextBtn charityClick" href="#">
-                                                <param value={{ charity.id }}>Donate now
-                                                </param>
-                                            </a>
+                                    <a id="id_1234" class="info nextBtn charityClick" href="#">
+                                        <param value={{ charity.id }}>
+                                        Donate now
+                                        </param>
+                                    </a>
 
-                                    </div>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
+
         </div>
-        <div class="row setup-content" id="step-2">
-            <div class="col-xs-6 col-md-offset-3">
-                <div class="col-md-12">
+
+    </div>
+
+    <div class="row setup-content" id="step-2">
+        <div class="col-xs-6 col-md-offset-3">
+            <div class="col-md-12">
+
+                <form method='post' action='.' class='pin' , id='id_pledge_form'>
+                    {% csrf_token %}
 
 
                     <h3 align="center">How would you like to donate?</h3>
 
                     <br>
-                <div class="text-center">
-                    <div data-toggle="buttons">
-                    <div class="btn-group">
+                    <div class="text-center">
+                        <div data-toggle="buttons">
+                            <div class="btn-group">
 
-{#                        <input type="radio" name="type" id="type" value="0" class="sr-only btn-recurring" required>Donate once</label>#}
-{#                        <label class="btn btn-default btn-lg btn-recurring btn-toggle">#}
-{#                        <input type="radio" name="type" id="type" value="1" class="sr-only" required>Donate monthly</label>#}
+                                {#                        <input type="radio" name="type" id="type" value="0" class="sr-only btn-recurring" required>Donate once</label>#}
+                                {#                        <label class="btn btn-default btn-lg btn-recurring btn-toggle">#}
+                                {#                        <input type="radio" name="type" id="type" value="1" class="sr-only" required>Donate monthly</label>#}
 
-{#                        <label class="btn btn-default btn-lg btn-recurring btn-toggle" id="id_123">#}
-                        <button type="button" id="id_btn_onceoff" class="btn btn-default btn-lg btn-recurring btn-toggle">Donate once</button>
+                                {#                        <label class="btn btn-default btn-lg btn-recurring btn-toggle" id="id_123">#}
+                                <button type="button" id="id_btn_onceoff"
+                                        class="btn btn-default btn-lg btn-recurring btn-toggle">Donate once
+                                </button>
 
-                        <button type="button" id="id_btn_recurring" class="btn btn-default btn-lg btn-recurring btn-toggle">Donate monthly</button>
-                    </div></div>
-                </div>
-                <br>
-                <div class="text-center">
-                    <div class="btn-group">
-                        {% for amt_text, amt_val in form.donation_amounts %}
-                            <button type="button" class="btn btn-default btn-lg btn-toggle btn-amt" id="id_{{ amt_val }}"
-                                    value={{ amt_val }}>{{ amt_text }}</button>
-                        {% endfor %}
-                        <button type="button" class="btn btn-default btn-lg btn-toggle btn-amt" data-toggle="collapse"
-                                data-target="#id_formgroup_amount">Other
-                        </button>
-                    </div>
-                </div>
-
-                <br>
-{#                   <form action="" method="post">{% csrf_token %}#}
-
-                        {% for field in form %}
-                            <div class="form-group" id="id_formgroup_{{ field.name }}">
-                                {% if field.name in form.show_labels %}
-                                    {% bootstrap_label field.label %}
-                                {% endif %}
-                                {% bootstrap_field field layout="vertical" vertical_field_class="col-md-3" show_label=False %}
+                                <button type="button" id="id_btn_recurring"
+                                        class="btn btn-default btn-lg btn-recurring btn-toggle">Donate monthly
+                                </button>
                             </div>
-                        {% endfor %}
-
-
-
-                 {% bootstrap_label "How would you like to donate?" %}
-
-                    <p>
-                        You can donate by bank transfer, credit card, or cheque. No transaction costs are incurred by us or you with
-                        these payment methods.
-                    </p>
-
-                    <button type="button" class="btn btn-default btn-sm btn-toggle btn-pmt-method" data-toggle="collapse"
-                            data-target="id_bank_transfer" id="id_btn_bank_transfer" value="1">Bank transfer</button>
-                    <button type="button" class="btn btn-default btn-sm btn-toggle btn-pmt-method" value="2">Credit card</button>
-                    <button type="button" class="btn btn-default btn-sm btn-toggle btn-pmt-method" value="3">Cheque</button>
-
-                    <div id="id_bank_transfer">
-                        <br>Donations by bank transfer take two steps to set up.<br><br>First, you must register your intent to make a
-                        single,
-                        or recurring, transfer to our account by completing the form below. You will receive a unique code to use in the
-                        transaction.<br><br>Second, you must setup the bank transfer with your bank, using the unique code supplied.
-
-
+                        </div>
                     </div>
                     <br>
+                    <div class="text-center">
+                        <div class="btn-group">
+                            {% for amt_text, amt_val in form.donation_amounts %}
+                                <button type="button" class="btn btn-default btn-lg btn-toggle btn-amt"
+                                        id="id_{{ amt_val }}"
+                                        value={{ amt_val }}>{{ amt_text }}</button>
+                            {% endfor %}
 
-{#                    <form method='post' action='.' class='pin'>#}
-                        {% csrf_token %}
-                        <!-- your existing form -->
+                            <button type="button" class="btn btn-default btn-lg btn-toggle btn-amt"
+                                    data-toggle="collapse"
+                                    data-target="#id_formgroup_amount">Other
+                            </button>
+                        </div>
+                    </div>
+
+                    <br>
+                    {#                   <form action="" method="post">{% csrf_token %}#}
+
+                    {% for field in form %}
+                        <div class="form-group" id="id_formgroup_{{ field.name }}">
+                            {% if field.name in form.show_labels %}
+                                {% bootstrap_label field.label %}
+                            {% endif %}
+                            {% bootstrap_field field layout="vertical" vertical_field_class="col-md-3" show_label=False %}
+                        </div>
+                    {% endfor %}
 
 
-                                   <!-- CREDIT CARD FORM STARTS HERE -->
-            <div class="panel panel-default credit-card-box">
-{#                <div class="panel-heading display-table" >#}
-{#                    <div class="row display-tr" >#}
-{#                        <h3 class="panel-title display-td" >Payment Details</h3>#}
-{#                        <div class="display-td" >#}
-{#                            <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-                <div class="panel-body">
-{#                    <form role="form" id="payment-form" method="POST" action="javascript:void(0);">#}
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    <label for="couponCode">NAME ON CARD</label>
-                                    <input type="text" class="form-control" name="cardName" />
-                                </div>
-                            </div>
+
+{#                    {% bootstrap_label "How would you like to donate?" %}#}
+{##}
+{#                    <p>#}
+{#                        You can donate by bank transfer, credit card, or cheque. No transaction costs are incurred by us#}
+{#                        or you with#}
+{#                        these payment methods.#}
+{#                    </p>#}
+                <br>
+                <div class="text-center">
+                        <div class="btn-group" id="id_btns_pmt_method">
+
+                        <button type="button" class="btn btn-default btn-sm btn-toggle btn-pmt-method" value="1"
+                                id="id_btn_cc"
+                                data-toggle="collapse"
+                                data-target="#id_credit_card">Credit
+                            card
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm btn-toggle btn-pmt-method" value="2">Paypal
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm btn-toggle btn-pmt-method"
+                                data-toggle="collapse"
+                                data-target="#id_bank_transfer" id="id_btn_bank_transfer" value="3">Bank transfer
+                        </button>
                         </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    <label for="cardNumber">CARD NUMBER</label>
-                                    <div class="input-group">
-                                        <input
-                                            type="tel"
-                                            class="form-control"
-                                            name="cardNumber"
-                                            id="id_cardNumber"
-                                            placeholder="Valid Card Number"
-                                            autocomplete="cc-number"
-                                            required autofocus
-                                        />
-                                        <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-7 col-md-7">
-                                <div class="form-group">
-                                    <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
-                                    <input
-                                        type="tel"
-                                        class="form-control"
-                                        name="cardExpiry"
-                                        placeholder="MM / YY"
-                                        autocomplete="cc-exp"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div class="col-xs-5 col-md-5 pull-right">
-                                <div class="form-group">
-                                    <label for="cardCVC">CV CODE</label>
-                                    <input
-                                        type="tel"
-                                        class="form-control"
-                                        name="cardCVC"
-                                        placeholder="CVC"
-                                        autocomplete="cc-csc"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <button class="subscribe btn btn-success btn-lg btn-block" type="button">Submit</button>
-                            </div>
-                        </div>
-                        <div class="row" style="display:none;">
-                            <div class="col-xs-12">
-                                <p class="payment-errors"></p>
-                            </div>
-                        </div>
-                    </form>
                 </div>
-            </div>
-            <!-- CREDIT CARD FORM ENDS HERE -->
 
-                        <input type='submit' value='Process Payment'>
+                <div id="id_payment_options">
+                    <div class="payment_option" id="id_bank_transfer">
+                        <br>Donations by bank transfer take two steps to set up.<br><br>First, you must register your
+                        intent to make a
+                        single,
+                        or recurring, transfer to our account by completing the form below. You will receive a unique
+                        code to use in the
+                        transaction.<br><br>Second, you must setup the bank transfer with your bank, using the unique
+                        code supplied.
 
-{#                    </form>#}
+
+                    </div>
+
+                    <br><br>
+                    <div class="payment_option" id="id_credit_card">
+                    {% pin_form %}
+                    </div>
+
+                    </div>
 
                     <div class="form-actions">
-                            <button type="submit" class="btn btn-success btn-lg pull-right" value="Submit">Submit</button>
-                        </div>
-
-
-
-
-                    <button class="btn btn-primary nextBtn btn-lg pull-right" type="button">Next</button>
-                </div>
-            </div>
-        </div>
-        <div class="row setup-content" id="step-3">
-            <div class="col-xs-6 col-md-offset-3">
-                <div class="col-md-12">
-
-
-
-
-
-
-
-
-{#                    <button class="btn btn-success btn-lg pull-right" type="submit">Submit</button>#}
-                </div>
+                        <button type="submit"
+                                class="btn btn-success btn-lg pull-right subscribe"
+                                value="Submit"
+                                id="id_btn_submit">Submit
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
+    </div>
 
-{#</form>#}
+    <div class="row setup-content" id="step-3">
+        <div class="col-xs-6 col-md-offset-3">
+            <div class="col-md-12">
+
+
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 

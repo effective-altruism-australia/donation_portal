@@ -113,32 +113,33 @@ def download_transactions(request):
 
 @login_required()
 def pledge(request):
-    print(request)
+
     if request.method == 'POST':
-        # form = PledgeForm(request.POST)
-        print('blah')
-        # print(request.POST.get('card_token'))
-        transaction = PinTransaction()
-        transaction.card_token = request.POST.get('card_token')
-        transaction.ip_address = request.POST.get('ip_address')
-        transaction.amount = 1  # Amount in dollars. Define with your own business logic.
-        transaction.currency = 'AUD'  # Pin supports AUD and USD. Fees apply for currency conversion.
-        transaction.description = 'Payment for invoice #12508'  # Define with your own business logic
-        transaction.email_address = 'andrewbirdemail@gmail.com'
-        transaction.save()
-        result = transaction.process_transaction()  # Typically "Success" or an error message
-        print(transaction, transaction.succeeded, result)
-        return HttpResponseRedirect('/admin/donation/pledge/')
+        form = PledgeForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+        else:
+            return Http404
+
+        if int(request.POST.get('payment_method')) == 1:
+            transaction = PinTransaction()
+            transaction.card_token = request.POST.get('card_token')
+            transaction.ip_address = request.POST.get('ip_address')
+            transaction.amount = form.cleaned_data['amount']  # Amount in dollars. Define with your own business logic.
+            transaction.currency = 'AUD'  # Pin supports AUD and USD. Fees apply for currency conversion.
+            transaction.description = 'Payment for invoice #12508'  # Define with your own business logic
+            transaction.email_address = request.POST.get('email')
+            transaction.pledge = form.instance
+            transaction.save()
+            result = transaction.process_transaction()  # Typically "Success" or an error message
         # if transaction.succeeded:
         #     return "We got the money!"
         # else:
         #     return "No money today :( Error message: %s " % result
 
-        # if form.is_valid():
-        #     # file is saved
-        #     form.save()
-        #     return HttpResponseRedirect('/admin/donation/pledge/')
+        return HttpResponseRedirect('/admin/donation/pledge/')
+
     else:
         form = PledgeForm()
-
-    return render(request, 'pledge.html', {'form': form}) # , 'org': org
+        return render(request, 'pledge.html', {'form': form}) # , 'org': org

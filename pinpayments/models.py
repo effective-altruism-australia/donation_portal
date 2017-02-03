@@ -17,6 +17,7 @@ from .exceptions import ConfigError, PinError
 from .objects import PinEnvironment
 from .utils import get_value
 
+from donation.models import Pledge
 
 if getattr(settings, 'PIN_ENVIRONMENTS', {}) == {}:
     raise ConfigError("PIN_ENVIRONMENTS not defined.")
@@ -116,6 +117,9 @@ class PinTransaction(models.Model):
     there's no FK to your own customers table. That's for you to do
     in your own code.
     """
+
+    pledge = models.ForeignKey(Pledge, on_delete=models.CASCADE)
+
     date = models.DateTimeField(
         _('Date'), db_index=True, help_text=_(
             'Time this transaction was put in the database. '
@@ -416,6 +420,7 @@ class PinTransfer(models.Model):
         _('Complete API Response'), blank=True, null=True,
         help_text=_('The full JSON response from the Pin API')
     )
+
 
     def __str__(self):
         return "{0}".format(self.transfer_token)

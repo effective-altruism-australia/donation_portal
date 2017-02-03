@@ -33,9 +33,9 @@ class PartnerCharity(models.Model):
 
 
 class PaymentMethod(Enum):
-    BANK = 1
-    CREDIT_CARD = 2
-    CHEQUE = 3
+    CREDIT_CARD = 1
+    PAYPAL = 2
+    BANK = 3
 
 
 class RecurringFrequency(Enum):

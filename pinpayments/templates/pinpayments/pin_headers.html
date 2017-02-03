@@ -8,29 +8,35 @@
         $errors = $form.find('.errors');
 
         $form.submit(function(e) {
-            e.preventDefault();
-            $errors.hide();
+            if ($("#id_btn_cc").hasClass('btn-primary')) {
+                e.preventDefault();
+                $errors.hide();
 
-            // Disable the submit button to prevent multiple clicks
-            $submitButton.attr({disabled: true});
+                // Disable the submit button to prevent multiple clicks
+                $submitButton.attr({disabled: true});
 
-            // Fetch details required for the createToken call to Pin
-            var card = {
-                number: $('#cc-number').val(),
-                name: $('#cc-name').val(),
-                expiry_month: $('#cc-expiry-month').val(),
-                expiry_year: $('#cc-expiry-year').val(),
-                cvc: $('#cc-cvc').val(),
-                address_line1: $('#address-line1').val(),
-                address_line2: $('#address-line2').val(),
-                address_city: $('#address-city').val(),
-                address_state: $('#address-state').val(),
-                address_postcode: $('#address-postcode').val(),
-                address_country: $('#address-country').val()
-            };
+                // Convert expiry string into year and month values for Pin
+                expiry = $.payment.cardExpiryVal($('#cc-expiry').val())
+
+                // Fetch details required for the createToken call to Pin
+                var card = {
+                    number: $('#cc-number').val(),
+                    name: $('#cc-name').val(),
+                    expiry_month: expiry.month,
+                    expiry_year: expiry.year,
+                    cvc: $('#cc-cvc').val(),
+                    address_line1: $('#address-line1').val(),
+                    address_line2: $('#address-line2').val(),
+                    address_city: $('#address-city').val(),
+                    address_state: $('#address-state').val(),
+                    address_postcode: $('#address-postcode').val(),
+                    address_country: $('#address-country').val()
+                };
 
             // Request a token for the card from Pin
-            Pin.createToken(card, handlePinResponse);
+
+                Pin.createToken(card, handlePinResponse);
+            }
         });
 
         function handlePinResponse(response) {

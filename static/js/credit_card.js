@@ -1,12 +1,12 @@
 
 jQuery(function ($) {
 
-    var $form = $('#payment-form');
+    var $form = $('#id_pledge_form');
 
     /* Fancy restrictive input formatting via jQuery.payment library*/
     $('input[name=cardNumber]').payment('formatCardNumber');
     $('input[name=cardCVC]').payment('formatCardCVC');
-    $('input[name=cardExpiry').payment('formatCardExpiry');
+    $('input[name=cardExpiry]').payment('formatCardExpiry');
 
     jQuery.validator.addMethod("cardExpiry", function (value, element) {
         /* Parsing month/year uses jQuery.payment library */
@@ -39,10 +39,10 @@ jQuery(function ($) {
     });
 
     paymentFormReady = function () {
-        if ($form.find('[name=cardNumber]').hasClass("success") &&
+        if (($form.find('[name=cardNumber]').hasClass("success") &&
             $form.find('[name=cardName]').val().length > 1 &&
             $form.find('[name=cardExpiry]').hasClass("success") &&
-            $form.find('[name=cardCVC]').val().length > 1) {
+            $form.find('[name=cardCVC]').val().length > 1) || ($("#id_btn_bank_transfer").hasClass('btn-primary'))){
             return true;
         } else {
             return false;

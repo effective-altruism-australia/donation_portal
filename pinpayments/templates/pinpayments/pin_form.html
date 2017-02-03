@@ -1,118 +1,76 @@
 {% load i18n %}
-{#<fieldset id='pin_billing_address'>#}
-{#    <legend>{% trans "Billing Address" %}</legend>#}
-{##}
-{#    <p>#}
-{#    <label for='address-line1' class='required'>{% trans "Address 1" %}</label>#}
-{#    <input id='address-line1' required>#}
-{#    </p>#}
-{#    #}
-{#    <p>#}
-{#    <label for='address-line2'>{% trans "Address 2" %}</label>#}
-{#    <input id='address-line2' >#}
-{#    </p>#}
-{#    #}
-{#    <p>#}
-{#    <label for='address-city' class='required'>{% trans "City" %}</label>#}
-{#    <input id='address-city' required>#}
-{#    </p>#}
-{#    #}
-{#    <p>#}
-{#    <label for='address-state' class='required'>{% trans "State" %}</label>#}
-{#    <input id='address-state' required>#}
-{#    </p>#}
-{#    #}
-{#    <p>#}
-{#    <label for='address-postcode' class='required'>{% trans "Postcode" %}</label>#}
-{#    <input id='address-postcode' required>#}
-{#    </p>#}
-{#    #}
-{#    <p>#}
-{#    <label for='address-country' class='required'>{% trans "Country" %}</label>#}
-{#    <input id='address-country' required value='Australia'>#}
-{#    </p>#}
-{##}
-{#</fieldset>#}
 
-<fieldset id='pin_credit_card_details'>
-    <legend>{% trans "Credit Card Details" %}</legend>
-    
-    <div class='errors' style='display:none'>
-        <h3></h3>
-        <ul></ul>
-    </div>
+<div class="panel panel-default credit-card-box">
+    <fieldset id='pin_credit_card_details'>
+{#        <legend>{% trans "Credit Card Details" %}</legend>#}
 
-        <div class="form-group">
-        <label for="cardName">
-            NAME ON CARD</label>
-        <div class="input-group">
-            <input type="text" class="form-control" id="cc-name" placeholder="John Smith"
-                required autofocus />
-            <span class="input-group-addon"></span>
-        </div>
-    </div>
+        <div class="panel-body">
 
-    <div class="form-group">
-        <label for="cardNumber">
-            CARD NUMBER</label>
-        <div class="input-group">
-            <input type="text" class="form-control" id="cc-number" placeholder="Valid Card Number"
-                required autofocus />
-            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-        </div>
-    </div>
+            {#            <div class='errors' style='display:none'>#}
+            {#                <h3></h3>#}
+            {#                <ul></ul>#}
+            {#            </div>#}
 
-    <div class="row">
-        <div class="col-xs-7 col-md-7">
-            <div class="form-group">
-                <label for="expityMonth">
-                    EXPIRY DATE</label>
-                <div class="col-xs-6 col-lg-6 pl-ziro">
-                    <input type="text" class="form-control" id="cc-expiry-month" placeholder="MM" required />
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="cardName">NAME ON CARD</label>
+                        <input type="text" class="form-control cc-form" name="cardName" id="cc-name" placeholder="Full name"/>
+                    </div>
                 </div>
-                <div class="col-xs-6 col-lg-6 pl-ziro">
-                    <input type="text" class="form-control" id="cc-expiry-year" placeholder="YY" required /></div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="cardNumber">CARD NUMBER</label>
+                        <div class="input-group">
+                            <input
+                                    type="tel"
+                                    class="form-control cc-form"
+                                    name="cardNumber"
+                                    id="cc-number"
+                                    placeholder="Valid Card Number"
+                                    autocomplete="cc-number"
+                                    autofocus
+                            />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-7 col-md-7">
+                    <div class="form-group">
+                        <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span
+                                class="visible-xs-inline">EXP</span> DATE</label>
+                        <input
+                                type="tel"
+                                class="form-control cc-form"
+                                id="cc-expiry"
+                                name="cardExpiry"
+                                placeholder="MM / YY"
+                                autocomplete="cc-exp"
+                        />
+                    </div>
+                </div>
+
+                <div class="col-xs-5 col-md-5 pull-right">
+                    <div class="form-group">
+                        <label for="cardCVC">CV CODE</label>
+                        <input
+                                type="password"
+                                class="form-control cc-form"
+                                id="cc-cvc"
+                                name="cardCVC"
+                                placeholder="CVC"
+                                autocomplete="cc-csc"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-xs-5 col-md-5 pull-right">
-            <div class="form-group">
-                <label for="cvCode">
-                    CV CODE</label>
-                <input type="password" class="form-control" id="cc-cvc" placeholder="CV" required />
-            </div>
-        </div>
-    </div>
-
-
-
-
-
-
-{#    <p>#}
-{#    <label for='cc-expiry-month' class='required'>{% trans "Card Expiry" %}</label>#}
-{#    <select id='cc-expiry-month' class='expiry' required>#}
-{#        <option value='01'>{% trans "01 - January" %}</option>#}
-{#        <option value='02'>{% trans "02 - February" %}</option>#}
-{#        <option value='03'>{% trans "03 - March" %}</option>#}
-{#        <option value='04'>{% trans "04 - April" %}</option>#}
-{#        <option value='05'>{% trans "05 - May" %}</option>#}
-{#        <option value='06'>{% trans "06 - June" %}</option>#}
-{#        <option value='07'>{% trans "07 - July" %}</option>#}
-{#        <option value='08'>{% trans "08 - August" %}</option>#}
-{#        <option value='09'>{% trans "09 - September" %}</option>#}
-{#        <option value='10'>{% trans "10 - October" %}</option>#}
-{#        <option value='11'>{% trans "11 - November" %}</option>#}
-{#        <option value='12'>{% trans "12 - December" %}</option>#}
-{#    </select>#}
-{#    &nbsp;#}
-{#    <select id='cc-expiry-year' class='expiry' required>{% for year in pin_cc_years %}#}
-{#        <option value='{{ year }}'>{{ year }}</option>{% endfor %}#}
-{#    </select>#}
-{#    </p>#}
-{##}
-{#    <p>#}
-{#    <label for='cc-cvc' class='required'>{% trans "Card Security Code" %}</label>#}
-{#    <input id='cc-cvc' type='number' min='100' max='9999' placeholder='123' required> <small>{% trans "Last 3 digits on the back of your card" %}</small>#}
-{#    </p>#}
-</fieldset>
+    </fieldset>
+</div>
 

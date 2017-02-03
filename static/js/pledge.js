@@ -1,6 +1,9 @@
 /**
  * Created by andrew on 1/8/17.
  */
+
+
+
 jQuery(function ($) {
 
     // Actions to change button colours within a group when clicked
@@ -25,6 +28,7 @@ jQuery(function ($) {
     function charity_select(e) {
         $("#id_formgroup_amount").addClass('collapse');
         $("#id_bank_transfer").addClass('collapse');
+        $("#id_credit_card").addClass('collapse');
         $("#id_recipient_org").hide();
         $("#id_payment_method").hide();
         $("#id_recurring").parent().hide();
@@ -35,19 +39,24 @@ jQuery(function ($) {
 
     // Actions to trigger when the payment type buttons are selected
     function toggle_pmt_method(e) {
-
         $("#id_payment_method")[0].value = this.value;
-        console.log($("#id_payment_method")[0].value, this.value)
+        $(".payment_option").collapse('hide')
+        $(this.getAttribute('data-target')).collapse('show')
 
-        if ($("#id_btn_bank_transfer").hasClass('btn-primary')) {
-            $("#id_bank_transfer").addClass('in');
+        if ($("#id_btn_cc").hasClass('btn-primary')) {
+            $(".cc-form").prop('required',true);
         } else {
-            $("#id_bank_transfer").removeClass('in');
+            $(".cc-form").prop('required',false);
+            $("#id_pledge_form").validate({
+               ignore: ".ignore, :hidden"
+            })
         }
+
     }
 
     // Actions to trigger when pledge recurring buttons are clicked
     function toggle_recurring(e) {
+
         if ($("#id_btn_recurring").hasClass('btn-primary')) {
             $("#id_recurring")[0].checked = true;
         } else {
