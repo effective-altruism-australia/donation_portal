@@ -17,7 +17,6 @@ jQuery(function ($) {
             document.getElementById("id_amount").value = "";
         } else {
             $("#id_formgroup_amount").removeClass('in');
-            console.log(this.value)
             document.getElementById("id_amount").value = this.value;
         }
     }
@@ -29,7 +28,6 @@ jQuery(function ($) {
         $("#id_recipient_org").hide();
         $("#id_payment_method").hide();
         $("#id_recurring").parent().hide();
-        console.log(this, this.value)
         $("#id_recipient_org")[0].value = this.children[0].value;
 
     }
@@ -50,7 +48,11 @@ jQuery(function ($) {
 
     // Actions to trigger when pledge recurring buttons are clicked
     function toggle_recurring(e) {
-        $("#id_recurring")[0].checked = parseInt(this.children[0].value); // This could be done better I'm sure!
+        if ($("#id_btn_recurring").hasClass('btn-primary')) {
+            $("#id_recurring")[0].checked = true;
+        } else {
+            $("#id_recurring")[0].checked = false;
+        }
     }
 
     // Setup listeners to trigger the functions above

@@ -39,8 +39,8 @@ class PledgeForm(forms.ModelForm):
 
 
     class Media:
-        js = ('js/pledge.js', 'js/process_steps.js')
-        css = {'all': ('css/pledge.css', 'css/process_steps.css')}
+        js = ('js/pledge.js', 'js/process_steps.js', 'js/credit_card.js')
+        css = {'all': ('css/pledge.css', 'css/process_steps.css', 'css/credit_card.css')}
 
 
     # These values control the donation amount buttons shown
