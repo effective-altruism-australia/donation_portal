@@ -113,7 +113,7 @@ def download_transactions(request):
 
 @login_required()
 def pledge(request):
-
+    print(request.method)
     if request.method == 'POST':
         form = PledgeForm(request.POST)
 
@@ -122,7 +122,9 @@ def pledge(request):
         else:
             return Http404
 
+        print(1)
         if int(request.POST.get('payment_method')) == 1:
+            print(2)
             transaction = PinTransaction()
             transaction.card_token = request.POST.get('card_token')
             transaction.ip_address = request.POST.get('ip_address')
@@ -141,5 +143,6 @@ def pledge(request):
         return HttpResponseRedirect('/admin/donation/pledge/')
 
     else:
+        print('test')
         form = PledgeForm()
         return render(request, 'pledge.html', {'form': form}) # , 'org': org
