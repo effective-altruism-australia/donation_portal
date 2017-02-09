@@ -93,7 +93,12 @@ class BankTransactionAdmin(VersionAdmin):
     )
 
     def resend_receipts(self, request, queryset):
-        for bank_transaction in queryset.all():
+        bank_transactions = list(queryset.all())
+        if len(bank_transactions) > 8:
+            self.message_user(request, "Please select at most 8 transactions at once.", level=messages.WARNING)
+            return
+
+        for bank_transaction in bank_transactions:
             any_receipts_sent = False
             try:
                 bank_transaction.resend_receipt()
