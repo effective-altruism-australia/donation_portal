@@ -115,6 +115,4 @@ if ENABLE_SENTRY:
 # Date from which to start sending receipts automatically (inclusive)
 AUTOMATION_START_DATE = datetime.date(2016, 10, 19)
 
-POSTMARK_TEST_MODE = True
-
 # vim: cc=80 tw=79 ts=4 sw=4 sts=4 et sr
