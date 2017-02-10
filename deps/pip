@@ -10,6 +10,7 @@ configparser==3.5.0
 contextlib2==0.5.4
 cryptography==1.7.2
 Django==1.8.17
+django-bootstrap3==8.1.0
 django-enumfields==0.8.2
 django-paypal==0.3.6
 django-pinpayments==1.0.11
