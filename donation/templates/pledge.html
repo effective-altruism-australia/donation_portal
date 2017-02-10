@@ -93,14 +93,18 @@
                         </button>
 
                         <button type="button" id="id_btn_recurring"
-                                class="btn btn-default btn-lg btn-recurring btn-toggle">Donate monthly
+                                class="btn btn-default btn-lg btn-recurring btn-toggle"
+                                data-toggle="collapse"
+                            data-target="#id_recurring_notification">Donate monthly
                         </button>
                     </div>
+                </div>
+                <div id="id_recurring_notification">
+                    <br>Note that we only currently accept recurring donations via bank transfer.
                 </div>
             </div>
             <br>
             <div class="text-center">
-                <div class="btn-group">
                     {% for amt_text, amt_val in form.donation_amounts %}
                         <button type="button" class="btn btn-default btn-lg btn-toggle btn-amt"
                                 id="id_{{ amt_val }}"
@@ -112,8 +116,6 @@
                             data-target="#id_formgroup_amount">Other
                     </button>
                 </div>
-            </div>
-
             <br>
 
             {% for field in form %}
@@ -156,15 +158,12 @@
             <div id="id_payment_options">
                 <div class="payment_option" id="id_bank_transfer">
                     <br>Donations by bank transfer take two steps to set up.<br><br>First, you must register
-                    your
-                    intent to make a
-                    single,
-                    or recurring, transfer to our account by completing the form below. You will receive a
-                    unique
-                    code to use in the
-                    transaction.<br><br>Second, you must setup the bank transfer with your bank, using the
-                    unique
-                    code supplied.
+                    your intent to make a single,
+                    or recurring, transfer to our account by completing the form below. You will receive a unique
+                    code to use in the transaction.<br><br>Second, you must setup the bank transfer with your bank,
+                    using the unique
+                    code supplied. <br><br>
+                    For a recurring
 
                     <div class="form-actions">
                         <button type="submit"

@@ -34,6 +34,7 @@ jQuery(function ($) {
         $("#id_bank_transfer").addClass('collapse');
         $("#id_credit_card").addClass('collapse');
         $("#id_paypal").addClass('collapse');
+        $("#id_recurring_notification").addClass('collapse');
         $("#id_recipient_org").hide();
         $("#id_payment_method").hide();
         $("#id_recurring").parent().hide();
@@ -64,11 +65,17 @@ jQuery(function ($) {
 
     // Actions to trigger when pledge recurring buttons are clicked
     function toggle_recurring(e) {
-
         if ($("#id_btn_recurring").hasClass('btn-primary')) {
             $("#id_recurring")[0].checked = true;
+            $("#id_btn_cc")[0].disabled=true;
+            $("#id_btn_paypal")[0].disabled=true;
+            $("#id_btn_bank_transfer").click(); // if recurring, only bank transfer accepted currently
+
         } else {
             $("#id_recurring")[0].checked = false;
+            $("#id_btn_cc")[0].disabled=false;
+            $("#id_btn_paypal")[0].disabled=false;
+            $("#id_recurring_notification").collapse('hide');
         }
     }
 
