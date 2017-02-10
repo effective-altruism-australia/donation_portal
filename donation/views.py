@@ -8,10 +8,12 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.views.generic import View, CreateView
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
 from .models import BankTransaction, PartnerCharity
 from pinpayments.models import PinTransaction
+from paypal.standard.forms import PayPalPaymentsForm
 
 
 @login_required()
@@ -111,10 +113,10 @@ def download_transactions(request):
     return response
 
 
-@login_required()
-def pledge(request):
-    print(request.method)
-    if request.method == 'POST':
+# @login_required()
+class PledgeView(View):
+
+    def post(self, request):
         form = PledgeForm(request.POST)
 
         if form.is_valid():
@@ -122,9 +124,7 @@ def pledge(request):
         else:
             return Http404
 
-        print(1)
         if int(request.POST.get('payment_method')) == 1:
-            print(2)
             transaction = PinTransaction()
             transaction.card_token = request.POST.get('card_token')
             transaction.ip_address = request.POST.get('ip_address')
@@ -142,7 +142,36 @@ def pledge(request):
 
         return HttpResponseRedirect('/admin/donation/pledge/')
 
-    else:
-        print('test')
+    def get(self, request):
+        paypal_dict = {
+            "business": "placeholder@example.com",
+            "amount": "0",
+            "item_name": "Donation",
+            "notify_url": "https://www.example.com" + reverse('paypal-ipn'),
+            "return_url": "https://www.example.com/your-return-location/",
+            "cancel_return": "https://www.example.com/your-cancel-location/",
+        }
+        paypal_form = PayPalPaymentsForm(button_type='donate', initial=paypal_dict)
         form = PledgeForm()
-        return render(request, 'pledge.html', {'form': form}) # , 'org': org
+        return render(request, 'pledge.html', {'form': form, 'paypalform': paypal_form}) # , 'org': org
+
+
+# class Paypal(View):
+#     def get(self, request):
+#         # What you want the button to do.
+#         paypal_dict = {
+#             "business": "receiver_email@example.com",
+#             "amount": "10000000.00",
+#             "item_name": "name of the item",
+#             "invoice": "unique-invoice-id",
+#             "notify_url": "https://www.example.com" + reverse('paypal-ipn'),
+#             "return_url": "https://www.example.com/your-return-location/",
+#             "cancel_return": "https://www.example.com/your-cancel-location/",
+#             "custom": "Upgrade all users!",  # Custom command to correlate to some function later (optional)
+#         }
+#
+#         # Create the instance.
+#         paypal_form = PayPalPaymentsForm(initial=paypal_dict)
+#         context = {"form": paypal_form}
+#         return render(request, "payment.html", context)
+

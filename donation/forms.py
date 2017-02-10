@@ -1,8 +1,11 @@
 import arrow
+import pandas as pd
+import os
 
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import ChoiceInput
+from django.conf import settings
 
 from .models import TransitionalDonationsFile, Pledge, PartnerCharity
 
@@ -37,11 +40,9 @@ class PledgeForm(forms.ModelForm):
         fields = ['amount', 'first_name', 'last_name', 'email', 'subscribe_to_updates',
                   'how_did_you_hear_about_us', 'payment_method', 'recipient_org', 'recurring']
 
-
     class Media:
         js = ('js/pledge.js', 'js/process_steps.js', 'js/credit_card.js')
-        css = {'all': ('css/pledge.css', 'css/process_steps.css', 'css/credit_card.css')}
-
+        css = {'all': ('css/pledge.css', 'css/process_steps.css', 'css/credit_card.css',)}
 
     # These values control the donation amount buttons shown
     donation_amounts = (('$100', 100),
@@ -53,5 +54,4 @@ class PledgeForm(forms.ModelForm):
     # The template will display labels for these fields
     show_labels = ['amount', 'how_did_you_hear_about_us']
 
-    partner_charities = PartnerCharity.objects.filter(show_on_website=True)
-
+    charities = [x for x in pd.read_json(os.path.join(settings.STATIC_ROOT, 'charity_metadata.json')).itertuples()]

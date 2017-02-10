@@ -17,7 +17,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from donation.views import upload_donations_file, accounting_reconciliation, download_transactions, pledge
+from donation.views import upload_donations_file, accounting_reconciliation, download_transactions, PledgeView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -25,7 +25,8 @@ urlpatterns = [
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
     url(r'^download_transactions', download_transactions, name='download-transactions'),
     # url(r'^pledge/([0-9])/$', pledge, name='pledge')
-    url(r'^pledge', pledge, name='pledge')
+    url(r'^pledge', PledgeView.as_view(), name='pledge'),
+    url(r'^paypal/', include('paypal.standard.ipn.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

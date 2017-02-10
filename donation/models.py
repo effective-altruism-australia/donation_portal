@@ -4,6 +4,7 @@ import pdfkit
 import arrow
 import re
 import os
+import pandas as pd
 
 from django.db import models
 from django.template.loader import render_to_string
@@ -19,11 +20,22 @@ from enumfields import EnumField, Enum
 class PartnerCharity(models.Model):
     name = models.TextField(unique=True)
     email = models.EmailField(help_text="Used to cc the charity on receipts")
-    website_label = models.CharField(max_length=20, help_text='Charity name to display on website')
+    website_label = models.CharField(max_length=35, help_text='Charity name to display on website')
     website_image = models.ImageField(upload_to='thumbnails', default='thumbnails/placeholder_image.jpg',
                                       help_text='Upload a square image for display on the website')
     show_on_website = models.BooleanField(default=False,
                                           help_text='Toggle to add/remove from the website donation page')
+    order_on_website = models.IntegerField(default=0)
+    image_top_margin = models.IntegerField(default=0, help_text='Can be deleted once we figure out how to'
+                                           'centre the images properly')
+    website_description = models.CharField(max_length=250, blank=True)
+
+    def save(self, *args, **kwargs):
+        super(PartnerCharity, self).save(*args, **kwargs)
+        df = pd.DataFrame(list(PartnerCharity.objects.filter(
+            show_on_website=True).order_by('order_on_website').values('id', 'website_label', 'website_image',
+                                                                      'website_description', 'image_top_margin')))
+        df.to_json(os.path.join(settings.STATIC_ROOT, 'charity_metadata.json'))
 
     def __unicode__(self):
         return self.name
