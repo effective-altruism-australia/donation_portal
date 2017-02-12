@@ -4,7 +4,6 @@ import pdfkit
 import arrow
 import re
 import os
-import pandas as pd
 
 from django.db import models
 from django.template.loader import render_to_string
@@ -16,27 +15,13 @@ from django.utils import timezone
 from raven.contrib.django.raven_compat.models import client
 from enumfields import EnumField, Enum
 
+from pinpayments.models import PinTransaction as BasePinTransaction
+
 
 class PartnerCharity(models.Model):
     name = models.TextField(unique=True)
     email = models.EmailField(help_text="Used to cc the charity on receipts")
     xero_account_name = models.TextField(help_text="Exact text of incoming donation account in xero")
-    website_label = models.CharField(max_length=35, help_text='Charity name to display on website')
-    website_image = models.ImageField(upload_to='thumbnails', default='thumbnails/placeholder_image.jpg',
-                                      help_text='Upload a square image for display on the website')
-    show_on_website = models.BooleanField(default=False,
-                                          help_text='Toggle to add/remove from the website donation page')
-    order_on_website = models.IntegerField(default=0)
-    image_top_margin = models.IntegerField(default=0, help_text='Can be deleted once we figure out how to'
-                                           'centre the images properly')
-    website_description = models.CharField(max_length=250, blank=True)
-
-    def save(self, *args, **kwargs):
-        super(PartnerCharity, self).save(*args, **kwargs)
-        df = pd.DataFrame(list(PartnerCharity.objects.filter(
-            show_on_website=True).order_by('order_on_website').values('id', 'website_label', 'website_image',
-                                                                      'website_description', 'image_top_margin')))
-        df.to_json(os.path.join(settings.STATIC_ROOT, 'charity_metadata.json'))
 
     def __unicode__(self):
         return self.name
@@ -46,9 +31,10 @@ class PartnerCharity(models.Model):
 
 
 class PaymentMethod(Enum):
-    CREDIT_CARD = 1
-    PAYPAL = 2
-    BANK = 3
+    BANK = 1
+    CHEQUE = 2
+    CREDIT_CARD = 3
+    PAYPAL = 4
 
 
 class RecurringFrequency(Enum):
@@ -57,9 +43,16 @@ class RecurringFrequency(Enum):
     MONTHLY = 3
 
 
-class HowDidYouHear(Enum):
-    FRIEND = 1
-    SOCIAL_MEDIA = 2
+# Copy choices from drupal for transition
+HOW_DID_YOU_HEAR_CHOICES = ["The Life You Can Save",
+                            "News",
+                            "Advertising",
+                            "GiveWell",
+                            "From the charity (SCI, Evidence Action, GiveDirectly)",
+                            "Search engine (Google etc.)",
+                            "Friend",
+                            "Giving What We Can"
+                            ]
 
 
 class Pledge(models.Model):
@@ -68,16 +61,17 @@ class Pledge(models.Model):
     reference = models.TextField()
     recipient_org = models.ForeignKey(PartnerCharity)
     amount = models.DecimalField(decimal_places=2, max_digits=12)
-    first_name = models.CharField(max_length=100, blank=True)
-    last_name = models.CharField(max_length=100, blank=True)
+    first_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
+    last_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
     email = models.EmailField()
     subscribe_to_updates = models.BooleanField(default=False, verbose_name='Send me latest news and updates')
     payment_method = EnumField(PaymentMethod, max_length=1)
     recurring = models.BooleanField(default=False)
     recurring_frequency = EnumField(RecurringFrequency, max_length=1, blank=True, null=True)
     publish_donation = models.BooleanField(default=False)
-    how_did_you_hear_about_us = EnumField(HowDidYouHear, max_length=1, blank=True, null=True,
-                                          verbose_name='How did you hear about us?')
+    how_did_you_hear_about_us = models.TextField(blank=True, null=True,
+                                                 choices=zip(HOW_DID_YOU_HEAR_CHOICES, HOW_DID_YOU_HEAR_CHOICES),
+                                                 verbose_name='How did you hear about us?')
     share_with_givewell = models.BooleanField(default=False)
     share_with_gwwc = models.BooleanField(default=False)
     share_with_tlycs = models.BooleanField(default=False)
@@ -168,6 +162,10 @@ class BankTransaction(models.Model):
         # since we may import bank statements before pledges.
         match = re.search(r'(^|\s)[0-9a-fA-F]{12}($|\s)', self.bank_statement_text)
         self.reference = match.group(0).strip().upper() if match else ''
+
+
+class PinTransaction(BasePinTransaction):
+    pledge = models.ForeignKey(Pledge, on_delete=models.CASCADE)
 
 
 class ReceiptManager(models.Manager):

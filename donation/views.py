@@ -12,8 +12,7 @@ from django.conf import settings
 from django.views.generic import View, CreateView
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
-from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account
-from pinpayments.models import PinTransaction
+from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account, PinTransaction
 from paypal.standard.forms import PayPalPaymentsForm
 
 
