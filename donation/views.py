@@ -174,9 +174,7 @@ def download_transactions(request):
     return response
 
 
-# @login_required()
 class PledgeView(View):
-
     def post(self, request):
         form = PledgeForm(request.POST)
 

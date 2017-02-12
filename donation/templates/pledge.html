@@ -29,6 +29,8 @@
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.min.js"></script>
 
+    <script src='http://cdn.ractivejs.org/latest/ractive.min.js'></script>
+
 
     {{ form.media }}
     {% pin_header "test" %}
@@ -37,8 +39,10 @@
 
 <body>
 
-<div class="container">
+<div id="ractive_base"></div>
 
+<script id="ractive_template" type="text/ractive">
+<div class="container">
     <div class="stepwizard">
         <div class="stepwizard-row setup-panel">
             <div class="stepwizard-step">
@@ -206,5 +210,15 @@
         </div>
     </div>
 </div>
+</script>
+
+    <script>
+    var ractive = new Ractive({
+      el: '#ractive_base',
+      template: '#ractive_template',
+      data: { name: 'world' },
+      delimiters: [ '[[', ']]' ],
+    });
+  </script>
 </body>
 </html>

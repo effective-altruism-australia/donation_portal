@@ -1,5 +1,4 @@
 import arrow
-import pandas as pd
 import os
 
 from django import forms
@@ -40,9 +39,6 @@ class DateRangeSelector(forms.Form):
 class PledgeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PledgeForm, self).__init__(*args, **kwargs)
-        self.fields['recipient_org'].queryset = PartnerCharity.objects.filter(
-            show_on_website=True,
-        )
 
     class Meta:
         model = Pledge
@@ -62,5 +58,3 @@ class PledgeForm(forms.ModelForm):
 
     # The template will display labels for these fields
     show_labels = ['amount', 'how_did_you_hear_about_us']
-
-    charities = [x for x in pd.read_json(os.path.join(settings.STATIC_ROOT, 'charity_metadata.json')).itertuples()]
