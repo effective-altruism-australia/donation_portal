@@ -74,7 +74,7 @@ body {
     border-radius: 2px;
 }
 
-.charity-img {
+.charity-info .charity-img {
     display: block;
     position: relative;
     margin: auto;
@@ -92,10 +92,11 @@ body {
     margin: 0;
 }
 
-.charity-info .charity-title, .charity-info .charity-img {
-    -webkit-transition: all 0.4s ease-in-out;
-    transition: all 0.4s ease-in-out;
-}
+/* What is this transition for? */
+/*.charity-info .charity-title, .charity-info .charity-img {*/
+    /*-webkit-transition: all 0.4s ease-in-out;*/
+    /*transition: all 0.4s ease-in-out;*/
+/*}*/
 
 .charity a.charity-details {
     display: inline-block;
@@ -145,3 +146,26 @@ body {
 .error {
     color: red;
 }
+
+.selected-charity-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+    min-height: 100px;
+}
+
+.selected-charity-box .charity-img {
+    max-height: 120px;
+    max-width: 200px;
+    margin: auto;
+}
+
+.selected-charity-box p.donation-info {
+    flex-grow: 1;
+    text-align: left;
+    margin: auto auto auto 20px;
+}
+
