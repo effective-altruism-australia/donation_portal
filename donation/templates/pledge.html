@@ -238,13 +238,15 @@
 
         charity_click: function (name) {
             var id = charity_database_ids[name]
+            var selected_charity = charities.find(function(x){ return x.name==name; })
             ractive.set({
                     step: 2,
                     selected_charity_id: id,
-                    selected_charity: charities.find(function(x){ return x.name==name; })
+                    selected_charity: selected_charity
                 });
             document.getElementById('id_recipient_org').value = id;
-            document.getElementById('id_item_name').value = 'Donation to '.concat(name);
+            // For paypal
+            document.getElementById('id_item_name').value = 'Donation: '.concat(selected_charity.website_label);
             validate_cc();
             },
 
