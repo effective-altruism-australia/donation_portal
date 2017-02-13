@@ -2,6 +2,7 @@ import xlsxwriter
 from datetime import datetime, date
 import os
 import arrow
+import json
 
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render
@@ -211,7 +212,9 @@ class PledgeView(View):
         }
         paypal_form = PayPalPaymentsForm(button_type='donate', initial=paypal_dict)
         form = PledgeForm()
-        return render(request, 'pledge.html', {'form': form, 'paypalform': paypal_form}) # , 'org': org
+
+        charity_database_ids = json.dumps({x['name']: x['id'] for x in PartnerCharity.objects.all().values('name', 'id')})
+        return render(request, 'pledge.html', {'form': form, 'paypalform': paypal_form, 'charity_database_ids': charity_database_ids}) # , 'org': org
 
 
 # class Paypal(View):

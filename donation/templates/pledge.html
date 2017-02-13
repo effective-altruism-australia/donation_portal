@@ -74,7 +74,7 @@
                              src=static/[[ website_image ]] alt=""></span>
                         <h2 class="charity_title">[[ website_label ]]</h2>
                         <div class="overlay">
-                            <a class="info nextBtn charityClick" on-click='@this.charity_click(id, website_label)' href="#">
+                            <a class="info nextBtn charityClick" on-click='@this.charity_click(name, website_label)' href="#">
                                 <b>[[ website_label ]] </b> [[ website_description ]]
                             </a>
                         </div>
@@ -214,6 +214,7 @@
 </script>
 
     <script>
+    var charity_database_ids = {{ charity_database_ids|safe }};
     var ractive = new Ractive({
       el: '#ractive_base',
       template: '#ractive_template',
@@ -235,14 +236,16 @@
             if (i == 2){validate_cc()}
             },
 
-        charity_click: function (id, charity_name) {
+        // TODO don't pass both name and website_label. is confusing
+        charity_click: function (name, website_label) {
+            var id = charity_database_ids[name]
             ractive.set({
                     step: 2,
                     charity_id: id,
-                    charity_name: charity_name
+                    charity_name: website_label
                 });
             document.getElementById('id_recipient_org').value = id;
-            document.getElementById('id_item_name').value = 'Donation to '.concat(charity_name);
+            document.getElementById('id_item_name').value = 'Donation to '.concat(website_label);
             validate_cc();
             },
 
