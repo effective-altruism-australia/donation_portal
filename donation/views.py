@@ -182,6 +182,7 @@ class PledgeView(View):
         if form.is_valid():
             form.save()
         else:
+            # TODO
             return Http404
 
         if int(request.POST.get('payment_method')) == 3:

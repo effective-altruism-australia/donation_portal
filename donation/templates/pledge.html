@@ -74,7 +74,7 @@
                              src=static/[[ website_image ]] alt=""></span>
                         <h2 class="charity_title">[[ website_label ]]</h2>
                         <div class="overlay">
-                            <a class="info nextBtn charityClick" on-click='@this.charity_click(name, website_label)' href="#">
+                            <a class="info nextBtn charityClick" on-click='@this.charity_click(name)' href="#">
                                 <b>[[ website_label ]] </b> [[ website_description ]]
                             </a>
                         </div>
@@ -85,7 +85,7 @@
     </div>
 
     <div class="row setup-content [[step !== 2 ? "collapse" : ""]]" id="step-2">
-
+        <p><img class="img-charity" src="static/[[ selected_charity.website_image ]]">You have earmarked your donation for [[ selected_charity.name ]]. 100% of your donation will be granted to [[ selected_charity.name ]].</p>
         <form method='post' action='' class='pin' id='id_pledge_form'>
             {% csrf_token %}
             <h3 align="center">How would you like to donate?</h3>
@@ -222,8 +222,8 @@
               recurring: null,
               amount: null,
               pmt_method: null,
-              charity_id: null,
-              charity_name: null,
+              selected_charity_id: null,
+              selected_charity: null,
               charities: charities,
               hidden_initial: ['amount', 'payment_method', 'recipient_org', 'recurring']
             },
@@ -236,16 +236,15 @@
             if (i == 2){validate_cc()}
             },
 
-        // TODO don't pass both name and website_label. is confusing
-        charity_click: function (name, website_label) {
+        charity_click: function (name) {
             var id = charity_database_ids[name]
             ractive.set({
                     step: 2,
-                    charity_id: id,
-                    charity_name: website_label
+                    selected_charity_id: id,
+                    selected_charity: charities.find(function(x){ return x.name==name; })
                 });
             document.getElementById('id_recipient_org').value = id;
-            document.getElementById('id_item_name').value = 'Donation to '.concat(website_label);
+            document.getElementById('id_item_name').value = 'Donation to '.concat(name);
             validate_cc();
             },
 
