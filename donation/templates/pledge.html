@@ -46,43 +46,46 @@
     <div class="stepwizard">
         <div class="stepwizard-row setup-panel">
             <div class="stepwizard-step">
-                <a href="#step-1" type="button" class="btn btn-primary btn-circle">1</a>
+                <a href="#step-1" type="button" class="btn btn-primary btn-circle" disabled=[[step != 1]]>1</a>
                 <p>Charities</p>
             </div>
             <div class="stepwizard-step">
-                <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled=[[step != 2]]>2</a>
                 <p>Payment</p>
             </div>
             <div class="stepwizard-step">
-                <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled=[[step != 3]]>3</a>
                 <p>Confirmation</p>
             </div>
         </div>
     </div>
 </div>
+
 <div class="container">
+    [[#if step == 1]]
     <div class="row setup-content" id="step-1">
         <div class="charity_container">
-            {% for charity in form.charities %}
+            [[#charities:i]]
                 <div class="block" style="vertical-align: text-bottom">
                     <div class="hovereffect">
                         <span class="img_frame">
-                        <img class="img-charity" style="margin:{{ charity.image_top_margin }}px 0px"
-                             src=media/{{ charity.website_image }} alt=""></span>
-                        <h2 class="charity_title">{{ charity.website_label }}</h2>
+                        <img class="img-charity" style="margin:[[ image_top_margin ]]px 0px"
+                             src=static/[[ website_image ]] alt=""></span>
+                        <h2 class="charity_title">[[ website_label ]]</h2>
                         <div class="overlay">
-                            <a id="id_1234" class="info nextBtn charityClick" href="#">
-                                <param value={{ charity.id }}>
-                                <b>{{ charity.website_label }} </b> {{ charity.website_description }}
+                            <a id="id_1234" class="info nextBtn charityClick" on-click='step2' href="#">
+                                <param value= charity.id >
+                                <b>[[ website_label ]] </b> [[ website_description ]]
                             </a>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+            [[/charities]]
         </div>
     </div>
+    [[/if]]
 
-
+    [[#if step == 2]]
     <div class="row setup-content" id="step-2">
         <form method='post' action='' class='pin' id='id_pledge_form'>
             {% csrf_token %}
@@ -201,7 +204,9 @@
         </div>
 
     </div>
+    [[/if]]
 
+    [[#if step == 3]]
     <div class="row setup-content" id="step-3">
         <div class="col-xs-6 col-md-offset-3">
             <div class="col-md-12">
@@ -209,6 +214,7 @@
             </div>
         </div>
     </div>
+    [[/if]]
 </div>
 </script>
 
@@ -216,9 +222,12 @@
     var ractive = new Ractive({
       el: '#ractive_base',
       template: '#ractive_template',
-      data: { name: 'world' },
+      data: { step: 1,
+              charities: charities
+            },
       delimiters: [ '[[', ']]' ],
     });
-  </script>
+    ractive.on('step2', function() {alert('clicked'); })
+    </script>
 </body>
 </html>
