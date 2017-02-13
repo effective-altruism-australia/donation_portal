@@ -8,9 +8,6 @@ body {
     max-width: 900px;
     width: auto;
     text-align: center;
-    /*-webkit-box-sizing: content-box;*/
-    /*-moz-box-sizing: content-box;*/
-    /*box-sizing: content-box;*/
 }
 
 .container:before {
@@ -148,20 +145,6 @@ body {
     transform: scale(1);
     background-color: #4c8fb1;
 }
-
-/*.img-charity.givedirectly {*/
-    /*padding: 50px 0;*/
-/*}*/
-
-/*.img-charity.SCI,*/
-/*.img-charity.dewormworld {*/
-    /*padding: 10px 0;*/
-/*}*/
-
-/*.img-charity.givedirectlyGB,*/
-/*.img-charity.EAA {*/
-    /*padding: 25px 0;*/
-/*}*/
 
 .charity_container {
     margin: auto;
