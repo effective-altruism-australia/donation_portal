@@ -85,7 +85,11 @@
     </div>
 
     <div class="row setup-content [[step !== 2 ? "collapse" : ""]]" id="step-2">
-        <p><img class="img-charity" src="static/[[ selected_charity.website_image ]]">You have earmarked your donation for [[ selected_charity.name ]]. 100% of your donation will be granted to [[ selected_charity.name ]].</p>
+        [[#if selected_charity]]
+        [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
+        <p><img class="img-charity" src="static/[[ selected_charity.website_image ]]">You have earmarked your donation for [[ selected_charity.name ]].
+        100% of your donation will be granted to [[ selected_charity.name ]].</p>
+        [[/if ]]
         <form method='post' action='' class='pin' id='id_pledge_form'>
             {% csrf_token %}
             <h3 align="center">How would you like to donate?</h3>
