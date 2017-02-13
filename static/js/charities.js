@@ -27,7 +27,7 @@ charities = [
     "name":"Effective Altruism Australia",
     "image_top_margin": 20,
     "website_image":"thumbnails/logo_eaa.png",
-    "show_on_website":true,
+    "show_on_website":false,
     "website_label":"Effective Altruism Australia",
     "website_description":" will allocate 100% of your donation to whichever of the listed charities is most in need of funding at the time"
   },

@@ -67,6 +67,7 @@
     <div class="row setup-content [[step !== 1 ? "collapse" : ""]]" id="step-1">
         <div class="charity_container">
             [[#charities:i]]
+                [[#if show_on_website ]]
                 <div class="block" style="vertical-align: text-bottom">
                     <div class="hovereffect">
                         <span class="img_frame">
@@ -80,6 +81,7 @@
                         </div>
                     </div>
                 </div>
+                [[/if ]]
             [[/charities]]
         </div>
     </div>
