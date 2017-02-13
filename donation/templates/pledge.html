@@ -218,68 +218,69 @@
     <script>
     var charity_database_ids = {{ charity_database_ids|safe }};
     var ractive = new Ractive({
-      el: '#ractive_base',
-      template: '#ractive_template',
-      data: { step: 1,
-              recurring: null,
-              amount: null,
-              pmt_method: null,
-              selected_charity_id: null,
-              selected_charity: null,
-              charities: charities,
-              hidden_initial: ['amount', 'payment_method', 'recipient_org', 'recurring']
-            },
-      delimiters: [ '[[', ']]' ],
+        el: '#ractive_base',
+        template: '#ractive_template',
+        data: {
+            step: 1,
+            recurring: null,
+            amount: null,
+            pmt_method: null,
+            selected_charity_id: null,
+            selected_charity: null,
+            charities: charities,
+            hidden_initial: ['amount', 'payment_method', 'recipient_org', 'recurring']
+        },
+        delimiters: ['[[', ']]'],
 
         set_step: function (i) {
-            ractive.set({
-                    step: i
-                });
-            if (i == 2){validate_cc()}
-            },
+            ractive.set({step: i});
+            if (i == 2) {
+                validate_cc()
+            }
+        },
 
         charity_click: function (name) {
-            var id = charity_database_ids[name]
-            var selected_charity = charities.find(function(x){ return x.name==name; })
+            var id = charity_database_ids[name];
+            var selected_charity = charities.find(function (x) {
+                return x.name === name;
+            });
             ractive.set({
-                    step: 2,
-                    selected_charity_id: id,
-                    selected_charity: selected_charity
-                });
+                            step: 2,
+                            selected_charity_id: id,
+                            selected_charity: selected_charity
+                        });
             document.getElementById('id_recipient_org').value = id;
             // For paypal
             document.getElementById('id_item_name').value = 'Donation: '.concat(selected_charity.website_label);
             validate_cc();
-            },
+        },
 
 
         set_recurring: function (is_recurring) {
-            ractive.set({
-                    recurring: is_recurring
-                });
+            ractive.set({recurring: is_recurring});
             document.getElementById('id_recurring').checked = is_recurring;
-            },
+        },
 
         set_amount: function (amount) {
-            ractive.set({
-                    amount: amount
-                });
+            ractive.set({amount: amount});
 
-            if (amount == 'other'){
+            if (amount == 'other') {
                 $("#id_formgroup_amount").removeClass('collapse');
-                $('input[name=amount]').each(function (){this.value=""});
+                $('input[name=amount]').each(function () {
+                    this.value = "";
+                });
             } else {
                 $("#id_formgroup_amount").addClass('collapse');
-                $('input[name=amount]').each(function (){this.value=amount});
+                $('input[name=amount]').each(function () {
+                    this.value = amount;
+                });
             }
-            },
+        },
 
         set_pmt_method: function (pmt_method) {
-            ractive.set({
-                    pmt_method: pmt_method
-                });
+            ractive.set({pmt_method: pmt_method});
             document.getElementById('id_payment_method').value = pmt_method;
-            },
+        },
 
     });
 
