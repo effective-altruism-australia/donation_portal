@@ -33,11 +33,13 @@
 
 
     {{ form.media }}
+
     {% pin_header "test" %}
 
 </head>
 
 <body>
+
 
 <div id="ractive_base"></div>
 
@@ -46,24 +48,23 @@
     <div class="stepwizard">
         <div class="stepwizard-row setup-panel">
             <div class="stepwizard-step">
-                <a href="#step-1" type="button" class="btn btn-primary btn-circle" disabled=[[step != 1]]>1</a>
+                <a href="#step-1" type="button" class="btn btn-circle [[step === 1 ? "btn-primary" : "btn-default" ]]" on-click='@this.set_step(1)'>1</a>
                 <p>Charities</p>
             </div>
             <div class="stepwizard-step">
-                <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled=[[step != 2]]>2</a>
+                <a href="#step-2" type="button" class="btn btn-circle [[step === 2 ? "btn-primary" : "btn-default" ]]" disabled=[[step < 2]] on-click='@this.set_step(2)'>2</a>
                 <p>Payment</p>
             </div>
             <div class="stepwizard-step">
-                <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled=[[step != 3]]>3</a>
+                <a href="#step-3" type="button" class="btn btn-circle [[step === 3 ? "btn-primary" : "btn-default" ]]" disabled=[[step < 3]] on-click='@this.set_step(3)'>3</a>
                 <p>Confirmation</p>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container">
-    [[#if step == 1]]
-    <div class="row setup-content" id="step-1">
+<div class="container" >
+    <div class="row setup-content [[step !== 1 ? "collapse" : ""]]" id="step-1">
         <div class="charity_container">
             [[#charities:i]]
                 <div class="block" style="vertical-align: text-bottom">
@@ -73,8 +74,7 @@
                              src=static/[[ website_image ]] alt=""></span>
                         <h2 class="charity_title">[[ website_label ]]</h2>
                         <div class="overlay">
-                            <a id="id_1234" class="info nextBtn charityClick" on-click='step2' href="#">
-                                <param value= charity.id >
+                            <a class="info nextBtn charityClick" on-click='@this.charity_click(id, website_label)' href="#">
                                 <b>[[ website_label ]] </b> [[ website_description ]]
                             </a>
                         </div>
@@ -83,50 +83,47 @@
             [[/charities]]
         </div>
     </div>
-    [[/if]]
 
-    [[#if step == 2]]
-    <div class="row setup-content" id="step-2">
+    <div class="row setup-content [[step !== 2 ? "collapse" : ""]]" id="step-2">
+
         <form method='post' action='' class='pin' id='id_pledge_form'>
             {% csrf_token %}
             <h3 align="center">How would you like to donate?</h3>
-
             <br>
             <div class="text-center">
                 <div data-toggle="buttons">
                     <div class="btn-group">
                         <button type="button" id="id_btn_onceoff"
-                                class="btn btn-default btn-lg btn-recurring btn-toggle">Donate once
+                                class="btn btn-default btn-lg btn-recurring btn-toggle [[recurring == false ? "btn-primary" : "btn-default" ]]"
+                                on-click='@this.set_recurring(false)'>Donate once
                         </button>
 
                         <button type="button" id="id_btn_recurring"
-                                class="btn btn-default btn-lg btn-recurring btn-toggle"
-                                data-toggle="collapse"
-                            data-target="#id_recurring_notification">Donate monthly
+                                class="btn btn-default btn-lg btn-recurring btn-toggle [[recurring ? "btn-primary" : "btn-default" ]]"
+                            on-click='@this.set_recurring(true)'>Donate monthly
                         </button>
                     </div>
                 </div>
-                <div id="id_recurring_notification">
+                <div id="id_recurring_notification" class="[[recurring ? "" : "collapse" ]]">
                     <br>Note that we only currently accept recurring donations via bank transfer.
                 </div>
             </div>
             <br>
             <div class="text-center">
                     {% for amt_text, amt_val in form.donation_amounts %}
-                        <button type="button" class="btn btn-default btn-lg btn-toggle btn-amt"
+                        <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === {{ amt_val }} ? "btn-primary" : "btn-default" ]]" on-click='@this.set_amount({{ amt_val }})'
                                 id="id_{{ amt_val }}"
                                 value={{ amt_val }}>{{ amt_text }}</button>
                     {% endfor %}
 
-                    <button type="button" class="btn btn-default btn-lg btn-toggle btn-amt"
-                            data-toggle="collapse"
-                            data-target="#id_formgroup_amount">Other
+                    <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === 'other' ? "btn-primary" : "btn-default" ]]" on-click="@this.set_amount('other')"
+                            value="other">Other
                     </button>
                 </div>
             <br>
-
+            [[ value_mapping.amount ]]
             {% for field in form %}
-                <div class="form-group" id="id_formgroup_{{ field.name }}">
+                <div class="form-group [[ hidden_initial.indexOf("{{ field.name }}") === -1 ? "" : "collapse" ]]" id="id_formgroup_{{ field.name }}">
                     {% if field.name in form.show_labels %}
                         {% bootstrap_label field.label label_class="labels" %}
                     {% endif %}
@@ -139,38 +136,39 @@
                 <div class="btn-group" id="id_btns_pmt_method">
 
                     <button type="button"
-                            class="btn btn-default btn-sm btn-toggle btn-pmt-method"
-                            value="1"
+                            class="btn btn-default btn-sm btn-toggle btn-pmt-method [[pmt_method === '3' ? "btn-primary" : "btn-default" ]]"
+                            value="3"
                             id="id_btn_cc"
-                            data-toggle="collapse"
-                            data-target="#id_credit_card">Credit card
+                            on-click="@this.set_pmt_method('3')"
+                            [[recurring ? "disabled" : "" ]]
+                            >Credit card
                     </button>
                     <button type="button"
-                            class="btn btn-default btn-sm btn-toggle btn-pmt-method"
+                            class="btn btn-default btn-sm btn-toggle btn-pmt-method [[pmt_method === '4' ? "btn-primary" : "btn-default" ]]"
                             id="id_btn_paypal"
-                            value="2"
-                            data-toggle="collapse"
-                            data-target="#id_paypal">Paypal
+                            value="4"
+                            on-click="@this.set_pmt_method('4')"
+                            [[recurring ? "disabled" : "" ]]
+                            >Paypal
                     </button>
                     <button type="button"
-                            class="btn btn-default btn-sm btn-toggle btn-pmt-method"
-                            data-toggle="collapse"
-                            data-target="#id_bank_transfer"
+                            class="btn btn-default btn-sm btn-toggle btn-pmt-method [[pmt_method === '1' ? "btn-primary" : "btn-default" ]]"
                             id="id_btn_bank_transfer"
-                            value="3">Bank transfer
+                            on-click="@this.set_pmt_method('1')"
+                            value="1">Bank transfer
                     </button>
                 </div>
             </div>
 
             <div id="id_payment_options">
-                <div class="payment_option" id="id_bank_transfer">
+                <div class="payment_option [[pmt_method != '1' ? "collapse" : "" ]]" id="id_bank_transfer">
                     <br>Donations by bank transfer take two steps to set up.<br><br>First, you must register
                     your intent to make a single,
                     or recurring, transfer to our account by completing the form below. You will receive a unique
                     code to use in the transaction.<br><br>Second, you must setup the bank transfer with your bank,
                     using the unique
                     code supplied. <br><br>
-                    For a recurring
+                    For a recurring transfer, you must create the corresponding recurring transaction with your bank.
 
                     <div class="form-actions">
                         <button type="submit"
@@ -184,7 +182,7 @@
                 </div>
 
                 <br><br>
-                <div class="payment_option" id="id_credit_card">
+                <div class="payment_option [[pmt_method != '3' ? "collapse" : "" ]]" id="id_credit_card">
                     {% pin_form %}
 
                     <div class="form-actions">
@@ -199,14 +197,12 @@
             </div>
         </form>
 
-        <div align="center" id="id_paypal" class="payment_option">
+        <div align="center" id="id_paypal" class="payment_option [[pmt_method != '4' ? "collapse" : "" ]]">
             {{ paypalform.render }}
         </div>
 
     </div>
-    [[/if]]
 
-    [[#if step == 3]]
     <div class="row setup-content" id="step-3">
         <div class="col-xs-6 col-md-offset-3">
             <div class="col-md-12">
@@ -214,7 +210,6 @@
             </div>
         </div>
     </div>
-    [[/if]]
 </div>
 </script>
 
@@ -223,11 +218,66 @@
       el: '#ractive_base',
       template: '#ractive_template',
       data: { step: 1,
-              charities: charities
+              recurring: null,
+              amount: null,
+              pmt_method: null,
+              charity_id: null,
+              charity_name: null,
+              charities: charities,
+              hidden_initial: ['amount', 'payment_method', 'recipient_org', 'recurring']
             },
       delimiters: [ '[[', ']]' ],
+
+        set_step: function (i) {
+            ractive.set({
+                    step: i
+                });
+            if (i == 2){validate_cc()}
+            },
+
+        charity_click: function (id, charity_name) {
+            ractive.set({
+                    step: 2,
+                    charity_id: id,
+                    charity_name: charity_name
+                });
+            document.getElementById('id_recipient_org').value = id;
+            document.getElementById('id_item_name').value = 'Donation to '.concat(charity_name);
+            validate_cc();
+            },
+
+
+        set_recurring: function (is_recurring) {
+            ractive.set({
+                    recurring: is_recurring
+                });
+            document.getElementById('id_recurring').checked = is_recurring;
+            },
+
+        set_amount: function (amount) {
+            ractive.set({
+                    amount: amount
+                });
+
+            if (amount == 'other'){
+                $("#id_formgroup_amount").removeClass('collapse');
+                $('input[name=amount]').each(function (){this.value=""});
+            } else {
+                $("#id_formgroup_amount").addClass('collapse');
+                $('input[name=amount]').each(function (){this.value=amount});
+            }
+            },
+
+        set_pmt_method: function (pmt_method) {
+            ractive.set({
+                    pmt_method: pmt_method
+                });
+            document.getElementById('id_payment_method').value = pmt_method;
+            },
+
     });
-    ractive.on('step2', function() {alert('clicked'); })
+
+
     </script>
 </body>
 </html>

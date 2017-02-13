@@ -183,7 +183,7 @@ class PledgeView(View):
         else:
             return Http404
 
-        if int(request.POST.get('payment_method')) == 1:
+        if int(request.POST.get('payment_method')) == 3:
             transaction = PinTransaction()
             transaction.card_token = request.POST.get('card_token')
             transaction.ip_address = request.POST.get('ip_address')
@@ -194,12 +194,11 @@ class PledgeView(View):
             transaction.pledge = form.instance
             transaction.save()
             result = transaction.process_transaction()  # Typically "Success" or an error message
-        # if transaction.succeeded:
-        #     return "We got the money!"
-        # else:
-        #     return "No money today :( Error message: %s " % result
+        if transaction.succeeded:
+            return HttpResponseRedirect('/admin/donation/pledge/')
+        else:
+            return HttpResponse("No money today :( Error message: %s " % result)
 
-        return HttpResponseRedirect('/admin/donation/pledge/')
 
     def get(self, request):
         paypal_dict = {
