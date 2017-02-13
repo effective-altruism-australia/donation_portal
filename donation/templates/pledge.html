@@ -48,15 +48,15 @@
     <div class="stepwizard">
         <div class="stepwizard-row setup-panel">
             <div class="stepwizard-step">
-                <a href="#step-1" type="button" class="btn btn-circle [[step === 1 ? "btn-primary" : "btn-default" ]]" on-click='@this.set_step(1)'>1</a>
+                <a href="#" type="button" class="btn btn-circle [[step === 1 ? 'current-step' : 'completed-step' ]]" on-click="@this.set_step(1)">1</a>
                 <p>Charities</p>
             </div>
             <div class="stepwizard-step">
-                <a href="#step-2" type="button" class="btn btn-circle [[step === 2 ? "btn-primary" : "btn-default" ]]" disabled=[[step < 2]] on-click='@this.set_step(2)'>2</a>
+                <a href="#" type="button" class="btn btn-circle [[step === 2 ? 'current-step' : step > 2 ? 'completed-step' : 'disabled-step' ]]" disabled=[[step < 2]] on-click="@this.set_step(2)">2</a>
                 <p>Payment</p>
             </div>
             <div class="stepwizard-step">
-                <a href="#step-3" type="button" class="btn btn-circle [[step === 3 ? "btn-primary" : "btn-default" ]]" disabled=[[step < 3]] on-click='@this.set_step(3)'>3</a>
+                <a href="#" type="button" class="btn btn-circle [[step === 3 ? 'current-step' : 'disabled-step' ]]" disabled=[[step < 3]] on-click="@this.set_step(3)">3</a>
                 <p>Confirmation</p>
             </div>
         </div>
@@ -65,20 +65,19 @@
 
 <div class="container" >
     <div class="row setup-content [[step !== 1 ? "collapse" : ""]]" id="step-1">
-        <div class="charity_container">
+        <div class="charities-container">
             [[#charities:i]]
                 [[#if show_on_website ]]
-                <div class="block" style="vertical-align: text-bottom">
-                    <div class="hovereffect">
-                        <span class="img_frame">
-                        <img class="img-charity" style="margin:[[ image_top_margin ]]px 0px"
-                             src=static/[[ website_image ]] alt=""></span>
-                        <h2 class="charity_title">[[ website_label ]]</h2>
-                        <div class="overlay">
-                            <a class="info nextBtn charityClick" on-click='@this.charity_click(name)' href="#">
-                                <b>[[ website_label ]] </b> [[ website_description ]]
-                            </a>
-                        </div>
+                <div class="charity" style="vertical-align: text-bottom">
+                    <div class="charity-info">
+                        <img class="charity-img" style="margin-top:[[ image_top_margin ]]px;"
+                             src="static/[[ website_image ]]" alt="[[ website_label ]]">
+                        <h2 class="charity-title">[[ website_label ]]</h2>
+                    </div>
+                    <div class="hover-overlay">
+                        <a class="charity-details charityClick" on-click='@this.charity_click(website_label)' href="#">
+                            <b>[[ website_label ]] </b> [[ website_description ]]
+                        </a>
                     </div>
                 </div>
                 [[/if ]]

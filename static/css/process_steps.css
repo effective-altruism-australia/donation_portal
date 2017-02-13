@@ -1,9 +1,21 @@
 body {
     margin-top:40px;
 }
-.stepwizard-step p {
-    margin-top: 10px;
+
+.stepwizard {
+    display: inline-table;
+    width: 80%;
+    position: relative;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    margin: 12px 0;
 }
+
+.stepwizard-step p {
+    margin: 10px 0 0 0;
+}
+
 .stepwizard-row {
     display: table-row;
     -webkit-box-sizing: content-box;
@@ -15,14 +27,7 @@ body {
     text-align: center;
 }
 
-.stepwizard {
-    display: inline-table;
-    width: 80%;
-    position: relative;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-}
+
 .stepwizard-step button[disabled] {
     opacity: 1 !important;
     filter: alpha(opacity=100) !important;
@@ -51,10 +56,28 @@ body {
     height: 30px;
     text-align: center;
     padding: 5px 5px;
-    font-size: 12px;
-    line-height: 1.428571429;
-    background-color: #B0B0B2;
-    color: #fff;
-    text-decoration: none;
+    font-size: 16px;
+    line-height: 18px;
     border-radius: 50%;
+}
+
+.current-step, .current-step:hover, .current-step:focus {
+    /* Blue400 https://material.io/guidelines/style/color.html#color-color-palette */
+    /*background: #90CAF9 none;*/
+    background: #4c8fb1 none;
+    color: rgba(0,0,0,0.54);
+}
+.completed-step {
+    /* Blue50 https://material.io/guidelines/style/color.html#color-color-palette */
+    background: #E3F2FD none;
+    color: rgba(0,0,0,0.54);
+}
+.disabled-step {
+    /* Grey200 https://material.io/guidelines/style/color.html#color-color-palette */
+    background: #EEEEEE none;
+    color: rgba(0,0,0,0.54)
+}
+
+.btn-circle[disabled] {
+    opacity: 1;
 }
