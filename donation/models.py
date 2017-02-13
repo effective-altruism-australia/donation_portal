@@ -64,12 +64,12 @@ class Pledge(models.Model):
     first_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
     last_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
     email = models.EmailField()
-    subscribe_to_updates = models.BooleanField(default=False, verbose_name='Send me latest news and updates')
+    subscribe_to_updates = models.BooleanField(default=False, verbose_name='Send me news and updates')
     payment_method = EnumField(PaymentMethod, max_length=1)
     recurring = models.BooleanField(default=False)
     recurring_frequency = EnumField(RecurringFrequency, max_length=1, blank=True, null=True)
     publish_donation = models.BooleanField(default=False)
-    how_did_you_hear_about_us = models.TextField(blank=True, null=True,
+    how_did_you_hear_about_us = models.CharField(max_length=256, blank=True, null=True,
                                                  choices=zip(HOW_DID_YOU_HEAR_CHOICES, HOW_DID_YOU_HEAR_CHOICES),
                                                  verbose_name='How did you hear about us?')
     share_with_givewell = models.BooleanField(default=False)
