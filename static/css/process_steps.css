@@ -69,7 +69,8 @@ body {
 }
 .completed-step {
     /* Blue50 https://material.io/guidelines/style/color.html#color-color-palette */
-    background: #E3F2FD none;
+    /*background: #E3F2FD none;*/
+    background: #a5c7d8 none;
     color: rgba(0,0,0,0.54);
 }
 .disabled-step {

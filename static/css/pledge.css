@@ -169,3 +169,25 @@ body {
     margin: auto auto auto 20px;
 }
 
+/* Monochromatic colors of our base color*/
+/* #4c8fb1, #44819f, #3d728d */
+/* Dark tint: #2d556a */
+
+/* Override bootstrap colors */
+.btn-primary,.btn-primary:focus,.btn-primary.focus,.btn-primary:active,.btn-primary.active,.open>.dropdown-toggle.btn-primary {
+    color: #fff;
+    background-color: #4c8fb1;
+    border-color: #44819f;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #3d728d;
+    border-color: #2d556a
+}
+
+/* These are all disabled states */
+.btn-primary.disabled,.btn-primary[disabled],fieldset[disabled] .btn-primary,.btn-primary.disabled:hover,.btn-primary[disabled]:hover,fieldset[disabled] .btn-primary:hover,.btn-primary.disabled:focus,.btn-primary[disabled]:focus,fieldset[disabled] .btn-primary:focus,.btn-primary.disabled.focus,.btn-primary[disabled].focus,fieldset[disabled] .btn-primary.focus,.btn-primary.disabled:active,.btn-primary[disabled]:active,fieldset[disabled] .btn-primary:active,.btn-primary.disabled.active,.btn-primary[disabled].active,fieldset[disabled] .btn-primary.active {
+    background-color: #4c8fb1;
+    border-color: #3c728d;
+}
