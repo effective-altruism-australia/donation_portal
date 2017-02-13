@@ -180,3 +180,7 @@ body {
     vertical-align: middle;
     height: 100%;
 }
+
+.error {
+    color: red;
+}
