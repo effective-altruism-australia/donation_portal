@@ -98,25 +98,25 @@
         [[/if ]]
         <form method='post' action='' class='pin' id='id_pledge_form'>
             {% csrf_token %}
-            <h3 align="center">How would you like to donate?</h3>
-            <br>
-            <div class="text-center">
+            <h1>How would you like to donate?</h1>
+            <div class="donation-type-section">
                 <div data-toggle="buttons">
                     <div class="btn-group">
-                        <button type="button" id="id_btn_onceoff"
+                        <button type="button"
                                 class="btn btn-default btn-lg btn-recurring btn-toggle [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
-                                on-click='@this.set_recurring(false)'>Donate once
+                                on-click='@this.set_recurring(false)'>One-Time
                         </button>
 
-                        <button type="button" id="id_btn_recurring"
+                        <button type="button"
                                 class="btn btn-default btn-lg btn-recurring btn-toggle [[recurring ? 'btn-primary' : 'btn-default' ]]"
-                            on-click='@this.set_recurring(true)'>Donate monthly
+                            on-click='@this.set_recurring(true)'>Monthly
                         </button>
                     </div>
                 </div>
-                <div id="id_recurring_notification" class="[[recurring ? '' : 'collapse' ]]">
-                    <br>Note that we only currently accept recurring donations via bank transfer.
-                </div>
+                <p id="id_recurring_notification" class="[[recurring ? '' : 'collapse' ]]">
+                    We currently only accept monthly donations via bank transfer.
+                </p>
+            </div>
             </div>
             <br>
             <div class="text-center">

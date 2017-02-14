@@ -169,6 +169,14 @@ body {
     margin: auto auto auto 20px;
 }
 
+#id_pledge_form h1 {
+    font-size: 28px;
+}
+
+#id_pledge_form #id_recurring_notification {
+    margin: 5px 0;
+}
+
 /* Monochromatic colors of our base color*/
 /* #4c8fb1, #44819f, #3d728d */
 /* Dark tint: #2d556a */
@@ -191,3 +199,4 @@ body {
     background-color: #4c8fb1;
     border-color: #3c728d;
 }
+
