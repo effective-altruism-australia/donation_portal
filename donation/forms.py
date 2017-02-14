@@ -37,8 +37,6 @@ class DateRangeSelector(forms.Form):
 
 
 class PledgeForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(PledgeForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Pledge
@@ -51,11 +49,8 @@ class PledgeForm(forms.ModelForm):
         css = {'all': ('css/pledge.css', 'css/process_steps.css', 'css/credit_card.css')}
 
     # These values control the donation amount buttons shown
-    donation_amounts = (('$100', 100),
-                        ('$250', 250),
-                        ('$500', 500),
-                        ('$1000', 1000),
-                        )
+    donation_amounts_raw = (25, 50, 100, 250)
+    donation_amounts = [('$' + str(x), x) for x in donation_amounts_raw]
 
     # The template will display labels for these fields
     show_labels = ['amount', 'how_did_you_hear_about_us']
