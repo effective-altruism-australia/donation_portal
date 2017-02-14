@@ -12,8 +12,8 @@ validate_cc = function () {
             return this.optional(element) || /(0[1-9]|1[0-2]) \/ [0-9]{2}/.test(value);
         }, "Invalid expiration date.");
 
-        jQuery.validator.addMethod("AMEX", function (value, element) {
-            return this.optional(element) || /^3[47][0-9]{13}$/.test(value);
+        jQuery.validator.addMethod("notAMEX", function (value, element) {
+            return this.optional(element) || ! /^3[47]/.test(value);
         }, "Sorry, we do not currently accept American Express");
 
         validator = $form.validate({
@@ -21,7 +21,7 @@ validate_cc = function () {
                 cardNumber: {
                     required: true,
                     creditcard: true,
-                    AMEX: true
+                    notAMEX: true
                 },
                 cardExpiry: {
                     required: true,
