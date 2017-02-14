@@ -4,6 +4,7 @@ import pdfkit
 import arrow
 import re
 import os
+import json
 
 from django.db import models
 from django.template.loader import render_to_string
@@ -28,6 +29,18 @@ class PartnerCharity(models.Model):
 
     class Meta:
         verbose_name_plural = "Partner charities"
+
+    @classmethod
+    def cache_database_ids(cls):
+        cls.cached_database_ids = json.dumps({x['name']: x['id'] for x in cls.objects.all().values('name', 'id')})
+
+
+PartnerCharity.cache_database_ids()
+
+
+@receiver(post_save, sender=PartnerCharity)
+def refresh_cached_database_ids(sender, instance, **kwargs):
+    PartnerCharity.cache_database_ids()
 
 
 class PaymentMethod(Enum):
