@@ -15,15 +15,6 @@ body {
     box-sizing: content-box;
 }
 
-.btn-recurring {
-    padding: 15px 80px;
-    font-size: 24px;
-}
-
-.btn-amt .btn-pmt-method {
-    padding: 10px 30px;
-}
-
 .col-buffer {
     margin-bottom: 25px
 }
@@ -204,6 +195,36 @@ body {
 
 .donation-amount-section {
     margin: 12px 0 24px 0;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.donation-amount-section .btn {
+    margin: 0 4px 0 0;
+}
+
+.donation-amount-section span.section-label {
+    margin: 0 8px 0 0;
+}
+
+/* Small screens */
+@media all and (max-width: 500px) {
+    .donation-amount-section {
+        justify-content: flex-start;
+    }
+
+    .donation-amount-section .btn {
+        margin: 0 4px 4px 0;
+    }
+}
+
+#form_donation_amount {
+    margin: 0;
+    max-width: 200px;
 }
 
 #id_bank_transfer {

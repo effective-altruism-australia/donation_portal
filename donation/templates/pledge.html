@@ -108,7 +108,6 @@
     [[/if]]
 
     <div class="row setup-content [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
-
         [[#if selected_charity]]
         [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
         <div class="selected-charity-box">
@@ -138,12 +137,12 @@
                 <div data-toggle="buttons">
                     <div class="btn-group">
                         <button type="button"
-                                class="btn btn-default btn-lg btn-recurring btn-toggle [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
+                                class="btn btn-default btn-lg [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
                                 on-click='@this.set_recurring(false)'>One-Time
                         </button>
 
                         <button type="button"
-                                class="btn btn-default btn-lg btn-recurring btn-toggle [[recurring ? 'btn-primary' : 'btn-default' ]]"
+                                class="btn btn-default btn-lg [[recurring ? 'btn-primary' : 'btn-default' ]]"
                             on-click='@this.set_recurring(true)'>Monthly
                         </button>
                     </div>
@@ -154,15 +153,30 @@
             </div>
 
             <div class="donation-amount-section">
+                <span class="section-label">
+                    Amount:
+                </span>
                 {% for amt_text, amt_val in form.donation_amounts %}
-                    <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === {{ amt_val }} ? 'btn-primary' : 'btn-default' ]]" on-click='@this.set_amount({{ amt_val }})'
+                    <button type="button"
+                            class="btn [[donation_amount === {{ amt_val }} ? 'btn-primary' : 'btn-default' ]]"
+                            on-click='@this.set_donation_amount({{ amt_val }})'
                             id="id_{{ amt_val }}"
                             value={{ amt_val }}>{{ amt_text }}</button>
                 {% endfor %}
 
-                <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === 'other' ? 'btn-primary' : 'btn-default' ]]" on-click="@this.set_amount('other')"
+                <button type="button"
+                        class="btn [[is_custom_amount ? 'btn-primary' : 'btn-default' ]]"
+                        on-click="@this.show_other_donation_amount()"
                         value="other">Other
                 </button>
+                <div class="form-group [[ is_custom_amount ? '' : 'collapse' ]]" id="form_donation_amount">
+                    <label class="sr-only control-label" for="id_amount">Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input class="form-control" type="number" id="id_amount" step="1" name="amount" placeholder="Amount" title="" value="[[ donation_amount ]]">
+                        <span class="input-group-addon">.00</span>
+                    </div>
+                </div>
             </div>
 
             <div class="panel panel-default form-container donor-details-section">
@@ -193,7 +207,7 @@
 
             <div class="payment-section">
                     <button type="button"
-                            class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
+                            class="btn btn-default btn-pmt-method [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
                             value="3"
                             id="id_btn_cc"
                             on-click="@this.set_pmt_method('3')"
@@ -201,7 +215,7 @@
                             >Credit card
                     </button>
 {#                    <button type="button"#}
-{#                            class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"#}
+{#                            class="btn btn-default btn-pmt-method [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"#}
 {#                            id="id_btn_paypal"#}
 {#                            value="4"#}
 {#                            on-click="@this.set_pmt_method('4')"#}
@@ -209,7 +223,7 @@
 {#                            >Paypal#}
 {#                    </button>#}
                     <button type="button"
-                            class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
+                            class="btn btn-default btn-pmt-method [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
                             id="id_btn_bank_transfer"
                             on-click="@this.set_pmt_method('1')"
                             value="1">Bank transfer
@@ -267,7 +281,8 @@
         data: {
             step: 1,
             recurring: null,
-            amount: null,
+            donation_amount: null,
+            is_custom_amount: false,
             pmt_method: null,
             selected_charity_id: null,
             selected_charity: null,
@@ -305,26 +320,24 @@
             document.getElementById('id_recurring').checked = is_recurring;
         },
 
-        set_amount: function (amount) {
-            ractive.set({amount: amount});
+        set_donation_amount: function (amount) {
+            this.hide_other_donation_amount();
+            ractive.set({donation_amount: amount});
+        },
 
-            if (amount == 'other') {
-                $("#id_formgroup_amount").removeClass('collapse');
-                $('input[name=amount]').each(function () {
-                    this.value = "";
-                });
-            } else {
-                $("#id_formgroup_amount").addClass('collapse');
-                $('input[name=amount]').each(function () {
-                    this.value = amount;
-                });
-            }
+        show_other_donation_amount: function () {
+            ractive.set({donation_amount: ""});
+            ractive.set({is_custom_amount: true});
+        },
+
+        hide_other_donation_amount: function () {
+            ractive.set({is_custom_amount: false});
         },
 
         set_pmt_method: function (pmt_method) {
             ractive.set({pmt_method: pmt_method});
             document.getElementById('id_payment_method').value = pmt_method;
-        },
+        }
 
     });
 
