@@ -40,9 +40,11 @@ class PledgeForm(forms.ModelForm):
 
     class Meta:
         model = Pledge
-        fields = ['amount', 'first_name', 'last_name', 'email', 'subscribe_to_updates',
-                  'how_did_you_hear_about_us', 'payment_method', 'recipient_org', 'recurring']
-
+        fields = ['amount', 'first_name', 'email', 'how_did_you_hear_about_us', 'subscribe_to_updates',
+                  'payment_method', 'recipient_org', 'recurring']
+        widgets = {
+            'how_did_you_hear_about_us': forms.widgets.TextInput(),
+        }
 
     class Media:
         js = ('js/credit_card.js', 'js/charities.js')
