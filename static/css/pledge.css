@@ -182,8 +182,15 @@ body {
 }
 
 .donor-details-section {
+}
+
+.details-section {
     text-align: left;
     margin: 24px 0;
+}
+
+.details-section .long-control-label {
+    padding-top: 0;
 }
 
 .donation-amount-section {

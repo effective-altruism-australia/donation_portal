@@ -178,26 +178,32 @@
                 </div>
             </div>
 
-            <div class="panel panel-default form-container donor-details-section">
-                <div class="panel-body">
+            <div class="panel panel-default form-container details-section donor-details-section">
+                <div class="panel-body form-horizontal">
                     <legend>Donor Details</legend>
                     <div class="form-group" id="form_first_name">
-                        <label class="control-label" for="id_first_name">Name</label>
-                        <input class="form-control" type="text" id="id_first_name" maxlength="1024" name="first_name" placeholder="Name" title="" value="">
+                        <label class="control-label col-xs-3" for="id_first_name">Name</label>
+                        <div class="col-xs-9">
+                            <input class="form-control" type="text" id="id_first_name" maxlength="1024" name="first_name" placeholder="Name" title="" value="">
+                        </div>
                     </div>
 
                     <div class="form-group" id="form_email">
-                        <label class="control-label" for="id_email">Email</label>
-                        <input class="form-control" type="email" id="id_email" maxlength="254" name="email" placeholder="Email" required="" title="" value="" aria-required="true">
+                        <label class="control-label col-xs-3" for="id_email">Email</label>
+                        <div class="col-xs-9">
+                            <input class="form-control" type="email" id="id_email" maxlength="254" name="email" placeholder="Email" required="" title="" value="" aria-required="true">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label" for="id_how_did_you_hear_about_us">How did you hear about us?</label>
-                        <input class="form-control" type="text" id="id_how_did_you_hear_about_us" name="how_did_you_hear_about_us" placeholder="How did you hear about us?" title="" value="">
+                        <label class="control-label col-xs-3 long-control-label" for="id_how_did_you_hear_about_us">How did you hear about us?</label>
+                        <div class="col-xs-9">
+                            <input class="form-control" type="text" id="id_how_did_you_hear_about_us" name="how_did_you_hear_about_us" placeholder="e.g. friends, family, Google, advertisements" title="" value="">
+                        </div>
                     </div>
 
                     <div class="form-group" id="id_formgroup_subscribe_to_updates">
-                        <div class="checkbox">
+                        <div class="checkbox col-xs-offset-3">
                             <label for="id_subscribe_to_updates"><input type="checkbox" id="id_subscribe_to_updates" name="subscribe_to_updates" value="on"> Send me news and updates</label>
                         </div>
                     </div>
