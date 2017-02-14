@@ -55,4 +55,4 @@ class PledgeForm(forms.ModelForm):
     donation_amounts = [('$' + str(x), x) for x in donation_amounts_raw]
 
     # The template will display labels for these fields
-    show_labels = ['amount', 'how_did_you_hear_about_us']
+    hide_labels = ['subscribe_to_updates', ]
