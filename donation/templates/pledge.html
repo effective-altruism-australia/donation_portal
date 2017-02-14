@@ -152,6 +152,14 @@
                             [[recurring ? "disabled" : "" ]]
                             >Credit card
                     </button>
+{#                    <button type="button"#}
+{#                            class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"#}
+{#                            id="id_btn_paypal"#}
+{#                            value="4"#}
+{#                            on-click="@this.set_pmt_method('4')"#}
+{#                            [[recurring ? "disabled" : "" ]]#}
+{#                            >Paypal#}
+{#                    </button>#}
                     <button type="button"
                             class="btn btn-default btn-sm btn-toggle btn-pmt-method [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"
                             id="id_btn_paypal"
