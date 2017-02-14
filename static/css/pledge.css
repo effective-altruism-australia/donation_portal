@@ -1,4 +1,3 @@
-
 body {
     margin: 20px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -160,25 +159,41 @@ body {
 .selected-charity-box .charity-img {
     max-height: 120px;
     max-width: 200px;
-    margin: auto;
+    margin: 0;
 }
 
 .selected-charity-box p.donation-info {
-    flex-grow: 1;
-}
-
-.labels {
-    alignment: left;
     text-align: left;
-    margin: auto auto auto 5px;
+    margin: 0 0 0 12px;
 }
 
+#id_pledge_form {
+    width: 80%;
+    margin: auto;
+}
 #id_pledge_form h1 {
     font-size: 28px;
 }
 
 #id_pledge_form #id_recurring_notification {
     margin: 5px 0;
+}
+
+.donor-details-section {
+    text-align: left;
+    margin: 24px 0;
+}
+
+.donation-amount-section {
+    margin: 12px 0 24px 0;
+}
+
+#id_bank_transfer {
+    text-align: left;
+}
+
+.payment_options_section {
+    margin: 24px 0;
 }
 
 /* Monochromatic colors of our base color*/

@@ -50,7 +50,7 @@
 
 <div id="ractive_base"></div>
 
-<script id="ractive_template" type="text/ractive">
+<script id="ractive_template" type="text/html">
 <div class="container">
     <div class="stepwizard">
         <div class="stepwizard-row setup-panel">
@@ -140,34 +140,34 @@
                     We currently only accept monthly donations via bank transfer.
                 </p>
             </div>
-            <br>
-            <div class="text-center">
-                    {% for amt_text, amt_val in form.donation_amounts %}
-                        <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === {{ amt_val }} ? 'btn-primary' : 'btn-default' ]]" on-click='@this.set_amount({{ amt_val }})'
-                                id="id_{{ amt_val }}"
-                                value={{ amt_val }}>{{ amt_text }}</button>
-                    {% endfor %}
 
-                    <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === 'other' ? 'btn-primary' : 'btn-default' ]]" on-click="@this.set_amount('other')"
-                            value="other">Other
-                    </button>
-                </div>
-            <br>
-            <div class="panel panel-default credit-card-box">
-            <div class="panel-body">
-            {% for field in form %}
-                <div class="form-group [[ hidden_initial.indexOf("{{ field.name }}") === -1 ? "" : "collapse" ]]" id="id_formgroup_{{ field.name }}">
-                    {% if field.name not in form.hide_labels %}
-                        {% bootstrap_label field.label label_class="labels" %}
-                    {% endif %}
-                    {% bootstrap_field field layout="vertical" vertical_field_class="col-md-3" show_label=False %}
-                </div>
-            {% endfor %}
-            </div>
+            <div class="donation-amount-section">
+                {% for amt_text, amt_val in form.donation_amounts %}
+                    <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === {{ amt_val }} ? 'btn-primary' : 'btn-default' ]]" on-click='@this.set_amount({{ amt_val }})'
+                            id="id_{{ amt_val }}"
+                            value={{ amt_val }}>{{ amt_text }}</button>
+                {% endfor %}
+
+                <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === 'other' ? 'btn-primary' : 'btn-default' ]]" on-click="@this.set_amount('other')"
+                        value="other">Other
+                </button>
             </div>
 
-            <br>
-            <div class="text-center">
+            <div class="panel panel-default form-container donor-details-section">
+                <div class="panel-body">
+                <legend>Donor Details</legend>
+                {% for field in form %}
+                    <div class="form-group [[ hidden_initial.indexOf('{{ field.name }}') === -1 ? '' : 'collapse' ]]" id="id_formgroup_{{ field.name }}">
+                        {% if field.name not in form.hide_labels %}
+                            {% bootstrap_label field.label label_class="labels" %}
+                        {% endif %}
+                        {% bootstrap_field field layout="vertical" vertical_field_class="col-md-3" show_label=False %}
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+
+            <div class="payment-section">
                     <button type="button"
                             class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
                             value="3"
@@ -192,7 +192,7 @@
                     </button>
             </div>
 
-            <div id="id_payment_options">
+            <div class="payment_options_section" id="id_payment_options">
                 <div class="payment_option [[pmt_method != '1' ? 'collapse' : '' ]]" id="id_bank_transfer">
                     <p>After you submit this form, we will give you our account details and a unique reference number.</p>
                     [[#if recurring]]
@@ -201,38 +201,24 @@
                     [[else]]
                     <p>You then need to log in to your bank and make a bank transfer using these details.</p>
                     [[/if recurring]]
-
-                    <div class="form-actions">
-                        <button type="submit"
-                                class="btn btn-success btn-lg pull-right subscribe"
-                                value="Submit"
-                                id="id_btn_submit">Submit
-                        </button>
-                    </div>
-
-
                 </div>
 
-                <br><br>
                 <div class="payment_option [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
                     {% pin_form %}
-
-                    <div class="form-actions">
-                        <button type="submit"
-                                class="btn btn-success btn-lg pull-right subscribe"
-                                value="Submit"
-                                id="id_btn_submit">Submit
-                        </button>
-                    </div>
                 </div>
 
+                <div class="form-actions">
+                    <button type="submit"
+                            class="btn btn-success btn-lg pull-right subscribe"
+                            value="Submit">Submit
+                    </button>
+                </div>
             </div>
         </form>
 
         <div align="center" id="id_paypal" class="payment_option [[pmt_method != '4' ? 'collapse' : '' ]]">
             {{ paypal_form.render }}
         </div>
-
     </div>
 
     <div class="row setup-content" id="step-3">
