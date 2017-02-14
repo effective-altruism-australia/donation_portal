@@ -137,22 +137,23 @@
                     </button>
                 </div>
             <br>
-            [[ value_mapping.amount ]]
+            <div class="panel panel-default credit-card-box">
+            <div class="panel-body">
             {% for field in form %}
-                <div class="form-group [[ hidden_initial.indexOf('{{ field.name }}') === -1 ? '' : 'collapse' ]]" id="id_formgroup_{{ field.name }}">
-                    {% if field.name in form.show_labels %}
+                <div class="form-group [[ hidden_initial.indexOf("{{ field.name }}") === -1 ? "" : "collapse" ]]" id="id_formgroup_{{ field.name }}">
+                    {% if field.name not in form.hide_labels %}
                         {% bootstrap_label field.label label_class="labels" %}
                     {% endif %}
                     {% bootstrap_field field layout="vertical" vertical_field_class="col-md-3" show_label=False %}
                 </div>
             {% endfor %}
+            </div>
+            </div>
 
             <br>
             <div class="text-center">
-                <div class="btn-group" id="id_btns_pmt_method">
-
                     <button type="button"
-                            class="btn btn-default btn-sm btn-toggle btn-pmt-method [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
+                            class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
                             value="3"
                             id="id_btn_cc"
                             on-click="@this.set_pmt_method('3')"
@@ -168,20 +169,11 @@
 {#                            >Paypal#}
 {#                    </button>#}
                     <button type="button"
-                            class="btn btn-default btn-sm btn-toggle btn-pmt-method [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"
-                            id="id_btn_paypal"
-                            value="4"
-                            on-click="@this.set_pmt_method('4')"
-                            [[recurring ? "disabled" : "" ]]
-                            >Paypal
-                    </button>
-                    <button type="button"
-                            class="btn btn-default btn-sm btn-toggle btn-pmt-method [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
+                            class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
                             id="id_btn_bank_transfer"
                             on-click="@this.set_pmt_method('1')"
                             value="1">Bank transfer
                     </button>
-                </div>
             </div>
 
             <div id="id_payment_options">

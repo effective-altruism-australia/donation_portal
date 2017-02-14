@@ -21,7 +21,7 @@ body {
     font-size: 24px;
 }
 
-.btn-amt {
+.btn-amt .btn-pmt-method {
     padding: 10px 30px;
 }
 
@@ -35,12 +35,12 @@ body {
 
 }
 
-.btn-pmt-method {
-    width: 150px;
-    height: 34px;
-    font-size: 15px;
-    justify-content: center;
-}
+/*.btn-pmt-method {*/
+    /*width: 150px;*/
+    /*height: 34px;*/
+    /*font-size: 15px;*/
+    /*justify-content: center;*/
+/*}*/
 
 .charity {
     position: relative;
@@ -165,8 +165,12 @@ body {
 
 .selected-charity-box p.donation-info {
     flex-grow: 1;
+}
+
+.labels {
+    alignment: left;
     text-align: left;
-    margin: auto auto auto 20px;
+    margin: auto auto auto 5px;
 }
 
 #id_pledge_form h1 {

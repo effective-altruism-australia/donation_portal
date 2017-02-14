@@ -199,7 +199,7 @@ class PledgeView(View):
         if transaction.succeeded:
             return HttpResponseRedirect('/admin/donation/pledge/')
         else:
-            return HttpResponse("No money today :( Error message: %s " % result)
+            return HttpResponse("Error message: %s " % result)
 
 
     def get(self, request):
@@ -215,25 +215,4 @@ class PledgeView(View):
         form = PledgeForm()
 
         charity_database_ids = json.dumps({x['name']: x['id'] for x in PartnerCharity.objects.all().values('name', 'id')})
-        return render(request, 'pledge.html', {'form': form, 'paypalform': paypal_form, 'charity_database_ids': charity_database_ids}) # , 'org': org
-
-
-# class Paypal(View):
-#     def get(self, request):
-#         # What you want the button to do.
-#         paypal_dict = {
-#             "business": "receiver_email@example.com",
-#             "amount": "10000000.00",
-#             "item_name": "name of the item",
-#             "invoice": "unique-invoice-id",
-#             "notify_url": "https://www.example.com" + reverse('paypal-ipn'),
-#             "return_url": "https://www.example.com/your-return-location/",
-#             "cancel_return": "https://www.example.com/your-cancel-location/",
-#             "custom": "Upgrade all users!",  # Custom command to correlate to some function later (optional)
-#         }
-#
-#         # Create the instance.
-#         paypal_form = PayPalPaymentsForm(initial=paypal_dict)
-#         context = {"form": paypal_form}
-#         return render(request, "payment.html", context)
-
+        return render(request, 'pledge.html', {'form': form, 'paypalform': paypal_form, 'charity_database_ids': charity_database_ids})
