@@ -167,6 +167,24 @@ body {
     margin: 0 0 0 12px;
 }
 
+/* Small screens */
+@media all and (max-width: 500px) {
+    .selected-charity-box {
+        /* On small screens, we are no longer using row direction but column */
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .selected-charity-box .charity-img {
+        margin: 12px 0 0 0;
+    }
+
+    .selected-charity-box p.donation-info {
+        text-align: left;
+        margin: 12px 0 0 0;
+    }
+}
+
 #id_pledge_form {
     width: 80%;
     margin: auto;
