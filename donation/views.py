@@ -212,8 +212,11 @@ class PledgeView(View):
         }
         paypal_form = PayPalPaymentsForm(button_type='donate', initial=paypal_dict)
         form = PledgeForm()
+        invisibleFormFields = ['payment_method', 'recipient_org', 'recurring']
 
-        return render(request, 'pledge.html',
-                      {'form': form,
-                       'paypal_form': paypal_form,
-                       'charity_database_ids': PartnerCharity.cached_database_ids})
+        return render(request, 'pledge.html', {
+            'form': form,
+            'invisibleFormFields': invisibleFormFields,
+            'paypal_form': paypal_form,
+            'charity_database_ids': PartnerCharity.cached_database_ids,
+            })
