@@ -50,7 +50,7 @@
 
 <div id="ractive_base"></div>
 
-<script id="ractive_template" type="text/ractive">
+<script id="ractive_template" type="text/html">
 <div class="container">
     <div class="stepwizard">
         <div class="stepwizard-row setup-panel">
@@ -108,7 +108,6 @@
     [[/if]]
 
     <div class="row setup-content [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
-
         [[#if selected_charity]]
         [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
         <div class="selected-charity-box">
@@ -121,118 +120,161 @@
         [[/if ]]
         <form method='post' action='' class='pin' id='id_pledge_form'>
             {% csrf_token %}
+
+            {% for field in form %}
+                {% if field.name in invisibleFormFields %}
+                    <div class="form-group collapse" id="invisible_form_{{ field.name }}">
+                        {% if field.name not in form.hide_labels %}
+                            {% bootstrap_label field.label label_class="labels" %}
+                        {% endif %}
+                        {% bootstrap_field field layout="vertical" vertical_field_class="col-md-3" show_label=False %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
             <h1>How would you like to donate?</h1>
             <div class="donation-type-section">
                 <div data-toggle="buttons">
                     <div class="btn-group">
                         <button type="button"
-                                class="btn btn-default btn-lg btn-recurring btn-toggle [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
+                                class="btn btn-lg [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
                                 on-click='@this.set_recurring(false)'>One-Time
                         </button>
 
                         <button type="button"
-                                class="btn btn-default btn-lg btn-recurring btn-toggle [[recurring ? 'btn-primary' : 'btn-default' ]]"
+                                class="btn btn-lg [[recurring ? 'btn-primary' : 'btn-default' ]]"
                             on-click='@this.set_recurring(true)'>Monthly
                         </button>
                     </div>
                 </div>
-                <p id="id_recurring_notification" class="[[recurring ? '' : 'collapse' ]]">
-                    We currently only accept monthly donations via bank transfer.
-                </p>
-            </div>
-            <br>
-            <div class="text-center">
-                    {% for amt_text, amt_val in form.donation_amounts %}
-                        <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === {{ amt_val }} ? 'btn-primary' : 'btn-default' ]]" on-click='@this.set_amount({{ amt_val }})'
-                                id="id_{{ amt_val }}"
-                                value={{ amt_val }}>{{ amt_text }}</button>
-                    {% endfor %}
-
-                    <button type="button" class="btn btn-lg btn-toggle btn-amt [[amount === 'other' ? 'btn-primary' : 'btn-default' ]]" on-click="@this.set_amount('other')"
-                            value="other">Other
-                    </button>
-                </div>
-            <br>
-            <div class="panel panel-default credit-card-box">
-            <div class="panel-body">
-            {% for field in form %}
-                <div class="form-group [[ hidden_initial.indexOf("{{ field.name }}") === -1 ? "" : "collapse" ]]" id="id_formgroup_{{ field.name }}">
-                    {% if field.name not in form.hide_labels %}
-                        {% bootstrap_label field.label label_class="labels" %}
-                    {% endif %}
-                    {% bootstrap_field field layout="vertical" vertical_field_class="col-md-3" show_label=False %}
-                </div>
-            {% endfor %}
-            </div>
             </div>
 
-            <br>
-            <div class="text-center">
+            <div class="donation-amount-section">
+                <span class="section-label">
+                    Amount:
+                </span>
+                {% for amt_text, amt_val in form.donation_amounts %}
                     <button type="button"
-                            class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
-                            value="3"
-                            id="id_btn_cc"
-                            on-click="@this.set_pmt_method('3')"
-                            [[recurring ? "disabled" : "" ]]
-                            >Credit card
-                    </button>
+                            class="btn [[donation_amount === {{ amt_val }} ? 'btn-primary' : 'btn-default' ]]"
+                            on-click='@this.set_donation_amount({{ amt_val }})'
+                            id="id_{{ amt_val }}"
+                            value={{ amt_val }}>{{ amt_text }}</button>
+                {% endfor %}
+
+                <button type="button"
+                        class="btn [[is_custom_amount ? 'btn-primary' : 'btn-default' ]]"
+                        on-click="@this.show_other_donation_amount()"
+                        value="other">Other
+                </button>
+                <div class="form-group [[ is_custom_amount ? '' : 'collapse' ]]" id="form_donation_amount">
+                    <label class="sr-only control-label" for="id_amount">Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input class="form-control" type="number" id="id_amount" step="1" min="2" name="amount" placeholder="Amount" title="" value="[[ donation_amount ]]">
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default form-container details-section donor-details-section">
+                <div class="panel-body form-horizontal">
+                    <legend>Donor Details</legend>
+                    <div class="form-group" id="form_first_name">
+                        <label class="control-label col-xs-3" for="id_first_name">Name</label>
+                        <div class="col-xs-9">
+                            <input class="form-control" type="text" id="id_first_name" maxlength="1024" name="first_name" placeholder="Name" title="" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="form_email">
+                        <label class="control-label col-xs-3" for="id_email">Email</label>
+                        <div class="col-xs-9">
+                            <input class="form-control" type="email" id="id_email" maxlength="254" name="email" placeholder="Email" required="" title="" value="" aria-required="true">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-3 long-control-label" for="id_how_did_you_hear_about_us">How did you hear about us?</label>
+                        <div class="col-xs-9">
+                            <input class="form-control" type="text" id="id_how_did_you_hear_about_us" name="how_did_you_hear_about_us" placeholder="e.g. friends, family, Google, advertisements" title="" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="id_formgroup_subscribe_to_updates">
+                        <div class="checkbox col-xs-offset-3">
+                            <label for="id_subscribe_to_updates"><input type="checkbox" id="id_subscribe_to_updates" name="subscribe_to_updates" value="on"> Send me news and updates</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default form-container details-section payment-details-section">
+                <div class="panel-body form-horizontal">
+                    <legend>Payment Details</legend>
+                    <div class="payment-type form-group">
+                        <label class="control-label col-xs-3">Payment Method</label>
+                        <div class="col-xs-9">
+                            <button type="button"
+                                    class="btn [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
+                                    value="3"
+                                    id="id_btn_cc"
+                                    on-click="@this.set_pmt_method('3')"
+                                    [[recurring ? "disabled" : "" ]]
+                                    >Credit card
+                            </button>
 {#                    <button type="button"#}
-{#                            class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"#}
+{#                            class="btn [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"#}
 {#                            id="id_btn_paypal"#}
 {#                            value="4"#}
 {#                            on-click="@this.set_pmt_method('4')"#}
 {#                            [[recurring ? "disabled" : "" ]]#}
 {#                            >Paypal#}
 {#                    </button>#}
-                    <button type="button"
-                            class="btn btn-default btn-lg btn-toggle btn-pmt-method [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
-                            id="id_btn_bank_transfer"
-                            on-click="@this.set_pmt_method('1')"
-                            value="1">Bank transfer
-                    </button>
+                            <button type="button"
+                                    class="btn [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
+                                    id="id_btn_bank_transfer"
+                                    on-click="@this.set_pmt_method('1')"
+                                    value="1">Bank transfer
+                            </button>
+                        </div>
+                    </div>
+                        <p id="id_recurring_notification" class="[[recurring ? '' : 'collapse' ]]">
+                            We currently only accept monthly donations via bank transfer.
+                        </p>
+                    <hr />
+
+                    <div class="payment-subsections" id="id_payment_options">
+                        <div class="payment-subsection [[pmt_method != '1' ? 'collapse' : '' ]]" id="id_bank_transfer">
+                            <p>After you submit this form, we will give you our account details and a unique reference number.</p>
+                            [[#if recurring]]
+                            <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
+                            <p>You can stop or change the amount you donate at any time.</p>
+                            [[else]]
+                            <p>You then need to log in to your bank and make a bank transfer using these details.</p>
+                            [[/if recurring]]
+                        </div>
+
+                        <div class="payment-subsection [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
+                            {% pin_form %}
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div id="id_payment_options">
-                <div class="payment_option [[pmt_method != '1' ? 'collapse' : '' ]]" id="id_bank_transfer">
-                    <p>After you submit this form, we will give you our account details and a unique reference number.</p>
-                    [[#if recurring]]
-                    <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
-                    <p>You can stop or change the amount you donate at any time.</p>
-                    [[else]]
-                    <p>You then need to log in to your bank and make a bank transfer using these details.</p>
-                    [[/if recurring]]
+            <p>
+                Having a problem donating? Please let us know at info@effectivealtruism.org.au.
+            </p>
 
-                    <div class="form-actions">
-                        <button type="submit"
-                                class="btn btn-success btn-lg pull-right subscribe"
-                                value="Submit"
-                                id="id_btn_submit">Submit
-                        </button>
-                    </div>
-
-
-                </div>
-
-                <br><br>
-                <div class="payment_option [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
-                    {% pin_form %}
-
-                    <div class="form-actions">
-                        <button type="submit"
-                                class="btn btn-success btn-lg pull-right subscribe"
-                                value="Submit"
-                                id="id_btn_submit">Submit
-                        </button>
-                    </div>
-                </div>
-
+            <div class="form-actions">
+                <button type="submit"
+                        class="btn btn-success btn-lg pull-right subscribe"
+                        value="Submit">Submit
+                </button>
             </div>
         </form>
 
         <div align="center" id="id_paypal" class="payment_option [[pmt_method != '4' ? 'collapse' : '' ]]">
             {{ paypal_form.render }}
         </div>
-
     </div>
 
     <div class="row setup-content" id="step-3">
@@ -253,7 +295,8 @@
         data: {
             step: 1,
             recurring: null,
-            amount: null,
+            donation_amount: null,
+            is_custom_amount: false,
             pmt_method: null,
             selected_charity_id: null,
             selected_charity: null,
@@ -289,28 +332,27 @@
         set_recurring: function (is_recurring) {
             ractive.set({recurring: is_recurring});
             document.getElementById('id_recurring').checked = is_recurring;
+            ractive.set_pmt_method('1')
         },
 
-        set_amount: function (amount) {
-            ractive.set({amount: amount});
+        set_donation_amount: function (amount) {
+            this.hide_other_donation_amount();
+            ractive.set({donation_amount: amount});
+        },
 
-            if (amount == 'other') {
-                $("#id_formgroup_amount").removeClass('collapse');
-                $('input[name=amount]').each(function () {
-                    this.value = "";
-                });
-            } else {
-                $("#id_formgroup_amount").addClass('collapse');
-                $('input[name=amount]').each(function () {
-                    this.value = amount;
-                });
-            }
+        show_other_donation_amount: function () {
+            ractive.set({donation_amount: ""});
+            ractive.set({is_custom_amount: true});
+        },
+
+        hide_other_donation_amount: function () {
+            ractive.set({is_custom_amount: false});
         },
 
         set_pmt_method: function (pmt_method) {
             ractive.set({pmt_method: pmt_method});
             document.getElementById('id_payment_method').value = pmt_method;
-        },
+        }
 
     });
 
