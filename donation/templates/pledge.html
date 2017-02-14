@@ -89,10 +89,19 @@
     </div>
 
     [[#if selected_charity.name==='Against Malaria Foundation' & step === 2]]
-        <br>
-        You can make a tax deductible donation to the Against Malaria Foundation directly at
-        <a href='https://www.againstmalaria.com/Donation.aspx'>https://www.againstmalaria.com/Donation.aspx</a>
-    [[/if ]]
+    <div class="row setup-content" id="step-2">
+        <div class="selected-charity-box">
+            <a href='https://www.againstmalaria.com/Donation.aspx'>
+            <img class="charity-img" src="static/[[ selected_charity.website_image ]]">
+            </a>
+            <p class="donation-info">
+                Donations to the Against Malaria Foundation are tax deductible in Australia.
+                We prefer that you donate to the Against Malaria Foundation directly at
+                <a href='https://www.againstmalaria.com/Donation.aspx'>https://www.againstmalaria.com/Donation.aspx</a>.
+            </p>
+        </div>
+    </div>
+    [[/if]]
 
     <div class="row setup-content [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
 
