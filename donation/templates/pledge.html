@@ -181,11 +181,14 @@
 
             <div id="id_payment_options">
                 <div class="payment_option [[pmt_method != '1' ? 'collapse' : '' ]]" id="id_bank_transfer">
-                    <br>
-                    Donations by bank transfer take two steps to set up.<br><br>
-                    First, you must register your intent to make a single, or recurring, transfer to our account by completing the form below. You will receive a unique code to use in the transaction.<br><br>
-                    Second, you must setup the bank transfer with your bank, using the unique code supplied. <br><br>
-                    For a recurring transfer, you must create the corresponding recurring transaction with your bank.
+                    <p>After you submit this form, we will give you our account details and a unique reference number.</p>
+                    [[#if recurring]]
+                    <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
+                    <p>You can stop or change the amount you donate at any time.</p>
+                    [[else]]
+                    <p>You then need to log in to your bank and make a bank transfer using these details.</p>
+                    [[/if recurring]]
+
                     <div class="form-actions">
                         <button type="submit"
                                 class="btn btn-success btn-lg pull-right subscribe"
