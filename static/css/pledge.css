@@ -121,11 +121,6 @@ body {
     box-sizing: content-box;
 }
 
-.pin_label {
-    alignment: left;
-    text-align: left;
-}
-
 .error {
     color: red;
 }
@@ -228,12 +223,12 @@ body {
     align-self: flex-start;
 }
 
-#id_bank_transfer {
-    text-align: left;
+.payment-type button {
+    margin-right: 6px;
 }
 
-.payment_options_section {
-    margin: 24px 0;
+#id_bank_transfer {
+    margin: auto 15px;
 }
 
 /* Monochromatic colors of our base color*/

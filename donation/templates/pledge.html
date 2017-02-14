@@ -210,15 +210,20 @@
                 </div>
             </div>
 
-            <div class="payment-section">
-                    <button type="button"
-                            class="btn [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
-                            value="3"
-                            id="id_btn_cc"
-                            on-click="@this.set_pmt_method('3')"
-                            [[recurring ? "disabled" : "" ]]
-                            >Credit card
-                    </button>
+            <div class="panel panel-default form-container details-section payment-details-section">
+                <div class="panel-body form-horizontal">
+                    <legend>Payment Details</legend>
+                    <div class="payment-type form-group">
+                        <label class="control-label col-xs-3">Payment Method</label>
+                        <div class="col-xs-9">
+                            <button type="button"
+                                    class="btn [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
+                                    value="3"
+                                    id="id_btn_cc"
+                                    on-click="@this.set_pmt_method('3')"
+                                    [[recurring ? "disabled" : "" ]]
+                                    >Credit card
+                            </button>
 {#                    <button type="button"#}
 {#                            class="btn [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"#}
 {#                            id="id_btn_paypal"#}
@@ -227,39 +232,44 @@
 {#                            [[recurring ? "disabled" : "" ]]#}
 {#                            >Paypal#}
 {#                    </button>#}
-                    <button type="button"
-                            class="btn [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
-                            id="id_btn_bank_transfer"
-                            on-click="@this.set_pmt_method('1')"
-                            value="1">Bank transfer
-                    </button>
+                            <button type="button"
+                                    class="btn [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
+                                    id="id_btn_bank_transfer"
+                                    on-click="@this.set_pmt_method('1')"
+                                    value="1">Bank transfer
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="payment-subsections" id="id_payment_options">
+                        <div class="payment-subsection [[pmt_method != '1' ? 'collapse' : '' ]]" id="id_bank_transfer">
+                            <p>After you submit this form, we will give you our account details and a unique reference number.</p>
+                            [[#if recurring]]
+                            <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
+                            <p>You can stop or change the amount you donate at any time.</p>
+                            [[else]]
+                            <p>You then need to log in to your bank and make a bank transfer using these details.</p>
+                            [[/if recurring]]
+                        </div>
+
+                        <div class="payment-subsection [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
+                            {% pin_form %}
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="payment_options_section" id="id_payment_options">
-                <div class="payment_option [[pmt_method != '1' ? 'collapse' : '' ]]" id="id_bank_transfer">
-                    <p>After you submit this form, we will give you our account details and a unique reference number.</p>
-                    [[#if recurring]]
-                    <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
-                    <p>You can stop or change the amount you donate at any time.</p>
-                    [[else]]
-                    <p>You then need to log in to your bank and make a bank transfer using these details.</p>
-                    [[/if recurring]]
-                </div>
+            <p>
+                Having a problem donating? Please let us know at info@effectivealtruism.org.au.
+            </p>
 
-                <div class="payment_option [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
-                    {% pin_form %}
-                </div>
-
-                <p>
-                    Having a problem donating? Please let us know at info@effectivealtruism.org.au.
-                </p>
-
-                <div class="form-actions">
-                    <button type="submit"
-                            class="btn btn-success btn-lg pull-right subscribe"
-                            value="Submit">Submit
-                    </button>
-                </div>
+            <div class="form-actions">
+                <button type="submit"
+                        class="btn btn-success btn-lg pull-right subscribe"
+                        value="Submit">Submit
+                </button>
             </div>
         </form>
 
