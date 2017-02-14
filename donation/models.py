@@ -64,7 +64,7 @@ class Pledge(models.Model):
     first_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
     last_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
     email = models.EmailField()
-    subscribe_to_updates = models.BooleanField(default=False, verbose_name='Send me news and updates')
+    subscribe_to_updates = models.BooleanField(default=True, verbose_name='Send me news and updates')
     payment_method = EnumField(PaymentMethod, max_length=1)
     recurring = models.BooleanField(default=False)
     recurring_frequency = EnumField(RecurringFrequency, max_length=1, blank=True, null=True)
