@@ -147,9 +147,6 @@
                         </button>
                     </div>
                 </div>
-                <p id="id_recurring_notification" class="[[recurring ? '' : 'collapse' ]]">
-                    We currently only accept monthly donations via bank transfer.
-                </p>
             </div>
 
             <div class="donation-amount-section">
@@ -240,7 +237,9 @@
                             </button>
                         </div>
                     </div>
-
+                        <p id="id_recurring_notification" class="[[recurring ? '' : 'collapse' ]]">
+                            We currently only accept monthly donations via bank transfer.
+                        </p>
                     <hr />
 
                     <div class="payment-subsections" id="id_payment_options">
@@ -333,6 +332,7 @@
         set_recurring: function (is_recurring) {
             ractive.set({recurring: is_recurring});
             document.getElementById('id_recurring').checked = is_recurring;
+            ractive.set_pmt_method('1')
         },
 
         set_donation_amount: function (amount) {

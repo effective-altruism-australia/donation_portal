@@ -172,10 +172,6 @@ body {
     font-size: 28px;
 }
 
-#id_pledge_form #id_recurring_notification {
-    margin: 5px 0;
-}
-
 .donor-details-section {
 }
 
@@ -227,7 +223,7 @@ body {
     margin-right: 6px;
 }
 
-#id_bank_transfer {
+#id_bank_transfer,#id_recurring_notification {
     margin: auto 15px;
 }
 
