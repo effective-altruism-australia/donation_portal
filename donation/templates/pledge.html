@@ -1,6 +1,6 @@
 {% load humanize %}
 {% load bootstrap3 %}
-{% load static %}
+{% load static from staticfiles %}
 {% load pin_payment_tags %}
 <!DOCTYPE html>
 <html lang="en">
@@ -31,8 +31,11 @@
 
     <script src='http://cdn.ractivejs.org/latest/ractive.min.js'></script>
 
-
-    {{ form.media }}
+    <link href="{% static 'css/pledge.css' %}" type="text/css" media="all" rel="stylesheet">
+    <link href="{% static 'css/process_steps.css' %}" type="text/css" media="all" rel="stylesheet">
+    <link href="{% static 'css/credit_card.css' %}" type="text/css" media="all" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'js/credit_card.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/charities.js' %}"></script>
 
     {% pin_header "test" %}
 

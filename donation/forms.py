@@ -37,7 +37,6 @@ class DateRangeSelector(forms.Form):
 
 
 class PledgeForm(forms.ModelForm):
-
     class Meta:
         model = Pledge
         fields = ['amount', 'first_name', 'email', 'how_did_you_hear_about_us', 'subscribe_to_updates',
@@ -47,8 +46,9 @@ class PledgeForm(forms.ModelForm):
         # }
 
     class Media:
-        js = ('js/credit_card.js', 'js/charities.js')
-        css = {'all': ('css/pledge.css', 'css/process_steps.css', 'css/credit_card.css')}
+        # Don't use Media as it's compatible with ManifestStaticFilesStorage on Django 1.8
+        # https://code.djangoproject.com/ticket/21221
+        pass
 
     # These values control the donation amount buttons shown
     donation_amounts_raw = (25, 50, 100, 250)
