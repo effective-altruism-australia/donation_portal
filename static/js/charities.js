@@ -38,5 +38,13 @@ charities = [
     "show_on_website":true,
     "website_label":"Schistosomiasis Control Initiative",
     "website_description":" supports programs that work to eliminate debilitating neglected tropical diseases in Africa"
+  },
+  {
+    "name":"Against Malaria Foundation",
+    "image_top_margin":5,
+    "website_image":"thumbnails/logo_amf.jpg",
+    "show_on_website":true,
+    "website_label":"Against Malaria Foundation",
+    "website_description":" provides long-lasting insecticidal nets to populations at high risk of malaria, primarily in Africa"
   }
 ]

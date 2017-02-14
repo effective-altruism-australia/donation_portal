@@ -85,7 +85,14 @@
         </div>
     </div>
 
-    <div class="row setup-content [[step !== 2 ? 'collapse' : '']]" id="step-2">
+    [[#if selected_charity.name==='Against Malaria Foundation' & step === 2]]
+        <br>
+        You can make a tax deductable donation to the Against Malaria Foundation directly at
+        <a href='https://www.againstmalaria.com/Donation.aspx'>https://www.againstmalaria.com/Donation.aspx</a>
+    [[/if ]]
+
+    <div class="row setup-content [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
+
         [[#if selected_charity]]
         [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
         <div class="selected-charity-box">
