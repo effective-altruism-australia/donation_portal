@@ -137,12 +137,12 @@
                 <div data-toggle="buttons">
                     <div class="btn-group">
                         <button type="button"
-                                class="btn btn-default btn-lg [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
+                                class="btn btn-lg [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
                                 on-click='@this.set_recurring(false)'>One-Time
                         </button>
 
                         <button type="button"
-                                class="btn btn-default btn-lg [[recurring ? 'btn-primary' : 'btn-default' ]]"
+                                class="btn btn-lg [[recurring ? 'btn-primary' : 'btn-default' ]]"
                             on-click='@this.set_recurring(true)'>Monthly
                         </button>
                     </div>
@@ -207,7 +207,7 @@
 
             <div class="payment-section">
                     <button type="button"
-                            class="btn btn-default btn-pmt-method [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
+                            class="btn [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
                             value="3"
                             id="id_btn_cc"
                             on-click="@this.set_pmt_method('3')"
@@ -215,7 +215,7 @@
                             >Credit card
                     </button>
 {#                    <button type="button"#}
-{#                            class="btn btn-default btn-pmt-method [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"#}
+{#                            class="btn [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"#}
 {#                            id="id_btn_paypal"#}
 {#                            value="4"#}
 {#                            on-click="@this.set_pmt_method('4')"#}
@@ -223,7 +223,7 @@
 {#                            >Paypal#}
 {#                    </button>#}
                     <button type="button"
-                            class="btn btn-default btn-pmt-method [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
+                            class="btn [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
                             id="id_btn_bank_transfer"
                             on-click="@this.set_pmt_method('1')"
                             value="1">Bank transfer
