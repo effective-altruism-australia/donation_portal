@@ -30,12 +30,17 @@ class PartnerCharity(models.Model):
     class Meta:
         verbose_name_plural = "Partner charities"
 
+    _cached_database_ids = None
+
     @classmethod
     def cache_database_ids(cls):
-        cls.cached_database_ids = json.dumps({x['name']: x['id'] for x in cls.objects.all().values('name', 'id')})
+        cls._cached_database_ids = json.dumps({x['name']: x['id'] for x in cls.objects.all().values('name', 'id')})
 
-
-PartnerCharity.cache_database_ids()
+    @classmethod
+    def get_cached_database_ids(cls):
+        if not cls._cached_database_ids:
+            cls.cache_database_ids()
+        return cls._cached_database_ids
 
 
 @receiver(post_save, sender=PartnerCharity)

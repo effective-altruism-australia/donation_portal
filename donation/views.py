@@ -217,5 +217,5 @@ class PledgeView(View):
         return render(request, 'pledge.html', {
             'form': form,
             'paypal_form': paypal_form,
-            'charity_database_ids': PartnerCharity.cached_database_ids,
+            'charity_database_ids': PartnerCharity.get_cached_database_ids(),
             })
