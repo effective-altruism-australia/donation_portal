@@ -573,7 +573,7 @@
             validationFailed = true;
         }
 
-        if (!ractive.get('recurring')) {
+        if (ractive.get('recurring')==null) {
             $('#donation-frequency-error').html("<div class='error-text'>Please choose a donation frequency.</div>");
             validationFailed = true;
         }
