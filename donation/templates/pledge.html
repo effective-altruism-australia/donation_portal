@@ -50,28 +50,24 @@
 <div id="ractive_base"></div>
 
 <script id="ractive_template" type="text/html">
+
 <div class="container">
-    <div class="stepwizard">
-        <div class="stepwizard-row setup-panel">
-            <div class="stepwizard-step">
-                <a href="#" type="button" class="btn btn-circle [[step === 1 ? 'current-step' : 'completed-step' ]]" on-click="@this.set_step(1)">1</a>
-                <p>Charities</p>
-            </div>
-            <div class="stepwizard-step">
-                <a href="#" type="button" class="btn btn-circle [[step === 2 ? 'current-step' : step > 2 ? 'completed-step' : 'disabled-step' ]]" disabled=[[step < 2]] on-click="@this.set_step(2)">2</a>
-                <p>Payment</p>
-            </div>
-            <div class="stepwizard-step">
-                <a href="#" type="button" class="btn btn-circle [[step === 3 ? 'current-step' : 'disabled-step' ]]" disabled=[[step < 3]] on-click="@this.set_step(3)">3</a>
-                <p>Confirmation</p>
-            </div>
+    <div class="donation-page-header">
+        <h1 class="page-title">
+            [[ step === 1 ? 'Partner Charities' : step === 2 ? 'Payment' : 'Complete Payment' ]]
+        </h1>
+        <div class="donation-progress">
+            <div class="progress-step [[step === 1 ? 'current-step' : '' ]]">1</div>
+            <div class="progress-step [[step === 2 ? 'current-step' : '' ]]">2</div>
+            <div class="progress-step [[step === 3 ? 'current-step' : '' ]]">3</div>
         </div>
     </div>
 </div>
 
 <div class="container" >
     <div class="donation-step [[step !== 1 ? 'collapse' : '']]" id="step-1">
-        <p style="margin: 15px 0;">Please select a charity. We will grant 100% of your donation to them.</p>
+        <h2>100% of your donation will be granted to the charity of your choice</h2>
+        <h3>Select a charity:</h3>
         <div class="charities-container">
             [[#charities:i]]
                 [[#if show_on_website ]]
@@ -79,7 +75,7 @@
                     <div class="charity-info">
                         <img class="charity-img" style="margin-top:[[ image_top_margin ]]px;"
                              src="static/[[ website_image ]]" alt="[[ website_label ]]">
-                        <h2 class="charity-title">[[ website_label ]]</h2>
+                        <span class="charity-title">[[ website_label ]]</span>
                     </div>
                     <div class="hover-overlay">
                         <a class="charity-details charityClick" on-click='@this.charity_click(name)' href="#">
@@ -110,38 +106,30 @@
     <div class="donation-step [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
         [[#if selected_charity]]
         [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
-        <div class="selected-charity-box">
-            <img class="charity-img" src="static/[[ selected_charity.website_image ]]">
-            <p class="donation-info">
-                You have earmarked your donation for [[ selected_charity.name ]].
-                We will grant 100% of your donation to them.
-            </p>
-        </div>
+        <h2>You have chosen [[ selected_charity.name ]].</h2>
         [[/if ]]
-        <form on-submit="submit" id='id_pledge_form'>
+
+        <form on-submit="submit" id='pledge-form'>
             {% csrf_token %}
 
-            <h1>How would you like to donate?</h1>
-            <div class="donation-type-section">
-                <div data-toggle="buttons">
-                    <div class="btn-group">
-                        <button type="button"
-                                class="btn btn-lg [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
-                                on-click='@this.set_recurring(false)'>One-Time
-                        </button>
+            <h3>How often will you be donating?</h3>
+            <div class="button-row">
+                <button type="button"
+                        class="btn [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
+                        on-click='@this.set_recurring(false)'>One-Time
+                </button>
 
-                        <button type="button"
-                                class="btn btn-lg [[recurring ? 'btn-primary' : 'btn-default' ]]"
-                            on-click='@this.set_recurring(true)'>Monthly
-                        </button>
-                    </div>
-                </div>
+                <button type="button"
+                        class="btn [[recurring ? 'btn-primary' : 'btn-default' ]]"
+                    on-click='@this.set_recurring(true)'>Monthly
+                </button>
             </div>
 
-            <div class="donation-amount-section">
-                <span class="section-label">
-                    Amount:
-                </span>
+            <h3 class="section-label">
+                How much would you like to donate?
+            </h3>
+
+            <div class="button-row">
                 {% for amt_text, amt_val in form.donation_amounts %}
                     <button type="button"
                             class="btn [[donation_amount === {{ amt_val }} ? 'btn-primary' : 'btn-default' ]]"
@@ -242,7 +230,7 @@
                     <hr />
 
                     <div class="payment-subsections" id="id_payment_options">
-                        <div class="payment-subsection [[pmt_method != '1' ? 'collapse' : '' ]]" id="id_bank_transfer">
+                        <div class="payment-subsection [[pmt_method != '1' ? 'collapse' : '' ]]" id="bank-transfer-instructions">
                             <p>After you submit this form, we will give you our account details and a unique reference number.</p>
                             [[#if recurring]]
                             <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
@@ -267,7 +255,7 @@
                 </div>
             </div>
 
-            <p>
+            <p class="help-text">
                 Having a problem donating? Please let us know at <a href="mailto://info@effectivealtruiusm.org.au">info@effectivealtruism.org.au</a>.
             </p>
 
@@ -402,7 +390,7 @@ We have also emailed you these instructions – please check your spam folder if
 
     // Ractive has rendered by now, so we can set up our validation.
     // (Because all the relevant elements are hidden and waiting.)
-    var $form = $('#id_pledge_form');
+    var $form = $('#pledge-form');
 
     // Add custom validation methods to verify expiry and AMEX-ness of the credit card.
     $.validator.addMethod("cardNumber", function (value, element) {
@@ -502,7 +490,7 @@ We have also emailed you these instructions – please check your spam folder if
 
         // We needed to name the credit card fields for jQuery.validator to work
         // but we don't want to submit them, so get rid of the names now.
-        var $form = $('#id_pledge_form');
+        var $form = $('#pledge-form');
         $form.find('#cc-name').removeAttr('name');
         $form.find('#cc-number').payment('formatCardNumber').removeAttr('name');
         $form.find('#cc-expiry').payment('formatCardExpiry').removeAttr('name');

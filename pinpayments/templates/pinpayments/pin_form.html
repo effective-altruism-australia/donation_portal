@@ -7,17 +7,17 @@
     </div>
 
     <div class="form-group">
-        <label class="control-label labels col-sm-3" for="cardName">Name on card</label>
+        <label class="control-label labels col-sm-3"  for="cc-name">Name on card</label>
         <div class="col-sm-9">
             <input type="text" class="form-control cc-form" name="cardName" id="cc-name" placeholder="Full name"/>
         </div>
     </div>
 
     <div class="form-group">
-        <label class="control-label labels col-sm-3" for="cardNumber">Card number</label>
+        <label class="control-label labels col-sm-3" for="cc-number">Card number</label>
         <div class="col-sm-9">
             <div class="input-group">
-                <input
+                <input  name="cardNumber"
                         type="tel"
                         class="form-control cc-form"
                         name="cardNumber"
@@ -31,10 +31,10 @@
     </div>
 
     <div class="form-group">
-        <label class="control-label labels col-sm-3" for="cardExpiry"><span class="hidden-xs">Expiration</span><span
+        <label class="control-label labels col-sm-3" for="cc-expiry"><span class="hidden-xs">Expiration</span><span
                 class="visible-xs-inline">Exp</span> date</label>
         <div class="col-sm-4">
-            <input
+            <input  name="cardExpiry"
                     type="tel"
                     class="form-control cc-form"
                     id="cc-expiry"
@@ -43,9 +43,9 @@
                     autocomplete="cc-exp"
             />
         </div>
-        <label class="control-label labels col-sm-3" for="cardCVC">CV code</label>
+        <label class="control-label labels col-sm-3" for="cc-cvc">CV code</label>
         <div class="col-sm-2">
-            <input
+            <input  name="cardCVC"
                     type="text"
                     class="form-control cc-form"
                     id="cc-cvc"
@@ -53,6 +53,42 @@
                     placeholder="CVC"
                     autocomplete="cc-csc"
             />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label labels col-sm-3" for="address-line1">Billing Address</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control cc-form" id="address-line1" placeholder="Address Line 1" required aria-required/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label sr-only labels" hidden aria-hidden for="address-line2">Billing Address line 2</label>
+        <div class="col-sm-9 col-sm-offset-3">
+            <input type="text" class="form-control cc-form" id="address-line2" placeholder="Address Line 2"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label labels col-sm-3 visible-xs" for="address-city">City</label>
+        <div class="col-sm-3 col-sm-offset-3">
+            <input type="text" class="form-control cc-form" id="address-city" placeholder="City" required aria-required/>
+        </div>
+        <label class="control-label labels col-sm-3 visible-xs" for="address-state">State</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control cc-form" id="address-state" placeholder="State"/>
+        </div>
+        <label class="control-label labels col-sm-3 visible-xs" for="address-postcode">Postcode</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control cc-form" id="address-postcode" placeholder="Postal Code"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label labels col-sm-3" for="address-country">Country</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control cc-form" id="address-country" placeholder="Country" required aria-required/>
         </div>
     </div>
 </fieldset>

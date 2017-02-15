@@ -1,85 +1,37 @@
-body {
-    margin-top:40px;
+.donation-page-header {
+    display: flex;
+    padding-bottom: 9px;
+    margin: 0 0 20px;
+    border-bottom: 1px solid #eeeeee;
 }
 
-.stepwizard {
-    display: inline-table;
-    width: 100%;
-    position: relative;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    margin: 12px 0;
+.page-title {
+    font-size: 36px;
+    font-weight: 300 !important;
+    flex-grow: 1;
+    margin: 0;
 }
 
-.stepwizard-step p {
-    margin: 10px 0 0 0;
+.donation-progress {
+    width: 200px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-self: flex-end;
 }
 
-.stepwizard-row {
-    display: table-row;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-}
-
-.container {
+.donation-progress .progress-step {
     text-align: center;
-}
-
-
-.stepwizard-step button[disabled] {
-    opacity: 1 !important;
-    filter: alpha(opacity=100) !important;
-}
-.stepwizard-row:before {
-    top: 14px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    position: absolute;
-    content: "";
-    height: 1px;
-    background-color: #ccc;
-    z-index: 0;
-    -webkit-box-sizing: unset;
-    -moz-box-sizing: unset;
-    box-sizing: unset;
-}
-.stepwizard-step {
-    display: table-cell;
-    text-align: center;
-    position: relative;
-    width: 33%;
-}
-.btn-circle {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    padding: 5px 5px;
+    width: 24px;
+    height: 24px;
+    background: #aaa;
+    color: white;
     font-size: 16px;
-    line-height: 18px;
+    line-height: 24px;
     border-radius: 50%;
 }
 
-.current-step, .current-step:hover, .current-step:focus {
-    /* Blue400 https://material.io/guidelines/style/color.html#color-color-palette */
-    /*background: #90CAF9 none;*/
-    background: #4c8fb1 none;
-    color: rgba(0,0,0,0.54);
-}
-.completed-step {
-    /* Blue50 https://material.io/guidelines/style/color.html#color-color-palette */
-    /*background: #E3F2FD none;*/
-    background: #a5c7d8 none;
-    color: rgba(0,0,0,0.54);
-}
-.disabled-step {
-    /* Grey200 https://material.io/guidelines/style/color.html#color-color-palette */
-    background: #EEEEEE none;
-    color: rgba(0,0,0,0.54)
-}
-
-.btn-circle[disabled] {
-    opacity: 1;
+.donation-progress .current-step {
+    background: rgba(0,0,0,0.87);
 }
