@@ -119,7 +119,7 @@
             </p>
         </div>
         [[/if ]]
-        <form method='post' action='' class='pin' id='id_pledge_form'>
+        <form on-submit="submit" id='id_pledge_form'>
             {% csrf_token %}
 
             {% for field in form %}
@@ -339,7 +339,6 @@
             validate_cc();
         },
 
-
         set_recurring: function (is_recurring) {
             ractive.set({recurring: is_recurring});
             document.getElementById('id_recurring').checked = is_recurring;
@@ -367,8 +366,103 @@
             ractive.set({pmt_method: pmt_method});
             document.getElementById('id_payment_method').value = pmt_method;
         }
-
     });
+
+    function callPinAPI(callBack) {
+        var $form = $('#id_pledge_form'),
+            $errors = $form.find('.errors'),
+            $submitButton = $form.find(":submit");
+
+        // $errors.hide();
+
+        // Disable the submit button to prevent multiple clicks
+        $submitButton.attr({disabled: true});
+
+        // Convert expiry string into year and month values for Pin
+        var expiry = $.payment.cardExpiryVal($('#cc-expiry').val())
+
+        // Fetch details required for the createToken call to Pin
+        var card = {
+            number: $('#cc-number').val(),
+            name: $('#cc-name').val(),
+            expiry_month: expiry.month,
+            expiry_year: expiry.year,
+            cvc: $('#cc-cvc').val(),
+            address_line1: $('#address-line1').val(),
+            address_line2: $('#address-line2').val(),
+            address_city: $('#address-city').val(),
+            address_state: $('#address-state').val(),
+            address_postcode: $('#address-postcode').val(),
+            address_country: $('#address-country').val()
+        };
+
+        Pin.createToken(card, handlePinResponse);
+
+        function handlePinResponse(response) {
+            console.log(response)
+            var $form = $('#id_pledge_form');
+
+            if (response.response) {
+                // Add the card token and ip address of the customer to the form
+                // You will need to post these to Pin when creating the charge.
+                $('<input>')
+                    .attr({type: 'hidden', name: 'card_token'})
+                    .val(response.response.token)
+                    .appendTo($form);
+                $('<input>')
+                    .attr({type: 'hidden', name: 'ip_address'})
+                    .val(response.ip_address)
+                    .appendTo($form);
+
+                callBack()
+            } else {
+                var $errorList = $errors.find('ul');
+
+                $errors.find('h3').text(response.error_description);
+                $errorList.empty();
+
+                if (response.messages) {
+                    $.each(response.messages, function (index, errorMessage) {
+                        $('<li>')
+                            .text(errorMessage.message)
+                            .appendTo($errorList);
+                    });
+                }
+
+                $errors.show();
+                $submitButton.removeAttr('disabled');
+            }
+        }
+    }
+
+    function submitForm() {
+        $.ajax({
+            url : "", // the endpoint
+            type : "POST", // http method
+            data : $('#id_pledge_form').serialize(),
+
+            // handle a successful response
+            success : function(json) {
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+        $('#id_pledge_form').find(":submit").removeAttr('disabled')
+    }
+
+    ractive.on('submit', function(event) {
+        event.original.preventDefault();
+        callPinAPI(submitForm);
+    });
+
+
 
 
     </script>

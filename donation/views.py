@@ -3,7 +3,7 @@ from datetime import datetime, date
 import os
 import arrow
 
-from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.http import HttpResponseRedirect, Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Max, Min
@@ -183,8 +183,7 @@ class PledgeView(View):
         if form.is_valid():
             form.save()
         else:
-            # TODO
-            return Http404
+            return JsonResponse({'errors': form.errors})
 
         if int(request.POST.get('payment_method')) == 3:
             transaction = PinTransaction()

@@ -3,7 +3,7 @@ validate_cc = function () {
 
         var $form = $('#id_pledge_form');
 
-        /* Fancy restrictive input formatting via jQuery.payment library*/
+        /* Fancy restrictive input formatting via jQuery.payment library */
         $('input[name=cardNumber]').payment('formatCardNumber');
         $('input[name=cardCVC]').payment('formatCardCVC');
         $('input[name=cardExpiry]').payment('formatCardExpiry');
