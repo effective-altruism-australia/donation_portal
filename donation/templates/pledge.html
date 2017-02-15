@@ -457,7 +457,11 @@
 
     ractive.on('submit', function(event) {
         event.original.preventDefault();
-        callPinAPI(submitForm);
+        if (ractive.get('pmt_method') === "3") {
+            callPinAPI(submitForm);
+        } else {
+            submitForm()
+        }
     });
 
 
