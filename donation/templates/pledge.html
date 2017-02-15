@@ -71,7 +71,7 @@
 
 <div class="container" >
     <div class="donation-step [[step !== 1 ? 'collapse' : '']]" id="step-1">
-        <h1>100% of your donation will be granted directly to the charity of your choice</h1>
+        <h2>100% of your donation will be granted directly to the charity of your choice</h2>
         <h3>Select a charity:</h3>
         <div class="charities-container">
             [[#charities:i]]
@@ -80,7 +80,7 @@
                     <div class="charity-info">
                         <img class="charity-img" style="margin-top:[[ image_top_margin ]]px;"
                              src="static/[[ website_image ]]" alt="[[ website_label ]]">
-                        <h2 class="charity-title">[[ website_label ]]</h2>
+                        <span class="charity-title">[[ website_label ]]</span>
                     </div>
                     <div class="hover-overlay">
                         <a class="charity-details charityClick" on-click='@this.charity_click(name)' href="#">
@@ -111,7 +111,7 @@
     <div class="donation-step [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
         [[#if selected_charity]]
         [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
-        <h1>You have chosen [[ selected_charity.name ]].</h1>
+        <h2>You have chosen [[ selected_charity.name ]].</h2>
         [[/if ]]
 
         <form on-submit="submit" id='pledge-form'>
