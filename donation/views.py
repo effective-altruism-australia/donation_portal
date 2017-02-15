@@ -183,7 +183,7 @@ class PledgeView(View):
         if form.is_valid():
             form.save()
         else:
-            return JsonResponse({'errors': form.errors})
+            return JsonResponse({'errors': form.errors}, status=400)
 
         if int(request.POST.get('payment_method')) == 3:
             transaction = PinTransaction()
@@ -199,7 +199,7 @@ class PledgeView(View):
         if transaction.succeeded:
             return HttpResponseRedirect('/admin/donation/pledge/')
         else:
-            return HttpResponse("Error message: %s " % result)
+            return HttpResponse("Error message: %s " % result, status=400)
 
     @xframe_options_exempt
     def get(self, request):
