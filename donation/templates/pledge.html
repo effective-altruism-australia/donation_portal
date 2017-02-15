@@ -332,7 +332,10 @@
         set_recurring: function (is_recurring) {
             ractive.set({recurring: is_recurring});
             document.getElementById('id_recurring').checked = is_recurring;
-            ractive.set_pmt_method('1')
+
+            if (is_recurring) {
+                ractive.set_pmt_method('1');
+            }
         },
 
         set_donation_amount: function (amount) {
