@@ -122,17 +122,6 @@
         <form on-submit="submit" id='id_pledge_form'>
             {% csrf_token %}
 
-            {% for field in form %}
-                {% if field.name in invisibleFormFields %}
-                    <div class="form-group collapse" id="invisible_form_{{ field.name }}">
-                        {% if field.name not in form.hide_labels %}
-                            {% bootstrap_label field.label label_class="labels" %}
-                        {% endif %}
-                        {% bootstrap_field field layout="vertical" vertical_field_class="col-md-3" show_label=False %}
-                    </div>
-                {% endif %}
-            {% endfor %}
-
             <h1>How would you like to donate?</h1>
             <div class="donation-type-section">
                 <div data-toggle="buttons">
@@ -312,8 +301,7 @@
             pmt_method: '3',
             selected_charity_id: null,
             selected_charity: null,
-            charities: charities,
-            hidden_initial: ['amount', 'payment_method', 'recipient_org', 'recurring']
+            charities: charities
         },
         delimiters: ['[[', ']]'],
 
@@ -334,16 +322,13 @@
                             selected_charity_id: id,
                             selected_charity: selected_charity
                         });
-            document.getElementById('id_recipient_org').value = id;
             // For paypal
-            document.getElementById('id_item_name').value = 'Donation: '.concat(selected_charity.website_label);
+            // document.getElementById('id_item_name').value = 'Donation: '.concat(selected_charity.website_label);
             validate_cc();
         },
 
         set_recurring: function (is_recurring) {
             ractive.set({recurring: is_recurring});
-            document.getElementById('id_recurring').checked = is_recurring;
-
             if (is_recurring) {
                 ractive.set_pmt_method('1');
             }
@@ -365,7 +350,6 @@
 
         set_pmt_method: function (pmt_method) {
             ractive.set({pmt_method: pmt_method});
-            document.getElementById('id_payment_method').value = pmt_method;
         }
     });
 
@@ -437,10 +421,22 @@
     }
 
     function submitForm() {
+        var data = {
+            // Extra fields that Django wants, that aren't in the form data:
+            payment_method: ractive.get('pmt_method'),
+            recipient_org: ractive.get('selected_charity_id'),
+            recurring: ractive.get('recurring')
+        };
+        // Now we add all the data from the form:
+        var formData = $('#id_pledge_form').serializeArray();
+        for (var i = 0; i < formData.length; ++i) {
+            data[formData[i].name] = formData[i].value;
+        }
+
         $.ajax({
             url : "", // the endpoint
             type : "POST", // http method
-            data : $('#id_pledge_form').serialize(),
+            data : data,
 
             // handle a successful response
             success : function(json) {
@@ -455,6 +451,7 @@
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
             }
         });
+
         $('#id_pledge_form').find(":submit").removeAttr('disabled')
     }
 
