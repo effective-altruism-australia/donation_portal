@@ -265,6 +265,7 @@
             </p>
 
             <div class="form-actions">
+                <div id="results" class="pull-left"></div>
                 <button type="submit"
                         class="btn btn-success btn-lg pull-right subscribe"
                         value="Submit">
@@ -441,18 +442,21 @@
             // handle a successful response
             success : function(json) {
                 console.log(json); // log the returned json to the console
-                console.log("success"); // another sanity check
+                console.log("'success' response received"); // another sanity check
             },
 
             // handle a non-successful response
-            error : function(xhr,errmsg,err) {
-                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            error : function(xhr, errmsg, err) {
+                // add the error to the dom
+                $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Sorry, an unknown error occurred. Please check the data you entered, or try again.</div>");
+                // provide a bit more info about the error to the console
+                console.log(xhr.status + ": " + xhr.responseText);
+                // re-enable the button
+                $('#id_pledge_form').find(":submit").removeAttr('disabled');
             }
         });
 
-        $('#id_pledge_form').find(":submit").removeAttr('disabled')
+
     }
 
     ractive.on('submit', function(event) {
