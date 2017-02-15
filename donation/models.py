@@ -5,6 +5,8 @@ import arrow
 import re
 import os
 import json
+import random
+import string
 
 from django.db import models
 from django.template.loader import render_to_string
@@ -98,6 +100,14 @@ class Pledge(models.Model):
     drupal_uid = models.IntegerField(default=0, editable=False)
     drupal_username = models.TextField(blank=True, editable=False)
     drupal_preferred_donation_method = models.TextField(blank=True, editable=False)
+
+    def generate_reference(self):
+        if self.reference:  # for safety, don't overwrite
+            return self.reference
+        # TODO
+        self.reference = ''.join(random.choice('ABCDEF' + string.digits) for _ in range(12))
+        self.save()
+        return self.reference
 
     def save(self, *args, **kwargs):
         if not self.completed_time:

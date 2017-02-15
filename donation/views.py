@@ -183,9 +183,18 @@ class PledgeView(View):
         if form.is_valid():
             form.save()
         else:
+            # TODO status code
             return JsonResponse({'errors': form.errors}, status=400)
 
-        if int(request.POST.get('payment_method')) == 3:
+        pledge = form.instance
+        payment_method = request.POST.get('payment_method')
+        response_data = {'payment_method': payment_method}
+
+        if int(payment_method) == 1:
+            # bank transaction
+            response_data['bank_reference'] = pledge.generate_reference()
+            return JsonResponse(response_data)
+        elif int(payment_method) == 3:
             transaction = PinTransaction()
             transaction.card_token = request.POST.get('card_token')
             transaction.ip_address = request.POST.get('ip_address')
@@ -196,10 +205,10 @@ class PledgeView(View):
             transaction.pledge = form.instance
             transaction.save()
             result = transaction.process_transaction()  # Typically "Success" or an error message
-        if transaction.succeeded:
-            return HttpResponseRedirect('/admin/donation/pledge/')
-        else:
-            return HttpResponse("Error message: %s " % result, status=400)
+            if transaction.succeeded:
+                return JsonResponse({'succeeded': True})
+            else:
+                return JsonResponse({'errors': result}, status=400)
 
     @xframe_options_exempt
     def get(self, request):
