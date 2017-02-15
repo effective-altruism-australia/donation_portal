@@ -130,7 +130,6 @@ body {
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    width: 80%;
     margin: auto;
     min-height: 100px;
 }
@@ -165,11 +164,19 @@ body {
 }
 
 #id_pledge_form {
-    width: 80%;
+    width: 100%;
     margin: auto;
 }
 #id_pledge_form h1 {
     font-size: 28px;
+}
+
+/* Large screens */
+@media (min-width: 768px) {
+    #id_pledge_form {
+        width: 80%;
+        margin: auto;
+    }
 }
 
 .donor-details-section {
@@ -223,8 +230,8 @@ body {
     margin-right: 6px;
 }
 
-#id_bank_transfer,#id_recurring_notification {
-    margin: auto 15px;
+#id_bank_transfer {
+    margin: auto 5px;
 }
 
 /* Monochromatic colors of our base color*/

@@ -26,6 +26,10 @@ body { margin-top:20px; }
 .form-container label {
     display: block;
 }
+
+.form-container .checkbox label {
+    padding-left: 40px;
+}
 /* The old "center div vertically" hack */
 .form-container .display-table {
     display: table;

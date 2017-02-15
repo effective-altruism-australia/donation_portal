@@ -71,7 +71,7 @@
 </div>
 
 <div class="container" >
-    <div class="row setup-content [[step !== 1 ? 'collapse' : '']]" id="step-1">
+    <div class="donation-step [[step !== 1 ? 'collapse' : '']]" id="step-1">
         <p style="margin: 15px 0;">Please select a charity. We will grant 100% of your donation to them.</p>
         <div class="charities-container">
             [[#charities:i]]
@@ -94,7 +94,7 @@
     </div>
 
     [[#if selected_charity.name==='Against Malaria Foundation' & step === 2]]
-    <div class="row setup-content" id="step-2">
+    <div class="donation-step" id="step-2">
         <div class="selected-charity-box">
             <a href='https://www.againstmalaria.com/Donation.aspx?GroupID=86'>
             <img class="charity-img" src="static/[[ selected_charity.website_image ]]">
@@ -108,7 +108,7 @@
     </div>
     [[/if]]
 
-    <div class="row setup-content [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
+    <div class="donation-step [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
         [[#if selected_charity]]
         [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
         <div class="selected-charity-box">
@@ -180,28 +180,28 @@
                 <div class="panel-body form-horizontal">
                     <legend>Donor Details</legend>
                     <div class="form-group" id="form_first_name">
-                        <label class="control-label col-xs-3" for="id_first_name">Name</label>
-                        <div class="col-xs-9">
+                        <label class="control-label col-sm-3" for="id_first_name">Name</label>
+                        <div class="col-sm-9">
                             <input class="form-control" type="text" id="id_first_name" maxlength="1024" name="first_name" placeholder="Name" title="" value="">
                         </div>
                     </div>
 
                     <div class="form-group" id="form_email">
-                        <label class="control-label col-xs-3" for="id_email">Email</label>
-                        <div class="col-xs-9">
+                        <label class="control-label col-sm-3" for="id_email">Email</label>
+                        <div class="col-sm-9">
                             <input class="form-control" type="email" id="id_email" maxlength="254" name="email" placeholder="Email" required="" title="" value="" aria-required="true">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-xs-3 long-control-label" for="id_how_did_you_hear_about_us">How did you hear about us?</label>
-                        <div class="col-xs-9">
+                        <label class="control-label col-sm-3 long-control-label" for="id_how_did_you_hear_about_us">How did you hear about us?</label>
+                        <div class="col-sm-9">
                             <input class="form-control" type="text" id="id_how_did_you_hear_about_us" name="how_did_you_hear_about_us" placeholder="e.g. friends, family, Google, advertisements" title="" value="">
                         </div>
                     </div>
 
                     <div class="form-group" id="id_formgroup_subscribe_to_updates">
-                        <div class="checkbox col-xs-offset-3">
+                        <div class="checkbox col-sm-offset-3">
                             <label for="id_subscribe_to_updates"><input type="checkbox" id="id_subscribe_to_updates" name="subscribe_to_updates" value="on"> Send me news and updates</label>
                         </div>
                     </div>
@@ -212,8 +212,8 @@
                 <div class="panel-body form-horizontal">
                     <legend>Payment Details</legend>
                     <div class="payment-type form-group">
-                        <label class="control-label col-xs-3">Payment Method</label>
-                        <div class="col-xs-9">
+                        <label class="control-label col-sm-3">Payment Method</label>
+                        <div class="col-sm-9">
                             <button type="button"
                                     class="btn [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
                                     value="3"
@@ -238,8 +238,8 @@
                             </button>
                         </div>
                     </div>
-                        <p id="id_recurring_notification" class="[[recurring ? '' : 'collapse' ]]">
-                            We currently only accept monthly donations via bank transfer.
+                        <p id="id_recurring_notification" class="col-sm-offset-3 [[recurring ? '' : 'collapse' ]]">
+                            <strong>Note:</strong> We currently only accept monthly donations via bank transfer.
                         </p>
                     <hr />
 
@@ -278,7 +278,7 @@
         </div>
     </div>
 
-    <div class="row setup-content" id="step-3">
+    <div class="donation-step" id="step-3">
         <div class="col-xs-6 col-md-offset-3">
             <div class="col-md-12">
 
