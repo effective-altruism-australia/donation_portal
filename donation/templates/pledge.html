@@ -72,6 +72,7 @@
 
 <div class="container" >
     <div class="row setup-content [[step !== 1 ? 'collapse' : '']]" id="step-1">
+        <p style="margin: 15px 0;">Please select a charity. We will grant 100% of your donation to them.</p>
         <div class="charities-container">
             [[#charities:i]]
                 [[#if show_on_website ]]
@@ -114,7 +115,7 @@
             <img class="charity-img" src="static/[[ selected_charity.website_image ]]">
             <p class="donation-info">
                 You have earmarked your donation for [[ selected_charity.name ]].
-                100% of your donation will be granted to them.
+                We will grant 100% of your donation to them.
             </p>
         </div>
         [[/if ]]
