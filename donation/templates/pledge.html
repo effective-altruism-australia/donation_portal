@@ -342,11 +342,15 @@
             if (is_recurring) {
                 ractive.set_pmt_method('1');
             }
+            // Clear validation errors, if any
+            $('#results .no-frequency').parent().html("")
         },
 
         set_donation_amount: function (amount) {
             this.hide_other_donation_amount();
             ractive.set({donation_amount: amount});
+            // Clear validation errors, if any
+            $('#results .no-amount').parent().html("")
         },
 
         show_other_donation_amount: function () {
@@ -397,7 +401,8 @@
         return $.payment.validateCardNumber(value);
     }, "Please enter a valid credit card number.");
     $.validator.addMethod("cardExpiry", function (value, element) {
-        return $.payment.validateCardExpiry(value);
+        var expiry = $.payment.cardExpiryVal(value);
+        return $.payment.validateCardExpiry(expiry);
     }, "Invalid card expiry.");
     $.validator.addMethod("cardCVC", function (value, element) {
         return $.payment.validateCardCVC(value);
@@ -525,14 +530,14 @@
             validationFailed = true;
         }
 
-        if (!ractive.get('recurring') && !ractive.get('donation_amount')) {
-            $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency and amount.</div>");
+        if (ractive.get('recurring')==null && !ractive.get('donation_amount')) {
+            $('#results').html("<div class='no-amount no-frequency' style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency and amount.</div>");
             validationFailed = true;
-        } else if (!ractive.get('recurring')) {
-            $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency.</div>");
+        } else if (ractive.get('recurring')==null) {
+            $('#results').html("<div class='no-frequency' style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency.</div>");
             validationFailed = true;
         } else if (!ractive.get('donation_amount')) {
-            $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation amount.</div>");
+            $('#results').html("<div class='no-amount' style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation amount.</div>");
             validationFailed = true;
         }
 
