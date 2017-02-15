@@ -10,6 +10,7 @@ from django.db.models import Sum, Max, Min
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.views.generic import View, CreateView
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
 from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account, PinTransaction
@@ -175,6 +176,7 @@ def download_transactions(request):
 
 
 class PledgeView(View):
+    @xframe_options_exempt
     def post(self, request):
         form = PledgeForm(request.POST)
 
@@ -200,7 +202,7 @@ class PledgeView(View):
         else:
             return HttpResponse("Error message: %s " % result)
 
-
+    @xframe_options_exempt
     def get(self, request):
         paypal_dict = {
             "business": "placeholder@example.com",
