@@ -464,6 +464,21 @@
     ractive.on('submit', function(event) {
         event.original.preventDefault();
 
+        if (!ractive.get('recurring') && !ractive.get('donation_amount')) {
+            $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency and amount.</div>");
+            return;
+        }
+
+        if (!ractive.get('recurring')) {
+            $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency.</div>");
+            return;
+        }
+
+        if (!ractive.get('donation_amount')) {
+            $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation amount.</div>");
+            return;
+        }
+
         var $validator = $('#id_pledge_form').validate();
         if (!$validator.checkForm()) {
             $validator.showErrors();
