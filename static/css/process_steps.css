@@ -4,7 +4,7 @@ body {
 
 .stepwizard {
     display: inline-table;
-    width: 80%;
+    width: 100%;
     position: relative;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
@@ -35,12 +35,13 @@ body {
 .stepwizard-row:before {
     top: 14px;
     bottom: 0;
+    left: 0;
+    right: 0;
     position: absolute;
-    content: " ";
-    width: 100%;
+    content: "";
     height: 1px;
     background-color: #ccc;
-    z-order: 0;
+    z-index: 0;
     -webkit-box-sizing: unset;
     -moz-box-sizing: unset;
     box-sizing: unset;
