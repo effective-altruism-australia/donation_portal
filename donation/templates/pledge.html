@@ -297,8 +297,9 @@
 </div>
 </script>
 
-    <script>
+<script>
     var charity_database_ids = {{ charity_database_ids|safe }};
+
     var ractive = new Ractive({
         el: '#ractive_base',
         template: '#ractive_template',
@@ -318,11 +319,8 @@
         },
         delimiters: ['[[', ']]'],
 
-        set_step: function (i) {
-            ractive.set({step: i});
-            if (i == 2) {
-                validate_cc()
-            }
+        set_step: function (step) {
+            ractive.set({step: step});
         },
 
         charity_click: function (name) {
@@ -337,7 +335,6 @@
                         });
             // For paypal
             // document.getElementById('id_item_name').value = 'Donation: '.concat(selected_charity.website_label);
-            validate_cc();
         },
 
         set_recurring: function (is_recurring) {
@@ -381,6 +378,63 @@
             ractive.set({submit_enabled: true});
         }
     });
+
+
+    // Ractive has rendered by now, so we can set up our validation.
+    // (Because all the relevant elements are hidden and waiting.)
+    var $form = $('#id_pledge_form');
+
+    // We set up restrictions on credit card fields with jQuery.payment calls.
+    // Additionally, we have to *name them* for jQuery.validator to work.
+    // Repeat: jQuery.validator ignores fields without names!
+    $form.find('#cc-name')[0].name = 'cardName';
+    $form.find('#cc-number').payment('formatCardNumber')[0].name = 'cardNumber';
+    $form.find('#cc-expiry').payment('formatCardExpiry')[0].name = 'cardExpiry';
+    $form.find('#cc-cvc').payment('formatCardCVC')[0].name = 'cardCVC';
+
+    // Add custom validation methods to verify expiry and AMEX-ness of the credit card.
+    $.validator.addMethod("cardNumber", function (value, element) {
+        return $.payment.validateCardNumber(value);
+    }, "Please enter a valid credit card number.");
+    $.validator.addMethod("cardExpiry", function (value, element) {
+        return $.payment.validateCardExpiry(value);
+    }, "Invalid card expiry.");
+    $.validator.addMethod("cardCVC", function (value, element) {
+        return $.payment.validateCardCVC(value);
+    }, "Invalid CVC.");
+    $.validator.addMethod("notAMEX", function (value, element) {
+        return $.payment.cardType(value) !== 'amex';
+    }, "Sorry, we do not accept American Express.");
+
+    var validator = $form.validate({
+        rules: {
+            // Validators for cardName:
+            cardName: {
+                // Since we don't have a custom validator ("yet! growth mindset!"), we at least make it required:
+                required: true
+            },
+            // This gives the validators to apply to the field with name "cardNumber":
+            cardNumber: {
+                cardNumber: true,
+                notAMEX: true
+            },
+            // Again, validators to apply to the field with name "cardExpiry":
+            cardExpiry: {
+                cardExpiry: true
+            },
+            // Validators for CVC:
+            cardCVC: {
+                cardCVC: true
+            }
+        },
+        highlight: function (element) {
+            $(element).closest('.form-control').removeClass('success').addClass('error');
+        },
+        unhighlight: function (element) {
+            $(element).closest('.form-control').removeClass('error').addClass('success');
+        }
+    });
+
 
     function callPinAPI(callBack) {
         // Disable the submit button to prevent multiple clicks
@@ -464,24 +518,29 @@
     ractive.on('submit', function(event) {
         event.original.preventDefault();
 
+        var validationFailed = false;
+
+        if (!validator.checkForm()) {
+            validator.showErrors();
+            validationFailed = true;
+        }
+
         if (!ractive.get('recurring') && !ractive.get('donation_amount')) {
             $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency and amount.</div>");
-            return;
-        }
-
-        if (!ractive.get('recurring')) {
+            validationFailed = true;
+        } else if (!ractive.get('recurring')) {
             $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency.</div>");
-            return;
-        }
-
-        if (!ractive.get('donation_amount')) {
+            validationFailed = true;
+        } else if (!ractive.get('donation_amount')) {
             $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation amount.</div>");
-            return;
+            validationFailed = true;
         }
 
-        var $validator = $('#id_pledge_form').validate();
-        if (!$validator.checkForm()) {
-            $validator.showErrors();
+        if (ractive.get('pmt_method') === '3' && !validate_cc()) {
+            validationFailed = true;
+        }
+
+        if (validationFailed) {
             return;
         }
 
@@ -492,9 +551,6 @@
         }
     });
 
-
-
-
-    </script>
+</script>
 </body>
 </html>
