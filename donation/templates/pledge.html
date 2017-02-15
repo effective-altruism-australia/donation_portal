@@ -274,9 +274,9 @@
 
             <div class="form-actions">
                 <div id="results" class="pull-left"></div>
-                <button type="submit"
-                        class="btn btn-success btn-lg pull-right subscribe"
-                        value="Submit">
+                <button type="submit" class="btn btn-success btn-lg pull-right subscribe"
+                        [[#if !submit_enabled]]disabled[[/if]]
+                     >
                     Submit
                 </button>
             </div>
@@ -313,7 +313,8 @@
             charities: charities,
             has_pin_errors: false,
             pin_error_description: null,
-            pin_error_messages: null
+            pin_error_messages: null,
+            submit_enabled: true
         },
         delimiters: ['[[', ']]'],
 
@@ -370,12 +371,20 @@
 
         set_pin_errors: function (error_description, messages) {
             ractive.set({has_pin_errors: true, pin_error_description: error_description, pin_error_messages: messages});
+        },
+
+        set_submit_disabled: function () {
+            ractive.set({submit_enabled: false});
+        },
+
+        set_submit_enabled: function () {
+            ractive.set({submit_enabled: true});
         }
     });
 
     function callPinAPI(callBack) {
         // Disable the submit button to prevent multiple clicks
-        $('#id_pledge_form').find(":submit").attr({disabled: true});
+        ractive.set_submit_disabled();
 
         // Clear prior errors.
         ractive.clear_pin_errors();
@@ -409,7 +418,7 @@
             } else {
                 ractive.set_pin_errors(response.error_description, response.messages);
                 // Re-enable the button.
-                $('#id_pledge_form').find(":submit").removeAttr('disabled');
+                ractive.set_submit_enabled();
             }
         }
     }
@@ -445,7 +454,7 @@
                 // provide a bit more info about the error to the console
                 console.log(xhr.status + ": " + xhr.responseText);
                 // re-enable the button
-                $('#id_pledge_form').find(":submit").removeAttr('disabled');
+                ractive.set_submit_enabled();
             }
         });
 

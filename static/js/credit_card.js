@@ -51,11 +51,4 @@ validate_cc = function () {
         };
 
         $form.find('.subscribe').prop('disabled', true);
-        var readyInterval = setInterval(function () {
-            if (paymentFormReady()) {
-                $form.find('.subscribe').prop('disabled', false);
-                clearInterval(readyInterval);
-            }
-        }, 250)
-
     };
