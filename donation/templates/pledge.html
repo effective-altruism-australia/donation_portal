@@ -490,7 +490,7 @@ We have also emailed you these instructions – please check your spam folder if
 
         // We needed to name the credit card fields for jQuery.validator to work
         // but we don't want to submit them, so get rid of the names now.
-        var $form = $('#pledge_form');
+        var $form = $('#pledge-form');
         $form.find('#cc-name').removeAttr('name');
         $form.find('#cc-number').payment('formatCardNumber').removeAttr('name');
         $form.find('#cc-expiry').payment('formatCardExpiry').removeAttr('name');
