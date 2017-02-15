@@ -24,10 +24,9 @@ cryptography
 Django==1.8.*
 django-bootstrap3
 django-paypal
-git+https://github.com/effective-altruism-australia/django-pinpayments.git@live
+django-pinpayments
 django-reversion
 gunicorn
-pandas
 pdfkit
 Pillow
 psycopg2
