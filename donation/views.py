@@ -183,8 +183,10 @@ class PledgeView(View):
         if form.is_valid():
             form.save()
         else:
-            # TODO status code
-            return JsonResponse({'errors': form.errors}, status=400)
+            return JsonResponse({
+                'error': 'form-error',
+                'form_errors': form.errors
+            }, status=400)
 
         pledge = form.instance
         payment_method = request.POST.get('payment_method')
@@ -200,15 +202,20 @@ class PledgeView(View):
             transaction.ip_address = request.POST.get('ip_address')
             transaction.amount = form.cleaned_data['amount']  # Amount in dollars. Define with your own business logic.
             transaction.currency = 'AUD'  # Pin supports AUD and USD. Fees apply for currency conversion.
-            transaction.description = 'Payment for invoice #12508'  # Define with your own business logic
-            transaction.email_address = request.POST.get('email')
-            transaction.pledge = form.instance
+            transaction.description = 'Donation to Effective Altruism Australia'  # Define with your own business logic
+            transaction.email_address = pledge.email
+            transaction.pledge = pledge
             transaction.save()
-            result = transaction.process_transaction()  # Typically "Success" or an error message
+            transaction.process_transaction()  # Typically "Success" or an error message
             if transaction.succeeded:
-                return JsonResponse({'succeeded': True})
+                response_data['succeeded'] = True
+                return JsonResponse(response_data)
             else:
-                return JsonResponse({'errors': result}, status=400)
+                return JsonResponse({
+                    'error': 'pin-error',
+                    'pin_response': transaction.pin_response,
+                    'pin_response_text': transaction.pin_response_text,
+                }, status=400)
 
     @xframe_options_exempt
     def get(self, request):

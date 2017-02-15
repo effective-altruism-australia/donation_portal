@@ -489,18 +489,15 @@ We have also emailed you these instructions – please check your spam folder if
         data['recurring'] = ractive.get('recurring');
 
         // We needed to name the credit card fields for jQuery.validator to work
-        // but we don't want to submit them, so get rid of the names now.
-        var $form = $('#pledge-form');
-        $form.find('#cc-name').removeAttr('name');
-        $form.find('#cc-number').payment('formatCardNumber').removeAttr('name');
-        $form.find('#cc-expiry').payment('formatCardExpiry').removeAttr('name');
-        $form.find('#cc-cvc').payment('formatCardCVC').removeAttr('name');
-
-
+        // but we don't want to submit them, so we need to remove the fields here.
+        var card_fields = $('fieldset#pin_credit_card_details input').map(function(_, elt) {return elt.name;});
         // Now we add all the data from the form:
-        var formData = $form.serializeArray();
+        var formData = $('#pledge-form').serializeArray();
         for (var i = 0; i < formData.length; ++i) {
-            data[formData[i].name] = formData[i].value;
+            var field_name = formData[i].name;
+            if ($.inArray(field_name, card_fields) == -1) {
+                data[field_name] = formData[i].value;
+            }
         }
 
         $.ajax({
@@ -518,24 +515,33 @@ We have also emailed you these instructions – please check your spam folder if
                         bank_reference: json['bank_reference']
                     });
                 }
+                else if (json['payment_method']==='3') {
+                    ractive.set({
+                        step: 3,
+                    });
+                }
 
             },
 
             // handle a non-successful response
             error : function(xhr, errmsg, err) {
                 console.log(xhr.status + ": " + xhr.responseText);
-                message = "Sorry, an unknown error occurred. Please check the data you entered, or try again."
+                var message = "Sorry, an unknown error occurred. Please check the data you entered, or try again."
                 // Parse the errors
-                try {
-                    var errors = JSON.parse(xhr.responseText)['errors'];
-                    var message = Object.keys(errors).map(function (key) {
-                        return errors[key].join(' ');
-                    }).join(' ');
-                } catch(err) {
-                    console.log(err)
+                if (xhr.status == 400) {
+                    var response_data = JSON.parse(xhr.responseText);
+                    if (response_data['error'] == 'form-error') {
+                        var errors = response_data['form_errors']
+                        message = Object.keys(errors).map(function (key) {
+                           return errors[key].join(' ');
+                        }).join(' ');
+                    } else if (response_data['error'] == 'pin-error') {
+                        message = response_data['pin_response']
+                    }
                 }
                 // add the error to the dom
                 $('#results').html("<div style='padding: 12px; color: red; font-weight: bold;'>" + message + "</div>");
+
                 // re-enable the button
                 ractive.set_submit_enabled();
             }
