@@ -124,11 +124,11 @@
                     on-click='@this.set_recurring(true)'>Monthly
                 </button>
             </div>
+            <div id="donation-frequency-error"></div>
 
             <h3 class="section-label">
                 How much would you like to donate?
             </h3>
-
             <div class="button-row">
                 {% for amt_text, amt_val in form.donation_amounts %}
                     <button type="button"
@@ -151,6 +151,7 @@
                     </div>
                 </div>
             </div>
+            <div id="donation-amount-error" ></div>
 
             <div class="panel panel-default form-container details-section donor-details-section">
                 <div class="panel-body form-horizontal">
@@ -260,12 +261,12 @@
             </p>
 
             <div class="form-actions">
-                <div id="results" class="pull-left"></div>
                 <button type="submit" class="btn btn-success btn-lg pull-right subscribe"
                         [[#if !submit_enabled]]disabled[[/if]]
                      >
                     Submit
                 </button>
+                <div id="other-errors"></div>
             </div>
         </form>
 
@@ -356,14 +357,14 @@
                 ractive.set_pmt_method('1');
             }
             // Clear validation errors, if any
-            $('#results .no-frequency').parent().html("")
+            $('#donation-frequency-error').html("");
         },
 
         set_donation_amount: function (amount) {
             this.hide_other_donation_amount();
             ractive.set({donation_amount: amount});
             // Clear validation errors, if any
-            $('#results .no-amount').parent().html("")
+            $('#donation-amount-error').html("");
         },
 
         show_other_donation_amount: function () {
@@ -549,8 +550,7 @@
                     }
                 }
                 // add the error to the dom
-                $('#results').html("<div style='padding: 12px; color: red; font-weight: bold;'>" + message + "</div>");
-
+                $('#other-errors').html("<div class='error-text'>" + message + "</div>");
                 // re-enable the button
                 ractive.set_submit_enabled();
             }
@@ -569,14 +569,12 @@
             validationFailed = true;
         }
 
-        if (ractive.get('recurring')==null && !ractive.get('donation_amount')) {
-            $('#results').html("<div class='no-amount no-frequency' style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency and amount.</div>");
+        if (!ractive.get('recurring')) {
+            $('#donation-frequency-error').html("<div class='error-text'>Please choose a donation frequency.</div>");
             validationFailed = true;
-        } else if (ractive.get('recurring')==null) {
-            $('#results').html("<div class='no-frequency' style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation frequency.</div>");
-            validationFailed = true;
-        } else if (!ractive.get('donation_amount')) {
-            $('#results').html("<div class='no-amount' style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation amount.</div>");
+        }
+        if (!ractive.get('donation_amount')) {
+            $('#donation-amount-error').html("<div class='error-text'>Please choose a donation amount.</div>");
             validationFailed = true;
         }
 

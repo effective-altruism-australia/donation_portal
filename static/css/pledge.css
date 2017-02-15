@@ -193,7 +193,8 @@ h3 {
     padding-top: 0;
 }
 .button-row {
-    margin: 12px 0 24px 0;
+    /* -6px is to cover for the 6px margin on the buttons */
+    margin: -6px;
 
     display: flex;
     flex-direction: row;
@@ -205,7 +206,7 @@ h3 {
 .button-row button {
     width: 100px;
     height: 40px;
-    margin: 0 10px 10px 0;
+    margin: 6px;
 }
 
 .button-row input {
@@ -229,6 +230,12 @@ h3 {
 p.help-text {
     text-align: center;
 }
+
+.error-text {
+    margin-top: 2px;
+    color: #a94442;
+}
+
 /* Monochromatic colors of our base color*/
 /* #4c8fb1, #44819f, #3d728d */
 /* Dark tint: #2d556a */
