@@ -24,7 +24,6 @@ cryptography
 Django==1.8.*
 django-bootstrap3
 django-paypal
-django-pinpayments
 django-reversion
 gunicorn
 pdfkit
