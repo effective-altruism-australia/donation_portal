@@ -38,7 +38,6 @@
     <link href="{% static 'css/pledge.css' %}" type="text/css" media="all" rel="stylesheet">
     <link href="{% static 'css/process_steps.css' %}" type="text/css" media="all" rel="stylesheet">
     <link href="{% static 'css/credit_card.css' %}" type="text/css" media="all" rel="stylesheet">
-    <script type="text/javascript" src="{% static 'js/credit_card.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/charities.js' %}"></script>
 
     {% pin_header "test" %}
@@ -388,14 +387,6 @@
     // (Because all the relevant elements are hidden and waiting.)
     var $form = $('#id_pledge_form');
 
-    // We set up restrictions on credit card fields with jQuery.payment calls.
-    // Additionally, we have to *name them* for jQuery.validator to work.
-    // Repeat: jQuery.validator ignores fields without names!
-    $form.find('#cc-name')[0].name = 'cardName';
-    $form.find('#cc-number').payment('formatCardNumber')[0].name = 'cardNumber';
-    $form.find('#cc-expiry').payment('formatCardExpiry')[0].name = 'cardExpiry';
-    $form.find('#cc-cvc').payment('formatCardCVC')[0].name = 'cardCVC';
-
     // Add custom validation methods to verify expiry and AMEX-ness of the credit card.
     $.validator.addMethod("cardNumber", function (value, element) {
         return $.payment.validateCardNumber(value);
@@ -453,7 +444,8 @@
 
         // Fetch details required for the createToken call to Pin
         var card = {
-            number: $('#cc-number').val(),
+            // Removing spaces from cc-number is necessary for the Pin test cards to work
+            number: $('#cc-number').val().replace(/\s/g, ''),
             name: $('#cc-name').val(),
             expiry_month: expiry.month,
             expiry_year: expiry.year,
@@ -489,8 +481,18 @@
             recipient_org: ractive.get('selected_charity_id'),
             recurring: ractive.get('recurring')
         };
+
+        // We needed to name the credit card fields for jQuery.validator to work
+        // but we don't want to submit them, so get rid of the names now.
+        var $form = $('#id_pledge_form');
+        $form.find('#cc-name').removeAttr('name');
+        $form.find('#cc-number').payment('formatCardNumber').removeAttr('name');
+        $form.find('#cc-expiry').payment('formatCardExpiry').removeAttr('name');
+        $form.find('#cc-cvc').payment('formatCardCVC').removeAttr('name');
+
+
         // Now we add all the data from the form:
-        var formData = $('#id_pledge_form').serializeArray();
+        var formData = $form.serializeArray();
         for (var i = 0; i < formData.length; ++i) {
             data[formData[i].name] = formData[i].value;
         }
@@ -508,10 +510,19 @@
 
             // handle a non-successful response
             error : function(xhr, errmsg, err) {
-                // add the error to the dom
-                $('#results').html("<div style='padding: 12px; color: darkred; font-weight: bold;'>Sorry, an unknown error occurred. Please check the data you entered, or try again.</div>");
-                // provide a bit more info about the error to the console
                 console.log(xhr.status + ": " + xhr.responseText);
+                message = "Sorry, an unknown error occurred. Please check the data you entered, or try again."
+                // Parse the errors
+                try {
+                    var errors = JSON.parse(xhr.responseText)['errors'];
+                    var message = Object.keys(errors).map(function (key) {
+                        return errors[key].join(' ');
+                    }).join(' ');
+                } catch(err) {
+                    console.log(err)
+                }
+                // add the error to the dom
+                $('#results').html("<div style='padding: 12px; color: red; font-weight: bold;'>" + message + "</div>");
                 // re-enable the button
                 ractive.set_submit_enabled();
             }
@@ -538,10 +549,6 @@
             validationFailed = true;
         } else if (!ractive.get('donation_amount')) {
             $('#results').html("<div class='no-amount' style='padding: 12px; color: darkred; font-weight: bold;'>Please choose a donation amount.</div>");
-            validationFailed = true;
-        }
-
-        if (ractive.get('pmt_method') === '3' && !validate_cc()) {
             validationFailed = true;
         }
 
