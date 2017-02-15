@@ -50,21 +50,16 @@
 <div id="ractive_base"></div>
 
 <script id="ractive_template" type="text/html">
+
 <div class="container">
-    <div class="stepwizard">
-        <div class="stepwizard-row setup-panel">
-            <div class="stepwizard-step">
-                <a href="#" type="button" class="btn btn-circle [[step === 1 ? 'current-step' : 'completed-step' ]]" on-click="@this.set_step(1)">1</a>
-                <p>Charities</p>
-            </div>
-            <div class="stepwizard-step">
-                <a href="#" type="button" class="btn btn-circle [[step === 2 ? 'current-step' : step > 2 ? 'completed-step' : 'disabled-step' ]]" disabled=[[step < 2]] on-click="@this.set_step(2)">2</a>
-                <p>Payment</p>
-            </div>
-            <div class="stepwizard-step">
-                <a href="#" type="button" class="btn btn-circle [[step === 3 ? 'current-step' : 'disabled-step' ]]" disabled=[[step < 3]] on-click="@this.set_step(3)">3</a>
-                <p>Confirmation</p>
-            </div>
+    <div class="donation-page-header">
+        <h1 class="page-title">
+            [[ step === 1 ? 'Partner Charities' : step === 2 ? 'Payment' : 'Complete Payment' ]]
+        </h1>
+        <div class="donation-progress">
+            <div class="progress-step [[step === 1 ? 'current-step' : '' ]]">1</div>
+            <div class="progress-step [[step === 2 ? 'current-step' : '' ]]">2</div>
+            <div class="progress-step [[step === 3 ? 'current-step' : '' ]]">3</div>
         </div>
     </div>
 </div>
