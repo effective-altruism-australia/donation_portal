@@ -163,11 +163,11 @@ body {
     }
 }
 
-#id_pledge_form {
+#pledge-form {
     width: 100%;
     margin: auto;
 }
-#id_pledge_form h1 {
+#pledge-form h1 {
     font-size: 28px;
 }
 
@@ -230,7 +230,7 @@ body {
     margin-right: 6px;
 }
 
-#id_bank_transfer {
+#bank-transfer-instructions {
     margin: auto 5px;
 }
 

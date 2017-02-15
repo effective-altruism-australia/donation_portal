@@ -118,7 +118,8 @@
             </p>
         </div>
         [[/if ]]
-        <form on-submit="submit" id='id_pledge_form'>
+
+        <form on-submit="submit" id='pledge-form'>
             {% csrf_token %}
 
             <h1>How would you like to donate?</h1>
@@ -242,7 +243,7 @@
                     <hr />
 
                     <div class="payment-subsections" id="id_payment_options">
-                        <div class="payment-subsection [[pmt_method != '1' ? 'collapse' : '' ]]" id="id_bank_transfer">
+                        <div class="payment-subsection [[pmt_method != '1' ? 'collapse' : '' ]]" id="bank-transfer-instructions">
                             <p>After you submit this form, we will give you our account details and a unique reference number.</p>
                             [[#if recurring]]
                             <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
@@ -402,7 +403,7 @@ We have also emailed you these instructions – please check your spam folder if
 
     // Ractive has rendered by now, so we can set up our validation.
     // (Because all the relevant elements are hidden and waiting.)
-    var $form = $('#id_pledge_form');
+    var $form = $('#pledge-form');
 
     // Add custom validation methods to verify expiry and AMEX-ness of the credit card.
     $.validator.addMethod("cardNumber", function (value, element) {
@@ -502,7 +503,7 @@ We have also emailed you these instructions – please check your spam folder if
 
         // We needed to name the credit card fields for jQuery.validator to work
         // but we don't want to submit them, so get rid of the names now.
-        var $form = $('#id_pledge_form');
+        var $form = $('#pledge_form');
         $form.find('#cc-name').removeAttr('name');
         $form.find('#cc-number').payment('formatCardNumber').removeAttr('name');
         $form.find('#cc-expiry').payment('formatCardExpiry').removeAttr('name');
