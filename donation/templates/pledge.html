@@ -255,6 +255,14 @@
 
                         <div class="payment-subsection [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
                             {% pin_form %}
+                            [[#if has_pin_errors ]]
+                            <div class="pin-errors">
+                                <h3>[[pin_error_description]]</h3>
+                                [[#pin_error_messages ]]
+                                <p>[[message]]</p>
+                                [[/for]]
+                            </div>
+                            [[/if]]
                         </div>
                     </div>
                 </div>
@@ -302,7 +310,10 @@
             pmt_method: '3',
             selected_charity_id: null,
             selected_charity: null,
-            charities: charities
+            charities: charities,
+            has_pin_errors: false,
+            pin_error_description: null,
+            pin_error_messages: null
         },
         delimiters: ['[[', ']]'],
 
@@ -351,21 +362,26 @@
 
         set_pmt_method: function (pmt_method) {
             ractive.set({pmt_method: pmt_method});
+        },
+
+        clear_pin_errors: function () {
+            ractive.set({has_pin_errors: false});
+        },
+
+        set_pin_errors: function (error_description, messages) {
+            ractive.set({has_pin_errors: true, pin_error_description: error_description, pin_error_messages: messages});
         }
     });
 
     function callPinAPI(callBack) {
-        var $form = $('#id_pledge_form'),
-            $errors = $form.find('.errors'),
-            $submitButton = $form.find(":submit");
-
-        // $errors.hide();
-
         // Disable the submit button to prevent multiple clicks
-        $submitButton.attr({disabled: true});
+        $('#id_pledge_form').find(":submit").attr({disabled: true});
+
+        // Clear prior errors.
+        ractive.clear_pin_errors();
 
         // Convert expiry string into year and month values for Pin
-        var expiry = $.payment.cardExpiryVal($('#cc-expiry').val())
+        var expiry = $.payment.cardExpiryVal($('#cc-expiry').val());
 
         // Fetch details required for the createToken call to Pin
         var card = {
@@ -385,38 +401,15 @@
         Pin.createToken(card, handlePinResponse);
 
         function handlePinResponse(response) {
-            console.log(response)
-            var $form = $('#id_pledge_form');
-
+            console.log(response);
             if (response.response) {
                 // Add the card token and ip address of the customer to the form
                 // You will need to post these to Pin when creating the charge.
-                $('<input>')
-                    .attr({type: 'hidden', name: 'card_token'})
-                    .val(response.response.token)
-                    .appendTo($form);
-                $('<input>')
-                    .attr({type: 'hidden', name: 'ip_address'})
-                    .val(response.ip_address)
-                    .appendTo($form);
-
-                callBack()
+                callBack({card_token: response.response.token, ip_address: response.ip_address})
             } else {
-                var $errorList = $errors.find('ul');
-
-                $errors.find('h3').text(response.error_description);
-                $errorList.empty();
-
-                if (response.messages) {
-                    $.each(response.messages, function (index, errorMessage) {
-                        $('<li>')
-                            .text(errorMessage.message)
-                            .appendTo($errorList);
-                    });
-                }
-
-                $errors.show();
-                $submitButton.removeAttr('disabled');
+                ractive.set_pin_errors(response.error_description, response.messages);
+                // Re-enable the button.
+                $('#id_pledge_form').find(":submit").removeAttr('disabled');
             }
         }
     }
