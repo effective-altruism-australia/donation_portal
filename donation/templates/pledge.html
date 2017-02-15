@@ -276,6 +276,10 @@
     </div>
 
     <div class="donation-step [[step !== 3 ? 'collapse' : '']]" id="step-3">
+        <div class="payment_option [[pmt_method != '3' ? 'collapse' : '' ]]">
+            <p>Thank you for your donation.</p>
+            <p>Receipt: [[receipt_url]]</p>
+        </div>
         <div class="payment_option [[pmt_method != '1' ? 'collapse' : '' ]]">
             <p>You've completed the first step. Once you've completed the last step (below), we'll make sure 100% of
                 your donation will go directly to helping people through [[ selected_charity.name ]]
