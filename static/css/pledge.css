@@ -131,10 +131,6 @@ h3 {
     box-sizing: content-box;
 }
 
-.error {
-    color: red;
-}
-
 .selected-charity-box {
     display: flex;
     flex-direction: row;
@@ -269,4 +265,3 @@ p.help-text {
     background-color: #4c8fb1;
     border-color: #3c728d;
 }
-

@@ -485,10 +485,10 @@
             }
         },
         highlight: function (element) {
-            $(element).closest('.form-control').removeClass('success').addClass('error');
+            $(element).closest('.form-group').addClass('has-error');
         },
         unhighlight: function (element) {
-            $(element).closest('.form-control').removeClass('error').addClass('success');
+            $(element).closest('.form-group').removeClass('has-error');
         }
     });
 
