@@ -63,9 +63,7 @@
             <div class="progress-step [[step === 3 ? 'current-step' : '' ]]">3</div>
         </div>
     </div>
-</div>
 
-<div class="container" >
     <div class="donation-step [[step !== 1 ? 'collapse' : '']]" id="step-1">
         <h2>100% of your donation will be granted to the charity of your choice</h2>
         <h3>Select a charity:</h3>
@@ -263,7 +261,7 @@
             </p>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-success btn-lg pull-right subscribe"
+                <button type="submit" class="btn btn-success btn-lg"
                         [[#if !submit_enabled]]disabled[[/if]]
                      >
                      [[#if submit_enabled]]Donate[[else]]Processing...[[/if]]

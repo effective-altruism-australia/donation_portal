@@ -15,6 +15,7 @@ h3 {
 
 .container {
     max-width: 900px;
+    margin-bottom: 60px;
     width: auto;
 }
 
@@ -227,9 +228,15 @@ p.help-text {
     text-align: center;
 }
 
+.form-actions {
+    text-align: right;
+    float: right;
+}
+
 .error-text {
-    margin-top: 2px;
+    font-weight: 400;
     color: #a94442;
+    margin: 4px 0 0 0;
 }
 
 .complete-next-steps {
