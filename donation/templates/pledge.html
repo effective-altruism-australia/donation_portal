@@ -443,6 +443,11 @@
     // (Because all the relevant elements are hidden and waiting.)
     var $form = $('#pledge-form');
 
+    // We set up restrictions on credit card fields with jQuery.payment calls.
+    $form.find('#cc-number').payment('formatCardNumber');
+    $form.find('#cc-expiry').payment('formatCardExpiry');
+    $form.find('#cc-cvc').payment('formatCardCVC');
+
     // Add custom validation methods to verify expiry and AMEX-ness of the credit card.
     $.validator.addMethod("cardNumber", function (value, element) {
         return $.payment.validateCardNumber(value);
