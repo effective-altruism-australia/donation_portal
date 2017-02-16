@@ -13,7 +13,7 @@ from django.views.generic import View, CreateView
 from django.views.decorators.clickjacking import xframe_options_exempt
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
-from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account, PinTransaction, Receipt
+from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account, PinTransaction, Receipt, RecurringFrequency
 from paypal.standard.forms import PayPalPaymentsForm
 
 
@@ -203,6 +203,9 @@ class PledgeView(View):
             }, status=400)
 
         pledge = form.instance
+        if pledge.recurring:
+            pledge.recurring_frequency = RecurringFrequency.MONTHLY
+            pledge.save()
         payment_method = request.POST.get('payment_method')
         response_data = {'payment_method': payment_method}
 
@@ -224,7 +227,8 @@ class PledgeView(View):
             if transaction.succeeded:
                 response_data['succeeded'] = True
                 receipt = transaction.receipt_set.first()
-                response_data['receipt_url'] = reverse('download-receipt', kwargs={'pk': receipt.pk, 'secret': receipt.secret})
+                response_data['receipt_url'] = reverse('download-receipt',
+                                                       kwargs={'pk': receipt.pk, 'secret': receipt.secret})
                 return JsonResponse(response_data)
             else:
                 return JsonResponse({
