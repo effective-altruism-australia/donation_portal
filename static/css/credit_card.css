@@ -21,6 +21,7 @@
 }
 @media (min-width: 768px) {
     .multi-form-group {
+        display: flex;
         margin-right: -15px;
         margin-left: -15px;
     }
