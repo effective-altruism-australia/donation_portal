@@ -266,7 +266,7 @@
                 <button type="submit" class="btn btn-success btn-lg pull-right subscribe"
                         [[#if !submit_enabled]]disabled[[/if]]
                      >
-                    Donate
+                     [[#if submit_enabled]]Donate[[else]]Processing...[[/if]]
                 </button>
                 <div id="other-errors"></div>
             </div>
