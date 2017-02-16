@@ -516,7 +516,6 @@
         Pin.createToken(card, handlePinResponse);
 
         function handlePinResponse(response) {
-            console.log(response);
             if (response.response) {
                 // Add the card token and ip address of the customer to the form
                 // You will need to post these to Pin when creating the charge.
@@ -557,8 +556,6 @@
 
             // handle a successful response
             success : function(json) {
-                console.log(json); // log the returned json to the console
-                console.log("'success' response received"); // another sanity check
                 if (json['payment_method']==='1') {
                     ractive.set({
                         step: 3,
