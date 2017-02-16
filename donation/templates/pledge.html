@@ -143,7 +143,7 @@
                         on-click="@this.show_other_donation_amount()"
                         value="other">Other
                 </button>
-                <div class="form-group [[ is_custom_amount ? '' : 'collapse' ]]" id="form_donation_amount">
+                <div class="form-group [[ is_custom_amount ? '' : 'collapse' ]]" id="form-donation-amount">
                     <label class="sr-only control-label" for="id_amount">Amount</label>
                     <div class="input-group">
                         <span class="input-group-addon">$</span>
@@ -257,7 +257,7 @@
             </div>
 
             <p class="help-text">
-                Having a problem donating? Please let us know at <a href="mailto://info@effectivealtruiusm.org.au">info@effectivealtruism.org.au</a>.
+                Having a problem donating? Please let us know at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a>.
             </p>
 
             <div class="form-actions">
@@ -281,30 +281,48 @@
             <p>Here is your <a href="[[receipt_url]]">receipt</a>. We've also emailed it to you.</p>
         </div>
         <div class="payment_option [[pmt_method != '1' ? 'collapse' : '' ]]">
-            <p>You've completed the first step. Once you've completed the last step (below), we'll make sure 100% of
-                your donation will go directly to helping people through [[ selected_charity.name ]]
-                and send you a tax deductible receipt.
-            </p>
-            <h3>What to do next?</h3>
+            <h2>Thank you Thomas!</h2>
             <p>
-                Please make sure that you complete the process by
-                [[#if recurring]]
-                setting up a monthly periodic payment for
-                [[else]]
-                making a bank transfer of
-                [[/if]]
-                $[[ donation_amount ]] to
+                100% of your donation will go directly to [[ selected_charity.name ]].
             </p>
-            <p>
-                <strong>Account Name</strong>: Effective Altruism Australia<br>
-                <strong>BSB</strong>: 083170<br>
-                <strong>Account No</strong>: 306556167<br>
-                <strong>Unique Reference Number</strong>: [[ bank_reference ]]
-            </p>
-            <p>Please email us at <a href="mailto://info@effectivealtruiusm.org.au">info@effectivealtruism.org.au</a> if you have any questions.</p>
-            <p>
-                We have also emailed you these instructions &ndash; please check your spam folder if you have not received them.
-            </p>
+            <div class="complete-next-steps">
+                <h3>What to do next?</h3>
+                <p>
+                    Please make sure that you complete the process by
+                    [[#if recurring]]
+                    setting up a monthly periodic payment for
+                    [[else]]
+                    making a bank transfer of
+                    [[/if]]
+                    $[[ donation_amount ]] to:
+                </p>
+                <p>
+                    <strong>Account Name</strong>: Effective Altruism Australia (don't worry if it doesn't fit)<br>
+                    <strong>BSB</strong>: 083170<br>
+                    <strong>Account No</strong>: 306556167<br>
+                    <strong>Unique Reference Number</strong>: [[ bank_reference ]] (put in the transaction description)
+                </p>
+            </div>
+
+            <div class="complete-other-info">
+                <h3>
+                    Receipt
+                </h3>
+                <p>
+                    We will send you a tax deductible receipt once we have confirmed the bank transfer.
+                </p>
+
+                <h3>Any questions?</h3>
+                <p>
+                    Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 3 9349 4062, if you have any questions.
+                </p>
+            </div>
+
+            <div class="complete-other-info">
+                <p>
+                    We have also emailed you these instructions &ndash; please check your spam folder if you have not received them.
+                </p>
+            </div>
             <p>
                 Best wishes and thanks,<br>
                 The team at Effective Altruism Australia
