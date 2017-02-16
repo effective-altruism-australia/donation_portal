@@ -213,8 +213,8 @@ h3 {
     height: 40px;
 }
 
-#form_donation_amount {
-    margin: 0;
+#form-donation-amount {
+    margin: 6px;
     max-width: 150px;
     align-self: flex-start;
 }
@@ -234,6 +234,17 @@ p.help-text {
 .error-text {
     margin-top: 2px;
     color: #a94442;
+}
+
+.complete-next-steps {
+    padding: 12px 24px;
+    background-color: rgba(0,0,0,0.05);
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.complete-other-info {
+    margin-bottom: 30px;
 }
 
 /* Monochromatic colors of our base color*/
