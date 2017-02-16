@@ -63,9 +63,7 @@
             <div class="progress-step [[step === 3 ? 'current-step' : '' ]]">3</div>
         </div>
     </div>
-</div>
 
-<div class="container" >
     <div class="donation-step [[step !== 1 ? 'collapse' : '']]" id="step-1">
         <h2>100% of your donation will be granted to the charity of your choice</h2>
         <h3>Select a charity:</h3>
@@ -246,11 +244,12 @@
                         <div class="payment-subsection [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
                             {% pin_form %}
                             [[#if has_pin_errors ]]
-                            <div class="pin-errors">
-                                <h3>[[pin_error_description]]</h3>
-                                [[#pin_error_messages ]]
-                                <p>[[message]]</p>
-                                [[/for]]
+                            <div class="row">
+                                <div class="pin-errors col-sm-offset-3 col-sm-9">
+                                    [[#pin_error_messages ]]
+                                    <p class="error-text">[[message]]</p>
+                                    [[/for]]
+                                </div>
                             </div>
                             [[/if]]
                         </div>
@@ -263,7 +262,7 @@
             </p>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-success btn-lg pull-right subscribe"
+                <button type="submit" class="btn btn-success btn-lg"
                         [[#if !submit_enabled]]disabled[[/if]]
                      >
                      [[#if submit_enabled]]Donate[[else]]Processing...[[/if]]
@@ -485,10 +484,10 @@
             }
         },
         highlight: function (element) {
-            $(element).closest('.form-control').removeClass('success').addClass('error');
+            $(element).closest('.form-group').addClass('has-error');
         },
         unhighlight: function (element) {
-            $(element).closest('.form-control').removeClass('error').addClass('success');
+            $(element).closest('.form-group').removeClass('has-error');
         }
     });
 

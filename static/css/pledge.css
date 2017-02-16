@@ -15,6 +15,7 @@ h3 {
 
 .container {
     max-width: 900px;
+    margin-bottom: 60px;
     width: auto;
 }
 
@@ -131,10 +132,6 @@ h3 {
     box-sizing: content-box;
 }
 
-.error {
-    color: red;
-}
-
 .selected-charity-box {
     display: flex;
     flex-direction: row;
@@ -231,9 +228,15 @@ p.help-text {
     text-align: center;
 }
 
+.form-actions {
+    text-align: right;
+    float: right;
+}
+
 .error-text {
-    margin-top: 2px;
+    font-weight: 400;
     color: #a94442;
+    margin: 4px 0 0 0;
 }
 
 .complete-next-steps {
@@ -269,4 +272,3 @@ p.help-text {
     background-color: #4c8fb1;
     border-color: #3c728d;
 }
-
