@@ -54,7 +54,7 @@
 <div class="container">
     <div class="donation-page-header">
         <h1 class="page-title">
-            [[ step === 1 ? 'Partner Charities' : step === 2 ? 'Payment' : 'Complete Payment' ]]
+            [[ step === 1 ? 'Donate' : step === 2 ? 'Payment' : payment_method === '1' ? 'Complete Payment' : 'Success' ]]
         </h1>
         <div class="donation-progress">
             <div class="progress-step [[step === 1 ? 'current-step' : '' ]]">1</div>
@@ -160,7 +160,7 @@
                     <div class="form-group" id="form_first_name">
                         <label class="control-label col-sm-3" for="id_first_name">Name</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" id="id_first_name" maxlength="1024" name="first_name" placeholder="Name" required aria-required>
+                            <input class="form-control" type="text" id="id_first_name" maxlength="1024" name="first_name" placeholder="Name" value="[[ name ]]" required aria-required>
                         </div>
                     </div>
 
@@ -278,13 +278,28 @@
 
     <div class="donation-step [[step !== 3 ? 'collapse' : '']]" id="step-3">
         <div class="payment_option [[pmt_method != '3' ? 'collapse' : '' ]]">
-            <p>Thank you for your donation.</p>
-            <p>Here is your <a href="[[receipt_url]]">receipt</a>. We've also emailed it to you.</p>
+            <h2>Thank you [[ name ]]!</h2>
+            <p>
+                100% of your donation will be granted to [[ selected_charity.name ]].
+            </p>
+            <div class="complete-other-info">
+                <p>Here is your <a href="[[receipt_url]]">receipt</a>. We've also emailed it to you.</p>
+            </div>
+            <div class="complete-other-info">
+                <h3>Any questions?</h3>
+                <p>
+                    Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 3 9349 4062, if you have any questions.
+                </p>
+            </div>
+            <p>
+                Best wishes and thanks,<br>
+                The team at Effective Altruism Australia
+            </p>
         </div>
         <div class="payment_option [[pmt_method != '1' ? 'collapse' : '' ]]">
-            <h2>Thank you Thomas!</h2>
+            <h2>Thank you [[ name ]]!</h2>
             <p>
-                100% of your donation will go directly to [[ selected_charity.name ]].
+                100% of your donation will be granted to [[ selected_charity.name ]].
             </p>
             <div class="complete-next-steps">
                 <h3>What to do next?</h3>
@@ -353,7 +368,8 @@
             pin_error_messages: null,
             submit_enabled: true,
             bank_reference: null,
-            receipt_url: null
+            receipt_url: null,
+            name: null
         },
         delimiters: ['[[', ']]'],
 
