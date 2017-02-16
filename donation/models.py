@@ -196,6 +196,13 @@ class PinTransaction(BasePinTransaction):
     pledge = models.ForeignKey(Pledge, on_delete=models.CASCADE)
 
 
+@receiver(post_save, sender=PinTransaction)
+def create_receipt(sender, instance, **kwargs):
+    if instance.succeeded:
+        # Let's see how it goes doing this not in celery for now.
+        Receipt.objects.create_from_pin_transaction(instance)
+
+
 class ReceiptManager(models.Manager):
     def create_from_bank_transaction(self, bank_transaction):
         if bank_transaction.date < settings.AUTOMATION_START_DATE:
@@ -203,6 +210,11 @@ class ReceiptManager(models.Manager):
         return self.create(bank_transaction=bank_transaction,
                            pledge=bank_transaction.pledge,
                            email=bank_transaction.pledge.email)
+
+    def create_from_pin_transaction(self, pin_transaction):
+        return self.create(pin_transaction=pin_transaction,
+                           pledge=pin_transaction.pledge,
+                           email=pin_transaction.pledge.email)
 
     def create(self, *args, **kwargs):
         receipt = super(ReceiptManager, self).create(*args, **kwargs)
@@ -215,11 +227,13 @@ class Receipt(models.Model):
     time_sent = models.DateTimeField(blank=True, null=True)
     # Let's keep receipts around, even if the bank transaction/pledge gets changed/deleted (ideally shouldn't happen).
     bank_transaction = models.ForeignKey(BankTransaction, blank=True, null=True, on_delete=models.SET_NULL)
+    pin_transaction = models.ForeignKey(PinTransaction, blank=True, null=True, on_delete=models.SET_NULL)
     pledge = models.ForeignKey(Pledge, blank=True, null=True, on_delete=models.SET_NULL)
     # The email on the pledge might get edited, so let's record the one we used here.
     email = models.EmailField()
     receipt_html = models.TextField(blank=True, editable=False)
     failed_message = models.TextField(blank=True, editable=False, default='')
+    secret = models.CharField(blank=True, max_length=16)  # So the donor can download the receipt from our website.
 
     @property
     def sent(self):
@@ -229,22 +243,35 @@ class Receipt(models.Model):
     def failed(self):
         return self.failed_message != ''
 
+    @property
+    def transaction(self):
+        return self.bank_transaction or self.pin_transaction
+
+    @property
+    def pdf_receipt_location(self):
+        return os.path.join(settings.MEDIA_ROOT, 'receipts', 'EAA_Receipt_{0}.pdf'.format(self.pk))
+
+    def save(self, *args, **kwargs):
+        # Generate a secret for credit card receipts so that people can download them.
+        if self.pin_transaction:
+            self.secret = ''.join(random.choice(string.letters + string.digits) for _ in range(16))
+        super(Receipt, self).save(*args, **kwargs)
+
     def send(self):
         if self.sent:
             raise Exception("Receipt already sent.")
         try:
             self.receipt_html = render_to_string('receipt.html', {'unique_reference': self.pk,
                                                                   'pledge': self.pledge,
-                                                                  'bank_transaction': self.bank_transaction,
+                                                                  'transaction': self.transaction,
                                                                   })
-            pdf_receipt_location = os.path.join(settings.MEDIA_ROOT, 'receipts', 'EAA_Receipt_{0}.pdf'.format(self.pk))
-            pdfkit.from_string(self.receipt_html, pdf_receipt_location)
+            pdfkit.from_string(self.receipt_html, self.pdf_receipt_location)
 
             now = arrow.now()
             eofy_receipt_date = now.replace(month=7).replace(day=31).replace(years=+1 if now.month > 6 else 0).date()
 
             body = render_to_string('receipt_message.txt', {'pledge': self.pledge,
-                                                            'bank_transaction': self.bank_transaction,
+                                                            'transaction': self.transaction,
                                                             'eofy_receipt_date': eofy_receipt_date,
                                                             })
             message = EmailMessage(
@@ -259,7 +286,7 @@ class Receipt(models.Model):
                 bcc=["info+receipts@eaa.org.au"],
                 from_email=settings.POSTMARK_SENDER,
             )
-            message.attach_file(pdf_receipt_location, mimetype='application/pdf')
+            message.attach_file(self.pdf_receipt_location, mimetype='application/pdf')
             get_connection().send_messages([message])
 
             self.time_sent = timezone.now()
@@ -280,16 +307,19 @@ class Receipt(models.Model):
 
     def __unicode__(self):
         if self.bank_transaction:
-            bank_transaction_part = ("Receipt for donation of ${0.bank_transaction.amount}" +
+            transaction_part = ("Receipt for bank donation of ${0.bank_transaction.amount}" +
                                      " on {0.bank_transaction.date}").format(self)
+        elif self.pin_transaction:
+            transaction_part = ("Receipt for credit card donation of ${0.pin_transaction.amount}" +
+                                     " at {0.pin_transaction.date}").format(self)
         else:
-            bank_transaction_part = "Receipt for deleted bank transaction"
+            transaction_part = "Receipt for deleted transaction"
         if self.pledge:
             pledge_part = " by {0.pledge.first_name} {0.pledge.last_name}".format(self)
         else:
             pledge_part = " to {0.email} (pledge deleted)".format(self)
         failed_part = " - Sending failed: {0.failed_message}".format(self) if self.failed else ""
-        return bank_transaction_part + pledge_part + failed_part
+        return transaction_part + pledge_part + failed_part
 
 
 class Account(models.Model):

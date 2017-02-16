@@ -40,7 +40,7 @@
     <link href="{% static 'css/credit_card.css' %}" type="text/css" media="all" rel="stylesheet">
     <script type="text/javascript" src="{% static 'js/charities.js' %}"></script>
 
-    {% pin_header "test" %}
+    {% pin_header %}
 
 </head>
 
@@ -278,7 +278,7 @@
     <div class="donation-step [[step !== 3 ? 'collapse' : '']]" id="step-3">
         <div class="payment_option [[pmt_method != '3' ? 'collapse' : '' ]]">
             <p>Thank you for your donation.</p>
-            <p>Receipt: [[receipt_url]]</p>
+            <p>Here is your <a href="[[receipt_url]]">receipt</a>. We've also emailed it to you.</p>
         </div>
         <div class="payment_option [[pmt_method != '1' ? 'collapse' : '' ]]">
             <p>You've completed the first step. Once you've completed the last step (below), we'll make sure 100% of
@@ -333,7 +333,8 @@
             pin_error_description: null,
             pin_error_messages: null,
             submit_enabled: true,
-            bank_reference: null
+            bank_reference: null,
+            receipt_url: null
         },
         delimiters: ['[[', ']]'],
 
@@ -532,6 +533,7 @@
                 else if (json['payment_method']==='3') {
                     ractive.set({
                         step: 3,
+                        receipt_url: json['receipt_url']
                     });
                 }
 

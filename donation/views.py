@@ -13,7 +13,7 @@ from django.views.generic import View, CreateView
 from django.views.decorators.clickjacking import xframe_options_exempt
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
-from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account, PinTransaction
+from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account, PinTransaction, Receipt
 from paypal.standard.forms import PayPalPaymentsForm
 
 
@@ -175,6 +175,20 @@ def download_transactions(request):
     return response
 
 
+def download_receipt(request, pk, secret):
+    if request.method != 'GET':
+        raise Http404
+    try:
+        receipt = Receipt.objects.get(pk=pk, secret=secret)
+    except Receipt.DoesNotExist:
+        return HttpResponseRedirect('/pledge')
+    response = HttpResponse(open(receipt.pdf_receipt_location).read(),
+                            content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="EAA_Receipt_{0}.pdf"'.format(receipt.pk)
+    return response
+
+
+# TODO It's weird these are combined since one is JSON and one is not
 class PledgeView(View):
     @xframe_options_exempt
     def post(self, request):
@@ -209,6 +223,8 @@ class PledgeView(View):
             transaction.process_transaction()  # Typically "Success" or an error message
             if transaction.succeeded:
                 response_data['succeeded'] = True
+                receipt = transaction.receipt_set.first()
+                response_data['receipt_url'] = reverse('download-receipt', kwargs={'pk': receipt.pk, 'secret': receipt.secret})
                 return JsonResponse(response_data)
             else:
                 return JsonResponse({
