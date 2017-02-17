@@ -10,7 +10,7 @@ import string
 
 from django.db import models
 from django.template.loader import render_to_string
-from django.core.mail import EmailMessage, get_connection
+from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -121,14 +121,13 @@ class Pledge(models.Model):
     # TODO better tracking of these messages
     def send_bank_transfer_instructions(self):
         try:
-            body_html = render_to_string('bank_transfer_instructions.html',
-                                         {'pledge': self,
-                                          'partner_charity': self.recipient_org.name,
-                                          })
+            context = {'pledge': self, 'partner_charity': self.recipient_org.name}
+            body = render_to_string('bank_transfer_instructions.txt', context)
+            body_html = render_to_string('bank_transfer_instructions.html', context)
 
-            message = EmailMessage(
+            message = EmailMultiAlternatives(
                 subject='Instructions to complete your donation',
-                body=body_html,
+                body=body,
                 to=[self.email],
                 # cc=[self.pledge.recipient_org.email],
                 # There is a filter in info@eaa.org.au
@@ -138,7 +137,7 @@ class Pledge(models.Model):
                 bcc=["ben.toner@eaa.org.au"],
                 from_email=settings.POSTMARK_SENDER,
             )
-            message.content_subtype = "html"
+            message.attach_alternative(body_html, "text/html")
             get_connection().send_messages([message])
 
         except Exception as e:
