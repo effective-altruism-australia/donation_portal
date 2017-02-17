@@ -272,3 +272,11 @@ p.help-text {
     background-color: #4c8fb1;
     border-color: #3c728d;
 }
+
+.payment-faq {
+    padding-top: 30px;
+    margin-bottom: 10px;
+}
+.payment-faq-question {
+    font-style: italic;
+}

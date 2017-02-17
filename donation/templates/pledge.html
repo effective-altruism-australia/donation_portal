@@ -274,6 +274,44 @@
         <div align="center" id="id_paypal" class="payment_option [[pmt_method != '4' ? 'collapse' : '' ]]">
             {{ paypal_form.render }}
         </div>
+        <div class="payment-faq">
+            <h3>Donation FAQ</h3>
+            <p class="payment-faq-question">
+                What credit cards do you accept?
+            </p>
+            <p class="payment-faq-answer">
+                We accept Visa and Mastercard. Sorry, we do not accept American Express at this time.
+            </p>
+            <p class="payment-faq-question">
+                Are credit card donations secure?
+            </p>
+            <p class="payment-faq-answer">
+                Yes. Your credit card details are encrypted and submitted directly from your web browser to our
+                payment processor, Pin Payments (ABN: 46 154 451 582). We do not store your credit card details
+                &ndash; in fact, we never see them.
+            </p>
+            <p class="payment-faq-question">
+                How much does it cost you to process a donation?
+            </p>
+            <p class="payment-faq-answer">
+                Credit cards cost us 1.4% plus 30c per donation. Bank transfers have no fees.
+            </p>
+            <p class="payment-faq-question">
+                Which payment method do you prefer?
+            </p>
+            <p class="payment-faq-answer">
+                We suggest that you use whichever payment method is most convenient for you.
+                For major donations (over $2,000), we prefer that you donate via bank transfer to reduce fees.
+            </p>
+            <p class="payment-faq-question">
+                When will I get a receipt?
+            </p>
+            <p class="payment-faq-answer">
+                For credit card donations, we will email you a receipt immediately after your donation.
+                For bank transfers, we will email you a receipt on the day the money is received by us,
+                which is usually one or two business days after you send it.
+            </p>
+        </div>
     </div>
 
     <div class="donation-step [[step !== 3 ? 'collapse' : '']]" id="step-3">
