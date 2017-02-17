@@ -133,11 +133,11 @@ h3 {
 }
 
 .selected-charity-box {
+    margin: 20px auto;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    margin: auto;
     min-height: 100px;
 }
 

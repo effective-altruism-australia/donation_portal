@@ -90,129 +90,128 @@
         </div>
     </div>
 
-    [[#if selected_charity && selected_charity.name==='Against Malaria Foundation' && step === 2]]
-    <div class="donation-step" id="step-2">
-        <div class="selected-charity-box">
-            <a href='https://www.againstmalaria.com/Donation.aspx?GroupID=86'>
-            <img class="charity-img" src="static/[[ selected_charity.website_image ]]">
-            </a>
-            <p class="donation-info">
-                Donations to the Against Malaria Foundation are tax deductible in Australia.
-                We prefer that you donate to the Against Malaria Foundation directly at
-                <a href='https://www.againstmalaria.com/Donation.aspx?GroupID=86'>https://www.againstmalaria.com/Donation.aspx?GroupID=86</a>.
-            </p>
-        </div>
-    </div>
-    [[/if]]
 
-    <div class="donation-step [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
+
+    <div class="donation-step [[step !== 2 ? 'collapse' : '']]" id="step-2">
         [[#if selected_charity]]
         [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
         <h2>You have chosen [[ selected_charity.name ]].</h2>
         <span><a href="#" on-click="@this.restart_donation()">Choose a different program</a></span>
-        [[/if ]]
 
-        <form on-submit="submit" id='pledge-form'>
-            {% csrf_token %}
-
-            <h3>How often will you be donating?</h3>
-            <div class="button-row">
-                <button type="button"
-                        class="btn [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
-                        on-click='@this.set_recurring(false)'>One-Time
-                </button>
-
-                <button type="button"
-                        class="btn [[recurring ? 'btn-primary' : 'btn-default' ]]"
-                    on-click='@this.set_recurring(true)'>Monthly
-                </button>
+            [[#if selected_charity.name==='Against Malaria Foundation']]
+            <div class="selected-charity-box">
+                <a href='https://www.againstmalaria.com/Donation.aspx?GroupID=86'>
+                    <img class="charity-img" src="static/[[ selected_charity.website_image ]]">
+                </a>
+                <p class="donation-info">
+                    Donations to the Against Malaria Foundation are tax deductible in Australia.
+                    We prefer that you donate to the Against Malaria Foundation directly at
+                    <a href='https://www.againstmalaria.com/Donation.aspx?GroupID=86'>https://www.againstmalaria.com/Donation.aspx?GroupID=86</a>.
+                </p>
             </div>
-            <div id="donation-frequency-error"></div>
 
-            <h3 class="section-label">
-                How much would you like to donate?
-            </h3>
-            <div class="button-row">
-                {% for amt_text, amt_val in form.donation_amounts %}
+            [[else]]
+            <form on-submit="submit" id='pledge-form'>
+                {% csrf_token %}
+
+                <h3>How often will you be donating?</h3>
+                <div class="button-row">
                     <button type="button"
-                            class="btn [[donation_amount === {{ amt_val }} ? 'btn-primary' : 'btn-default' ]]"
-                            on-click='@this.set_donation_amount({{ amt_val }})'
-                            id="id_{{ amt_val }}"
-                            value={{ amt_val }}>{{ amt_text }}</button>
-                {% endfor %}
+                            class="btn [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
+                            on-click='@this.set_recurring(false)'>One-Time
+                    </button>
 
-                <button type="button"
-                        class="btn [[is_custom_amount ? 'btn-primary' : 'btn-default' ]]"
-                        on-click="@this.show_other_donation_amount()"
-                        value="other">Other
-                </button>
-                <div class="form-group [[ is_custom_amount ? '' : 'collapse' ]]" id="form-donation-amount">
-                    <label class="sr-only control-label" for="id_amount">Amount</label>
-                    <div class="input-group">
-                        <span class="input-group-addon">$</span>
-                        <input class="form-control" type="number" id="id_amount" step="1" min="2" name="amount" placeholder="Amount" title="" value="[[ donation_amount ]]">
-                    </div>
-                    <label id="id_amount-error" class="error" for="id_amount"></label>
+                    <button type="button"
+                            class="btn [[recurring ? 'btn-primary' : 'btn-default' ]]"
+                        on-click='@this.set_recurring(true)'>Monthly
+                    </button>
                 </div>
-            </div>
-            <div id="donation-amount-error" ></div>
+                <div id="donation-frequency-error"></div>
 
-            <div class="panel panel-default form-container details-section donor-details-section">
-                <div class="panel-body form-horizontal">
-                    <legend>Donor Details</legend>
-                    <div class="form-group" id="form_first_name">
-                        <label class="control-label col-sm-3" for="id_first_name">Name</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" id="id_first_name" maxlength="1024" name="first_name" placeholder="Name" value="[[ name ]]" required aria-required>
-                        </div>
-                    </div>
+                <h3 class="section-label">
+                    How much would you like to donate?
+                </h3>
+                <div class="button-row">
+                    {% for amt_text, amt_val in form.donation_amounts %}
+                        <button type="button"
+                                class="btn [[donation_amount === {{ amt_val }} ? 'btn-primary' : 'btn-default' ]]"
+                                on-click='@this.set_donation_amount({{ amt_val }})'
+                                id="id_{{ amt_val }}"
+                                value={{ amt_val }}>{{ amt_text }}</button>
+                    {% endfor %}
 
-                    <div class="form-group" id="form_email">
-                        <label class="control-label col-sm-3" for="id_email">Email</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="email" id="id_email" maxlength="254" name="email" placeholder="Email" required aria-required>
+                    <button type="button"
+                            class="btn [[is_custom_amount ? 'btn-primary' : 'btn-default' ]]"
+                            on-click="@this.show_other_donation_amount()"
+                            value="other">Other
+                    </button>
+                    <div class="form-group [[ is_custom_amount ? '' : 'collapse' ]]" id="form-donation-amount">
+                        <label class="sr-only control-label" for="id_amount">Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">$</span>
+                            <input class="form-control" type="number" id="id_amount" step="1" min="2" name="amount" placeholder="Amount" title="" value="[[ donation_amount ]]">
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-3 long-control-label" for="id_how_did_you_hear_about_us">How did you hear about us?</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" id="id_how_did_you_hear_about_us" name="how_did_you_hear_about_us">
-                                <option value="" disabled selected>---------</option>
-                                <option value="The Life You Can Save">The Life You Can Save</option>
-                                <option value="News">News</option>
-                                <option value="Advertising">Advertising</option>
-                                <option value="GiveWell">GiveWell</option>
-                                <option value="From the charity (SCI, Evidence Action, GiveDirectly)">From the charity (SCI, Evidence Action, GiveDirectly)</option>
-                                <option value="Search engine (Google etc.)">Search engine (Google etc.)</option>
-                                <option value="Friend">Friend</option>
-                                <option value="Giving What We Can">Giving What We Can</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group" id="id_formgroup_subscribe_to_updates">
-                        <div class="checkbox col-sm-offset-3">
-                            <label for="id_subscribe_to_updates"><input type="checkbox" id="id_subscribe_to_updates" name="subscribe_to_updates" checked> Send me news and updates</label>
-                        </div>
+                        <label id="id_amount-error" class="error" for="id_amount"></label>
                     </div>
                 </div>
-            </div>
+                <div id="donation-amount-error" ></div>
 
-            <div class="panel panel-default form-container details-section payment-details-section">
-                <div class="panel-body form-horizontal">
-                    <legend>Payment Details</legend>
-                    <div class="payment-type form-group">
-                        <label class="control-label col-sm-3">Payment Method</label>
-                        <div class="col-sm-9">
-                            <button type="button"
-                                    class="btn [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
-                                    value="3"
-                                    id="id_btn_cc"
-                                    on-click="@this.set_pmt_method('3')"
-                                    [[recurring ? "disabled" : "" ]]
-                                    >Credit card
-                            </button>
+                <div class="panel panel-default form-container details-section donor-details-section">
+                    <div class="panel-body form-horizontal">
+                        <legend>Donor Details</legend>
+                        <div class="form-group" id="form_first_name">
+                            <label class="control-label col-sm-3" for="id_first_name">Name</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" id="id_first_name" maxlength="1024" name="first_name" placeholder="Name" value="[[ name ]]" required aria-required>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="form_email">
+                            <label class="control-label col-sm-3" for="id_email">Email</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="email" id="id_email" maxlength="254" name="email" placeholder="Email" required aria-required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3 long-control-label" for="id_how_did_you_hear_about_us">How did you hear about us?</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="id_how_did_you_hear_about_us" name="how_did_you_hear_about_us">
+                                    <option value="" disabled selected>---------</option>
+                                    <option value="The Life You Can Save">The Life You Can Save</option>
+                                    <option value="News">News</option>
+                                    <option value="Advertising">Advertising</option>
+                                    <option value="GiveWell">GiveWell</option>
+                                    <option value="From the charity (SCI, Evidence Action, GiveDirectly)">From the charity (SCI, Evidence Action, GiveDirectly)</option>
+                                    <option value="Search engine (Google etc.)">Search engine (Google etc.)</option>
+                                    <option value="Friend">Friend</option>
+                                    <option value="Giving What We Can">Giving What We Can</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="id_formgroup_subscribe_to_updates">
+                            <div class="checkbox col-sm-offset-3">
+                                <label for="id_subscribe_to_updates"><input type="checkbox" id="id_subscribe_to_updates" name="subscribe_to_updates" checked> Send me news and updates</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default form-container details-section payment-details-section">
+                    <div class="panel-body form-horizontal">
+                        <legend>Payment Details</legend>
+                        <div class="payment-type form-group">
+                            <label class="control-label col-sm-3">Payment Method</label>
+                            <div class="col-sm-9">
+                                <button type="button"
+                                        class="btn [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
+                                        value="3"
+                                        id="id_btn_cc"
+                                        on-click="@this.set_pmt_method('3')"
+                                        [[recurring ? "disabled" : "" ]]
+                                        >Credit card
+                                </button>
 {#                    <button type="button"#}
 {#                            class="btn [[pmt_method === '4' ? 'btn-primary' : 'btn-default' ]]"#}
 {#                            id="id_btn_paypal"#}
@@ -221,101 +220,104 @@
 {#                            [[recurring ? "disabled" : "" ]]#}
 {#                            >Paypal#}
 {#                    </button>#}
-                            <button type="button"
-                                    class="btn [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
-                                    id="id_btn_bank_transfer"
-                                    on-click="@this.set_pmt_method('1')"
-                                    value="1">Bank transfer
-                            </button>
-                        </div>
-                    </div>
-                        <p id="id_recurring_notification" class="col-sm-offset-3 [[recurring ? '' : 'collapse' ]]">
-                            <strong>Note:</strong> We currently only accept monthly donations via bank transfer.
-                        </p>
-                    <hr />
-
-                    <div class="payment-subsections" id="id_payment_options">
-                        <div class="payment-subsection [[pmt_method != '1' ? 'collapse' : '' ]]" id="bank-transfer-instructions">
-                            <p>After you submit this form, we will give you our account details and a unique reference number.</p>
-                            [[#if recurring]]
-                            <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
-                            <p>You can stop your donation or change the amount at any time.</p>
-                            [[else]]
-                            <p>You then need to log in to your bank and make a bank transfer using these details.</p>
-                            [[/if recurring]]
-                        </div>
-
-                        <div class="payment-subsection [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
-                            {% pin_form %}
-                            [[#if has_pin_errors ]]
-                            <div class="row">
-                                <div class="pin-errors col-sm-offset-3 col-sm-9">
-                                    [[#pin_error_messages ]]
-                                    <p class="error-text">[[message]]</p>
-                                    [[/for]]
-                                </div>
+                                <button type="button"
+                                        class="btn [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
+                                        id="id_btn_bank_transfer"
+                                        on-click="@this.set_pmt_method('1')"
+                                        value="1">Bank transfer
+                                </button>
                             </div>
-                            [[/if]]
+                        </div>
+                            <p id="id_recurring_notification" class="col-sm-offset-3 [[recurring ? '' : 'collapse' ]]">
+                                <strong>Note:</strong> We currently only accept monthly donations via bank transfer.
+                            </p>
+                        <hr />
+
+                        <div class="payment-subsections" id="id_payment_options">
+                            <div class="payment-subsection [[pmt_method != '1' ? 'collapse' : '' ]]" id="bank-transfer-instructions">
+                                <p>After you submit this form, we will give you our account details and a unique reference number.</p>
+                                [[#if recurring]]
+                                <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
+                                <p>You can stop your donation or change the amount at any time.</p>
+                                [[else]]
+                                <p>You then need to log in to your bank and make a bank transfer using these details.</p>
+                                [[/if recurring]]
+                            </div>
+
+                            <div class="payment-subsection [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
+                                {% pin_form %}
+                                [[#if has_pin_errors ]]
+                                <div class="row">
+                                    <div class="pin-errors col-sm-offset-3 col-sm-9">
+                                        [[#pin_error_messages ]]
+                                        <p class="error-text">[[message]]</p>
+                                        [[/for]]
+                                    </div>
+                                </div>
+                                [[/if]]
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <p class="help-text">
+                    Having a problem donating? Please let us know at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a>.
+                </p>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success btn-lg"
+                            [[#if !submit_enabled]]disabled[[/if]]
+                         >
+                         [[#if submit_enabled]]Donate[[else]]Processing...[[/if]]
+                    </button>
+                    <div id="other-errors"></div>
+                </div>
+            </form>
+
+            <div align="center" id="id_paypal" class="payment_option [[pmt_method != '4' ? 'collapse' : '' ]]">
+                {# paypal_form.render #}
             </div>
 
-            <p class="help-text">
-                Having a problem donating? Please let us know at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a>.
-            </p>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-success btn-lg"
-                        [[#if !submit_enabled]]disabled[[/if]]
-                     >
-                     [[#if submit_enabled]]Donate[[else]]Processing...[[/if]]
-                </button>
-                <div id="other-errors"></div>
+            <div class="details-section payment-faq">
+                <h2>Donation FAQ</h2>
+                <p class="payment-faq-question">
+                    What credit cards do you accept?
+                </p>
+                <p class="payment-faq-answer">
+                    We accept Visa and Mastercard. Sorry, we do not accept American Express at this time.
+                </p>
+                <p class="payment-faq-question">
+                    Are credit card donations secure?
+                </p>
+                <p class="payment-faq-answer">
+                    Yes. Your credit card details are encrypted and submitted directly from your web browser to our
+                    payment processor, Pin Payments (ABN: 46 154 451 582). We do not store your credit card details
+                    &ndash; in fact, we never see them.
+                </p>
+                <p class="payment-faq-question">
+                    How much does it cost you to process a donation?
+                </p>
+                <p class="payment-faq-answer">
+                    Credit card donations cost us 1.4% plus 30c per donation. Bank transfers have no fees.
+                </p>
+                <p class="payment-faq-question">
+                    Which payment method do you prefer?
+                </p>
+                <p class="payment-faq-answer">
+                    We suggest that you use whichever payment method is most convenient for you.
+                    For major donations (over $2,000), we prefer that you donate via bank transfer to reduce fees.
+                </p>
+                <p class="payment-faq-question">
+                    When will I get a receipt?
+                </p>
+                <p class="payment-faq-answer">
+                    For credit card donations, we will email you a receipt immediately after your donation.
+                    For bank transfers, we will email you a receipt on the day the money is received by us,
+                    which is usually one or two business days after you send it.
+                </p>
             </div>
-        </form>
-
-        <div align="center" id="id_paypal" class="payment_option [[pmt_method != '4' ? 'collapse' : '' ]]">
-            {# paypal_form.render #}
-        </div>
-        <div class="details-section payment-faq">
-            <h2>Donation FAQ</h2>
-            <p class="payment-faq-question">
-                What credit cards do you accept?
-            </p>
-            <p class="payment-faq-answer">
-                We accept Visa and Mastercard. Sorry, we do not accept American Express at this time.
-            </p>
-            <p class="payment-faq-question">
-                Are credit card donations secure?
-            </p>
-            <p class="payment-faq-answer">
-                Yes. Your credit card details are encrypted and submitted directly from your web browser to our
-                payment processor, Pin Payments (ABN: 46 154 451 582). We do not store your credit card details
-                &ndash; in fact, we never see them.
-            </p>
-            <p class="payment-faq-question">
-                How much does it cost you to process a donation?
-            </p>
-            <p class="payment-faq-answer">
-                Credit card donations cost us 1.4% plus 30c per donation. Bank transfers have no fees.
-            </p>
-            <p class="payment-faq-question">
-                Which payment method do you prefer?
-            </p>
-            <p class="payment-faq-answer">
-                We suggest that you use whichever payment method is most convenient for you.
-                For major donations (over $2,000), we prefer that you donate via bank transfer to reduce fees.
-            </p>
-            <p class="payment-faq-question">
-                When will I get a receipt?
-            </p>
-            <p class="payment-faq-answer">
-                For credit card donations, we will email you a receipt immediately after your donation.
-                For bank transfers, we will email you a receipt on the day the money is received by us,
-                which is usually one or two business days after you send it.
-            </p>
-        </div>
+            [[/if]]
+        [[/if ]]
     </div>
 
     <div class="donation-step [[step !== 3 ? 'collapse' : '']]" id="step-3">
