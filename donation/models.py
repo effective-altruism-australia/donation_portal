@@ -138,6 +138,7 @@ class Pledge(models.Model):
                 bcc=["ben.toner@eaa.org.au"],
                 from_email=settings.POSTMARK_SENDER,
             )
+            message.content_subtype = "html"
             get_connection().send_messages([message])
 
         except Exception as e:
