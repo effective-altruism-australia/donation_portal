@@ -211,8 +211,8 @@ class PledgeView(View):
 
         if int(payment_method) == 1:
             # bank transaction
-            pledge.send_bank_transfer_instructions()
             response_data['bank_reference'] = pledge.generate_reference()
+            pledge.send_bank_transfer_instructions()
             return JsonResponse(response_data)
         elif int(payment_method) == 3:
             transaction = PinTransaction()

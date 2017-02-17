@@ -1,4 +1,4 @@
-Dear {{ pledge.name }},
+Dear {{ pledge.first_name }},
 
 You've completed the first step. Once you've completed the last step (below), we'll make sure 100% of your donation will go directly to helping people through {{ partner_charity }} and send you a tax deductible receipt.
 
