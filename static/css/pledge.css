@@ -230,7 +230,6 @@ p.help-text {
 
 .form-actions {
     text-align: right;
-    float: right;
 }
 
 .error-text {
@@ -274,9 +273,13 @@ p.help-text {
 }
 
 .payment-faq {
-    padding-top: 30px;
+    padding-top: 20px;
     margin-bottom: 10px;
 }
 .payment-faq-question {
-    font-style: italic;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+.payment-faq-answer {
+    margin-bottom: 20px;
 }
