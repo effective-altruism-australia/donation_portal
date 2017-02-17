@@ -60,7 +60,7 @@
             [[ step === 1 ? 'Select a program to support' : step === 2 ? 'Payment' : payment_method === '1' ? 'Complete payment' : 'Success' ]]
         </h1>
         <div class="donation-progress">
-            <div class="progress-step [[step === 1 ? 'current-step' : '' ]]">1</div>
+            <div class="progress-step [[step === 1 ? 'current-step' : (step === 2 ? 'last-step' : '')]]" on-click="@this.restart_donation()">1</div>
             <div class="progress-step [[step === 2 ? 'current-step' : '' ]]">2</div>
             <div class="progress-step [[step === 3 ? 'current-step' : '' ]]">3</div>
         </div>
@@ -108,6 +108,7 @@
         [[#if selected_charity]]
         [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
         <h2>You have chosen [[ selected_charity.name ]].</h2>
+        <span><a href="#" on-click="@this.restart_donation()">Choose a different program</a></span>
         [[/if ]]
 
         <form on-submit="submit" id='pledge-form'>
@@ -415,6 +416,10 @@
 
         set_step: function (step) {
             ractive.set({step: step});
+        },
+
+        restart_donation: function () {
+            ractive.set({step: 1})
         },
 
         charity_click: function (name) {

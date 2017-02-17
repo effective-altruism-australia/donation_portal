@@ -35,3 +35,11 @@
 .donation-progress .current-step {
     background: rgba(0,0,0,0.87);
 }
+
+.donation-progress .last-step {
+    cursor: pointer;
+}
+
+.donation-progress .last-step:hover {
+    background: #888;
+}
