@@ -12,17 +12,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--<link rel="apple-touch-icon" href="apple-touch-icon.png">-->
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.0/css/bootstrap.min.css"
           integrity="" crossorigin="anonymous">
 
     <!-- Optional theme -->
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"-->
           <!--integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
 
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
 
@@ -39,11 +38,11 @@
     <link href="{% static 'css/pledge.css' %}" type="text/css" media="all" rel="stylesheet">
     <link href="{% static 'css/process_steps.css' %}" type="text/css" media="all" rel="stylesheet">
     <link href="{% static 'css/credit_card.css' %}" type="text/css" media="all" rel="stylesheet">
-    <script type="text/javascript" src="{% static 'js/charities.js' %}"></script>
-    <script type="text/javascript" src="https://cdn.ravenjs.com/3.10.0/raven.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raven.js/3.11.0/raven.min.js"></script>
     <script type="text/javascript">
         Raven.config('https://1c3aafc3a7c54fb5b35d5d33015fbe57@sentry.draftable.com/26').install()
     </script>
+    <script type="text/javascript" src="{% static 'js/charities.js' %}"></script>
     {% pin_header %}
 
 </head>
