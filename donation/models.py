@@ -253,7 +253,7 @@ class Receipt(models.Model):
 
     def save(self, *args, **kwargs):
         # Generate a secret for credit card receipts so that people can download them.
-        if self.pin_transaction:
+        if self.pin_transaction and not self.secret:
             self.secret = ''.join(random.choice(string.letters + string.digits) for _ in range(16))
         super(Receipt, self).save(*args, **kwargs)
 
