@@ -59,11 +59,12 @@
         <h1 class="page-title">
             [[ step === 1 ? 'Select a program to support' : step === 2 ? 'Payment' : payment_method === '1' ? 'Complete payment' : 'Success' ]]
         </h1>
+        [[#if step !== 3 ]]
         <div class="donation-progress">
-            <div class="progress-step [[step === 1 ? 'current-step' : (step === 2 ? 'last-step' : '')]]" on-click="@this.restart_donation()">1</div>
+            <div class="progress-step [[step === 1 ? 'current-step' : 'last-step']]" on-click="@this.restart_donation()">1</div>
             <div class="progress-step [[step === 2 ? 'current-step' : '' ]]">2</div>
-            <div class="progress-step [[step === 3 ? 'current-step' : '' ]]">3</div>
         </div>
+        [[/if]]
     </div>
 
     <div class="donation-step [[step !== 1 ? 'collapse' : '']]" id="step-1">
