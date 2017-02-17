@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><div class="htmlmail-body">
+</head>
+<body>
+<p>Dear {{ pledge.name }},</p>
+
+<p>You've completed the first step. Once you've completed the last step (below), we'll make sure 100% of your donation will go directly to helping people through {{ pledge.recipient_org.name }} and send you a tax deductible receipt.</p>
+
+<h3>What to do next?</h3>
+Please make sure that you complete the process by {% if pledge.recurring %}setting up a monthly periodic payment for {% else %}making a bank transfer of {% endif %}
+<strong>${{ pledge.amount }}</strong> to<br>
+<strong>Account Name: </strong>Effective Altruism Australia<br>
+<strong>BSB:</strong>083170<br>
+<strong>Account No:</strong>306556167<br>
+<strong>Unique Reference Number:</strong>{{ pledge.reference }}</p>
+
+<p>Please reply to this email if you have any questions and we'll get back to you as soon as we can.</p>
+
+<p>Best regards and thanks,<br>
+The team at Effective Altruism Australia</p>
+
+<p><em>Effective Altruism Australia is endorsed as a Deductible Gift Recipient by the Australian Taxation Office. Donations of $2 or more are tax deductible in Australia.</em></p>
+</body>
+</html>

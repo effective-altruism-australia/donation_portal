@@ -118,6 +118,32 @@ class Pledge(models.Model):
         return "Pledge of ${0.amount} to {0.recipient_org} by {0.first_name} {0.last_name}, " \
             "made on {1}. Reference {0.reference}".format(self, self.completed_time.date())
 
+    # TODO better tracking of these messages
+    def send_bank_transfer_instructions(self):
+        try:
+            body_html = render_to_string('bank_transfer_instructions.html',
+                                         {'pledge': self,
+                                          'partner_charity': self.recipient_org.name,
+                                          })
+
+            message = EmailMessage(
+                subject='Instructions to complete your donation',
+                body=body_html,
+                to=[self.email],
+                # cc=[self.pledge.recipient_org.email],
+                # There is a filter in info@eaa.org.au
+                #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
+                # that automatically archives messages sent to info+receipt and adds the label 'receipts'
+                # bcc=["info+receipt@eaa.org.au", ],
+                bcc=["ben.toner@eaa.org.au"],
+                from_email=settings.POSTMARK_SENDER,
+            )
+            get_connection().send_messages([message])
+
+        except Exception as e:
+            client.captureException()
+            self.failed_message = e.message if e.message else "Sending failed"
+
 
 # It's possible that we get the reference wrong when a BankTransaction is imported, for example if the donor
 # made a typo. The way we correct this is for one of our staff to edit the reference in the admin so that it
