@@ -134,7 +134,7 @@ class Pledge(models.Model):
                 #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
                 # that automatically archives messages sent to info+receipt and adds the label 'receipts'
                 # bcc=["info+receipt@eaa.org.au", ],
-                bcc=["ben.toner@eaa.org.au"],
+                cc=["info@eaa.org.au"],
                 from_email=settings.POSTMARK_SENDER,
             )
             message.attach_alternative(body_html, "text/html")
