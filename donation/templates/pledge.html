@@ -73,20 +73,31 @@
         <div class="charities-container">
             [[#charities:i]]
                 [[#if show_on_website ]]
-                <div class="charity">
+                <div class="charity [[#if selected_charity && selected_charity.name === name]]selected-charity[[/if]] ">
                     <div class="charity-info">
                         <img class="charity-img" style="margin-top:[[ image_top_margin ]]px;"
                              src="static/[[ website_image ]]" alt="[[ website_label ]]">
                         <span class="charity-title">[[ website_label ]]</span>
                     </div>
-                    <div class="hover-overlay">
-                        <a class="charity-details charityClick" on-click='@this.charity_click(name)' href="#">
-                            <b>[[ website_label ]] </b> [[ website_description ]]
-                        </a>
+                    <div class="hover-overlay" on-click="@this.charity_click(name)">
+                        <div class="charity-details">
+                            <p><strong>[[ website_label ]]</strong> [[ website_description ]]</p>
+                        </div>
                     </div>
                 </div>
                 [[/if ]]
             [[/charities]]
+        </div>
+        <div class="form-actions">
+            [[#if selected_charity ]]
+            <button type="submit" class="btn btn-success btn-lg" on-click="@this.set_step(2)">
+                 Next
+            </button>
+            [[else]]
+            <button type="submit" class="btn btn-success btn-lg" disabled aria-disabled>
+                 Next
+            </button>
+            [[/if]]
         </div>
     </div>
 
@@ -431,7 +442,6 @@
                 return x.name === name;
             });
             ractive.set({
-                            step: 2,
                             selected_charity_id: id,
                             selected_charity: selected_charity
                         });
