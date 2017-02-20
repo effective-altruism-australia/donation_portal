@@ -11,6 +11,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--<link rel="apple-touch-icon" href="apple-touch-icon.png">-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.0/css/bootstrap.min.css"
           integrity="" crossorigin="anonymous">
@@ -32,7 +33,8 @@
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.min.js"></script>
 
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/ractive/0.9.0-build-91/ractive.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/ractive/0.8.10/ractive.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.8/iframeResizer.contentWindow.min.js"></script>
 
     <link href="{% static 'css/pledge.css' %}" type="text/css" media="all" rel="stylesheet">
@@ -390,6 +392,8 @@
 </script>
 
 <script>
+$(function() {
+
     var charity_database_ids = {{ charity_database_ids|safe }};
 
     var ractive = new Ractive({
@@ -424,7 +428,8 @@
 
         charity_click: function (name) {
             var id = charity_database_ids[name];
-            var selected_charity = charities.find(function (x) {
+
+            var selected_charity = _.find(charities, function (x) {
                 return x.name === name;
             });
             ractive.set({
@@ -676,7 +681,7 @@
             submitForm()
         }
     });
-
+});
 </script>
 </body>
 </html>
