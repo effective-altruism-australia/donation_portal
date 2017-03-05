@@ -11,10 +11,19 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.views.generic import View, CreateView
 from django.views.decorators.clickjacking import xframe_options_exempt
+from paypal.standard.forms import PayPalPaymentsForm
+from ipware.ip import get_ip
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
 from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account, PinTransaction, Receipt, RecurringFrequency
-from paypal.standard.forms import PayPalPaymentsForm
+
+from redis import StrictRedis
+from rratelimit import Limiter
+r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+rate_limiter = Limiter(r,
+                       action='test_credit_card',
+                       limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
+                       period=settings.CREDIT_CARD_RATE_LIMIT_PERIOD)
 
 
 @login_required()
@@ -215,6 +224,17 @@ class PledgeView(View):
             pledge.send_bank_transfer_instructions()
             return JsonResponse(response_data)
         elif int(payment_method) == 3:
+            # Rate limiting
+            ip = get_ip(request)
+            if not rate_limiter.checked_insert(ip):
+                # Pretend it's a PIN error to save us from handling it separately in the javascript.
+                return JsonResponse({
+                    'error': 'pin-error',
+                    'pin_response': "Our apologies: credit card donations are currently unavailable. " +
+                                    "Please try again tomorrow or make a payment by bank transfer.",
+                    'pin_response_text': '',
+                }, status=400)
+
             transaction = PinTransaction()
             transaction.card_token = request.POST.get('card_token')
             transaction.ip_address = request.POST.get('ip_address')

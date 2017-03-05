@@ -24,6 +24,7 @@ cryptography
 Django==1.8.*
 django-bootstrap3
 django-enumfields
+django-ipware
 django-paypal
 django-reversion
 gunicorn
@@ -34,8 +35,10 @@ PyCrypto
 python-dateutil
 python-postmark
 pyxero
+q
 raven
 redis
+rratelimit
 XlsxWriter
 
 ################################

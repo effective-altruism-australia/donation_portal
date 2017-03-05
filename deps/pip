@@ -12,6 +12,7 @@ cryptography==1.7.2
 Django==1.8.17
 django-bootstrap3==8.1.0
 django-enumfields==0.8.2
+django-ipware==1.1.6
 django-paypal==0.3.6
 django-reversion==2.0.8
 enum34==1.1.6
@@ -43,10 +44,12 @@ python-dateutil==2.6.0
 python-postmark==0.4.12
 pytz==2016.10
 pyxero==0.8.0
+q==2.6
 raven==5.32.0
 redis==2.10.5
 requests==2.13.0
 requests-oauthlib==0.8.0
+rratelimit==0.0.4
 ruamel.ordereddict==0.4.9
 ruamel.yaml==0.13.14
 six==1.10.0

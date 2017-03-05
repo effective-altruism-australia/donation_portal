@@ -104,6 +104,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 PAYPAL_TEST = True
 
+CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS = 6
+CREDIT_CARD_RATE_LIMIT_PERIOD = 12*60*60
+
 # Deployment
 
 # Settings configured by Salt
