@@ -5,7 +5,7 @@ from django.contrib import messages
 
 from reversion.admin import VersionAdmin
 
-from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate
+from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, PaymentMethod
 
 
 class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
@@ -44,9 +44,48 @@ class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
             return BankTransaction.objects.all().exclude(id__in=unreconciled.values('id'))
 
 
+class PledgeFundsReceivedFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'funds received'
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'funds_received'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return (
+            ('Yes', 'Received'),
+            ('No', 'Not Received'),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        if not self.value():
+            return Pledge.objects.all()
+        # Only payments by bank transfer can be unpaid.
+        paid_pledges_by_bank_transfer = BankTransaction.objects.filter(pledge__isnull=False).values_list('pledge__id', flat=True)
+        unpaid = Pledge.objects.filter(payment_method=PaymentMethod.BANK).exclude(id__in=paid_pledges_by_bank_transfer)
+        if self.value() == 'No':
+            return unpaid
+        else:  # 'No'
+            return Pledge.objects.all().exclude(id__in=unpaid.values('id'))
+
+
 class PledgeAdmin(VersionAdmin):
     search_fields = ('first_name', 'last_name', 'reference', 'email')
     readonly_fields = ('ip', 'completed_time')
+    list_filter = (PledgeFundsReceivedFilter, )
 
     class Meta:
         model = Pledge
