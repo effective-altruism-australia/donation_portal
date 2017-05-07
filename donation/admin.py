@@ -45,7 +45,7 @@ class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
 
 
 class PledgeAdmin(VersionAdmin):
-    search_fields = ('first_name', 'last_name', 'reference')
+    search_fields = ('first_name', 'last_name', 'reference', 'email')
     readonly_fields = ('ip', 'completed_time')
 
     class Meta:
