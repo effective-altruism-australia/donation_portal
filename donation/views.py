@@ -61,6 +61,9 @@ def donation_counter(request):
     # and bank transactions for after
     xero_reconciled_date = XeroReconciledDate.objects.all().aggregate(Max('date'))['date__max']
 
+    # Dev instances may not have a xero_reconciled_date
+    xero_reconciled_date = xero_reconciled_date or date(2015, 12, 31)
+
     xero_start_date = start
     xero_end_date = min(xero_reconciled_date, end)
     django_start_date = max(arrow.get(xero_reconciled_date).replace(days=1).date(), start)
