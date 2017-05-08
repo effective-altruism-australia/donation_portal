@@ -17,7 +17,7 @@ from ipware.ip import get_ip
 from enumfields import Enum
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
-from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account, PinTransaction, Receipt, RecurringFrequency
+from .models import BankTransaction, Donation, PartnerCharity, XeroReconciledDate, Account, PinTransaction, Receipt, RecurringFrequency
 
 from redis import StrictRedis
 from rratelimit import Limiter
@@ -164,20 +164,21 @@ def download_helper(request, extra_fields=[]):
             ('First Name', 'pledge__first_name'),
             ('Last Name', 'pledge__last_name'),
             ('Email', 'pledge__email'),
+            ('Payment method', 'payment_method'),
             ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
             ('Can publish donation', 'pledge__publish_donation'),
             ('Designation', 'pledge__recipient_org__name')
         ] + extra_fields)
         ws.write_row(0, 0, template.keys())
         row = 0
-        for bt_row in BankTransaction.objects. \
-                filter(date__gte=start, date__lte=end, do_not_reconcile=False). \
+        for bt_row in Donation.objects. \
+                filter(date__gte=start, date__lte=end). \
                 order_by('date'). \
                 values_list(*template.values()):
             row += 1
             # Resolve any EnumFields into strings
             bt_row = [value if not isinstance(value, Enum) else str(value) for value in bt_row]
-            ws.write_datetime(row, 0, bt_row[0], date_format)
+            ws.write_datetime(row, 0, bt_row[0].replace(tzinfo=None), date_format)
             ws.write_row(row, 1, bt_row[1:])
 
     response = HttpResponse(open(os.path.join(path, filename)).read(),
