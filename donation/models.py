@@ -234,7 +234,7 @@ class Donation(models.Model):
     Implemented by creating a view in the database, see
     donation/migrations/0023_create_donation_view.py.
     """
-    date = models.DateField()
+    date = models.DateTimeField()
     amount = models.DecimalField(decimal_places=2, max_digits=12, )
     payment_method = models.CharField(max_length=128)
     reference = models.TextField(blank=True)
