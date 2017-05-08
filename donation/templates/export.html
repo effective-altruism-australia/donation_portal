@@ -25,9 +25,12 @@
 <h3>For sharing with charities</h3>
 <p>Download donations in a format suitable for dividing up by charity and sharing with them.</p>
 <p>You have to filter manually for the dates and charities you're interested in.</p>
-<button class="btn-primary" onclick="window.location.href = '{% url 'download-transactions' %}'">Download transactions</button>
+<button class="btn-primary" onclick="window.location.href = '{% url 'download-transactions' %}'">Download donations</button>
 <h3>Download full donation data</h3>
 <p>Download full donation data. You might need to sanitize this before sharing it with charities or partners.</p>
-<button class="btn-primary" onclick="window.location.href = '{% url 'download-all-data' %}'">Download all data</button>
+<button class="btn-primary" onclick="window.location.href = '{% url 'download-all-data' %}'">Download full data</button>
+<p style="margin-top: 20px;">
+    Note: neither of the above include donations received at the Westpac account in our early days.
+</p>
 </body>
 </html>
