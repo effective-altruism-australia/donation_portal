@@ -46,13 +46,7 @@
             <td><b>{{ grand_total|floatformat:'2'|intcomma }}</b></td>
         </tr>
     </table>
-<h2>Download transactions</h2>
-<p>Download all transactions in a format suitable for dividing up by charity and sharing with them.</p>
-<p>You have to filter manually for the dates and charities you're interested in.</p>
-<button class="btn-primary" onclick="window.location.href = '{% url 'download-transactions' %}'">Download transactions</button>
-<h2>Download all donation data</h2>
-<p>Download all donation data. You should not share this with charities or partners without sanitizing it.</p>
-<button class="btn-primary" onclick="window.location.href = '{% url 'download-all-data' %}'">Download all data</button>
+<p style="margin-top: 20px;">You can download details of the donations <a href="{% url 'export-page' %}">here</a>. </p>
 <h2>
     Transactions that are not reconciled to Pledges
 </h2>

@@ -105,6 +105,11 @@ def donation_counter(request):
 
 
 @login_required()
+def export_page(request):
+    return render(request, 'export.html')
+
+
+@login_required()
 def accounting_reconciliation(request):
     if request.method == 'POST':
         form = DateRangeSelector(request.POST)
