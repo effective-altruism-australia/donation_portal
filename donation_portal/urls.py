@@ -17,13 +17,14 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from donation.views import upload_donations_file, accounting_reconciliation, download_transactions, donation_counter, PledgeView, download_receipt
+from donation.views import upload_donations_file, accounting_reconciliation, download_transactions, download_all_data, donation_counter, PledgeView, download_receipt
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^upload_donations', upload_donations_file, name='upload-donations-file'),
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
     url(r'^secret_donation_counter', donation_counter, name='donation_counter'),
+    url(r'^download_all_data', download_all_data, name='download-all-data'),
     url(r'^download_transactions', download_transactions, name='download-transactions'),
     # url(r'^pledge/([0-9])/$', pledge, name='pledge')
     url(r'^pledge', PledgeView.as_view(), name='pledge'),

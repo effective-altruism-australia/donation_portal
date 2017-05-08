@@ -2,6 +2,7 @@ import xlsxwriter
 from datetime import datetime, date
 import os
 import arrow
+from collections import OrderedDict
 
 from django.http import HttpResponseRedirect, Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -13,6 +14,7 @@ from django.views.generic import View, CreateView
 from django.views.decorators.clickjacking import xframe_options_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 from ipware.ip import get_ip
+from enumfields import Enum
 
 from .forms import TransitionalDonationsFileUploadForm, DateRangeSelector, PledgeForm
 from .models import BankTransaction, PartnerCharity, XeroReconciledDate, Account, PinTransaction, Receipt, RecurringFrequency
@@ -133,9 +135,8 @@ def accounting_reconciliation(request):
                                                    'grand_total': sum(filter(None, totals.values())),
                                                    'exceptions': exceptions})
 
-
 @login_required()
-def download_transactions(request):
+def download_helper(request, extra_fields=[]):
     # TODO We don't pass parameters to this function yet.
     # Write some javascript to restrict dates. Maybe easiest to switch out the date widgets for the jQuery UI ones.
     if request.method != 'GET':
@@ -156,7 +157,6 @@ def download_transactions(request):
     with xlsxwriter.Workbook(os.path.join(path, filename)) as wb:
         ws = wb.add_worksheet()
         date_format = wb.add_format({'num_format': 'dd mmm yyyy'})
-        from collections import OrderedDict
         template = OrderedDict([
             ('Date', 'date'),
             ('Amount', 'amount'),
@@ -167,7 +167,7 @@ def download_transactions(request):
             ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
             ('Can publish donation', 'pledge__publish_donation'),
             ('Designation', 'pledge__recipient_org__name')
-        ])
+        ] + extra_fields)
         ws.write_row(0, 0, template.keys())
         row = 0
         for bt_row in BankTransaction.objects. \
@@ -175,6 +175,8 @@ def download_transactions(request):
                 order_by('date'). \
                 values_list(*template.values()):
             row += 1
+            # Resolve any EnumFields into strings
+            bt_row = [value if not isinstance(value, Enum) else str(value) for value in bt_row]
             ws.write_datetime(row, 0, bt_row[0], date_format)
             ws.write_row(row, 1, bt_row[1:])
 
@@ -182,6 +184,24 @@ def download_transactions(request):
                             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     return response
+
+
+@login_required()
+def download_transactions(request):
+    return download_helper(request)
+
+
+@login_required()
+def download_all_data(request):
+    extra_fields = [
+        ('Recurring donor', 'pledge__recurring'),
+        ('Recurring frequency', 'pledge__recurring_frequency'),
+        ('How did you hear about us?', 'pledge__how_did_you_hear_about_us'),
+        ('Share with GiveWell', 'pledge__share_with_givewell'),
+        ('Share with GWWC', 'pledge__share_with_gwwc'),
+        ('Share with TLYCS', 'pledge__share_with_tlycs'),
+    ]
+    return download_helper(request, extra_fields)
 
 
 def download_receipt(request, pk, secret):
