@@ -184,8 +184,8 @@ def download_helper(request, extra_fields=[]):
                 order_by('date'). \
                 values_list(*template.values()):
             row += 1
-            # Resolve any EnumFields into strings
-            bt_row = [value if not isinstance(value, Enum) else str(value) for value in bt_row]
+            # Resolve any Enums
+            bt_row = [value.label if isinstance(value, Enum) else value for value in bt_row]
             ws.write_datetime(row, 0, bt_row[0].replace(tzinfo=None), date_format)
             ws.write_row(row, 1, bt_row[1:])
 
