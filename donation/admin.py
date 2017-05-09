@@ -85,7 +85,7 @@ class PledgeFundsReceivedFilter(admin.SimpleListFilter):
 class PledgeAdmin(VersionAdmin):
     search_fields = ('first_name', 'last_name', 'reference', 'email')
     readonly_fields = ('ip', 'completed_time')
-    list_filter = (PledgeFundsReceivedFilter, )
+    list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency')
 
     class Meta:
         model = Pledge
