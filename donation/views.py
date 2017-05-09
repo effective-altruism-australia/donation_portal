@@ -203,6 +203,7 @@ def download_transactions(request):
 @login_required()
 def download_all_data(request):
     extra_fields = [
+        ('Fees', 'pin_transaction__fees'),
         ('Recurring donor', 'pledge__recurring'),
         ('Recurring frequency', 'pledge__recurring_frequency'),
         ('How did you hear about us?', 'pledge__how_did_you_hear_about_us'),
