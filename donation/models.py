@@ -16,7 +16,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
 from raven.contrib.django.raven_compat.models import client
-from enumfields import EnumField, Enum
+from enumfields import EnumField, Enum, EnumIntegerField
 
 from pinpayments.models import PinTransaction as BasePinTransaction
 
@@ -85,9 +85,11 @@ class Pledge(models.Model):
     last_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
     email = models.EmailField()
     subscribe_to_updates = models.BooleanField(default=False, verbose_name='Send me news and updates')
-    payment_method = EnumField(PaymentMethod, max_length=1)
+    payment_method = EnumIntegerField(PaymentMethod)
+    payment_method_old = EnumField(PaymentMethod, max_length=1)
     recurring = models.BooleanField(default=False)
-    recurring_frequency = EnumField(RecurringFrequency, max_length=1, blank=True, null=True)
+    recurring_frequency = EnumIntegerField(RecurringFrequency, blank=True, null=True)
+    recurring_frequency_old = EnumField(RecurringFrequency, max_length=1, blank=True, null=True)
     publish_donation = models.BooleanField(default=False)
     how_did_you_hear_about_us = models.CharField(max_length=256, blank=True, null=True,
                                                  choices=zip(HOW_DID_YOU_HEAR_CHOICES, HOW_DID_YOU_HEAR_CHOICES),
