@@ -86,7 +86,7 @@ class Pledge(models.Model):
     email = models.EmailField()
     subscribe_to_updates = models.BooleanField(default=False, verbose_name='Send me news and updates')
     payment_method = EnumIntegerField(PaymentMethod)
-    payment_method_old = EnumField(PaymentMethod, max_length=1)
+    payment_method_old = EnumField(PaymentMethod, max_length=1, blank=True, null=True)
     recurring = models.BooleanField(default=False)
     recurring_frequency = EnumIntegerField(RecurringFrequency, blank=True, null=True)
     recurring_frequency_old = EnumField(RecurringFrequency, max_length=1, blank=True, null=True)
