@@ -196,14 +196,32 @@ class BankTransaction(models.Model):
             Receipt.objects.create_from_bank_transaction(self)
 
     def reconcile(self):
-        if self.pledge is None and self.reference:
-            # Try to find a matching pledge
-            pledges = Pledge.objects.filter(reference=self.reference)
-            if len(pledges) > 1:
-                raise Exception("Multiple pledges match. This shouldn't happen.")
-            elif len(pledges) == 1:
-                self.pledge = pledges[0]
-                return True
+        if self.pledge is None:
+            if self.reference:
+                # Try to find a matching pledge
+                pledges = Pledge.objects.filter(reference=self.reference)
+                if len(pledges) > 1:
+                    raise Exception("Multiple pledges match. This shouldn't happen.")
+                elif len(pledges) == 1:
+                    self.pledge = pledges[0]
+                    return True
+
+            # Next, try to find a pledge by looking for previously reconciled transactions with identical
+            # bank_statement_text.
+            # TODO there are no exceptions the following code should throw; enclosed in try block for now because
+            # it's hard to test (can be removed later).
+            try:
+                earlier_references = BankTransaction.objects.filter(bank_statement_text=self.bank_statement_text,
+                                                                    pledge__isnull=False,
+                                                                    ) \
+                                                        .exclude(id=self.id) \
+                                                        .order_by('reference').distinct('reference') \
+                                                        .values_list('reference', flat=True)
+                if len(earlier_references) == 1:
+                    self.pledge = Pledge.objects.get(reference=earlier_references[0])
+                    return True
+            except Exception:
+                client.captureException()
 
     class NotReconciledException(Exception):
         pass
