@@ -22,7 +22,7 @@ def send_partner_charity_reports(test=True):
         last_report_date = PartnerCharityReport.objects.filter(partner__id=ids[0]).aggregate(Max('date'))['date__max'] or datetime.date(2016, 1, 1)
         start = arrow.get(last_report_date).replace(days=+1).datetime
         # End date is yesterday (for completeness)
-        end = arrow.get(datetime.date.today()).replace(days=-1).datetime
+        end = arrow.utcnow().replace(days=-1).datetime
 
         # Create spreadsheet
         querysets = OrderedDict([
