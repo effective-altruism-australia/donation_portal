@@ -1,6 +1,6 @@
 import arrow
 import datetime
-
+import q
 from collections import OrderedDict
 
 from django.db.models import Max
@@ -18,22 +18,26 @@ def send_partner_charity_reports(test=True):
     del partners['GiveDirectly Basic income research']
 
     for partner, ids in partners.iteritems():
-        # Start date is day after we last reported
-        last_report_date = PartnerCharityReport.objects.filter(partner__id=ids[0]).aggregate(Max('date'))['date__max'] or datetime.date(2016, 1, 1)
-        start = arrow.get(last_report_date).replace(days=+1).datetime
-        # End date is yesterday (for completeness)
-        end = arrow.utcnow().replace(days=-1).datetime
+        # Start time is when we last reported
+        last_report_datetime = PartnerCharityReport.objects.filter(partner__id=ids[0]).aggregate(Max('date'))['date__max'] or datetime.datetime(2016, 1, 1, 0, 0, 0)
+        start = arrow.get(last_report_datetime).datetime
+        q.q(start)
+        # End date is midnight yesterday (i.e. midnight between yesterday and today) UTC
+        end = arrow.get(arrow.utcnow().date()).datetime
+        q.q(end)
 
         # Create spreadsheet
         querysets = OrderedDict([
-            ('New donations', Donation.objects.filter(date__gte=start,
-                                                      date__lte=end,
-                                                      pledge__recipient_org__id__in=ids).order_by('date')
-                              # include donations that weren't reconciled until later
-                              | Donation.objects.filter(bank_transaction__time_reconciled__gte=start,
-                                                        date__lte=end,
-                                                        pledge__recipient_org__id__in=ids).order_by('date')),
-            ('All donations', Donation.objects.filter(date__lte=end,
+            ('New donations',
+             # For bank transactions, we use time_reconciled
+             Donation.objects.filter(bank_transaction__time_reconciled__gte=start,
+                                     date__lt=end,
+                                     pledge__recipient_org__id__in=ids).order_by('date')
+             | Donation.objects.filter(pin_transaction__isnull=False,
+                                       date__gte=start,
+                                       date__lt=end,
+                                       pledge__recipient_org__id__in=ids).order_by('date')),
+            ('All donations', Donation.objects.filter(date__lt=end,
                                                       pledge__recipient_org__id__in=ids).order_by('date'))])
 
         template = OrderedDict([

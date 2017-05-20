@@ -422,9 +422,10 @@ class TransitionalDonationsFile(models.Model):
 
 
 class PartnerCharityReport(models.Model):
-    date = models.DateField()
+    date = models.DateTimeField()
     partner = models.ForeignKey(PartnerCharity)
     time_sent = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return "Report to {0.partner.name} for donations up to {0.date}, sent {0.time_sent}".format(self)
+        date_until = arrow.get(self.date).shift(days=-1).date()
+        return "Report to {0.partner.name} for donations up to and including {1}, sent {0.time_sent}".format(self, date_until)
