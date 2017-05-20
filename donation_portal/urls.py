@@ -17,16 +17,20 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from donation.views import upload_donations_file, accounting_reconciliation, download_transactions, download_all_data, donation_counter, PledgeView, download_receipt, export_page
+from donation.views.accounting import accounting_reconciliation, donation_counter
+from donation.views.donations import PledgeView, download_receipt
+from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
 
 urlpatterns = [
+    # Accounting
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^upload_donations', upload_donations_file, name='upload-donations-file'),
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
-    url(r'^export', export_page, name='export-page'),
     url(r'^secret_donation_counter', donation_counter, name='donation-counter'),
-    url(r'^download_all_data', download_all_data, name='download-all-data'),
-    url(r'^download_transactions', download_transactions, name='download-transactions'),
+    # Data export
+    url(r'^export', render_export_page, name='export-page'),
+    url(r'^download_full_spreadsheet', download_full_spreadsheet, name='download-full-spreadsheet'),
+    url(r'^download_spreadsheet', download_spreadsheet, name='download-spreadsheet'),
+    # Donations
     # url(r'^pledge/([0-9])/$', pledge, name='pledge')
     url(r'^pledge', PledgeView.as_view(), name='pledge'),
     url(r'^receipt/(?P<pk>[0-9]+)/(?P<secret>[a-zA-Z0-9]+)', download_receipt, name='download-receipt'),
