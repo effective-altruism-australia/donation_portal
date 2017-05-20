@@ -5,7 +5,7 @@ from django.contrib import messages
 
 from reversion.admin import VersionAdmin
 
-from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, PaymentMethod
+from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, PaymentMethod, PartnerCharityReport
 
 
 class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
@@ -163,3 +163,4 @@ admin.site.register(BankTransaction, BankTransactionAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(PartnerCharity, VersionAdmin)
 admin.site.register(XeroReconciledDate)
+admin.site.register(PartnerCharityReport)

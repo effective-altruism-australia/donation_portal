@@ -425,3 +425,6 @@ class PartnerCharityReport(models.Model):
     date = models.DateField()
     partner = models.ForeignKey(PartnerCharity)
     time_sent = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return "Report to {0.partner.name} for donations up to {0.date}, sent {0.time_sent}".format(self)
