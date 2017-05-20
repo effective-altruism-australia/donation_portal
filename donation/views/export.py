@@ -55,7 +55,7 @@ def download_spreadsheet(request, extra_fields=None):
     location = os.path.join(settings.MEDIA_ROOT, 'downloads', filename)
 
     queryset = Donation.objects.filter(date__gte=start, date__lte=end).order_by('date')
-    write_spreadsheet(location, queryset, template)
+    write_spreadsheet(location, {'Donations': queryset}, template)
 
     response = HttpResponse(open(location).read(),
                             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -63,19 +63,20 @@ def download_spreadsheet(request, extra_fields=None):
     return response
 
 
-def write_spreadsheet(location, queryset, template):
+def write_spreadsheet(location, querysets, template):
     with xlsxwriter.Workbook(location, {'default_date_format': 'dd mmm yyyy'}) as wb:
-        ws = wb.add_worksheet()
-        ws.write_row(0, 0, template.keys())
-        row_number = 0
-        for row in queryset.values_list(*template.values()):
-            row_number += 1
-            # Resolve any Enums
-            row = [value.label if isinstance(value, Enum) else value for value in row]
-            # Excel can't cope with time zones
-            row = [value.replace(tzinfo=None) if isinstance(value, datetime) or isinstance(value, date)
-                   else value for value in row]
-            ws.write_row(row_number, 0, row)
+        for name, queryset in querysets.iteritems():
+            ws = wb.add_worksheet(name=name)
+            ws.write_row(0, 0, template.keys())
+            row_number = 0
+            for row in queryset.values_list(*template.values()):
+                row_number += 1
+                # Resolve any Enums
+                row = [value.label if isinstance(value, Enum) else value for value in row]
+                # Excel can't cope with time zones
+                row = [value.replace(tzinfo=None) if isinstance(value, datetime) or isinstance(value, date)
+                       else value for value in row]
+                ws.write_row(row_number, 0, row)
 
 
 @login_required()

@@ -7,6 +7,7 @@ import os
 import json
 import random
 import string
+import datetime
 
 from django.db import models
 from django.template.loader import render_to_string
@@ -191,6 +192,7 @@ class BankTransaction(models.Model):
         matched_with_pledge = self.reconcile()
         if matched_with_pledge:
             kwargs['force_insert'] = False  # can't force_insert twice
+            self.time_reconciled = timezone.now()
             super(BankTransaction, self).save(*args, **kwargs)
             # Generate a receipt object.
             Receipt.objects.create_from_bank_transaction(self)
@@ -208,20 +210,15 @@ class BankTransaction(models.Model):
 
             # Next, try to find a pledge by looking for previously reconciled transactions with identical
             # bank_statement_text.
-            # TODO there are no exceptions the following code should throw; enclosed in try block for now because
-            # it's hard to test (can be removed later).
-            try:
-                earlier_references = BankTransaction.objects.filter(bank_statement_text=self.bank_statement_text,
-                                                                    pledge__isnull=False,
-                                                                    ) \
-                                                        .exclude(id=self.id) \
-                                                        .order_by('reference').distinct('reference') \
-                                                        .values_list('reference', flat=True)
-                if len(earlier_references) == 1:
-                    self.pledge = Pledge.objects.get(reference=earlier_references[0])
-                    return True
-            except Exception:
-                client.captureException()
+            earlier_references = BankTransaction.objects.filter(bank_statement_text=self.bank_statement_text,
+                                                                pledge__isnull=False,
+                                                                ) \
+                                                    .exclude(id=self.id) \
+                                                    .order_by('reference').distinct('reference') \
+                                                    .values_list('reference', flat=True)
+            if len(earlier_references) == 1:
+                self.pledge = Pledge.objects.get(reference=earlier_references[0])
+                return True
 
     class NotReconciledException(Exception):
         pass
@@ -423,3 +420,8 @@ class TransitionalDonationsFile(models.Model):
     time_uploaded = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to='uploads/')
 
+
+class PartnerCharityReport(models.Model):
+    date = models.DateField()
+    partner = models.ForeignKey(PartnerCharity)
+    time_sent = models.DateTimeField(auto_now_add=True)

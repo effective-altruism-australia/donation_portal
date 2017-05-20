@@ -1,0 +1,9 @@
+Dear {{ name }},
+
+Please find attached the latest donation report from Effective Altruism Australia.
+
+This report includes donations received by bank transfer or credit card that have been designated to you. It does not include donations we receive via other mechanisms, in particular our workplace giving programs.
+
+Best wishes,
+
+Effective Altruism Australia

@@ -93,9 +93,13 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 CELERYBEAT_SCHEDULE = {
     'process-transactions': {
         'task': 'donation.tasks.process_bank_transactions',
-        'schedule': crontab(minute=0, hour='*/4')
         # 'schedule': datetime.timedelta(seconds=30)  # For testing
+        'schedule': crontab(minute=0, hour='*/4')
     },
+    'send-partner-charity-reports': {
+        'task': 'donation.tasks.send_partner_charity_reports',
+        'schedule': crontab(minute=0, hour=5, day_of_week=1)
+    }
 }
 
 LOGIN_URL = '/admin/login'
