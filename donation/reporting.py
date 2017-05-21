@@ -31,7 +31,7 @@ def send_partner_charity_reports(test=True):
             ('New donations',
              # For bank transactions, we use time_reconciled
              Donation.objects.filter(bank_transaction__time_reconciled__gte=start,
-                                     date__lt=end,
+                                     bank_transaction__time_reconciled__lt=end,
                                      pledge__recipient_org__id__in=ids).order_by('date')
              | Donation.objects.filter(pin_transaction__isnull=False,
                                        date__gte=start,
