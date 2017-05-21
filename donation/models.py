@@ -292,6 +292,7 @@ class Receipt(models.Model):
     pledge = models.ForeignKey(Pledge, blank=True, null=True, on_delete=models.SET_NULL)
     # The email on the pledge might get edited, so let's record the one we used here.
     email = models.EmailField()
+    # Note (21 May 17) that the receipt_html field constitutes 90% of the database size
     receipt_html = models.TextField(blank=True, editable=False)
     failed_message = models.TextField(blank=True, editable=False, default='')
     secret = models.CharField(blank=True, max_length=16)  # So the donor can download the receipt from our website.

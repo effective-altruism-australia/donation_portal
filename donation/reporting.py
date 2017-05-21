@@ -23,6 +23,7 @@ def send_partner_charity_reports(test=True):
         start = arrow.get(last_report_datetime).datetime
         q.q(start)
         # End date is midnight yesterday (i.e. midnight between yesterday and today) UTC
+        # It could be the current time too (or rather a minute ago, to avoid races).
         end = arrow.get(arrow.utcnow().date()).datetime
         q.q(end)
 
@@ -38,7 +39,9 @@ def send_partner_charity_reports(test=True):
                                        date__lt=end,
                                        pledge__recipient_org__id__in=ids).order_by('date')),
             ('All donations', Donation.objects.filter(date__lt=end,
-                                                      pledge__recipient_org__id__in=ids).order_by('date'))])
+                                                      pledge__recipient_org__id__in=ids) \
+             # exclude transfers that we haven't included in "New donations" yet
+             .exclude(bank_transaction__time_reconciled__gte=end).order_by('date'))])
 
         template = OrderedDict([
                                    ('Date', 'date'),
