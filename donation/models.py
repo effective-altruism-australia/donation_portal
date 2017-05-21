@@ -217,7 +217,8 @@ class BankTransaction(models.Model):
                                                     .order_by('reference').distinct('reference') \
                                                     .values_list('reference', flat=True)
             if len(earlier_references) == 1:
-                self.pledge = Pledge.objects.get(reference=earlier_references[0])
+                self.reference = earlier_references[0]
+                self.pledge = Pledge.objects.get(reference=self.reference)
                 return True
 
     class NotReconciledException(Exception):
