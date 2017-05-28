@@ -98,7 +98,7 @@ CELERYBEAT_SCHEDULE = {
     },
     'send-partner-charity-reports': {
         'task': 'donation.tasks.send_partner_charity_reports',
-        'schedule': crontab(minute=0, hour=5, day_of_week='*')
+        'schedule': crontab(minute=0, hour=5, day_of_week='1')
     }
 }
 
