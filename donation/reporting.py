@@ -68,7 +68,7 @@ def send_partner_charity_reports(test=True):
             message = EmailMessage(
                 subject='Effective Altruism Australia donation report',
                 body=body,
-                to=[partner_email+".test"],
+                to=[partner_email],
                 cc=['info@eaa.org.au', 'ben.toner@eaa.org.au'],
                 # There is a filter in info@eaa.org.au
                 #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
