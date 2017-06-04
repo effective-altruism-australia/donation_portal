@@ -63,12 +63,13 @@ def send_partner_charity_reports(test=True):
 
         # Create email
         try:
+            partner_email = PartnerCharity.objects.get(id=ids[0]).email
             body = render_to_string('partner_report_message.txt', {'name': partner})
             message = EmailMessage(
                 subject='Effective Altruism Australia donation report',
                 body=body,
-                to=['ben.toner@eaa.org.au'],
-                cc=[],
+                to=[partner_email+".test"],
+                cc=['info@eaa.org.au', 'ben.toner@eaa.org.au'],
                 # There is a filter in info@eaa.org.au
                 #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
                 # that automatically archives messages sent to info+receipt and adds the label 'receipts'
