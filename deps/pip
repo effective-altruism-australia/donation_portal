@@ -5,7 +5,7 @@ arrow==0.10.0
 billiard==3.5.0.2
 celery==4.0.2
 certifi==2017.4.17
-cffi==1.9.1
+cffi==1.10.0
 configparser==3.5.0
 contextlib2==0.5.4
 cryptography==1.7.2
