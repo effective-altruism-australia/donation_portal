@@ -21,7 +21,7 @@ flake8-blind-except==0.1.1
 flake8-putty==0.4.0
 flake8-tidy-imports==1.0.5
 gunicorn==19.6.0
-idna==2.2
+idna==2.5
 ipaddress==1.0.18
 kombu==3.0.37
 mccabe==0.6.1
