@@ -26,7 +26,7 @@ ipaddress==1.0.18
 kombu==3.0.37
 mccabe==0.6.1
 ndg-httpsclient==0.4.2
-oauthlib==2.0.1
+oauthlib==2.0.2
 olefile==0.44
 packaging==16.8
 pdfkit==0.6.1
