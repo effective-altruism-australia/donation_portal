@@ -42,7 +42,7 @@ pyOpenSSL==17.0.0
 pyparsing==2.2.0
 python-dateutil==2.6.0
 python-postmark==0.4.12
-pytz==2016.10
+pytz==2017.2
 pyxero==0.8.0
 q==2.6
 raven==5.32.0
