@@ -30,7 +30,7 @@ oauthlib==2.0.2
 olefile==0.44
 packaging==16.8
 pdfkit==0.6.1
-Pillow==4.0.0
+Pillow==4.1.1
 psycopg2==2.6.2
 pyasn1==0.2.2
 pycodestyle==2.3.1
