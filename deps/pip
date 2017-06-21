@@ -45,7 +45,7 @@ python-postmark==0.4.12
 pytz==2017.2
 pyxero==0.8.0
 q==2.6
-raven==5.32.0
+raven==6.1.0
 redis==2.10.5
 requests==2.13.0
 requests-oauthlib==0.8.0
