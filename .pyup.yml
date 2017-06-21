@@ -1,5 +1,5 @@
 # configure updates globally, default is all
-update: all # allowed [all, insecure, False]
+update: insecure # allowed [all, insecure, False]
 
 # configure dependency pinning globally, default is True
 pin: True # allowed [True, False]
@@ -14,13 +14,12 @@ branch: master
 
 # configure requirement files search, default is True
 # the bot will search for files ending with .txt/.pip with a requirements in their file paths
-# search: True # allowed [True, False]
+search: False # allowed [True, False]
 
 # adding requirements files manually, default is empty
 requirements:
   - deps/pip
-      # update all dependencies and pin them
-      updates: all
+      updates: security
       pin: True
 
 # add a label to pull requests, default is not set
@@ -40,4 +39,4 @@ requirements:
 # pr_prefix: "Bug #12345"
 
 # allow to close stale PRs, default is True
-close_prs: True
+# close_prs: True
