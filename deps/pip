@@ -39,7 +39,7 @@ pycrypto==2.6.1
 pyflakes==1.5.0
 PyJWT==1.4.0
 pyOpenSSL==16.2.0
-pyparsing==2.1.10
+pyparsing==2.2.0
 python-dateutil==2.6.0
 python-postmark==0.4.12
 pytz==2016.10
