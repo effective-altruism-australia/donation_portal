@@ -47,7 +47,7 @@ pyxero==0.8.0
 q==2.6
 raven==5.32.0
 redis==2.10.5
-requests==2.13.0
+requests==2.18.1
 requests-oauthlib==0.8.0
 rratelimit==0.0.4
 ruamel.ordereddict==0.4.9
