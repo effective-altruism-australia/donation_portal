@@ -1,5 +1,5 @@
 # configure updates globally, default is all
-update: insecure # allowed [all, insecure, False]
+update: security # allowed [all, insecure, False]
 
 # configure dependency pinning globally, default is True
 pin: True # allowed [True, False]
@@ -18,7 +18,7 @@ search: False # allowed [True, False]
 
 # adding requirements files manually, default is empty
 requirements:
-  - deps/pip
+  - deps/pip:
       updates: security
       pin: True
 
