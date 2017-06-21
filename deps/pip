@@ -51,7 +51,7 @@ requests==2.18.1
 requests-oauthlib==0.8.0
 rratelimit==0.0.4
 ruamel.ordereddict==0.4.9
-ruamel.yaml==0.13.14
+ruamel.yaml==0.15.9
 six==1.10.0
 subprocess32==3.2.7
 termcolor==1.1.0
