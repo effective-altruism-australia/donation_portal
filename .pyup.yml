@@ -1,5 +1,5 @@
 # configure updates globally, default is all
-update: security # allowed [all, insecure, False]
+update: insecure # allowed [all, insecure, False]
 
 # configure dependency pinning globally, default is True
 pin: True # allowed [True, False]
