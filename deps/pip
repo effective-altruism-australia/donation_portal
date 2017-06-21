@@ -3,7 +3,7 @@ anyjson==0.3.3
 appdirs==1.4.3
 arrow==0.10.0
 billiard==3.5.0.2
-celery==3.1.25
+celery==4.0.2
 certifi==2017.1.23
 cffi==1.9.1
 configparser==3.5.0
