@@ -13,8 +13,6 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
 from django.conf import settings
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 from django.utils import timezone
 from raven.contrib.django.raven_compat.models import client
 from enumfields import EnumField, Enum, EnumIntegerField
@@ -45,10 +43,9 @@ class PartnerCharity(models.Model):
             cls.cache_database_ids()
         return cls._cached_database_ids
 
-
-@receiver(post_save, sender=PartnerCharity)
-def refresh_cached_database_ids(sender, instance, **kwargs):
-    PartnerCharity.cache_database_ids()
+    def save(self, *args, **kwargs):
+        super(PartnerCharity, self).save(*args, **kwargs)
+        PartnerCharity.cache_database_ids()
 
 
 class PaymentMethod(Enum):
@@ -239,12 +236,11 @@ class BankTransaction(models.Model):
 class PinTransaction(BasePinTransaction):
     pledge = models.ForeignKey(Pledge, on_delete=models.CASCADE)
 
-
-@receiver(post_save, sender=PinTransaction)
-def create_receipt(sender, instance, **kwargs):
-    if instance.succeeded:
-        # Let's see how it goes doing this not in celery for now.
-        Receipt.objects.create_from_pin_transaction(instance)
+    def save(self, *args, **kwargs):
+        super(PinTransaction, self).save(*args, **kwargs)
+        if self.succeeded:
+            # Let's see how it goes doing this not in celery for now.
+            Receipt.objects.create_from_pin_transaction(self)
 
 
 class Donation(models.Model):
@@ -407,14 +403,13 @@ class XeroReconciledDate(models.Model):
     def __unicode__(self):
         return str(self.date)
 
-
-@receiver(post_save, sender=XeroReconciledDate)
-def reload_xero_data(sender, instance, **kwargs):
-    # Reload up-to-date data from xero after advancing the date
-    # Do it on on user's thread not via celery for obviousness.
-    # Lazy imports because circular dependencies
-    from eaaxero import import_trial_balance
-    import_trial_balance()
+    def save(self, *args, **kwargs):
+        super(self, XeroReconciledDate).save(*args, **kwargs)
+        # Reload up-to-date data from xero after advancing the date
+        # Do it on on user's thread not via celery for obviousness.
+        # Lazy imports because circular dependencies
+        from eaaxero import import_trial_balance
+        import_trial_balance()
 
 
 class TransitionalDonationsFile(models.Model):
