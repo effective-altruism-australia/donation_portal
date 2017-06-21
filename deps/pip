@@ -23,7 +23,7 @@ flake8-tidy-imports==1.0.5
 gunicorn==19.6.0
 idna==2.2
 ipaddress==1.0.18
-kombu==3.0.37
+kombu==4.0.2
 mccabe==0.6.1
 ndg-httpsclient==0.4.2
 oauthlib==2.0.1
