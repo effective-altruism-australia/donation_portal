@@ -68,6 +68,19 @@ def donation_counter(request):
     if unknown_total:
         totals['Unknown as yet'] = unknown_total
 
+    # Temporary hack - these will be included in the partners soon.
+    # Add donations present in xero but not in the partners
+    for account_description, account_name in [
+        ("TBD - for partner charity of our choice", "Donations received - for partner charity of our choice (250-PARTNE)"),
+        ("Unrestricted", "Donations received - Unrestricted (251)")
+        ]:
+        account_total = (Account.objects
+                     .filter(date__gte=xero_start_date, date__lte=xero_end_date,
+                             name=account_name)
+                     .aggregate(Sum('amount'))['amount__sum'] or 0)
+        if account_total:
+            totals[account_description] = account_total
+
     receipt_date = BankTransaction.objects.filter(do_not_reconcile=False, pledge__isnull=True, amount__gte=0) \
         .aggregate(Min('date'))['date__min']
 
