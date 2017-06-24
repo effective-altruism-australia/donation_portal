@@ -46,5 +46,13 @@ charities = [
   "show_on_website":false,
   "website_label":"Effective Altruism Australia",
   "website_description":" will allocate 100% of your donation to whichever of the listed charities is most in need of funding at the time"
+  },
+  {
+  "name":"Malaria Consortium",
+  "image_top_margin": 13,
+  "website_image":"thumbnails/logo_mc.jpg",
+  "show_on_website":true,
+  "website_label":"Malaria Consortium",
+  "website_description":" supports programs that provide malaria prevention medication to children in sub-Saharan Africa"
   }
 ]
