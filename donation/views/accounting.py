@@ -15,7 +15,10 @@ from donation.models import XeroReconciledDate, Account, Donation, PartnerCharit
 
 def total_donations_for_partner(DonationModel, start_date, end_date, partner):
     return DonationModel.objects \
-               .filter(date__gte=start_date, date__lte=end_date, pledge__recipient_org=partner) \
+               .filter(date__gte=start_date,
+                       date__lt=arrow.get(end_date).shift(days=1).date(),
+                       # use date_lt rather than date_lte so that it shows same-day credit card donations
+                       pledge__recipient_org=partner) \
                .aggregate(Sum('amount'))['amount__sum'] or 0
 
 
