@@ -6,7 +6,7 @@ from django.db import migrations, models
 def add_malaria_consortium(apps, schema_editor):
     PartnerCharity = apps.get_model('donation', 'PartnerCharity')
     partner_charities = [{'name': "Malaria Consortium",
-                          'email': '@'.join(['info', 'eaa.org.au']),
+                          'email': '@'.join(['d.thomas', 'malariaconsortium.org']),
                           'xero_account_name': "Donations received - Malaria Consortium (250-MC)"},
                          ]
 
