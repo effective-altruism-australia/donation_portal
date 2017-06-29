@@ -1,0 +1,9 @@
+Dear {{ first_name }},
+
+Thank you so much for your support of Effective Altruism Australia during the past year. Please find attached a receipt for all donations received during financial year 16-17.
+
+Please feel welcome to reply to this address if you have any questions or thoughts and one of our volunteers will get back to you as soon as they can.
+
+Best wishes,
+
+Effective Altruism Australia

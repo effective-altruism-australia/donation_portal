@@ -1,0 +1,20 @@
+{% extends 'receipts/receipt_base.html' %}
+{% block content %}
+  <h2>End of Financial Year Donation Receipt</h2>
+  <p>
+    This receipt lists the donations received from you by Effective Altruism Australia during the 16-17 financial year. This receipt is provided for your convenience &ndash; we have separately sent receipts for each of your donations at the time they were received. On behalf of everyone you're helping, we thank you for your gift(s).
+  </p>
+  <br/>
+  <h3>Details</h3>
+  <p><b>Receipt number</b>: {{ unique_reference }}</p>
+  <p><b>Name</b>: {{ first_name }} {{ last_name }}</p>
+  <p><b>Email</b>: {{ email }}</p>
+  <p><b>Date received</b>: From 1 July 2016 to 30 June 2017</p>
+  <p><b>Total Donation Amount</b>: ${{ total_amount }}</p>
+  <br/>
+  <br/>
+  <br/>
+  <p>
+    Please note that this receipt includes donations made via our 'normal' donation channels, i.e., by completing the form on our website and paying by credit card or bank transfer. It does not include donations made by cheque or via our workplace giving mechanisms.
+  </p>
+{% endblock content %}

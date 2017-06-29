@@ -1,0 +1,26 @@
+{% extends 'receipts/receipt_base.html' %}
+{% block content %}
+<h3>Details of your individual donations</h3>
+  <br/>
+  <table>
+    <thead>
+      <th>Date</th><th>Amount</th><th>Payment method</th><th>Designation</th>
+    </thead>
+    <tbody>
+      {% for donation in donations %}
+        <tr>
+          <td>{{ donation.date }}</td>
+          <td>{{ donation.amount }}</td>
+          <td>{{ donation.payment_method }}</td>
+          <td>{{ donation.designation }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br/>
+  <br/>
+  <br/>
+  <p>
+    Please note that this receipt includes donations made via our 'normal' donation channels, i.e., by completing the form on our website and paying by credit card or bank transfer. It does not include donations made by cheque or via our workplace giving mechanisms.
+  </p>
+{% endblock content %}
