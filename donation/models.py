@@ -319,7 +319,7 @@ class Receipt(models.Model):
         if self.sent:
             raise Exception("Receipt already sent.")
         try:
-            self.receipt_html = render_to_string('receipt.html', {'unique_reference': self.pk,
+            self.receipt_html = render_to_string('receipts/receipt.html', {'unique_reference': self.pk,
                                                                   'pledge': self.pledge,
                                                                   'transaction': self.transaction,
                                                                   })
@@ -328,7 +328,7 @@ class Receipt(models.Model):
             now = arrow.now()
             eofy_receipt_date = now.replace(month=7).replace(day=31).replace(years=+1 if now.month > 6 else 0).date()
 
-            body = render_to_string('receipt_message.txt', {'pledge': self.pledge,
+            body = render_to_string('receipts/receipt_message.txt', {'pledge': self.pledge,
                                                             'transaction': self.transaction,
                                                             'eofy_receipt_date': eofy_receipt_date,
                                                             })

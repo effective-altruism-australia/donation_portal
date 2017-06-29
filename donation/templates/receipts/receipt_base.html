@@ -253,25 +253,14 @@
           <p class="header_text">
             W: effectivealtruism.org.au<br>
             E: info@eaa.org.au<br>
-            P: +61 3 9349 4062<br>
+            P: +61 3 8582 4849<br>
           </p>
         </div>
       </div>
       <hr>
     </div>
     <div class="content">
-      <h2>Donation Receipt</h2>
-      <p>
-        On behalf of everyone you’re helping, thank you for your gift. This receipt serves as confirmation that your donation has been received and processed.
-      </p>
-      </br>
-      <h3>Details</h3>
-      <p><b>Receipt number</b>: {{ unique_reference }}</p>
-      <p><b>Name</b>: {{ pledge.first_name }} {{ pledge.last_name }}</p>
-      <p><b>Email</b>: {{ pledge.email }}</p>
-      <p><b>Date received</b>: {{ transaction.date }}</p>
-      <p><b>Donation Amount</b>: ${{ transaction.amount}}</p>
-      <p><b>Designation</b>: {{ pledge.recipient_org }}</p>
+      {% block content %}{% endblock content %}
     </div>
     <div class="receipt-footer">
       <div class="footer-content">

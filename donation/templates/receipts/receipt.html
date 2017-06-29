@@ -1,0 +1,15 @@
+{% extends 'receipts/receipt_base.html' %}
+{% block content %}
+  <h2>Donation Receipt</h2>
+  <p>
+    On behalf of everyone you’re helping, thank you for your gift. This receipt serves as confirmation that your donation has been received and processed.
+  </p>
+  </br>
+  <h3>Details</h3>
+  <p><b>Receipt number</b>: {{ unique_reference }}</p>
+  <p><b>Name</b>: {{ pledge.first_name }} {{ pledge.last_name }}</p>
+  <p><b>Email</b>: {{ pledge.email }}</p>
+  <p><b>Date received</b>: {{ transaction.date }}</p>
+  <p><b>Donation Amount</b>: ${{ transaction.amount}}</p>
+  <p><b>Designation</b>: {{ pledge.recipient_org }}</p>
+{% endblock content %}
