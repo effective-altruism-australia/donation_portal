@@ -323,8 +323,15 @@ class Receipt(models.Model):
                                                                   })
             pdfkit.from_string(self.receipt_html, self.pdf_receipt_location)
 
-            now = arrow.now()
-            eofy_receipt_date = now.replace(month=7).replace(day=31).replace(years=+1 if now.month > 6 else 0).date()
+            if self.bank_transaction:
+                received_date = self.bank_transaction.date
+            else:
+                received_date = arrow.get(self.pin_transaction.date).to(settings.TIME_ZONE).date()
+            eofy_receipt_date = (arrow.get(received_date)
+                                      .replace(month=7)
+                                      .replace(day=31)
+                                      .shift(years=+1 if received_date.month > 6 else 0)
+                                      .date())
 
             body = render_to_string('receipts/receipt_message.txt', {'pledge': self.pledge,
                                                             'transaction': self.transaction,
