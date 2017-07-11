@@ -244,9 +244,16 @@ class PinTransaction(BasePinTransaction):
 class Donation(models.Model):
     """Database view with fields common to all donations (BankTransaction, PinTransaction etc.)
     Implemented by creating a view in the database, see
-    donation/migrations/0023_create_donation_view.py.
+    donation/migrations/0035_amend_donation_view.py.
     """
-    date = models.DateTimeField()
+    # It's convenient for all Donations to have a datetime rather than have bank transactions be a
+    # special case because they are received on a particular date, but not a particular time.
+    # Bank transactions are therefore assumed received at 6pm on the day they're received, Melbourne time.
+    # Reasons for 6pm: 1. this is the usual cut-off time.
+    # 2. If you make it midnight it's ambiguous whether at start or end of day
+    datetime = models.DateTimeField()
+    # Convenient for date to be field even though it's easily calculated from datetime, so you can filter on it
+    date = models.DateField()
     amount = models.DecimalField(decimal_places=2, max_digits=12, )
     payment_method = models.CharField(max_length=128)
     reference = models.TextField(blank=True)

@@ -39,7 +39,7 @@ def download_spreadsheet(request, extra_fields=None):
     if extra_fields is None:
         extra_fields = []
     template = OrderedDict([
-                               ('Date', 'date'),
+                               ('Date', 'datetime'),
                                ('Amount', 'amount'),
                                ('EAA Reference', 'reference'),
                                ('First Name', 'pledge__first_name'),
@@ -54,7 +54,7 @@ def download_spreadsheet(request, extra_fields=None):
     filename = 'EAA donations {0} to {1} downloaded {2}.xlsx'.format(start, end, datetime.now())
     location = os.path.join(settings.MEDIA_ROOT, 'downloads', filename)
 
-    queryset = Donation.objects.filter(date__gte=start, date__lte=end).order_by('date')
+    queryset = Donation.objects.filter(date__gte=start, date__lte=end).order_by('datetime')
     write_spreadsheet(location, {'Donations': queryset}, template)
 
     response = HttpResponse(open(location).read(),
@@ -74,7 +74,7 @@ def write_spreadsheet(location, querysets, template):
                 # Resolve any Enums
                 row = [value.label if isinstance(value, Enum) else value for value in row]
                 # Excel can't cope with time zones
-                row = [value.replace(tzinfo=None) if isinstance(value, datetime) or isinstance(value, date)
+                row = [value.replace(tzinfo=None) if isinstance(value, datetime)
                        else value for value in row]
                 ws.write_row(row_number, 0, row)
 

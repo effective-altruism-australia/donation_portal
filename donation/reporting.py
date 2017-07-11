@@ -3,7 +3,7 @@ import datetime
 import q
 from collections import OrderedDict
 
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.utils import timezone
 
 from donation.models import *
@@ -30,20 +30,20 @@ def send_partner_charity_reports(test=True):
         querysets = OrderedDict([
             ('New donations',
              # For bank transactions, we use time_reconciled
-             Donation.objects.filter(bank_transaction__time_reconciled__gte=start,
-                                     bank_transaction__time_reconciled__lt=end,
-                                     pledge__recipient_org__id__in=ids).order_by('date')
-             | Donation.objects.filter(pin_transaction__isnull=False,
-                                       date__gte=start,
-                                       date__lt=end,
-                                       pledge__recipient_org__id__in=ids).order_by('date')),
-            ('All donations', Donation.objects.filter(date__lt=end,
-                                                      pledge__recipient_org__id__in=ids) \
-             # exclude transfers that we haven't included in "New donations" yet
-             .exclude(bank_transaction__time_reconciled__gte=end).order_by('date'))])
+             Donation.objects.filter(Q(bank_transaction__time_reconciled__gte=start,
+                                     bank_transaction__time_reconciled__lt=end) |
+                                     Q(pin_transaction__isnull=False,
+                                       datetime__gte=start,
+                                       datetime__lt=end),
+                                     pledge__recipient_org__id__in=ids).order_by('datetime')),
+            ('All donations',
+             Donation.objects.filter(Q(bank_transaction__time_reconciled__lt=end) |
+                                     Q(pin_transaction__isnull=False,
+                                       datetime__lt=end),
+                                     pledge__recipient_org__id__in=ids).order_by('datetime'))])
 
         template = OrderedDict([
-                                   ('Date', 'date'),
+                                   ('Date', 'datetime'),
                                    ('Amount', 'amount'),
                                    ('Fees', 'pin_transaction__fees'),
                                    ('EAA Reference', 'reference'),
@@ -55,7 +55,9 @@ def send_partner_charity_reports(test=True):
                                    ('Designation', 'pledge__recipient_org__name')
                                ])
 
-        filename = 'EAA donation report - {0} - {1}.xlsx'.format(partner, timezone.now().date())
+        filename = 'EAA donation report - {0} - {1}.xlsx'.format(partner,
+                                                                 # Avoid collisions of filename while testing
+                                                                 timezone.now())
         location = os.path.join(settings.MEDIA_ROOT, 'partner_reports', filename)
 
         write_spreadsheet(location, querysets, template)
