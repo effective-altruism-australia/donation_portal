@@ -317,10 +317,11 @@ class Receipt(models.Model):
         if self.sent:
             raise Exception("Receipt already sent.")
         try:
-            self.receipt_html = render_to_string('receipts/receipt.html', {'unique_reference': self.pk,
-                                                                  'pledge': self.pledge,
-                                                                  'transaction': self.transaction,
-                                                                  })
+            self.receipt_html = render_to_string('receipts/receipt.html',
+                                                 {'unique_reference': self.pk,
+                                                  'pledge': self.pledge,
+                                                  'transaction': self.transaction,
+                                                  })
             pdfkit.from_string(self.receipt_html, self.pdf_receipt_location)
 
             if self.bank_transaction:
@@ -333,10 +334,11 @@ class Receipt(models.Model):
                                       .shift(years=+1 if received_date.month > 6 else 0)
                                       .date())
 
-            body = render_to_string('receipts/receipt_message.txt', {'pledge': self.pledge,
-                                                            'transaction': self.transaction,
-                                                            'eofy_receipt_date': eofy_receipt_date,
-                                                            })
+            body = render_to_string('receipts/receipt_message.txt',
+                                    {'pledge': self.pledge,
+                                     'transaction': self.transaction,
+                                     'eofy_receipt_date': eofy_receipt_date,
+                                     })
             message = EmailMessage(
                 subject='Receipt for your donation to Effective Altruism Australia',
                 body=body,
