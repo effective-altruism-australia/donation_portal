@@ -12,7 +12,6 @@ from donation.views.export import write_spreadsheet
 
 def send_partner_charity_reports(test=True):
     # Create list of partners, combined the GiveDirectly entries
-    # TODO: respect the "test" parameter
     partners = {partner.name: [partner.id] for partner in PartnerCharity.objects.all()}
     partners['GiveDirectly'] += partners['GiveDirectly Basic income research']
     del partners['GiveDirectly Basic income research']
@@ -56,7 +55,7 @@ def send_partner_charity_reports(test=True):
                                    ('Designation', 'pledge__recipient_org__name')
                                ])
 
-        filename = 'EAA donation report - {0} - {1}.xlsx'.format(partner, timezone.now())
+        filename = 'EAA donation report - {0} - {1}.xlsx'.format(partner, timezone.now().date())
         location = os.path.join(settings.MEDIA_ROOT, 'partner_reports', filename)
 
         write_spreadsheet(location, querysets, template)
@@ -68,8 +67,8 @@ def send_partner_charity_reports(test=True):
             message = EmailMessage(
                 subject='Effective Altruism Australia donation report',
                 body=body,
-                to=[partner_email],
-                cc=['info@eaa.org.au', 'ben.toner@eaa.org.au'],
+                to=[partner_email] if not test else 'ben.toner@eaa.org.au',
+                cc=['info@eaa.org.au', 'ben.toner@eaa.org.au'] if not test else 'ben.toner@eaa.org.au',
                 # There is a filter in info@eaa.org.au
                 #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
                 # that automatically archives messages sent to info+receipt and adds the label 'receipts'
