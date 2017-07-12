@@ -29,18 +29,15 @@ def xero_report_to_iterator(xero_report):
 def import_bank_transactions(manual=False):
     to_date = date.today()
     from_date = to_date - timedelta(settings.XERO_DAYS_TO_IMPORT)
+    import_bank_transactions_from_account(settings.XERO_INCOMING_ACCOUNT_ID, from_date, to_date, manual)
 
+
+def import_bank_transactions_from_account(bank_account_id, from_date, to_date, manual):
     passed_params = {
         "fromDate": str(from_date),
         "toDate": str(to_date),
-
         # Note: you can look up the bankAccountIDs by using the xero.accounts endpoint and filtering account number.
-        "bankAccountID": settings.XERO_INCOMING_ACCOUNT_ID
-
-        # This was our old Westpac account.
-        # TODO maybe do a one-time import of donations from this account if we ever do things like
-        # look at how much a donor has donated in total.
-        # "bankAccountID": u'9bc4450a-ed06-4049-abbc-03e723581d18',
+        "bankAccountID": bank_account_id
     }
 
     rows_seen = defaultdict(int)
@@ -79,7 +76,8 @@ def import_bank_transactions(manual=False):
             BankTransaction.objects.create(date=bank_statement_date,
                                            bank_statement_text=bank_statement_text,
                                            amount=amount,
-                                           unique_id=unique_id)
+                                           unique_id=unique_id,
+                                           bank_account_id=bank_account_id)
 
 
 def to_decimal(s):

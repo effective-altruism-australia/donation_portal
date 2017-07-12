@@ -34,7 +34,7 @@ def send_partner_charity_reports(test=True):
             ('New donations',
              # For bank transactions, we use time_reconciled
              Donation.objects.filter(Q(bank_transaction__time_reconciled__gte=start,
-                                     bank_transaction__time_reconciled__lt=end) |
+                                       bank_transaction__time_reconciled__lt=end) |
                                      Q(pin_transaction__isnull=False,
                                        datetime__gte=start,
                                        datetime__lt=end),

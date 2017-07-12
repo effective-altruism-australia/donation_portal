@@ -111,6 +111,7 @@ class BankTransactionAdmin(VersionAdmin):
     readonly_fields = ('date', 'amount', 'bank_statement_text', 'reconciled', 'pledge')
     list_filter = (BankTransactionReconciliationListFilter, )
     inlines = (ReceiptInline, )
+    ordering = ('-date', '-id', )
 
     class Meta:
         model = BankTransaction

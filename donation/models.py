@@ -127,6 +127,7 @@ class BankTransaction(models.Model):
     do_not_reconcile = models.BooleanField(default=False)
     pledge = models.ForeignKey(Pledge, blank=True, null=True)
     time_reconciled = models.DateTimeField(blank=True, null=True, editable=False)
+    bank_account_id = models.TextField()
 
     def __unicode__(self):
         return ("UNRECONCILED -- " if not self.reconciled else "") + \
