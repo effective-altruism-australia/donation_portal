@@ -1,12 +1,17 @@
 import arrow
 import datetime
-import q
+import os
 from collections import OrderedDict
 
+from django.conf import settings
 from django.db.models import Max, Q
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage, get_connection
 from django.utils import timezone
 
-from donation.models import *
+from raven.contrib.django.raven_compat.models import client
+
+from donation.models import PartnerCharity, PartnerCharityReport, Donation
 from donation.views.export import write_spreadsheet
 
 
@@ -20,11 +25,9 @@ def send_partner_charity_reports(test=True):
         # Start time is when we last reported
         last_report_datetime = PartnerCharityReport.objects.filter(partner__id=ids[0]).aggregate(Max('date'))['date__max'] or datetime.datetime(2016, 1, 1, 0, 0, 0)
         start = arrow.get(last_report_datetime).datetime
-        q.q(start)
         # End date is midnight yesterday (i.e. midnight between yesterday and today) UTC
         # It could be the current time too (or rather a minute ago, to avoid races).
         end = arrow.get(arrow.utcnow().date()).datetime
-        q.q(end)
 
         # Create spreadsheet
         querysets = OrderedDict([

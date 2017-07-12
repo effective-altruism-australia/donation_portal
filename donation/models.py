@@ -1,23 +1,20 @@
 from __future__ import unicode_literals
 
-import pdfkit
 import arrow
 import re
 import os
 import json
 import random
 import string
-import datetime
 
 from django.db import models
-from django.template.loader import render_to_string
-from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
 from django.conf import settings
 from django.utils import timezone
-from raven.contrib.django.raven_compat.models import client
 from enumfields import Enum, EnumIntegerField
 
 from pinpayments.models import PinTransaction as BasePinTransaction
+
+from donation import emails
 
 
 class PartnerCharity(models.Model):
@@ -115,32 +112,6 @@ class Pledge(models.Model):
     def __unicode__(self):
         return "Pledge of ${0.amount} to {0.recipient_org} by {0.first_name} {0.last_name}, " \
             "made on {1}. Reference {0.reference}".format(self, self.completed_time.date())
-
-    # TODO better tracking of these messages
-    def send_bank_transfer_instructions(self):
-        try:
-            context = {'pledge': self, 'partner_charity': self.recipient_org.name}
-            body = render_to_string('bank_transfer_instructions.txt', context)
-            body_html = render_to_string('bank_transfer_instructions.html', context)
-
-            message = EmailMultiAlternatives(
-                subject='Instructions to complete your donation',
-                body=body,
-                to=[self.email],
-                # cc=[self.pledge.recipient_org.email],
-                # There is a filter in info@eaa.org.au
-                #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
-                # that automatically archives messages sent to info+receipt and adds the label 'receipts'
-                # bcc=["info+receipt@eaa.org.au", ],
-                cc=["info@eaa.org.au"],
-                from_email=settings.POSTMARK_SENDER,
-            )
-            message.attach_alternative(body_html, "text/html")
-            get_connection().send_messages([message])
-
-        except Exception as e:
-            client.captureException()
-            self.failed_message = e.message if e.message else "Sending failed"
 
 
 # It's possible that we get the reference wrong when a BankTransaction is imported, for example if the donor
@@ -280,7 +251,7 @@ class ReceiptManager(models.Manager):
 
     def create(self, *args, **kwargs):
         receipt = super(ReceiptManager, self).create(*args, **kwargs)
-        receipt.send()
+        emails.send_receipt(receipt)
         return receipt
 
 
@@ -319,53 +290,6 @@ class Receipt(models.Model):
         if self.pin_transaction and not self.secret:
             self.secret = ''.join(random.choice(string.letters + string.digits) for _ in range(16))
         super(Receipt, self).save(*args, **kwargs)
-
-    def send(self):
-        if self.sent:
-            raise Exception("Receipt already sent.")
-        try:
-            self.receipt_html = render_to_string('receipts/receipt.html',
-                                                 {'unique_reference': self.pk,
-                                                  'pledge': self.pledge,
-                                                  'transaction': self.transaction,
-                                                  })
-            pdfkit.from_string(self.receipt_html, self.pdf_receipt_location)
-
-            if self.bank_transaction:
-                received_date = self.bank_transaction.date
-            else:
-                received_date = arrow.get(self.pin_transaction.date).to(settings.TIME_ZONE).date()
-            eofy_receipt_date = (arrow.get(received_date)
-                                      .replace(month=7)
-                                      .replace(day=31)
-                                      .shift(years=+1 if received_date.month > 6 else 0)
-                                      .date())
-
-            body = render_to_string('receipts/receipt_message.txt',
-                                    {'pledge': self.pledge,
-                                     'transaction': self.transaction,
-                                     'eofy_receipt_date': eofy_receipt_date,
-                                     })
-            message = EmailMessage(
-                subject='Receipt for your donation to Effective Altruism Australia',
-                body=body,
-                to=[self.pledge.email],
-                cc=[self.pledge.recipient_org.email],
-                # There is a filter in info@eaa.org.au
-                #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
-                # that automatically archives messages sent to info+receipt and adds the label 'receipts'
-                # bcc=["info+receipt@eaa.org.au", ],
-                bcc=["info+receipts@eaa.org.au"],
-                from_email=settings.POSTMARK_SENDER,
-            )
-            message.attach_file(self.pdf_receipt_location, mimetype='application/pdf')
-            get_connection().send_messages([message])
-
-            self.time_sent = timezone.now()
-        except Exception as e:
-            client.captureException()
-            self.failed_message = e.message if e.message else "Sending failed"
-        self.save()
 
     @property
     def status(self):

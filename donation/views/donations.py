@@ -11,6 +11,7 @@ from django.conf import settings
 
 from donation.forms import PledgeForm
 from donation.models import Receipt, RecurringFrequency, PinTransaction, PartnerCharity
+from donation import emails
 
 from redis import StrictRedis
 from rratelimit import Limiter
@@ -59,7 +60,7 @@ class PledgeView(View):
         if int(payment_method) == 1:
             # bank transaction
             response_data['bank_reference'] = pledge.generate_reference()
-            pledge.send_bank_transfer_instructions()
+            emails.send_bank_transfer_instructions(pledge)
             return JsonResponse(response_data)
         elif int(payment_method) == 3:
             # Rate limiting
