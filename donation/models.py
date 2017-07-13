@@ -14,8 +14,6 @@ from enumfields import Enum, EnumIntegerField
 
 from pinpayments.models import PinTransaction as BasePinTransaction
 
-from donation import emails
-
 
 class PartnerCharity(models.Model):
     name = models.TextField(unique=True)
@@ -252,7 +250,8 @@ class ReceiptManager(models.Manager):
 
     def create(self, *args, **kwargs):
         receipt = super(ReceiptManager, self).create(*args, **kwargs)
-        emails.send_receipt(receipt)
+        from receipts import send_receipt
+        send_receipt(receipt)
         return receipt
 
 
@@ -365,3 +364,42 @@ class PartnerCharityReport(models.Model):
     def __unicode__(self):
         date_until = arrow.get(self.date).shift(days=-1).date()
         return "Report to {0.partner.name} for donations up to and including {1}, sent {0.time_sent}".format(self, date_until)
+
+
+class EOFYReceipt(models.Model):
+    email = models.EmailField()
+    year = models.IntegerField()
+    time_sent = models.DateTimeField(auto_now_add=True)
+    receipt_html_page_1 = models.TextField(blank=True, editable=False)
+    receipt_html_page_2 = models.TextField(blank=True, editable=False)
+    failed_message = models.TextField(blank=True, editable=False, default='')
+
+    @property
+    def sent(self):
+        return self.time_sent is not None
+
+    @property
+    def failed(self):
+        return self.failed_message != ''
+
+    @property
+    def pdf_receipt_location(self):
+        return os.path.join(settings.MEDIA_ROOT,
+                            'eofy_receipts',
+                            'EAA_EOFY_Receipt_{0}_{1}.pdf'.format(self.year, self.email)
+                            )
+
+    @property
+    def status(self):
+        if self.sent:
+            return "Receipt to {0.email} sent at {1}".format(self,
+                                                             arrow.get(self.time_sent).format('YYYY-MM-DD HH:mm:ss'))
+        elif self.failed:
+            return "Sending failed: {0.failed_message}".format(self)
+        else:
+            return "Sending failed. No failure message."
+
+    def __unicode__(self):
+        details = "{0.year} EOFY Receipt for {0.email}".format(self)
+        failed_part = " - Sending failed: {0.failed_message}".format(self) if self.failed else ""
+        return details + failed_part

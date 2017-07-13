@@ -32,6 +32,7 @@ pdfkit
 Pillow
 psycopg2
 PyCrypto
+PyPDF2
 python-dateutil
 python-postmark
 pyxero

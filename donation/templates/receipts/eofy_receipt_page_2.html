@@ -2,8 +2,8 @@
 {% block content %}
 <h3>Details of your individual donations</h3>
   <br/>
-  <table>
-    <thead>
+  <table style="width: 100%;">
+    <thead style="text-align: left;">
       <th>Date</th><th>Amount</th><th>Payment method</th><th>Designation</th>
     </thead>
     <tbody>
@@ -12,7 +12,7 @@
           <td>{{ donation.date }}</td>
           <td>{{ donation.amount }}</td>
           <td>{{ donation.payment_method }}</td>
-          <td>{{ donation.designation }}</td>
+          <td>{{ donation.pledge.recipient_org }}</td>
         </tr>
       {% endfor %}
     </tbody>

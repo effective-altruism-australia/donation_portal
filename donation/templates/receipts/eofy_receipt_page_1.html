@@ -6,14 +6,16 @@
   </p>
   <br/>
   <h3>Details</h3>
-  <p><b>Receipt number</b>: {{ unique_reference }}</p>
-  <p><b>Name</b>: {{ first_name }} {{ last_name }}</p>
+  <p><b>Name</b>: {{ name }}</p>
   <p><b>Email</b>: {{ email }}</p>
   <p><b>Date received</b>: From 1 July 20{{ two_digit_year|add:"-1" }} to 30 June 20{{ two_digit_year }} </p>
   <p><b>Total Donation Amount</b>: ${{ total_amount }}</p>
-  <br/>
-  <br/>
-  <br/>
-  <p>
-    Please note that if you also made donations via cheque or via a workplace giving program, those donations are not listed on this receipt.</p>
 {% endblock content %}
+{% block above_footer %}
+  <div style="margin-bottom: 40px;">
+    <h4>Notes</h4>
+    <p style="margin-top: -10px;">
+      If you also made donations via cheque or via a workplace giving program, those donations are not listed on this receipt.</br>
+      If you made donations from multiple email addresses, you'll receive a separate EOFY receipt at each email address.</p>
+  </div>
+{% endblock above_footer %}
