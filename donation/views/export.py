@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
+from django.utils import timezone
 from enumfields import Enum
 
 from donation.models import Donation
@@ -74,8 +75,8 @@ def write_spreadsheet(location, querysets, template):
                 # Resolve any Enums
                 row = [value.label if isinstance(value, Enum) else value for value in row]
                 # Excel can't cope with time zones
-                row = [value.replace(tzinfo=None) if isinstance(value, datetime)
-                       else value for value in row]
+                row = [value.astimezone(timezone.get_default_timezone()).replace(tzinfo=None)
+                       if isinstance(value, datetime) else value for value in row]
                 ws.write_row(row_number, 0, row)
 
 
