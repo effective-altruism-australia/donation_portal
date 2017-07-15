@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     CREATE VIEW donation_donation AS
       (SELECT id AS id,
-              "date"::TIMESTAMP WITH TIME ZONE AT TIME ZONE 'LIGT' + '18 hours' AS "datetime",
+              TIMEZONE('LIGT', "date"::TIMESTAMP) + '18 hours' AS "datetime",
               "date",
               amount,
               'Bank transfer' AS payment_method,
