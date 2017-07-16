@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
 from django.utils import timezone
+from django.db.models.functions import Lower
 
 from raven.contrib.django.raven_compat.models import client
 
@@ -67,27 +68,30 @@ def send_receipt(receipt):
 
 
 def generate_data_for_eofy_receipts(year):
+    # Some donors aren't consistent with the capitalisation of their email address
     donations = (Donation.objects
                  .select_related('pledge')
                  .filter(date__gte=datetime.date(year - 1, 7, 1), date__lt=datetime.date(year, 7, 1))
-                 .order_by('pledge__email', 'datetime')
+                 .annotate(email_lower=Lower('pledge__email'))
+                 .order_by('email_lower', 'datetime')
                  )
-    return [(email, list(donations)) for email, donations in itertools.groupby(donations, lambda d: d.pledge.email)]
+    return [list(donations) for _, donations in itertools.groupby(donations, lambda d: d.email_lower)]
 
 
 def send_eofy_receipts(test=True):
     year = timezone.now().year
-    for email, donations in generate_data_for_eofy_receipts(year):
-        pledge = donations[-1].pledge
+    for donations_from_email in generate_data_for_eofy_receipts(year):
+        pledge = donations_from_email[-1].pledge
+        email = pledge.email
         context = {'email': email,
                    'name': u"{0.first_name} {0.last_name}".format(pledge),
                    'two_digit_year': year - 2000,
-                   'total_amount': sum((donation.amount for donation in donations)),
-                   'donations': donations,
+                   'total_amount': sum((donation.amount for donation in donations_from_email)),
+                   'donations': donations_from_email,
                    }
 
         # Enforce not sending multiple receipts by default
-        if EOFYReceipt.objects.filter(year=year, email=email, time_sent__isnull=False).exists():
+        if not test and EOFYReceipt.objects.filter(year=year, email=email, time_sent__isnull=False).exists():
             continue
 
         eofy_receipt = EOFYReceipt(year=year,
