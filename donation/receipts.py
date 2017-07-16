@@ -117,7 +117,7 @@ def send_eofy_receipts(test=True):
                                      })
 
             message = EmailMessage(
-                subject='EOFY Receipt for your donation(s) to Effective Altruism Australia',
+                subject='EOFY Receipt from Effective Altruism Australia',
                 body=body,
                 to=[email],
                 bcc=["info+receipts@eaa.org.au"],
