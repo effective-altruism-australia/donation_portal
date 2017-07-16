@@ -4,6 +4,8 @@ Please find attached the latest donation report from Effective Altruism Australi
 
 This report includes donations received by bank transfer or credit card that have been designated to you. It does not include donations we receive via other mechanisms, in particular our workplace giving programs.
 
+Note (16 Jul 17): Fixed time zone handling. All times are now in AEST. This will cause the dates of some donations in the 'All Donations' sheet to change by one day compared to earlier reports. --ben
+
 Best wishes,
 
 Effective Altruism Australia
