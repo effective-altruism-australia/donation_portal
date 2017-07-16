@@ -111,6 +111,8 @@ PAYPAL_TEST = True
 CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS = 6
 CREDIT_CARD_RATE_LIMIT_PERIOD = 12*60*60
 
+TESTING_EMAIL = "@".join(['ben.toner', 'eaa.org.au'])
+
 # Deployment
 
 # Settings configured by Salt

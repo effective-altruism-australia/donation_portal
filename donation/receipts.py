@@ -124,7 +124,7 @@ def send_eofy_receipts(test=True):
                 from_email=settings.POSTMARK_SENDER,
             )
             message.attach_file(eofy_receipt.pdf_receipt_location, mimetype='application/pdf')
-            if not test:
+            if not test or email == "@".join(["shop", "bentoner.com"]):
                 get_connection().send_messages([message])
                 eofy_receipt.time_sent = timezone.now()
 
