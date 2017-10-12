@@ -64,7 +64,8 @@ HOW_DID_YOU_HEAR_CHOICES = ["The Life You Can Save",
                             "From the charity (SCI, Evidence Action, GiveDirectly)",
                             "Search engine (Google etc.)",
                             "Friend",
-                            "Giving What We Can"
+                            "Giving What We Can",
+                            "Ezra Justin's Bar-mitzvah",
                             ]
 
 
