@@ -71,12 +71,17 @@ def send_partner_charity_reports(test=True):
 
         # Create email
         try:
-            partner_email = PartnerCharity.objects.get(id=ids[0]).email
+            to = [PartnerCharity.objects.get(id=ids[0]).email]
+            # SCI requests that the report get sent to a second address.
+            # Special case this rather than come up with a general solution.
+            if partner == 'Schistosomiasis Control Initiative':
+                # Obfuscate email since open source
+                to += ["@".join(['giftadmin', 'imperial.ac.uk'])]
             body = render_to_string('partner_report_message.txt', {'name': partner})
             message = EmailMessage(
                 subject='Effective Altruism Australia donation report',
                 body=body,
-                to=[partner_email] if not test else [settings.TESTING_EMAIL],
+                to=to if not test else [settings.TESTING_EMAIL],
                 cc=['info@eaa.org.au', settings.TESTING_EMAIL] if not test else [settings.TESTING_EMAIL],
                 # There is a filter in info@eaa.org.au
                 #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
