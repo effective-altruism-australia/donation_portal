@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib import messages
 
 from reversion.admin import VersionAdmin
+from reversion.models import Revision, Version
 
 from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, PaymentMethod, PartnerCharityReport
 
@@ -165,3 +166,37 @@ admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(PartnerCharity, VersionAdmin)
 admin.site.register(XeroReconciledDate)
 admin.site.register(PartnerCharityReport)
+
+
+################################
+# A global list of admin actions
+################################
+
+class VersionInline(admin.TabularInline):
+    model = Version
+    extra = 0
+    can_delete = False
+    fields = ['content_type', 'object_repr']
+    readonly_fields = fields
+
+    def has_add_permission(self, request):
+        return False
+
+
+class RevisionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'comment', 'date_created')
+    readonly_fields = ('user', 'comment', 'date_created')
+    search_fields = ('=user__username', '=user__email')
+    date_hierarchy = 'date_created'
+    inlines = (VersionInline, )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(Revision, RevisionAdmin)
+
+################################
