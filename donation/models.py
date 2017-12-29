@@ -215,7 +215,7 @@ class PinTransaction(BasePinTransaction):
 class Donation(models.Model):
     """Database view with fields common to all donations (BankTransaction, PinTransaction etc.)
     Implemented by creating a view in the database, see
-    donation/migrations/0035_amend_donation_view.py.
+    donation/migrations/0042_amend_donation_view.py.
     """
     # It's convenient for all Donations to have a datetime rather than have bank transactions be a
     # special case because they are received on a particular date, but not a particular time.
@@ -226,6 +226,7 @@ class Donation(models.Model):
     # Convenient for date to be field even though it's easily calculated from datetime, so you can filter on it
     date = models.DateField()
     amount = models.DecimalField(decimal_places=2, max_digits=12, )
+    fees = models.DecimalField(decimal_places=2, max_digits=12, )
     payment_method = models.CharField(max_length=128)
     reference = models.TextField(blank=True)
     pledge = models.ForeignKey(Pledge, blank=True, null=True)

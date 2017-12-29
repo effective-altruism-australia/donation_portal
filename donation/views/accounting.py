@@ -5,7 +5,7 @@ from datetime import date
 import arrow
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.db.models import Max, Sum, Min
+from django.db.models import Max, Sum, Min, F
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -13,13 +13,14 @@ from donation.forms import DateRangeSelector
 from donation.models import XeroReconciledDate, Account, Donation, PartnerCharity, BankTransaction, PinTransaction
 
 
-def total_donations_for_partner(DonationModel, start_date, end_date, partner):
+def total_donations_for_partner(DonationModel, start_date, end_date, partner, after_fees=False):
     return DonationModel.objects \
                .filter(date__gte=start_date,
                        date__lt=arrow.get(end_date).shift(days=1).date(),
                        # use date_lt rather than date_lte so that it shows same-day credit card donations
                        pledge__recipient_org=partner) \
-               .aggregate(Sum('amount'))['amount__sum'] or 0
+               .annotate(amount_maybe_less_fees=F('amount') - (F('fees') if after_fees else 0)) \
+               .aggregate(Sum('amount_maybe_less_fees'))['amount_maybe_less_fees__sum'] or 0
 
 
 def donation_counter(request):
@@ -116,10 +117,12 @@ def accounting_reconciliation(request):
     totals = {partner.name:
                   {'bank': total_donations_for_partner(BankTransaction, start, end, partner),
                    'credit_card': total_donations_for_partner(PinTransaction, start, end, partner),
+                   'credit_card_after_fees': total_donations_for_partner(PinTransaction, start, end, partner, after_fees=True),
                    'total': total_donations_for_partner(Donation, start, end, partner)}
               for partner in PartnerCharity.objects.all().order_by('name')}
 
-    grand_total = {kind: sum(total[kind] for total in totals.values()) for kind in ('bank', 'credit_card', 'total')}
+    grand_total = {kind: sum(total[kind] for total in totals.values()) for kind in ('bank', 'credit_card',
+                                                                                    'credit_card_after_fees', 'total')}
 
     # This shouldn't/can't happen but it will mess up the reconciliation so let's check.
     if BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True).exists():

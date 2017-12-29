@@ -36,12 +36,14 @@
         <th>Charity</th>
         <th style="text-align: right;">Bank</th>
         <th style="text-align: right;">Credit card</th>
+        <th style="text-align: right;">Credit card (after fees)</th>
         <th style="text-align: right;">Total</th>
         {% for partner, partner_total in totals %}
         <tr>
             <td>{{ partner }}</td>
             <td style="text-align: right;">{{ partner_total.bank|floatformat:'2'|intcomma }}</td>
             <td style="text-align: right;">{{ partner_total.credit_card|floatformat:'2'|intcomma }}</td>
+            <td style="text-align: right;">{{ partner_total.credit_card_after_fees|floatformat:'2'|intcomma }}</td>
             <td style="text-align: right;">{{ partner_total.total|floatformat:'2'|intcomma }}</td>
         </tr>
         {% endfor %}
@@ -49,6 +51,7 @@
             <td><b>Total</b></td>
             <td style="text-align: right;"><b>{{ grand_total.bank|floatformat:'2'|intcomma }}</b></td>
             <td style="text-align: right;"><b>{{ grand_total.credit_card|floatformat:'2'|intcomma }}</b></td>
+            <td style="text-align: right;"><b>{{ grand_total.credit_card_after_fees|floatformat:'2'|intcomma }}</b></td>
             <td style="text-align: right;"><b>{{ grand_total.total|floatformat:'2'|intcomma }}</b></td>
         </tr>
     </table>
