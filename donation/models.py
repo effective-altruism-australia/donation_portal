@@ -72,7 +72,7 @@ HOW_DID_YOU_HEAR_CHOICES = ["The Life You Can Save",
 class Pledge(models.Model):
     completed_time = models.DateTimeField()
     ip = models.GenericIPAddressField(null=True)
-    reference = models.TextField()
+    reference = models.TextField(blank=True)
     recipient_org = models.ForeignKey(PartnerCharity)
     amount = models.DecimalField(decimal_places=2, max_digits=12)
     first_name = models.CharField(max_length=1024, blank=True, verbose_name='name')  # TODO safely decrease length
