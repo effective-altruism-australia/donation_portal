@@ -344,7 +344,7 @@ class XeroReconciledDate(models.Model):
         return str(self.date)
 
     def save(self, *args, **kwargs):
-        super(self, XeroReconciledDate).save(*args, **kwargs)
+        super(XeroReconciledDate, self).save(*args, **kwargs)
         # Reload up-to-date data from xero after advancing the date
         # Do it on on user's thread not via celery for obviousness.
         # Lazy imports because circular dependencies
