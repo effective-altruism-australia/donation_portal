@@ -165,6 +165,7 @@ class ReferralSourceAdmin(VersionAdmin):
     list_filter = ('enabled', )
     ordering = ('order', )
 
+
 admin.site.register(Pledge, PledgeAdmin)
 admin.site.register(BankTransaction, BankTransactionAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
