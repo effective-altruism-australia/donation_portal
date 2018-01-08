@@ -6,7 +6,7 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import ChoiceInput
 from django.conf import settings
 
-from .models import TransitionalDonationsFile, Pledge, PartnerCharity
+from .models import TransitionalDonationsFile, Pledge, PartnerCharity, ReferralSource
 
 
 class TransitionalDonationsFileUploadForm(forms.ModelForm):
@@ -39,11 +39,8 @@ class DateRangeSelector(forms.Form):
 class PledgeForm(forms.ModelForm):
     class Meta:
         model = Pledge
-        fields = ['amount', 'first_name', 'email', 'how_did_you_hear_about_us', 'subscribe_to_updates',
+        fields = ['amount', 'first_name', 'email', 'how_did_you_hear_about_us_db', 'subscribe_to_updates',
                   'payment_method', 'recipient_org', 'recurring']
-        # widgets = {
-        #     'how_did_you_hear_about_us': forms.widgets.TextInput(),
-        # }
 
     class Media:
         # Don't use Media as it's compatible with ManifestStaticFilesStorage on Django 1.8
@@ -53,6 +50,8 @@ class PledgeForm(forms.ModelForm):
     # These values control the donation amount buttons shown
     donation_amounts_raw = (25, 50, 100, 250)
     donation_amounts = [('$' + str(x), x) for x in donation_amounts_raw]
+
+    referral_sources = ReferralSource.objects.filter(enabled=True).order_by('order')
 
     # The template will display labels for these fields
     hide_labels = ['subscribe_to_updates', ]

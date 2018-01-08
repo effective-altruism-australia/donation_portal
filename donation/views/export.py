@@ -87,7 +87,7 @@ def download_full_spreadsheet(request):
         ('Fees', 'pin_transaction__fees'),
         ('Recurring donor', 'pledge__recurring'),
         ('Recurring frequency', 'pledge__recurring_frequency'),
-        ('How did you hear about us?', 'pledge__how_did_you_hear_about_us'),
+        ('How did you hear about us?', 'pledge__how_did_you_hear_about_us_db__reason'),
         ('Share with GiveWell', 'pledge__share_with_givewell'),
         ('Share with GWWC', 'pledge__share_with_gwwc'),
         ('Share with TLYCS', 'pledge__share_with_tlycs'),

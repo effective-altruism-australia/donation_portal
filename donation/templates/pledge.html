@@ -176,19 +176,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-3 long-control-label" for="id_how_did_you_hear_about_us">How did you hear about us?</label>
+                        <label class="control-label col-sm-3 long-control-label" for="id_how_did_you_hear_about_us_db">How did you hear about us?</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="id_how_did_you_hear_about_us" name="how_did_you_hear_about_us">
+                            <select class="form-control" id="id_how_did_you_hear_about_us_db" name="how_did_you_hear_about_us_db">
                                 <option value="" disabled selected>---------</option>
-                                <option value="The Life You Can Save">The Life You Can Save</option>
-                                <option value="News">News</option>
-                                <option value="Advertising">Advertising</option>
-                                <option value="GiveWell">GiveWell</option>
-                                <option value="From the charity (SCI, Evidence Action, GiveDirectly)">From the charity (SCI, Evidence Action, GiveDirectly)</option>
-                                <option value="Search engine (Google etc.)">Search engine (Google etc.)</option>
-                                <option value="Friend">Friend</option>
-                                <option value="Giving What We Can">Giving What We Can</option>
-                                <option value="EA Melbourne Christmas Fundraiser">EA Melbourne Christmas Fundraiser</option>
+                                {% for referral_source in form.referral_sources %}
+                                    <option value="{{ referral_source.id }}">{{ referral_source.reason }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>

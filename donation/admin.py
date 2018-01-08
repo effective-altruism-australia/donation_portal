@@ -6,7 +6,8 @@ from django.contrib import messages
 from reversion.admin import VersionAdmin
 from reversion.models import Revision, Version
 
-from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, PaymentMethod, PartnerCharityReport
+from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, PaymentMethod, \
+    PartnerCharityReport, ReferralSource
 
 
 class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
@@ -160,12 +161,17 @@ class ReceiptAdmin(VersionAdmin):
     actions = ['send_receipts', ]
 
 
+class ReferralSourceAdmin(VersionAdmin):
+    list_filter = ('enabled', )
+    ordering = ('order', )
+
 admin.site.register(Pledge, PledgeAdmin)
 admin.site.register(BankTransaction, BankTransactionAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(PartnerCharity, VersionAdmin)
 admin.site.register(XeroReconciledDate)
 admin.site.register(PartnerCharityReport)
+admin.site.register(ReferralSource, ReferralSourceAdmin)
 
 
 ################################

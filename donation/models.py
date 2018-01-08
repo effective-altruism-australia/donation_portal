@@ -56,7 +56,6 @@ class RecurringFrequency(Enum):
     MONTHLY = 3
 
 
-# Copy choices from drupal for transition
 HOW_DID_YOU_HEAR_CHOICES = ["The Life You Can Save",
                             "News",
                             "Advertising",
@@ -67,6 +66,17 @@ HOW_DID_YOU_HEAR_CHOICES = ["The Life You Can Save",
                             "Giving What We Can",
                             "EA Melbourne Christmas Fundraiser",
                             ]
+
+
+class ReferralSource(models.Model):
+    reason = models.CharField(max_length=256, help_text="Instead of editing this text, "
+                                                        "disable this ReferralSource and create a new one.")
+    enabled = models.BooleanField(default=True)
+    order = models.BigIntegerField(blank=True, null=True,
+                                   help_text='Enter an integer. Reasons will be ordered from smallest to largest.')
+
+    def __str__(self):
+        return self.reason
 
 
 class Pledge(models.Model):
@@ -86,6 +96,8 @@ class Pledge(models.Model):
     how_did_you_hear_about_us = models.CharField(max_length=256, blank=True, null=True,
                                                  choices=zip(HOW_DID_YOU_HEAR_CHOICES, HOW_DID_YOU_HEAR_CHOICES),
                                                  verbose_name='How did you hear about us?')
+    how_did_you_hear_about_us_db = models.ForeignKey(ReferralSource, blank=True, null=True, on_delete=models.PROTECT,
+                                                     verbose_name='How did you hear about us?')
     share_with_givewell = models.BooleanField(default=False)
     share_with_gwwc = models.BooleanField(default=False)
     share_with_tlycs = models.BooleanField(default=False)
