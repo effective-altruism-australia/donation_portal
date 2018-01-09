@@ -674,6 +674,8 @@ $(function() {
         }
 
         if (validationFailed) {
+            // provide a generic message near the submit button that something has gone wrong.
+            $('#other-errors').html("<div class='error-text'>Cannot submit incomplete form: Please see error message(s) in red above.</div>");
             return;
         }
 
