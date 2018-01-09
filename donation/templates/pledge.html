@@ -387,7 +387,11 @@
 </script>
 
 <script>
+Ractive.DEBUG = false;
 $(function() {
+    if (Pin === undefined) {
+        Raven.captureMessage("Pin not defined");
+    }
 
     var charity_database_ids = {{ charity_database_ids|safe }};
 
@@ -579,6 +583,9 @@ $(function() {
     }
 
     function submitForm(data) {
+        // Disable the submit button to prevent multiple clicks
+        ractive.set_submit_disabled();
+
         if (!data) {
             data = {}
         }
