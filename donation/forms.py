@@ -51,7 +51,9 @@ class PledgeForm(forms.ModelForm):
     donation_amounts_raw = (25, 50, 100, 250)
     donation_amounts = [('$' + str(x), x) for x in donation_amounts_raw]
 
-    referral_sources = ReferralSource.objects.filter(enabled=True).order_by('order')
-
     # The template will display labels for these fields
     hide_labels = ['subscribe_to_updates', ]
+
+    def __init__(self, *args, **kwargs):
+        super(PledgeForm, self).__init__(*args, **kwargs)
+        self.referral_sources = ReferralSource.objects.filter(enabled=True).order_by('order')
