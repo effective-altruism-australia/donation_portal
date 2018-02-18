@@ -4,6 +4,8 @@ Please find attached the latest donation report from Effective Altruism Australi
 
 This report includes donations received by bank transfer or credit card that have been designated to you. It does not include donations we receive via other mechanisms, in particular our workplace giving programs.
 
+Note from Ben (18 Feb 18): The donations in the "All donations" tab now go back further in time. This change shouldn't affect you but it allowed us to simplify the way we generate these reports.
+
 Best wishes,
 
 Effective Altruism Australia
