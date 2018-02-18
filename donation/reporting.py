@@ -33,18 +33,14 @@ def send_partner_charity_reports(test=True):
         querysets = OrderedDict([
             ('New donations',
              # For bank transactions, we use time_reconciled
-             Donation.objects.filter(Q(bank_transaction__bank_account_id=settings.XERO_INCOMING_ACCOUNT_ID,
-                                       # Keep Westpac transactions out until we finish reconciling them
-                                       bank_transaction__time_reconciled__gte=start,
+             Donation.objects.filter(Q(bank_transaction__time_reconciled__gte=start,
                                        bank_transaction__time_reconciled__lt=end) |
                                      Q(pin_transaction__isnull=False,
                                        datetime__gte=start,
                                        datetime__lt=end),
                                      pledge__recipient_org__id__in=ids).order_by('datetime')),
             ('All donations',
-             Donation.objects.filter(Q(bank_transaction__bank_account_id=settings.XERO_INCOMING_ACCOUNT_ID,
-                                       # Keep Westpac transactions out until we finish reconciling them
-                                       bank_transaction__time_reconciled__lt=end) |
+             Donation.objects.filter(Q(bank_transaction__time_reconciled__lt=end) |
                                      Q(pin_transaction__isnull=False,
                                        datetime__lt=end),
                                      pledge__recipient_org__id__in=ids).order_by('datetime'))])
