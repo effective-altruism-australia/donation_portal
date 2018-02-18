@@ -352,12 +352,6 @@ class XeroReconciledDate(models.Model):
         import_trial_balance.delay()
 
 
-class TransitionalDonationsFile(models.Model):
-    # The download from drupal
-    time_uploaded = models.DateTimeField(auto_now_add=True)
-    file = models.FileField(upload_to='uploads/')
-
-
 class PartnerCharityReport(models.Model):
     date = models.DateTimeField()
     partner = models.ForeignKey(PartnerCharity)

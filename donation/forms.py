@@ -6,13 +6,7 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import ChoiceInput
 from django.conf import settings
 
-from .models import TransitionalDonationsFile, Pledge, PartnerCharity, ReferralSource
-
-
-class TransitionalDonationsFileUploadForm(forms.ModelForm):
-    class Meta:
-        model = TransitionalDonationsFile
-        fields = ['file', ]
+from .models import Pledge, PartnerCharity, ReferralSource
 
 
 class DateRangeSelector(forms.Form):
