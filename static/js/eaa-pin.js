@@ -3,7 +3,7 @@
 function t(t) {
 window.console && (console.warn ? console.warn(t) :console.log && console.log(t));
 }
-var e, n = "https://api.pin.net.au";
+var e, n = window.pin_environment == 'test' ? "https://test-api.pin.net.au" : "https://api.pin.net.au";
 "https:" != window.location.protocol && t("It is recommended that you host your payment page using SSL (HTTPS)");
 var i = function() {
 function t() {
