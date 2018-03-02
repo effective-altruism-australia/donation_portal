@@ -106,6 +106,8 @@ LOGIN_URL = '/admin/login'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+REACT_ROOT = os.path.join(BASE_DIR, 'react', 'build')
+
 PAYPAL_TEST = True
 
 CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS = 6

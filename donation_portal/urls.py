@@ -13,6 +13,7 @@ Including another URLconf
     1. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
+from django.views.static import serve
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -33,11 +34,24 @@ urlpatterns = [
     # Donations
     # url(r'^pledge/([0-9])/$', pledge, name='pledge')
     url(r'^pledge$', PledgeView.as_view(), name='pledge'),
-    url(r'^pledge2', PledgeView.as_view(), kwargs={'template_name': "pledge-reactive.html"}, name='pledge2'),
     url(r'^receipt/(?P<pk>[0-9]+)/(?P<secret>[a-zA-Z0-9]+)', download_receipt, name='download-receipt'),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
+
+# Django can serve react in development only this will serves the react page; in production this should be set separately for nginx/apache
+# Works but not for index.html
+#urlpatterns += static('/pledge2/', document_root=settings.REACT_ROOT)
+
+if settings.DEBUG:
+
+    urlpatterns += [
+        # Map '/' to 'index.html'
+        url(r'^pledge2/$', serve, kwargs=dict(path='index.html', document_root=settings.REACT_ROOT)),
+        # All other files under the app
+        url(r'^pledge2/(?P<path>.*)$', serve, kwargs=dict(document_root=settings.REACT_ROOT)),
+    ]
+
 
 urlpatterns.append(url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}))
