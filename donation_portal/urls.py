@@ -32,7 +32,8 @@ urlpatterns = [
     url(r'^download_spreadsheet', download_spreadsheet, name='download-spreadsheet'),
     # Donations
     # url(r'^pledge/([0-9])/$', pledge, name='pledge')
-    url(r'^pledge', PledgeView.as_view(), name='pledge'),
+    url(r'^pledge$', PledgeView.as_view(), name='pledge'),
+    url(r'^pledge2', PledgeView.as_view(), kwargs={'template_name': "pledge-reactive.html"}, name='pledge2'),
     url(r'^receipt/(?P<pk>[0-9]+)/(?P<secret>[a-zA-Z0-9]+)', download_receipt, name='download-receipt'),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
 ]

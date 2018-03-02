@@ -38,6 +38,8 @@ def download_receipt(request, pk, secret):
 
 # TODO It's weird these are combined since one is JSON and one is not
 class PledgeView(View):
+    template_name = 'pledge.html'
+
     @xframe_options_exempt
     def post(self, request):
         form = PledgeForm(request.POST)
@@ -98,7 +100,8 @@ class PledgeView(View):
                 }, status=400)
 
     @xframe_options_exempt
-    def get(self, request):
+    def get(self, request, template_name=None):
+        template_name = template_name or PledgeView.template_name
         paypal_dict = {
             "business": "placeholder@example.com",
             "amount": "0",
@@ -110,7 +113,7 @@ class PledgeView(View):
         paypal_form = PayPalPaymentsForm(button_type='donate', initial=paypal_dict)
         form = PledgeForm()
 
-        return render(request, 'pledge.html', {
+        return render(request, template_name, {
             'form': form,
             'paypal_form': paypal_form,
             'charity_database_ids': PartnerCharity.get_cached_database_ids(),
