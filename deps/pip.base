@@ -26,6 +26,7 @@ django-bootstrap3
 django-enumfields
 django-ipware
 django-paypal
+django-pinpayments==1.0.11
 django-reversion
 gunicorn
 pdfkit
