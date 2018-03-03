@@ -86,6 +86,7 @@ class Pledge(models.Model):
     publish_donation = models.BooleanField(default=False)
     how_did_you_hear_about_us_db = models.ForeignKey(ReferralSource, blank=True, null=True, on_delete=models.PROTECT,
                                                      verbose_name='How did you hear about us?')
+    # TODO rename these historical_drupal_share_...
     share_with_givewell = models.BooleanField(default=False)
     share_with_gwwc = models.BooleanField(default=False)
     share_with_tlycs = models.BooleanField(default=False)
