@@ -1,0 +1,12 @@
+{# This file is a modified version of the equivalent file in the pinpayments app. #}
+{# The 'modified_' prefix is necessary to avoid a collision with the unmodified template. #}
+{% load static from staticfiles %}
+<script type='text/javascript'>
+    this.pin_environment = '{{ pin_environment }}';
+</script>
+<script src='{% static 'js/eaa-pin.js' %}' type='text/javascript'></script>
+<script type='text/javascript'>
+    $(function() {
+        Pin.setPublishableKey('{{ pin_public_key }}');
+    });
+</script>
