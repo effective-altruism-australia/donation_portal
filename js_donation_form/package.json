@@ -1,0 +1,25 @@
+{
+  "name": "js_donation_form",
+  "version": "1.0.0",
+  "description": "Current version of donation form using ractive",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode development",
+    "start": "http-server public"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.5.0",
+    "css-loader": "^0.28.10",
+    "http-server": "^0.11.1",
+    "ractive-loader": "^0.5.6",
+    "style-loader": "^0.20.2",
+    "webpack": "^4.1.0",
+    "webpack-cli": "^2.0.10"
+  },
+  "dependencies": {
+    "ractive": "0.8.10"
+  }
+}
