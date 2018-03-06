@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Donate to Effective Altruism Australia</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--<link rel="apple-touch-icon" href="apple-touch-icon.png">-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.0/css/bootstrap.min.css"
+        integrity="" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"-->
+        <!--integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"
+          integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
+          integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+          crossorigin="anonymous"></script>
+
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/3.0.0/jquery.payment.min.js"></script>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/additional-methods.min.js"></script>
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/ractive/0.8.10/ractive.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.8/iframeResizer.contentWindow.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raven.js/3.11.0/raven.min.js"></script>
+  <script type="text/javascript">
+      // Raven.config('https://1c3aafc3a7c54fb5b35d5d33015fbe57@sentry.draftable.com/26').install()
+  </script>
+  <script type='text/javascript'>
+    this.pin_environment = 'test';
+</script>
+<script src='./eaa-pin.js' type='text/javascript'></script>
+<script type='text/javascript'>
+    $(function() {
+        Pin.setPublishableKey('see slack #website channel 7 Mar 2018 4:15am');
+    });
+</script>
+  <script type="text/javascript" src="bundle.js"></script>
+</head>
+<body>
+  <div id="ractive_base"></div>
+    <script id="ractive_template" type="text/html">
+<div class="container">
+    <div class="donation-page-header">
+        <h1 class="page-title">
+            [[ step === 1 ? 'Select a program to support' : step === 2 ? 'Payment' : payment_method === '1' ? 'Complete payment' : 'Success' ]]
+        </h1>
+        [[#if step !== 3 ]]
+        <div class="donation-progress">
+            <div class="progress-step [[step === 1 ? 'current-step' : 'last-step']]" on-click="@this.restart_donation()">1</div>
+            <div class="progress-step [[step === 2 ? 'current-step' : '' ]]">2</div>
+        </div>
+        [[/if]]
+    </div>
+
+    <div class="donation-step [[step !== 1 ? 'collapse' : '']]" id="step-1">
+        <h2>100% of your donation will be granted to the charity of your choice</h2>
+        <h3>Select a charity:</h3>
+        <div class="charities-container">
+            [[#charities:i]]
+                [[#if show_on_website ]]
+                <div class="charity">
+                    <div class="charity-info">
+                        <img class="charity-img" style="margin-top:[[ image_top_margin ]]px;"
+                             src="[[ website_image ]]" alt="[[ website_label ]]">
+                        <span class="charity-title">[[ website_label ]]</span>
+                    </div>
+                    <div class="hover-overlay">
+                        <a class="charity-details charityClick" on-click='@this.charity_click(name)' href="#">
+                            <b>[[ website_label ]] </b> [[ website_description ]]
+                        </a>
+                    </div>
+                </div>
+                [[/if ]]
+            [[/charities]]
+        </div>
+    </div>
+
+    [[#if selected_charity && selected_charity.name==='Against Malaria Foundation' && step === 2]]
+    <div class="donation-step" id="step-2">
+        <div class="selected-charity-box">
+            <a href='https://www.againstmalaria.com/Donation.aspx?GroupID=86' target="_blank">
+            <img class="charity-img" src="static/[[ selected_charity.website_image ]]">
+            </a>
+            <p class="donation-info">
+                Donations to the Against Malaria Foundation are tax deductible in Australia.
+                We prefer that you donate to the Against Malaria Foundation directly at
+                <a href='https://www.againstmalaria.com/Donation.aspx?GroupID=86' target="_blank">https://www.againstmalaria.com/Donation.aspx?GroupID=86</a>.
+            </p>
+        </div>
+    </div>
+    [[/if]]
+
+    <div class="donation-step [[(step !== 2 | selected_charity.name==='Against Malaria Foundation') ? 'collapse' : '']]" id="step-2">
+        [[#if selected_charity]]
+        [[! We need to enclose this in an 'if' to avoid a 404 when the charity is not set but we try to load its logo. ]]
+        <h2>You have chosen [[ selected_charity.name ]].</h2>
+        <span><a href="#" on-click="@this.restart_donation()">Choose a different program</a></span>
+        [[/if ]]
+
+        <form on-submit="submit" id='pledge-form'>
+
+            <input type="hidden" name="csrfmiddlewaretoken" value="[[ from_server.csrf_token ]]">
+
+            <h3>How often will you be donating?</h3>
+            <div class="button-row">
+                <button type="button"
+                        class="btn [[recurring == false ? 'btn-primary' : 'btn-default' ]]"
+                        on-click='@this.set_recurring(false)'>One-Time
+                </button>
+
+                <button type="button"
+                        class="btn [[recurring ? 'btn-primary' : 'btn-default' ]]"
+                    on-click='@this.set_recurring(true)'>Monthly
+                </button>
+            </div>
+            <div id="donation-frequency-error"></div>
+
+            <h3 class="section-label">
+                How much would you like to donate?
+            </h3>
+            <div class="button-row">
+              [[! WORKAROUND (toner) Not taking the time to figure out how to do this properly in ractive. Just
+              assume that from_server.donation_amounts = [25, 50, 100, 250] and do the loop manually. ]]
+                <button type="button" class="btn [[donation_amount === 25 ? 'btn-primary' : 'btn-default']]"
+                        on-click='@this.set_donation_amount(25)'
+                        id="id_25"
+                        value=25>$25
+                </button>
+                <button type="button" class="btn [[donation_amount === 50 ? 'btn-primary' : 'btn-default']]"
+                        on-click='@this.set_donation_amount(50)'
+                        id="id_50"
+                        value=50>$50
+                </button><button type="button" class="btn [[donation_amount === 100 ? 'btn-primary' : 'btn-default']]"
+                        on-click='@this.set_donation_amount(100)'
+                        id="id_100"
+                        value=100>$100
+                </button><button type="button" class="btn [[donation_amount === 250 ? 'btn-primary' : 'btn-default']]"
+                        on-click='@this.set_donation_amount(250)'
+                        id="id_250"
+                        value=250>$250
+                </button>
+                <button type="button"
+                        class="btn [[is_custom_amount ? 'btn-primary' : 'btn-default' ]]"
+                        on-click="@this.show_other_donation_amount()"
+                        value="other">Other
+                </button>
+                <div class="form-group [[ is_custom_amount ? '' : 'collapse' ]]" id="form-donation-amount">
+                    <label class="sr-only control-label" for="id_amount">Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input class="form-control" type="number" id="id_amount" step="1" min="2" name="amount" placeholder="Amount" title="" value="[[ donation_amount ]]">
+                    </div>
+                    <label id="id_amount-error" class="error" for="id_amount"></label>
+                </div>
+            </div>
+            <div id="donation-amount-error" ></div>
+
+            <div class="panel panel-default form-container details-section donor-details-section">
+                <div class="panel-body form-horizontal">
+                    <legend>Donor Details</legend>
+                    <div class="form-group" id="form_first_name">
+                        <label class="control-label col-sm-3" for="id_first_name">Name</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" id="id_first_name" maxlength="1024" name="first_name" placeholder="Name" value="[[ name ]]" required aria-required>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="form_email">
+                        <label class="control-label col-sm-3" for="id_email">Email</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="email" id="id_email" maxlength="254" name="email" placeholder="Email" required aria-required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-3 long-control-label" for="id_how_did_you_hear_about_us_db">How did you hear about us?</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="id_how_did_you_hear_about_us_db" name="how_did_you_hear_about_us_db">
+                                <option value="" disabled selected>---------</option>
+                                [[#from_server.referral_sources ]]
+                                    <option value="[[ id ]]">[[ reason ]]</option>
+                                [[/]]
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="id_formgroup_subscribe_to_updates">
+                        <div class="checkbox col-sm-offset-3">
+                            <label for="id_subscribe_to_updates"><input type="checkbox" id="id_subscribe_to_updates" name="subscribe_to_updates" checked> Send me news and updates</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default form-container details-section payment-details-section">
+                <div class="panel-body form-horizontal">
+                    <legend>Payment Details</legend>
+                    <div class="payment-type form-group">
+                        <label class="control-label col-sm-3">Payment Method</label>
+                        <div class="col-sm-9">
+                            <button type="button"
+                                    class="btn [[pmt_method === '3' ? 'btn-primary' : 'btn-default' ]]"
+                                    value="3"
+                                    id="id_btn_cc"
+                                    on-click="@this.set_pmt_method('3')"
+                                    [[recurring ? "disabled" : "" ]]
+                                    >Credit card
+                            </button>
+                            <button type="button"
+                                    class="btn [[pmt_method === '1' ? 'btn-primary' : 'btn-default' ]]"
+                                    id="id_btn_bank_transfer"
+                                    on-click="@this.set_pmt_method('1')"
+                                    value="1">Bank transfer
+                            </button>
+                        </div>
+                    </div>
+                        <p id="id_recurring_notification" class="col-sm-offset-3 [[recurring ? '' : 'collapse' ]]">
+                            <strong>Note:</strong> We currently only accept monthly donations via bank transfer.
+                        </p>
+                    <hr />
+
+                    <div class="payment-subsections" id="id_payment_options">
+                        <div class="payment-subsection [[pmt_method != '1' ? 'collapse' : '' ]]" id="bank-transfer-instructions">
+                            <p>After you submit this form, we will give you our account details and a unique reference number.</p>
+                            [[#if recurring]]
+                            <p>You then need to log in to your bank and create a periodic monthly transfer using these details.</p>
+                            <p>You can stop your donation or change the amount at any time.</p>
+                            [[else]]
+                            <p>You then need to log in to your bank and make a bank transfer using these details.</p>
+                            [[/if recurring]]
+                        </div>
+
+                        <div class="payment-subsection [[pmt_method != '3' ? 'collapse' : '' ]]" id="id_credit_card">
+                            <!-- begin pin form -->
+
+
+<fieldset id='pin_credit_card_details'>
+    <div class="form-group">
+        <label class="control-label labels col-sm-3"  for="cc-name">Name on card</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control cc-form" name="cardName" id="cc-name" placeholder="Full name"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label labels col-sm-3" for="cc-number">Card number</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input  name="cardNumber"
+                        type="tel"
+                        class="form-control cc-form"
+                        name="cardNumber"
+                        id="cc-number"
+                        placeholder="Card Number"
+                        autocomplete="cc-number"
+                />
+                <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+            </div>
+            <label for="cc-number" class="error"></label>
+        </div>
+    </div>
+
+    <div class="multi-form-group">
+        <div class="form-group col-sm-7" style="">
+            <label class="control-label labels col-sm-3" for="cc-expiry"><span class="hidden-xs">Expiration</span><span
+                    class="visible-xs-inline">Exp</span> date</label>
+            <div class="col-sm-4">
+                <input  name="cardExpiry"
+                        type="tel"
+                        class="form-control cc-form"
+                        id="cc-expiry"
+                        name="cardExpiry"
+                        placeholder="MM / YY"
+                        autocomplete="cc-exp"
+                />
+            </div>
+        </div>
+        <div class="form-group col-sm-5">
+            <label class="control-label labels col-sm-3" for="cc-cvc">CV code</label>
+            <div class="col-sm-2">
+                <input  name="cardCVC"
+                        type="text"
+                        class="form-control cc-form"
+                        id="cc-cvc"
+                        name="cardCVC"
+                        placeholder="CVC"
+                        autocomplete="cc-csc"
+                />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label labels col-sm-3" for="address-line1">Billing Address</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control cc-form" id="address-line1" name="cardAddress" placeholder="Address Line 1" required aria-required/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label sr-only labels" hidden aria-hidden for="address-line2">Billing Address line 2</label>
+        <div class="col-sm-9 col-sm-offset-3">
+            <input type="text" class="form-control cc-form" id="address-line2" name="cardAddress2" placeholder="Address Line 2"/>
+        </div>
+    </div>
+
+    <div class="multi-form-group">
+        <div class="form-group col-sm-6">
+            <label class="control-label labels col-sm-3 visible-xs" for="address-city">City</label>
+            <div class="col-sm-3 col-sm-offset-3">
+                <input type="text" class="form-control cc-form" id="address-city" name="cardCity" placeholder="City" required aria-required/>
+            </div>
+        </div>
+        <div class="form-group col-sm-3">
+            <label class="control-label labels col-sm-3 visible-xs" for="address-state">State</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control cc-form" id="address-state" name="cardState" placeholder="State"/>
+            </div>
+        </div>
+        <div class="form-group col-sm-3">
+            <label class="control-label labels col-sm-3 visible-xs" for="address-postcode">Postcode</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control cc-form" id="address-postcode" name="cardPostcode" placeholder="Postal Code"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label labels col-sm-3" for="address-country">Country</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control cc-form" id="address-country" name="cardCountry" placeholder="Country" required aria-required/>
+        </div>
+    </div>
+</fieldset>
+
+                            <!-- end pin form -->
+                            [[#if has_pin_errors ]]
+                            <div class="row">
+                                <div class="pin-errors col-sm-offset-3 col-sm-9">
+                                    [[#pin_error_messages ]]
+                                    <p class="error-text">[[message]]</p>
+                                    [[/for]]
+                                </div>
+                            </div>
+                            [[/if]]
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="help-text">
+                Having a problem donating? Please let us know at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a>.
+            </p>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success btn-lg"
+                        [[#if !submit_enabled]]disabled[[/if]]
+                     >
+                     [[#if submit_enabled]]Donate[[else]]Processing...[[/if]]
+                </button>
+                <div id="other-errors"></div>
+            </div>
+        </form>
+
+        <div align="center" id="id_paypal" class="payment_option [[pmt_method != '4' ? 'collapse' : '' ]]">
+            {# paypal_form.render #}
+        </div>
+        <div class="details-section payment-faq">
+            <h2>Donation FAQ</h2>
+            <p class="payment-faq-question">
+                What credit cards do you accept?
+            </p>
+            <p class="payment-faq-answer">
+                We accept Visa and Mastercard. Sorry, we do not accept American Express at this time.
+            </p>
+            <p class="payment-faq-question">
+                Are credit card donations secure?
+            </p>
+            <p class="payment-faq-answer">
+                Yes. Your credit card details are encrypted and submitted directly from your web browser to our
+                payment processor, Pin Payments (ABN: 46 154 451 582). Our accounting staff only have access to
+                the last 4 digits of your credit card number.
+            </p>
+            <p class="payment-faq-question">
+                How much does it cost you to process a donation?
+            </p>
+            <p class="payment-faq-answer">
+                Credit card donations cost us 1.4% plus 30c per donation. Bank transfers have no fees.
+            </p>
+            <p class="payment-faq-question">
+                Which payment method do you prefer?
+            </p>
+            <p class="payment-faq-answer">
+                We suggest that you use whichever payment method is most convenient for you.
+                For major donations (over $2,000), we prefer that you donate via bank transfer to reduce fees.
+            </p>
+            <p class="payment-faq-question">
+                When will I get a receipt?
+            </p>
+            <p class="payment-faq-answer">
+                For credit card donations, we will email you a receipt immediately after your donation.
+                For bank transfers, we will email you a receipt on the day the money is received by us,
+                which is usually one or two business days after you send it.
+            </p>
+        </div>
+    </div>
+
+    <div class="donation-step [[step !== 3 ? 'collapse' : '']]" id="step-3">
+        <div class="payment_option [[pmt_method != '3' ? 'collapse' : '' ]]">
+            <h2>Thank you [[ name ]]!</h2>
+            <p>
+                100% of your donation will be granted to [[ selected_charity.name ]].
+            </p>
+            <div class="complete-other-info">
+                <p>Here is your <a href="[[receipt_url]]" download target="_blank">receipt</a>. We have also emailed it to you &ndash; please check your spam folder if you have not received it.</p>
+            </div>
+            <div class="complete-other-info">
+                <h3>Any questions?</h3>
+                <p>
+                    Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 3 9349 4062, if you have any questions.
+                </p>
+            </div>
+            <p>
+                Best wishes and thanks,<br>
+                The team at Effective Altruism Australia
+            </p>
+        </div>
+        <div class="payment_option [[pmt_method != '1' ? 'collapse' : '' ]]">
+            <h2>Thank you [[ name ]]!</h2>
+            <p>
+                100% of your donation will be granted to [[ selected_charity.name ]].
+            </p>
+            <div class="complete-next-steps">
+                <h3>What to do next?</h3>
+                <p>
+                    Please make sure that you complete the process by
+                    [[#if recurring]]
+                    setting up a monthly periodic payment for
+                    [[else]]
+                    making a bank transfer of
+                    [[/if]]
+                    $[[ donation_amount ]] to:
+                </p>
+                <p>
+                    <strong>Account Name</strong>: Effective Altruism Australia (don't worry if it doesn't fit)<br>
+                    <strong>BSB</strong>: 083170<br>
+                    <strong>Account No</strong>: 306556167<br>
+                    <strong>Unique Reference Number</strong>: [[ bank_reference ]] (put in the transaction description)
+                </p>
+            </div>
+
+            <div class="complete-other-info">
+                <h3>
+                    Receipt
+                </h3>
+                <p>
+                    We will send you a tax deductible receipt once we have confirmed the bank transfer.
+                </p>
+
+                <h3>Any questions?</h3>
+                <p>
+                    Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 3 9349 4062, if you have any questions.
+                </p>
+            </div>
+
+            <div class="complete-other-info">
+                <p>
+                    We have also emailed you these instructions &ndash; please check your spam folder if you have not received them.
+                </p>
+            </div>
+            <p>
+                Best wishes and thanks,<br>
+                The team at Effective Altruism Australia
+            </p>
+        </div>
+    </div>
+</div>
+
+    </script>
+</body>
+</html>
