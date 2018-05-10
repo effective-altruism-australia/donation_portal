@@ -75,7 +75,7 @@ class Pledge(models.Model):
     reference = models.TextField(blank=True)
     # TODO: Remove, this is now captured by PledgeComponent
     recipient_org = models.ForeignKey(PartnerCharity, null=True)
-    # TODO: Consider deleting and replacing with a property which sums the pledge component amounts
+    # TODO: Consider deleting and using the amount_from_components property
     amount = models.DecimalField(decimal_places=2, max_digits=12)
     first_name = models.CharField(max_length=1024, blank=True, verbose_name='name')  # TODO safely decrease length
     last_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
@@ -97,8 +97,12 @@ class Pledge(models.Model):
     drupal_username = models.TextField(blank=True, editable=False)
     drupal_preferred_donation_method = models.TextField(blank=True, editable=False)
 
+    @property
+    def amount_from_components(self):
+        return self.pledge_components.aggregate(total=models.Sum('amount'))['total']
+
     def pledge_component_amounts_reconcile(self):
-        return self.amount == self.pledge_components.aggregate(total=models.Sum('amount'))['total']
+        return self.amount == self.amount_from_components
 
     def generate_reference(self):
         if self.reference:  # for safety, don't overwrite
@@ -128,6 +132,10 @@ class PledgeComponent(models.Model):
     pledge = models.ForeignKey(Pledge, related_name='pledge_components')
     partner_charity = models.ForeignKey(PartnerCharity, related_name='pledge_components')
     amount = models.DecimalField(decimal_places=2, max_digits=12)
+
+    @property
+    def proportion(self):
+        return self.amount / self.pledge.amount_from_components
 
     def __unicode__(self):
         return "${0.amount} to {0.partner_charity}".format(self)
