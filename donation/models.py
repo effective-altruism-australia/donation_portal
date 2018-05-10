@@ -109,7 +109,7 @@ class Pledge(models.Model):
         if num_components == 1:
             return self.pledge_components.get().partner_charity.name
         elif num_components > 1:
-            partner_names = [component.partner_charity.name for component in self.pledge_components()]
+            partner_names = [component.partner_charity.name for component in self.pledge_components.all()]
             return '{} and {}'.format(', '.join(partner_names[:-1]), partner_names[-1])
         else:
             raise Exception('Pledge does not have any associated components')
