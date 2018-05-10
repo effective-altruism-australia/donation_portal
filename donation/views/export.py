@@ -41,7 +41,7 @@ def download_spreadsheet(request, extra_fields=None):
         extra_fields = []
     template = OrderedDict([
                                ('Date', 'datetime'),
-                               ('Amount', 'amount'),
+                               ('Amount', 'pledge__pledge_components__amount'),  # Note these are pledged not actual
                                ('EAA Reference', 'reference'),
                                ('First Name', 'pledge__first_name'),
                                ('Last Name', 'pledge__last_name'),
@@ -49,13 +49,15 @@ def download_spreadsheet(request, extra_fields=None):
                                ('Payment method', 'payment_method'),
                                ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
                                ('Can publish donation', 'pledge__publish_donation'),
-                               ('Designation', 'pledge__recipient_org__name')
+                               ('Designation', 'pledge__pledge_components__partner_charity__name')
                            ] + extra_fields)
 
     filename = 'EAA donations {0} to {1} downloaded {2}.xlsx'.format(start, end, datetime.now())
     location = os.path.join(settings.MEDIA_ROOT, 'downloads', filename)
 
-    queryset = Donation.objects.filter(date__gte=start, date__lte=end).order_by('datetime')
+    # Note that the values call below is required to create a donation object for each associated pledge component
+    queryset = Donation.objects.values('pledge__pledge_components').filter(
+        date__gte=start, date__lte=end).order_by('datetime')
     write_spreadsheet(location, {'Donations': queryset}, template)
 
     response = HttpResponse(open(location).read(),
