@@ -272,11 +272,17 @@ class Donation(models.Model):
     payment_method = models.CharField(max_length=128)
     reference = models.TextField(blank=True)
     pledge = models.ForeignKey(Pledge, blank=True, null=True)
-    bank_transaction = models.ForeignKey(BankTransaction, blank=True, null=True)
-    pin_transaction = models.ForeignKey(PinTransaction, blank=True, null=True)
+    bank_transaction = models.OneToOneField(BankTransaction, blank=True, null=True)
+    pin_transaction = models.OneToOneField(PinTransaction, blank=True, null=True)
 
     class Meta:
         managed = False
+
+    @property
+    def component_summary_str(self):
+        return ', '.join('%s ($%s)' % (component.partner_charity.name,
+                                       '{0:.2f}'.format(component.proportion * self.amount)
+                                       ) for component in self.pledge.pledge_components.all())
 
 
 class ReceiptManager(models.Manager):
