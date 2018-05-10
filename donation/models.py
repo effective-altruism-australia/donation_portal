@@ -5,9 +5,11 @@ import os
 import random
 import re
 import string
+from decimal import Decimal
 
 import arrow
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from enumfields import Enum, EnumIntegerField
@@ -101,7 +103,18 @@ class Pledge(models.Model):
     def amount_from_components(self):
         return self.pledge_components.aggregate(total=models.Sum('amount'))['total']
 
-    def pledge_component_amounts_reconcile(self):
+    @property
+    def partner_charity_str(self):
+        num_components = self.pledge_components.count()
+        if num_components == 1:
+            return self.pledge_components.get().partner_charity.name
+        elif num_components > 1:
+            partner_names = [component.partner_charity.name for component in self.pledge_components()]
+            return '{} and {}'.format(', '.join(partner_names[:-1]), partner_names[-1])
+        else:
+            raise Exception('Pledge does not have any associated components')
+
+    def check_pledge_component_amounts_reconcile(self):
         return self.amount == self.amount_from_components
 
     def generate_reference(self):
