@@ -11,5 +11,5 @@
   <p><b>Email</b>: {{ pledge.email }}</p>
   <p><b>Date received</b>: {{ transaction.date }}</p>
   <p><b>Donation Amount</b>: ${{ transaction.amount}}</p>
-  <p><b>Designation</b>: {{ pledge.recipient_org }}</p>
+  <p><b>Designation</b>: {{ transaction.donation.component_summary_str }}</p>
 {% endblock content %}
