@@ -6,8 +6,8 @@ from django.contrib import messages
 from reversion.admin import VersionAdmin
 from reversion.models import Revision, Version
 
-from .models import Pledge, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, PaymentMethod, \
-    PartnerCharityReport, ReferralSource
+from .models import Pledge, PledgeComponent, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, \
+    PaymentMethod, PartnerCharityReport, ReferralSource
 
 
 class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
@@ -84,10 +84,22 @@ class PledgeFundsReceivedFilter(admin.SimpleListFilter):
             return Pledge.objects.all().exclude(id__in=unpaid.values('id'))
 
 
+class PledgeComponentInline(admin.TabularInline):
+    readonly_fields = ('partner_charity', 'amount',)
+    fields = readonly_fields
+    model = PledgeComponent
+    extra = 0
+    can_delete = False
+
+    def has_add_permission(self, request):
+        return False
+
+
 class PledgeAdmin(VersionAdmin):
     search_fields = ('first_name', 'last_name', 'reference', 'email')
     readonly_fields = ('ip', 'completed_time')
     list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency')
+    inlines = [PledgeComponentInline]
 
     class Meta:
         model = Pledge
