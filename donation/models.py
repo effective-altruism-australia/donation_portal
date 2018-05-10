@@ -144,7 +144,7 @@ class PledgeComponent(models.Model):
 
     pledge = models.ForeignKey(Pledge, related_name='pledge_components')
     partner_charity = models.ForeignKey(PartnerCharity, related_name='pledge_components')
-    amount = models.DecimalField(decimal_places=2, max_digits=12)
+    amount = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal(0.01))])
 
     @property
     def proportion(self):
