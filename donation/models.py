@@ -1,17 +1,16 @@
 from __future__ import unicode_literals
 
-import arrow
-import re
-import os
 import json
+import os
 import random
+import re
 import string
 
-from django.db import models
+import arrow
 from django.conf import settings
+from django.db import models
 from django.utils import timezone
 from enumfields import Enum, EnumIntegerField
-
 from pinpayments.models import PinTransaction as BasePinTransaction
 
 
@@ -74,7 +73,9 @@ class Pledge(models.Model):
     completed_time = models.DateTimeField()
     ip = models.GenericIPAddressField(null=True)
     reference = models.TextField(blank=True)
-    recipient_org = models.ForeignKey(PartnerCharity)
+    # TODO: Remove, this is now captured by PledgeComponent
+    recipient_org = models.ForeignKey(PartnerCharity, null=True)
+    # TODO: Consider deleting and replacing with a property which sums the pledge component amounts
     amount = models.DecimalField(decimal_places=2, max_digits=12)
     first_name = models.CharField(max_length=1024, blank=True, verbose_name='name')  # TODO safely decrease length
     last_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
@@ -96,6 +97,9 @@ class Pledge(models.Model):
     drupal_username = models.TextField(blank=True, editable=False)
     drupal_preferred_donation_method = models.TextField(blank=True, editable=False)
 
+    def pledge_component_amounts_reconcile(self):
+        return self.amount == self.pledge_components.aggregate(total=models.Sum('amount'))['total']
+
     def generate_reference(self):
         if self.reference:  # for safety, don't overwrite
             return self.reference
@@ -110,8 +114,24 @@ class Pledge(models.Model):
         super(Pledge, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return "Pledge of ${0.amount} to {0.recipient_org} by {0.first_name} {0.last_name}, " \
-            "made on {1}. Reference {0.reference}".format(self, timezone.localtime(self.completed_time).date())
+        components = ', '.join([c.__unicode__() for c in self.pledge_components.all()])
+        return "Pledge of {1} by {0.first_name} {0.last_name}, " \
+               "made on {2}. Reference {0.reference}".format(self, components, timezone.localtime(self.completed_time.date()))
+
+
+class PledgeComponent(models.Model):
+    """Tracks the breakdown of a pledge between partner charities"""
+
+    class Meta:
+        unique_together = ('pledge', 'partner_charity')
+
+    pledge = models.ForeignKey(Pledge, related_name='pledge_components')
+    partner_charity = models.ForeignKey(PartnerCharity, related_name='pledge_components')
+    amount = models.DecimalField(decimal_places=2, max_digits=12)
+
+    def __unicode__(self):
+        return "${0.amount} to {0.partner_charity}".format(self)
+>>>>>>> Add pledge component model, migrate existing data
 
 
 # It's possible that we get the reference wrong when a BankTransaction is imported, for example if the donor
