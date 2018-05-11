@@ -101,15 +101,15 @@ class Pledge(models.Model):
 
     @property
     def amount_from_components(self):
-        return self.pledge_components.aggregate(total=models.Sum('amount'))['total']
+        return self.components.aggregate(total=models.Sum('amount'))['total']
 
     @property
     def partner_charity_str(self):
-        num_components = self.pledge_components.count()
+        num_components = self.components.count()
         if num_components == 1:
-            return self.pledge_components.get().partner_charity.name
+            return self.components.get().partner_charity.name
         elif num_components > 1:
-            partner_names = [component.partner_charity.name for component in self.pledge_components.all()]
+            partner_names = [component.partner_charity.name for component in self.components.all()]
             return '{} and {}'.format(', '.join(partner_names[:-1]), partner_names[-1])
         else:
             raise Exception('Pledge does not have any associated components')
@@ -131,7 +131,7 @@ class Pledge(models.Model):
         super(Pledge, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        components = ', '.join([c.__unicode__() for c in self.pledge_components.all()])
+        components = ', '.join([c.__unicode__() for c in self.components.all()])
         return "Pledge of {1} by {0.first_name} {0.last_name}, " \
                "made on {2}. Reference {0.reference}".format(self, components, timezone.localtime(self.completed_time.date()))
 
@@ -142,7 +142,7 @@ class PledgeComponent(models.Model):
     class Meta:
         unique_together = ('pledge', 'partner_charity')
 
-    pledge = models.ForeignKey(Pledge, related_name='pledge_components')
+    pledge = models.ForeignKey(Pledge, related_name='components')
     partner_charity = models.ForeignKey(PartnerCharity, related_name='pledge_components')
     amount = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal(0.01))])
 
