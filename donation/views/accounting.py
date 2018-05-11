@@ -22,8 +22,8 @@ def total_donations_for_partner(start_date, end_date, partner, payment_method=No
                .filter(date__gte=start_date,
                        date__lt=arrow.get(end_date).shift(days=1).date(),
                        # use date_lt rather than date_lte so that it shows same-day credit card donations
-                       pledge__recipient_org=partner) \
-               .annotate(amount_maybe_less_fees=F('amount') - (F('fees') if after_fees else 0)) \
+                       components__pledge_component__partner_charity=partner) \
+               .annotate(amount_maybe_less_fees=F('components__amount') - (F('components__fees') if after_fees else 0)) \
                .aggregate(Sum('amount_maybe_less_fees'))['amount_maybe_less_fees__sum'] or 0
 
 
