@@ -23,7 +23,8 @@ def send_partner_charity_reports(test=True):
 
     for partner, ids in partners.iteritems():
         # Start time is when we last reported
-        last_report_datetime = PartnerCharityReport.objects.filter(partner__id=ids[0]).aggregate(Max('date'))['date__max'] or datetime.datetime(2016, 1, 1, 0, 0, 0)
+        last_report_datetime = PartnerCharityReport.objects.filter(partner__id=ids[0]
+                                        ).aggregate(Max('date'))['date__max'] or datetime.datetime(2016, 1, 1, 0, 0, 0)
         start = arrow.get(last_report_datetime).datetime
         # End date is midnight yesterday (i.e. midnight between yesterday and today) UTC
         # It could be the current time too (or rather a minute ago, to avoid races).
@@ -38,24 +39,24 @@ def send_partner_charity_reports(test=True):
                                      Q(pin_transaction__isnull=False,
                                        datetime__gte=start,
                                        datetime__lt=end),
-                                     pledge__recipient_org__id__in=ids).order_by('datetime')),
+                                     components__pledge_component__partner_charity__id__in=ids).order_by('datetime')),
             ('All donations',
              Donation.objects.filter(Q(bank_transaction__time_reconciled__lt=end) |
                                      Q(pin_transaction__isnull=False,
                                        datetime__lt=end),
-                                     pledge__recipient_org__id__in=ids).order_by('datetime'))])
+                                     components__pledge_component__partner_charity__id__in=ids).order_by('datetime'))])
 
         template = OrderedDict([
                                    ('Date', 'datetime'),
-                                   ('Amount', 'amount'),
-                                   ('Fees', 'pin_transaction__fees'),
+                                   ('Amount', 'components__amount'),
+                                   ('Fees', 'components__fees'),
                                    ('EAA Reference', 'reference'),
                                    ('First Name', 'pledge__first_name'),
                                    ('Last Name', 'pledge__last_name'),
                                    ('Email', 'pledge__email'),
                                    ('Payment method', 'payment_method'),
                                    ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
-                                   ('Designation', 'pledge__recipient_org__name')
+                                   ('Designation', 'components__pledge_component__partner_charity__name')
                                ])
 
         filename = 'EAA donation report - {0} - {1}.xlsx'.format(partner,
