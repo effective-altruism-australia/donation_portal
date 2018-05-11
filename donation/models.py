@@ -280,9 +280,22 @@ class Donation(models.Model):
 
     @property
     def component_summary_str(self):
-        return ', '.join('%s ($%s)' % (component.partner_charity.name,
-                                       '{0:.2f}'.format(component.proportion * self.amount)
-                                       ) for component in self.pledge.pledge_components.all())
+        return ', '.join('%s ($%s)' % (component.pledge_component.partner_charity.name,
+                                       '{0:.2f}'.format(component.amount)
+                                       ) for component in self.components.all())
+
+
+class DonationComponent(models.Model):
+    """Database view which calculates the amount donated to each partner charity
+    Implemented in donation/migrations/0054_donation_component_view.py
+    """
+    pledge_component = models.ForeignKey(PledgeComponent, related_name='donation_component')
+    donation = models.ForeignKey(Donation, related_name='components')
+    amount = models.FloatField()
+    fees = models.FloatField()
+
+    class Meta:
+        managed = False
 
 
 class ReceiptManager(models.Manager):
