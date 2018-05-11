@@ -41,7 +41,7 @@ def download_spreadsheet(request, extra_fields=None):
         extra_fields = []
     template = OrderedDict([
                                ('Date', 'datetime'),
-                               ('Amount', 'pledge__pledge_components__amount'),  # Note these are pledged not actual
+                               ('Amount', 'components__amount'),
                                ('EAA Reference', 'reference'),
                                ('First Name', 'pledge__first_name'),
                                ('Last Name', 'pledge__last_name'),
@@ -49,14 +49,14 @@ def download_spreadsheet(request, extra_fields=None):
                                ('Payment method', 'payment_method'),
                                ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
                                ('Can publish donation', 'pledge__publish_donation'),
-                               ('Designation', 'pledge__pledge_components__partner_charity__name')
+                               ('Designation', 'components__pledge_component__partner_charity__name')
                            ] + extra_fields)
 
     filename = 'EAA donations {0} to {1} downloaded {2}.xlsx'.format(start, end, datetime.now())
     location = os.path.join(settings.MEDIA_ROOT, 'downloads', filename)
 
     # Note that the values call below is required to create a donation object for each associated pledge component
-    queryset = Donation.objects.values('pledge__pledge_components').filter(
+    queryset = Donation.objects.values('components').filter(
         date__gte=start, date__lte=end).order_by('datetime')
     write_spreadsheet(location, {'Donations': queryset}, template)
 
@@ -86,7 +86,7 @@ def write_spreadsheet(location, querysets, template):
 def download_full_spreadsheet(request):
     # TODO add credit card donation details (e.g., address), to the extent we have them
     extra_fields = [
-        ('Fees', 'pin_transaction__fees'),
+        ('Fees', 'components__fees'),
         ('Recurring donor', 'pledge__recurring'),
         ('Recurring frequency', 'pledge__recurring_frequency'),
         ('How did you hear about us?', 'pledge__how_did_you_hear_about_us_db__reason'),
