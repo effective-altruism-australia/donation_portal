@@ -1,0 +1,203 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
+.charity {
+  border: 1px solid #888;
+}
+
+.outlined {
+    border: 1px solid red;
+}
+
+pre.fwoop {
+    font-size: 9px;
+    position: fixed;
+    width: 30%;
+    top: 0;
+    right: 0;
+    background: #eee;
+    opacity: 0.7;
+}
+
+.todo {
+    background: yellow;
+}
+
+input[type="radio"] {
+    /*visibility:hidden;*/
+    position:fixed;opacity:0
+}
+
+input[type="radio"]:checked+label {
+    /*background: blue;*/
+    border-color: blue;
+    /*font-weight:bold;*/
+}
+
+.donation-form .panel {
+    background-color: #eeeeee;
+    border-color: #c4c4c4;
+    border-width: 2px;
+}
+
+.donation-form label.btn {
+    border-width: 1px;
+    border-color: #adadad;
+}
+
+.donation-form input[type="radio"]:checked + label {
+    background-color: #4c8fb1;
+    border-color: #adadad;
+}
+
+.donation-amount-group input:first-child + label{
+    margin-left: 0;
+}
+.donation-amount-group label{
+    display: inline-block;
+    float: left;
+    margin-left: 3px;
+    margin-right: 3px;
+    min-width: 86px;
+}
+.amount-input-wrapper {
+    float: left;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+.frequency-options {
+    display: inline-block;
+}
+
+.frequency-options label{
+    margin-left: 12px;
+    min-width: 86px;
+}
+
+.frequency-options input:first-child + label{
+    margin-left: 0;
+}
+
+.payment-options label{
+    margin-left: 12px;
+}
+
+.payment-options input:first-child + label{
+    margin-left: 0;
+}
+
+.raw-options input[type="radio"] {
+    visibility: visible;
+    position: static;
+    opacity: 1;
+    margin-right: 20px;
+    border: none;
+}
+
+.raw-options label {
+    font-weight: 400;
+}
+
+.raw-options input[type="radio"]:checked + label {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+
+
+.donation-form input[type=number]::-webkit-inner-spin-button,
+.donation-form input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.donation-form input[type=number] {
+    -moz-appearance:textfield;
+}
+
+.amount-input {
+    width: 150px;
+}
+
+.amount-input-wrapper {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+.total-amount-group {
+    padding-top: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-top: 1px solid #c4c4c4;
+}
+
+.total-amount-group .amount-input-wrapper {
+    margin-left: 10px;
+}
+
+.cover-amount-group .amount-input-wrapper {
+    margin-right: 10px;
+}
+
+
+.gift-date-form .form-control{
+    min-height: 37px;
+}
+
+.Select.form-control {
+    padding: 1px;
+}
+
+.Select.form-control .Select-control{
+    height: 100%;
+    border: none;
+}
+
+.selected-charity-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: auto;
+    min-height: 100px;
+}
+
+.charity-img {
+    max-height: 120px;
+    max-width: 200px;
+    margin: 0;
+}
+
+.selected-charity-box p.donation-info {
+    text-align: left;
+    margin: 0 0 0 12px;
+}
