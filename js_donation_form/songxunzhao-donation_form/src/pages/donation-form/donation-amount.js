@@ -48,7 +48,6 @@ class DonationAmount extends Component {
                                 />
                             </div>
                         </span>
-                        <Field name="contribute.frequency" component={FrequencyComponent}/>
                     </div>
                 </div>
             </div>
