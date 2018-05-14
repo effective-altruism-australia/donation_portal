@@ -97,7 +97,6 @@ class DonationAmount extends Component {
                                component={customInput}
                                type="number"
                                placeholder="Amount"
-                               validate={[required]}
                         />
                     </div>
                 </div>
@@ -110,7 +109,6 @@ class DonationAmount extends Component {
                                component={customInput}
                                type="number"
                                placeholder="Amount"
-                               validate={[required]}
                         />
                     </div>
                 </div>
@@ -123,7 +121,6 @@ class DonationAmount extends Component {
                                component={customInput}
                                type="number"
                                placeholder="Amount"
-                               validate={[required]}
                         />
                     </div>
                 </div>
@@ -136,7 +133,6 @@ class DonationAmount extends Component {
                                component={customInput}
                                type="number"
                                placeholder="Amount"
-                               validate={[required]}
                         />
                     </div>
                 </div>
@@ -149,7 +145,6 @@ class DonationAmount extends Component {
                                component={customInput}
                                type="number"
                                placeholder="Amount"
-                               validate={[required]}
                         />
                     </div>
                 </div>
@@ -162,7 +157,7 @@ class DonationAmount extends Component {
                                component={customInput}
                                type="number"
                                placeholder="Amount"
-                               validate={[required]}/>
+                        />
                     </div>
                 </div>
 
