@@ -1,9 +1,10 @@
 import React, {Component} from "react";
-import {connect} from "react-redux";
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import APIService from "../../services/api";
-import { Field, reduxForm } from 'redux-form'
+import {Field} from 'redux-form'
+import {required} from "../../services/validation";
+
 
 export default class DonorDetails extends Component {
 
@@ -36,7 +37,9 @@ export default class DonorDetails extends Component {
                             name="name"
                             placeholder="Name"
                             type="text"
-                            component="input" />
+                            component="input"
+                            validate={[required]}
+                        />
                     </div>
                 </div>
 
@@ -49,7 +52,10 @@ export default class DonorDetails extends Component {
                             placeholder="Email"
                             type="text"
                             maxLength="254"
-                            component="input" />
+                            component="input"
+                            validate={[required]}
+
+                        />
                     </div>
                 </div>
 
