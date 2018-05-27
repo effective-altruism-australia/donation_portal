@@ -28,26 +28,3 @@ class DateRangeSelector(forms.Form):
 
     start = forms.DateField(widget=SelectDateWidget(), label='Start date')
     end = forms.DateField(widget=SelectDateWidget(), label='End date')
-
-
-class PledgeForm(forms.ModelForm):
-    class Meta:
-        model = Pledge
-        fields = ['amount', 'first_name', 'email', 'how_did_you_hear_about_us_db', 'subscribe_to_updates',
-                  'payment_method', 'recipient_org', 'recurring']
-
-    class Media:
-        # Don't use Media as it's compatible with ManifestStaticFilesStorage on Django 1.8
-        # https://code.djangoproject.com/ticket/21221
-        pass
-
-    # These values control the donation amount buttons shown
-    donation_amounts_raw = (25, 50, 100, 250)
-    donation_amounts = [('$' + str(x), x) for x in donation_amounts_raw]
-
-    # The template will display labels for these fields
-    hide_labels = ['subscribe_to_updates', ]
-
-    def __init__(self, *args, **kwargs):
-        super(PledgeForm, self).__init__(*args, **kwargs)
-        self.referral_sources = ReferralSource.objects.filter(enabled=True).order_by('order')
