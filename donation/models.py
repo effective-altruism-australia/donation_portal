@@ -5,7 +5,6 @@ import os
 import random
 import re
 import string
-from decimal import Decimal
 
 import arrow
 from django.conf import settings
@@ -17,9 +16,12 @@ from pinpayments.models import PinTransaction as BasePinTransaction
 
 
 class PartnerCharity(models.Model):
-    name = models.TextField(unique=True)
+    slug_id = models.CharField(max_length=30, unique=True, null=True)
+    name = models.TextField(unique=True, verbose_name='Name (human readable)')
     email = models.EmailField(help_text="Used to cc the charity on receipts")
     xero_account_name = models.TextField(help_text="Exact text of incoming donation account in xero")
+
+    order = models.IntegerField(null=True)
 
     def __unicode__(self):
         return self.name
@@ -160,8 +162,8 @@ class PledgeComponent(models.Model):
 # existing Pledge (if any) and search for a matching one.
 class BankTransaction(models.Model):
     date = models.DateField()
-    bank_statement_text = models.TextField(blank=True,)
-    amount = models.DecimalField(decimal_places=2, max_digits=12,)
+    bank_statement_text = models.TextField(blank=True, )
+    amount = models.DecimalField(decimal_places=2, max_digits=12, )
     reference = models.TextField(blank=True)
     unique_id = models.TextField(unique=True, editable=False)
     do_not_reconcile = models.BooleanField(default=False)
@@ -171,7 +173,7 @@ class BankTransaction(models.Model):
 
     def __unicode__(self):
         return ("UNRECONCILED -- " if not self.reconciled else "") + \
-            "{0.date} -- {0.amount} -- {0.bank_statement_text}".format(self)
+               "{0.date} -- {0.amount} -- {0.bank_statement_text}".format(self)
 
     @property
     def reconciled(self):
@@ -220,9 +222,9 @@ class BankTransaction(models.Model):
             earlier_references = BankTransaction.objects.filter(bank_statement_text=self.bank_statement_text,
                                                                 pledge__isnull=False,
                                                                 ) \
-                                                    .exclude(id=self.id) \
-                                                    .order_by('reference').distinct('reference') \
-                                                    .values_list('reference', flat=True)
+                .exclude(id=self.id) \
+                .order_by('reference').distinct('reference') \
+                .values_list('reference', flat=True)
             if len(earlier_references) == 1:
                 self.reference = earlier_references[0]
                 self.pledge = Pledge.objects.get(reference=self.reference)
@@ -366,10 +368,10 @@ class Receipt(models.Model):
     def __unicode__(self):
         if self.bank_transaction:
             transaction_part = ("Receipt for bank donation of ${0.bank_transaction.amount}" +
-                                     " on {0.bank_transaction.date}").format(self)
+                                " on {0.bank_transaction.date}").format(self)
         elif self.pin_transaction:
             transaction_part = ("Receipt for credit card donation of ${0.pin_transaction.amount}" +
-                                     " at {0.pin_transaction.date}").format(self)
+                                " at {0.pin_transaction.date}").format(self)
         else:
             transaction_part = "Receipt for deleted transaction"
         if self.pledge:
@@ -392,7 +394,7 @@ class Account(models.Model):
     ytd_amount = models.DecimalField(decimal_places=2, max_digits=12)
 
     class Meta:
-        unique_together = ('date', 'name', )
+        unique_together = ('date', 'name',)
 
 
 class XeroReconciledDate(models.Model):
@@ -419,7 +421,8 @@ class PartnerCharityReport(models.Model):
 
     def __unicode__(self):
         date_until = arrow.get(self.date).shift(days=-1).date()
-        return "Report to {0.partner.name} for donations up to and including {1}, sent {0.time_sent}".format(self, date_until)
+        return "Report to {0.partner.name} for donations up to and including {1}, sent {0.time_sent}".format(self,
+                                                                                                             date_until)
 
 
 class EOFYReceipt(models.Model):
