@@ -9,7 +9,5 @@ from donation.models import PartnerCharity
 
 class PartnerCharityView(View):
     def get(self, request):
-
-        charity_names = PartnerCharity.objects.order_by('order')
-        data = serializers.serialize('json', list(charity_names), fields=('slug_id', 'name'))
-        return HttpResponse(data)
+        charity_names = PartnerCharity.objects.filter(active=True).order_by('order').values('slug_id', 'name')
+        return HttpResponse(charity_names)
