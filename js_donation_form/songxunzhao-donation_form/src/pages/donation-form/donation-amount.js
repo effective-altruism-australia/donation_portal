@@ -3,6 +3,7 @@ import { Radio, RadioGroup } from "react-radio-group";
 import React, {Component} from "react";
 import { Field, formValueSelector} from 'redux-form'
 import classNames from 'classnames';
+import APIService from "../../services/api";
 import FrequencyComponent from "./frequency-component";
 import {customInput, customCurrencyInput} from "../../components/custom-fields";
 import {required, minValue2} from "../../services/validation";
@@ -11,6 +12,21 @@ class DonationAmount extends Component {
     constructor(props) {
         super(props);
         this.calculateTotal(props);
+
+        this.apiService = new APIService();
+        this.state = {
+            charities: []
+        };
+
+        this.getCharities();
+    }
+
+    getCharities() {
+        this.apiService.getCharities().then((charities) => {
+            this.setState({
+                charities: charities
+            });
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -87,82 +103,27 @@ class DonationAmount extends Component {
             }
         </div>;
 
-        const allocateSection = (<div>
-                <h3>How would you like to allocate your donation?</h3>
-                <div className="form-group">
-                    <label className="control-label col-sm-5">Against Malaria Foundation</label>
+
+        const allocateSection = <div>
+            <h3>How would you like to allocate your donation?</h3>
+            {
+            this.state.charities.map(function(charity){
+                return <div className="form-group">
+                    <label className="control-label col-sm-5">{charity.name}</label>
                     <div className="col-sm-7">
                         <Field className="form-control"
-                               name="amount.malaria_foundation"
+                               name={"amount." + charity.name}
                                component={customInput}
                                type="number"
                                placeholder="Amount"
+                               key={charity.name}
                         />
                     </div>
                 </div>
-
-                <div className="form-group">
-                    <label className="control-label col-sm-5">Evidence Action</label>
-                    <div className="col-sm-7">
-                        <Field className="form-control"
-                               name="amount.evidence_action"
-                               component={customInput}
-                               type="number"
-                               placeholder="Amount"
-                        />
-                    </div>
-                </div>
-
-                <div className="form-group">
-                    <label className="control-label col-sm-5">GiveDirectly</label>
-                    <div className="col-sm-7">
-                        <Field className="form-control"
-                               name="amount.givedirectly"
-                               component={customInput}
-                               type="number"
-                               placeholder="Amount"
-                        />
-                    </div>
-                </div>
-
-                <div className="form-group">
-                    <label className="control-label col-sm-5">GiveDirectly Basic Income Trial</label>
-                    <div className="col-sm-7">
-                        <Field className="form-control"
-                               name="amount.givedirectly_basic_income"
-                               component={customInput}
-                               type="number"
-                               placeholder="Amount"
-                        />
-                    </div>
-                </div>
-
-                <div className="form-group" id="form_email">
-                    <label className="control-label col-sm-5">Schistosomiasis Control Initiative</label>
-                    <div className="col-sm-7">
-                        <Field className="form-control"
-                               name="amount.schistosomiasis_control"
-                               component={customInput}
-                               type="number"
-                               placeholder="Amount"
-                        />
-                    </div>
-                </div>
-
-                <div className="form-group" id="form_email">
-                    <label className="control-label col-sm-5" htmlFor="id_email">Malaria Consortium</label>
-                    <div className="col-sm-7">
-                        <Field className="form-control"
-                               name="amount.malaria_consortium"
-                               component={customInput}
-                               type="number"
-                               placeholder="Amount"
-                        />
-                    </div>
-                </div>
-
-            </div>
-        );
+                    ;
+            })
+            }
+            </div>;
 
         const modeSwitch = this.props.mode ==='custom' ? allocateSection: amountSection;
 
