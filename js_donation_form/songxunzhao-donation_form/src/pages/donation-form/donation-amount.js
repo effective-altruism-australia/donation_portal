@@ -108,15 +108,14 @@ class DonationAmount extends Component {
             <h3>How would you like to allocate your donation?</h3>
             {
             this.state.charities.map(function(charity){
-                return <div className="form-group">
+                return <div className="form-group" key={charity.slug_id}>
                     <label className="control-label col-sm-5">{charity.name}</label>
                     <div className="col-sm-7">
                         <Field className="form-control"
-                               name={"amount." + charity.name}
+                               name={"amount." + charity.slug_id}
                                component={customInput}
                                type="number"
                                placeholder="Amount"
-                               key={charity.name}
                         />
                     </div>
                 </div>
