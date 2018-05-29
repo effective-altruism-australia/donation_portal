@@ -20,8 +20,8 @@
     "redux-form": "^7.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "webpack",
+    "start": "webpack --watch",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
