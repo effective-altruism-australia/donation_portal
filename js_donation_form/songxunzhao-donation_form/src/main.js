@@ -12,11 +12,6 @@ export class Main extends Component {
   constructor(props) {
     super(props);
     this.pages = {
-        "charityList": {
-            title: "Select a program to support",
-            step: 1,
-            component: CharityList
-        },
         "paymentForm": {
             title: "Make a Donation",
             step: 2,
