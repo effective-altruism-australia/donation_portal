@@ -20,6 +20,7 @@ class PartnerCharity(models.Model):
     name = models.TextField(unique=True, verbose_name='Name (human readable)')
     email = models.EmailField(help_text="Used to cc the charity on receipts")
     xero_account_name = models.TextField(help_text="Exact text of incoming donation account in xero")
+    active = models.BooleanField(default=True)
 
     order = models.IntegerField(null=True)
 
