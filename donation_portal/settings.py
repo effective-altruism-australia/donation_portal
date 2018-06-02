@@ -30,6 +30,7 @@ INSTALLED_APPS = (
     'reversion',
     'donation',
     'paypal.standard.ipn',
+    'webpack_loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -112,6 +113,28 @@ CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS = 6
 CREDIT_CARD_RATE_LIMIT_PERIOD = 12*60*60
 
 TESTING_EMAIL = "@".join(['ben.toner', 'eaa.org.au'])
+
+#########
+# Webpack
+#########
+
+DEBUG = True  # TODO: where should we set this default?
+
+STATICFILES_DIRS = STATICFILES_DIRS + (
+    os.path.join(BASE_DIR, 'static', 'js', 'react'),
+)
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'js/react',
+
+        'STATS_FILE': 'react/build/webpack-stats.{}.json'.format('dev' if DEBUG else 'prod'),
+
+        # This disables polling in production. We assume the bundles are built and stay unchanged while the application is running.
+        'CACHE': not DEBUG,
+    }
+}
+
 
 # Deployment
 

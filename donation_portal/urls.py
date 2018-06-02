@@ -19,7 +19,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from donation.views.partner_charities import PartnerCharityView
 from donation.views.accounting import accounting_reconciliation, donation_counter
-from donation.views.donations import PledgeView, download_receipt
+from donation.views.donations import PledgeView, download_receipt, PledgeViewNew
 from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
 
 urlpatterns = [
@@ -33,7 +33,9 @@ urlpatterns = [
     url(r'^download_spreadsheet', download_spreadsheet, name='download-spreadsheet'),
     # Donations
     # url(r'^pledge/([0-9])/$', pledge, name='pledge')
-    url(r'^pledge', PledgeView.as_view(), name='pledge'),
+    url(r'^pledge/', PledgeView.as_view(), name='pledge'),
+    url(r'^pledge_new/', PledgeViewNew.as_view(), name='pledge-new'),
+
     url(r'^receipt/(?P<pk>[0-9]+)/(?P<secret>[a-zA-Z0-9]+)', download_receipt, name='download-receipt'),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
 
