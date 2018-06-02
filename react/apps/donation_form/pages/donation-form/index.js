@@ -64,7 +64,7 @@ class DonationForm extends Component {
                     <div className="panel panel-default">
                         <div className="panel-body form-horizontal">
                             <DonationFrequency/>
-                            <DonationAmount/>
+                            <DonationAmount charity={this.props.charity}/>
                         </div>
                     </div>
                     <div className="panel panel-default form-container details-section donor-details-section">
