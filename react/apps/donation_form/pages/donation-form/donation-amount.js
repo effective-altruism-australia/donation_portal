@@ -1,13 +1,13 @@
 import {connect} from "react-redux";
-import { Radio, RadioGroup } from "react-radio-group";
+import {Radio, RadioGroup} from "react-radio-group";
 import React, {Component} from "react";
-import { Field, formValueSelector} from 'redux-form'
+import {Field, formValueSelector} from 'redux-form'
 import classNames from 'classnames';
 import APIService from "../../services/api";
-import FrequencyComponent from "./frequency-component";
-import {customInput, customCurrencyInput} from "../../components/custom-fields";
-import {required, minValue2} from "../../services/validation";
+import {customCurrencyInput, customInput} from "../../components/custom-fields";
+import {minValue2, required} from "../../services/validation";
 import {getTotalDonation} from "../../services/utils";
+
 class DonationAmount extends Component {
     constructor(props) {
         super(props);
@@ -39,6 +39,20 @@ class DonationAmount extends Component {
 
     render() {
 
+        const contributeHeading = !this.props.charity ?
+            <div className="form-group" style={{marginLeft: '5px'}}>
+                <div className="checkbox col-sm-12">
+                        <label htmlFor="id_will_contribute">
+                            <Field id="id_will_contribute"
+                                   name="will_contribute"
+                                   component={customInput}
+                                   type="checkbox"/>
+                            I would also like to contribute to covering Effective Altruism Australia's running costs
+                        </label>
+                    </div>
+                </div>:
+            <div><br/><br/><br/></div>;
+
         const contributeSection = this.props.will_contribute ?
             <div>
                 <div className="form-group">
@@ -66,20 +80,20 @@ class DonationAmount extends Component {
                         </span>
                     </div>
                 </div>
-            </div>
-            : '';
+            </div>: '';
+
 
         const amountRadio = (field) => (
             <RadioGroup {...field.input} className="donation-amount-group" selectedValue={field.input.value}>
-                <Radio value="25"    id="id-amount-25" />
+                <Radio value="25" id="id-amount-25"/>
                 <label htmlFor="id-amount-25" className="btn btn-default">$25</label>
-                <Radio value="50"    id="id-amount-50" />
+                <Radio value="50" id="id-amount-50"/>
                 <label htmlFor="id-amount-50" className="btn btn-default">$50</label>
-                <Radio value="100"   id="id-amount-100" />
+                <Radio value="100" id="id-amount-100"/>
                 <label htmlFor="id-amount-100" className="btn btn-default">$100</label>
-                <Radio value="250"   id="id-amount-250" />
+                <Radio value="250" id="id-amount-250"/>
                 <label htmlFor="id-amount-250" className="btn btn-default">$250</label>
-                <Radio value="other" id="id-amount-other" />
+                <Radio value="other" id="id-amount-other"/>
                 <label htmlFor="id-amount-other" className="btn btn-default">Other</label>
             </RadioGroup>
         );
@@ -107,44 +121,35 @@ class DonationAmount extends Component {
         const allocateSection = <div>
             <h3>How would you like to allocate your donation?</h3>
             {
-            this.state.charities.map(function(charity){
-                return <div className="form-group" key={charity.slug_id}>
-                    <label className="control-label col-sm-5">{charity.name}</label>
-                    <div className="col-sm-7">
-                        <Field className="form-control"
-                               name={"amount." + charity.slug_id}
-                               component={customInput}
-                               type="number"
-                               placeholder="Amount"
-                        />
+                this.state.charities.map(function (charity) {
+                    return <div className="form-group" key={charity.slug_id}>
+                        <label className="control-label col-sm-5">{charity.name}</label>
+                        <div className="col-sm-7">
+                            <Field className="form-control"
+                                   name={"amount." + charity.slug_id}
+                                   component={customInput}
+                                   type="number"
+                                   placeholder="Amount"
+                            />
+                        </div>
                     </div>
-                </div>
-                    ;
-            })
+                        ;
+                })
             }
-            </div>;
+        </div>;
 
-        const modeSwitch = this.props.mode ==='custom' ? allocateSection: amountSection;
-
+        const modeSwitch = this.props.mode === 'custom' ? allocateSection : amountSection;
 
         return (
             <div>
                 {modeSwitch}
-                <div className="form-group" style={{marginLeft: '5px'}}>
-                    <div className="checkbox col-sm-12">
-                        <label htmlFor="id_will_contribute">
-                            <Field id="id_will_contribute"
-                                   name="will_contribute"
-                                   component={customInput}
-                                   type="checkbox"/>
-
-                            I would also like to contribute to covering Effective Altruism Australia's running costs
-                        </label>
-                    </div>
-                </div>
+                {contributeHeading}
                 {contributeSection}
                 <div className="total-amount-group">
-                    <label className={classNames("control-label", {"col-sm-1":this.props.mode!=='custom', "col-sm-5": this.props.mode==='custom'})}>Total</label>
+                    <label className={classNames("control-label", {
+                        "col-sm-1": this.props.mode !== 'custom',
+                        "col-sm-5": this.props.mode === 'custom'
+                    })}>Total</label>
                     <div className="col-sm-7">
                         <div className="input-group amount-input">
                             <span className="input-group-addon">$</span>
