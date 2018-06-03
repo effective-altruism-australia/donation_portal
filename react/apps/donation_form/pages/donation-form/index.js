@@ -107,7 +107,8 @@ const mapStateToProps = (state) => {
         initialValues: {
             payment: {
                 method: 'credit-card'
-            }
+            },
+            mode: 'auto'
         }
     }
 };
