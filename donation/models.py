@@ -61,6 +61,7 @@ class RecurringFrequency(Enum):
 
 
 class ReferralSource(models.Model):
+    slug_id = models.CharField(max_length=30, unique=True, null=True)
     reason = models.CharField(max_length=256, help_text="Instead of editing this text, you probably want to "
                                                         "disable this ReferralSource and create a new one. If you edit "
                                                         "this, you'll also update the referral sources for donations "
