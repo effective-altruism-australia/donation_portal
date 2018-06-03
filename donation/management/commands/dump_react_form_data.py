@@ -14,8 +14,8 @@ def dump_partner_charities():
 
 def dump_referral_sources():
     json_strs = []
-    for source in ReferralSource.objects.filter(enabled=True).order_by('order').values('slug_id', 'reason'):
-        json_strs.append(json.dumps(source))
+    for slug, reason in ReferralSource.objects.filter(enabled=True).order_by('order').values_list('slug_id', 'reason'):
+        json_strs.append(json.dumps({'value': slug, 'label': reason}))
     return 'export const referralSources = [%s]' % ', '.join(json_strs)
 
 
