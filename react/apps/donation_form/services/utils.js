@@ -5,7 +5,6 @@ function safeInteger(val) {
 
 export function getTotalDonation(mode, amount, contribute) {
     let total = 0;
-    console.log(amount);
     if (mode === 'auto') {
         if (amount) {
             if (amount.preset !== "other") {

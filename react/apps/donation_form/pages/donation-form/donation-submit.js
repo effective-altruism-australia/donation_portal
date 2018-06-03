@@ -6,10 +6,8 @@ import {setDonationResult} from "../../services/reduxStorage/actions";
 class DonationSubmit extends Component {
     constructor(props) {
         super(props);
-        console.log(props.submitting);
     }
     render() {
-        console.log(this.props.submitting);
         return (
         <div className="form-actions">
             <button type="submit" className="btn btn-success btn-lg" disabled={this.props.submitting}>Donate</button>
