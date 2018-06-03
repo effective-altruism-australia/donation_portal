@@ -14,12 +14,12 @@ from donation import emails
 
 from redis import StrictRedis
 from rratelimit import Limiter
-#
-# r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
-# rate_limiter = Limiter(r,
-#                        action='test_credit_card',
-#                        limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
-#                        period=settings.CREDIT_CARD_RATE_LIMIT_PERIOD)
+
+r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+rate_limiter = Limiter(r,
+                       action='test_credit_card',
+                       limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
+                       period=settings.CREDIT_CARD_RATE_LIMIT_PERIOD)
 
 
 def download_receipt(request, pk, secret):
