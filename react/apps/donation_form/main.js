@@ -95,7 +95,6 @@ export class Main extends Component {
 
     render() {
         let pageId = this.state.pageQueue[this.state.pageQueue.length - 1];
-        console.log(pageId);
         let PageComponent = this.pages[pageId].component;
         let step = this.pages[pageId].step;
         let pageTitle = step !== 3 ? this.pages[pageId].title : this.props.method === 'credit-card' ? 'Complete payment' : 'Success';
