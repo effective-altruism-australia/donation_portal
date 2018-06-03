@@ -14,8 +14,9 @@ export function getTotalDonation(mode, amount, contribute) {
             }
         }
     } else if (mode === 'custom') {
+        console.log(amount);
         for (let prop in amount) {
-            if (prop !== "preset") {
+            if (prop !== "preset" && prop !== "value") {
                 total += safeInteger(amount[prop]);
             }
         }
