@@ -17,10 +17,11 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from donation.views.partner_charities import PartnerCharityView
 from donation.views.accounting import accounting_reconciliation, donation_counter
 from donation.views.donations import PledgeView, download_receipt, PledgeViewNew
 from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
+from donation.views.form_data import PartnerCharityView, ReferralSourceView
+
 
 urlpatterns = [
     # Accounting
@@ -40,6 +41,8 @@ urlpatterns = [
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
 
     url(r'^partner_charities', PartnerCharityView.as_view(), name='partner-charities'),
+    url(r'^referral_sources', ReferralSourceView.as_view(), name='referral-sources'),
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()

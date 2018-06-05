@@ -1,19 +1,22 @@
 import React from "react";
-import {charities, referralSources} from "./data_dump";
 
 export default class APIService {
     getCharities() {
-        return Promise.resolve(charities);
+        return fetch('/partner_charities').then(function (response) {
+            return response.json();
+        });
     }
 
     getReferralSources() {
-        return Promise.resolve(referralSources);
+        return fetch('/referral_sources').then(function (response) {
+            return response.json();
+        });
     }
 
     submit(data) {
         console.log(data);
 
-        fetch('http://127.0.0.1:8000/pledge', {
+        fetch('/pledge_new', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
