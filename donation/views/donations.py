@@ -15,11 +15,11 @@ from donation import emails
 from redis import StrictRedis
 from rratelimit import Limiter
 
-r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
-rate_limiter = Limiter(r,
-                       action='test_credit_card',
-                       limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
-                       period=settings.CREDIT_CARD_RATE_LIMIT_PERIOD)
+# r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+# rate_limiter = Limiter(r,
+#                        action='test_credit_card',
+#                        limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
+#                        period=settings.CREDIT_CARD_RATE_LIMIT_PERIOD)
 
 
 def download_receipt(request, pk, secret):
@@ -122,3 +122,9 @@ class PledgeViewNew(View):
     def get(self, request):
         charity = request.GET.get('charity')
         return render(request, 'pledge_new.html', {'charity': charity})
+
+    def post(self, request):
+        print request.POST
+        print 1
+        # form = PledgeForm(request.POST)
+        #
