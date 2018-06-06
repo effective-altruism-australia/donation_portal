@@ -16,53 +16,74 @@ export default class APIService {
     submit(data) {
         console.log(data);
 
-        let donation = data.donation;
+        let pledge_raw = data.donation;
+        let pledge_clean = {};
+        
+        pledge_clean.payment_method = pledge_raw.payment.method;
+        pledge_clean.recurring_frequency = pledge_raw.frequency;
+        pledge_clean.recurring = pledge_raw.recurring_frequency === 'monthly';
+        pledge_clean.first_name = pledge_raw.name.split(' ').slice(0, -1).join(' ');
+        pledge_clean.last_name = pledge_raw.name.split(' ').slice(-1).join(' ');
+        pledge_clean.email = pledge_raw.email;
 
-        if (donation.mode === 'auto') {
+        if (pledge_raw.mode === 'auto') {
             console.log('hi');
             let amount = null;
-            if (donation.amount.preset === 'other') {
-                amount = donation.amount.value;
+            if (pledge_raw.amount.preset === 'other') {
+                amount = pledge_raw.amount.value;
             } else {
-                amount = donation.amount.preset;
+                amount = pledge_raw.amount.preset;
             }
 
             let charity = 'unallocated';
             if (data.charity) {
                 charity = data.charity.slug_id
             }
-            donation.components = [{'charity': charity, 'amount': amount}];
-        } else if (donation.mode === 'custom') {
-            donation.components = [];
-            for (let charity in donation.amount) {
+            pledge_raw.components = [{'charity': charity, 'amount': amount}];
+        } else if (pledge_raw.mode === 'custom') {
+            pledge_raw.components = [];
+            for (let charity in pledge_raw.amount) {
                 if (charity === 'preset') {
                     continue;
                 }
-                donation.components.push({'charity': charity, 'amount': donation.amount[charity]});
+                pledge_raw.components.push({'charity': charity, 'amount': pledge_raw.amount[charity]});
             }
         }
 
-        if (donation.will_contribute){
-            donation.components.push({'charity': 'eaa', 'amount': donation.contribute.value});
-            delete donation.will_contribute;
-            delete donation.contribute;
+        if (pledge_raw.will_contribute){
+            pledge_raw.components.push({'charity': 'eaa', 'amount': pledge_raw.contribute.value});
         }
-        delete donation.amount;
 
-        console.log(donation);
+        pledge_clean.subscribe_to_updates = pledge_raw.subscribe_for_updates === true;
 
-        fetch('/pledge_new/', {
+        pledge_clean.how_did_you_hear_about_us_db = pledge_raw.how_did_hear.value;
+
+        pledge_clean['form-TOTAL_FORMS'] = pledge_raw.components.length;
+        pledge_clean['form-INITIAL_FORMS'] = pledge_raw.components.length;
+
+
+        pledge_raw.components.forEach(function(item, i){
+            pledge_clean['form-' + i + '-id'] = null; // This tells Django that the object doesn't already exist
+            pledge_clean['form-' + i + '-partner_charity'] = item.charity;
+            pledge_clean['form-' + i + '-amount'] = item.amount;
+            });
+
+        console.log(pledge_clean);
+
+        // payment_clean = {};
+        // if (pledge_raw.payment.method === 'credit-card'){
+        //     // Clean up pin payment data?
+        // }
+
+        return fetch('/pledge_new/', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(donation)
-        });
-
-        return Promise.resolve({
-            'bank_reference': 'xxxx',
-            'receipt_url': 'xxxx'
+            body: JSON.stringify(pledge_clean)
+        }).then(function (response) {
+            return response.json();
         });
     }
 }

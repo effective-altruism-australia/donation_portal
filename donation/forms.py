@@ -1,12 +1,10 @@
 import arrow
-import os
-
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
-from django.forms.widgets import ChoiceInput
-from django.conf import settings
+from enumfields.fields import EnumChoiceField
 
-from .models import Pledge, PartnerCharity, ReferralSource
+from donation.models import RecurringFrequency, Pledge, ReferralSource, PaymentMethod, PartnerCharity, PledgeComponent,\
+    PinTransaction
 
 
 class DateRangeSelector(forms.Form):
@@ -28,3 +26,57 @@ class DateRangeSelector(forms.Form):
 
     start = forms.DateField(widget=SelectDateWidget(), label='Start date')
     end = forms.DateField(widget=SelectDateWidget(), label='End date')
+
+
+class PaymentMethodField(EnumChoiceField):
+    def clean(self, value):
+        mapping_dict = {
+            'bank-transfer': PaymentMethod.BANK,
+            'credit-card': PaymentMethod.CREDIT_CARD,
+        }
+        return mapping_dict[value]
+
+
+class RecurringFrequencyField(EnumChoiceField):
+    def clean(self, value):
+        # Currently the donation form only supports a monthly (or once off) donation frequency
+        mapping_dict = {
+            'one-time': None,
+            'monthly': RecurringFrequency.MONTHLY
+        }
+        return mapping_dict[value]
+
+
+class PledgeForm(forms.ModelForm):
+    class Meta:
+        model = Pledge
+        fields = ['first_name', 'last_name', 'email', 'how_did_you_hear_about_us_db', 'subscribe_to_updates',
+                  'payment_method', 'recurring', 'recurring_frequency']
+
+    how_did_you_hear_about_us_db = forms.ModelChoiceField(queryset=ReferralSource.objects.all(),
+                                                          to_field_name='slug_id')
+    payment_method = PaymentMethodField()
+    recurring_frequency = RecurringFrequencyField()
+
+    def __init__(self, *args, **kwargs):
+        super(PledgeForm, self).__init__(*args, **kwargs)
+        self.referral_sources = ReferralSource.objects.filter(enabled=True).order_by('order')
+
+
+class PledgeComponentForm(forms.ModelForm):
+    class Meta:
+        model = PledgeComponent
+        fields = ('pledge', 'partner_charity', 'amount')
+
+    partner_charity = forms.ModelChoiceField(queryset=PartnerCharity.objects.all(),
+                                             to_field_name='slug_id')
+    pledge = forms.ModelChoiceField(queryset=Pledge.objects.all(), required=False)
+
+
+PledgeComponentFormSet = forms.modelformset_factory(PledgeComponent, form=PledgeComponentForm,
+                                                    fields=('pledge', 'partner_charity', 'amount'))
+
+# class PinTransactionForm(forms.ModelForm):
+#     class Meta:
+#         model = PinTransaction
+#         fields = '__all__'

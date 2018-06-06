@@ -35,7 +35,7 @@ urlpatterns = [
     # Donations
     # url(r'^pledge/([0-9])/$', pledge, name='pledge')
     url(r'^pledge/', PledgeView.as_view(), name='pledge'),
-    url(r'^pledge_new/', PledgeViewNew.as_view(), name='pledge-new'),
+    url(r'^pledge_new', PledgeViewNew.as_view(), name='pledge-new'),
 
     url(r'^receipt/(?P<pk>[0-9]+)/(?P<secret>[a-zA-Z0-9]+)', download_receipt, name='download-receipt'),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),

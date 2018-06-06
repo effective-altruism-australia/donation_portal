@@ -1,25 +1,27 @@
 from __future__ import absolute_import
 
+import json
+
+from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.db import transaction as django_transaction
 from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import View
 from ipware.ip import get_ip
-from paypal.standard.forms import PayPalPaymentsForm
-from django.conf import settings
-
-from donation.models import Receipt, RecurringFrequency, PinTransaction, PartnerCharity
-from donation import emails
-
 from redis import StrictRedis
 from rratelimit import Limiter
 
-# r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
-# rate_limiter = Limiter(r,
-#                        action='test_credit_card',
-#                        limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
-#                        period=settings.CREDIT_CARD_RATE_LIMIT_PERIOD)
+from donation import emails
+from donation.forms import PledgeForm, PledgeComponentFormSet
+from donation.models import Receipt, PinTransaction, PaymentMethod
+
+r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+rate_limiter = Limiter(r,
+                       action='test_credit_card',
+                       limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
+                       period=settings.CREDIT_CARD_RATE_LIMIT_PERIOD)
 
 
 def download_receipt(request, pk, secret):
@@ -33,6 +35,47 @@ def download_receipt(request, pk, secret):
                             content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="EAA_Receipt_{0}.pdf"'.format(receipt.pk)
     return response
+
+
+class PledgeViewNew(View):
+    @xframe_options_exempt
+    def get(self, request):
+        charity = request.GET.get('charity')
+        return render(request, 'pledge_new.html', {'charity': charity})
+
+    @xframe_options_exempt
+    def post(self, request):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        print body
+        form = PledgeForm(body)
+        formset = PledgeComponentFormSet(body)
+
+        if not (form.is_valid() and formset.is_valid()):
+            return JsonResponse({
+                'error': 'form-error',
+                'form_errors': [form.errors] + formset.errors
+            }, status=400)
+
+        with django_transaction.atomic():
+            pledge = form.save()
+            for component in formset.forms:
+                component.instance.pledge = pledge
+            formset.save()
+
+        response_data = {}
+
+        if pledge.payment_method == PaymentMethod.BANK:
+            response_data['bank_reference'] = pledge.generate_reference()
+            emails.send_bank_transfer_instructions(pledge)  # TODO: this should trigger a celery task or something.
+
+        elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
+            pass
+            # TODO: Handle credit card stuff
+        else:
+            raise StandardError('We currently only support new donations via credit card or bank transfer.')
+
+        return JsonResponse(response_data)
 
 
 # TODO It's weird these are combined since one is JSON and one is not
@@ -63,39 +106,39 @@ class PledgeView(View):
         #     emails.send_bank_transfer_instructions(pledge)
         #     return JsonResponse(response_data)
         # elif int(payment_method) == 3:
-        #     # Rate limiting
-        #     ip = get_ip(request)
-        #     if not rate_limiter.checked_insert(ip):
-        #         # Pretend it's a PIN error to save us from handling it separately in the javascript.
-        #         return JsonResponse({
-        #             'error': 'pin-error',
-        #             'pin_response': "Our apologies: credit card donations are currently unavailable. " +
-        #                             "Please try again tomorrow or make a payment by bank transfer.",
-        #             'pin_response_text': '',
-        #         }, status=400)
+        # Rate limiting
+        # ip = get_ip(request)
+        # if not rate_limiter.checked_insert(ip):
+        #     # Pretend it's a PIN error to save us from handling it separately in the javascript.
+        #     return JsonResponse({
+        #         'error': 'pin-error',
+        #         'pin_response': "Our apologies: credit card donations are currently unavailable. " +
+        #                         "Please try again tomorrow or make a payment by bank transfer.",
+        #         'pin_response_text': '',
+        #     }, status=400)
         #
-        #     transaction = PinTransaction()
-        #     transaction.card_token = request.POST.get('card_token')
-        #     transaction.ip_address = request.POST.get('ip_address')
-        #     transaction.amount = form.cleaned_data['amount']  # Amount in dollars. Define with your own business logic.
-        #     transaction.currency = 'AUD'  # Pin supports AUD and USD. Fees apply for currency conversion.
-        #     transaction.description = 'Donation to Effective Altruism Australia'  # Define with your own business logic
-        #     transaction.email_address = pledge.email
-        #     transaction.pledge = pledge
-        #     transaction.save()
-        #     transaction.process_transaction()  # Typically "Success" or an error message
-        #     if transaction.succeeded:
-        #         response_data['succeeded'] = True
-        #         receipt = transaction.receipt_set.first()
-        #         response_data['receipt_url'] = reverse('download-receipt',
-        #                                                kwargs={'pk': receipt.pk, 'secret': receipt.secret})
-        #         return JsonResponse(response_data)
-        #     else:
-        #         return JsonResponse({
-        #             'error': 'pin-error',
-        #             'pin_response': transaction.pin_response,
-        #             'pin_response_text': transaction.pin_response_text,
-        #         }, status=400)
+        # transaction = PinTransaction()
+        # transaction.card_token = request.POST.get('card_token')
+        # transaction.ip_address = request.POST.get('ip_address')
+        # transaction.amount = form.cleaned_data['amount']  # Amount in dollars. Define with your own business logic.
+        # transaction.currency = 'AUD'  # Pin supports AUD and USD. Fees apply for currency conversion.
+        # transaction.description = 'Donation to Effective Altruism Australia'  # Define with your own business logic
+        # transaction.email_address = pledge.email
+        # transaction.pledge = pledge
+        # transaction.save()
+        # transaction.process_transaction()  # Typically "Success" or an error message
+        # if transaction.succeeded:
+        #     response_data['succeeded'] = True
+        #     receipt = transaction.receipt_set.first()
+        #     response_data['receipt_url'] = reverse('download-receipt',
+        #                                            kwargs={'pk': receipt.pk, 'secret': receipt.secret})
+        #     return JsonResponse(response_data)
+        # else:
+        #     return JsonResponse({
+        #         'error': 'pin-error',
+        #         'pin_response': transaction.pin_response,
+        #         'pin_response_text': transaction.pin_response_text,
+        #     }, status=400)
 
     # @xframe_options_exempt
     def get(self, request):
@@ -116,15 +159,3 @@ class PledgeView(View):
         #     'paypal_form': paypal_form,
         #     'charity_database_ids': PartnerCharity.get_cached_database_ids(),
         #     })
-
-
-class PledgeViewNew(View):
-    def get(self, request):
-        charity = request.GET.get('charity')
-        return render(request, 'pledge_new.html', {'charity': charity})
-
-    def post(self, request):
-        print request.POST
-        print 1
-        # form = PledgeForm(request.POST)
-        #
