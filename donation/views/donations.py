@@ -16,6 +16,8 @@ from rratelimit import Limiter
 from donation import emails
 from donation.forms import PledgeForm, PledgeComponentFormSet
 from donation.models import Receipt, PinTransaction, PaymentMethod
+from donation.tasks import send_bank_transfer_instructions_task
+
 
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 rate_limiter = Limiter(r,
@@ -67,7 +69,7 @@ class PledgeViewNew(View):
 
         if pledge.payment_method == PaymentMethod.BANK:
             response_data['bank_reference'] = pledge.generate_reference()
-            emails.send_bank_transfer_instructions(pledge)  # TODO: this should trigger a celery task or something.
+            send_bank_transfer_instructions_task.delay(pledge.id)
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
             pass
