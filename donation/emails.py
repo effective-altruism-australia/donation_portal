@@ -1,14 +1,13 @@
-from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives, get_connection
 from django.conf import settings
-
+from django.core.mail import EmailMultiAlternatives, get_connection
+from django.template.loader import render_to_string
 from raven.contrib.django.raven_compat.models import client
 
 
 # TODO better tracking of these messages
 def send_bank_transfer_instructions(pledge):
     try:
-        context = {'pledge': pledge, 'partner_charity': pledge.recipient_org.name}
+        context = {'pledge': pledge}
         body = render_to_string('bank_transfer_instructions.txt', context)
         body_html = render_to_string('bank_transfer_instructions.html', context)
 
@@ -29,4 +28,3 @@ def send_bank_transfer_instructions(pledge):
 
     except Exception as e:
         client.captureException()
-        pledge.failed_message = e.message if e.message else "Sending failed"

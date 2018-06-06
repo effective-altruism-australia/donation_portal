@@ -82,7 +82,7 @@ class Pledge(models.Model):
     # TODO: Remove, this is now captured by PledgeComponent
     recipient_org = models.ForeignKey(PartnerCharity, null=True)
     # TODO: Consider deleting and using the amount_from_components property
-    amount = models.DecimalField(decimal_places=2, max_digits=12)
+    amount = models.DecimalField(decimal_places=2, max_digits=12, null=True) # TODO: remove?
     first_name = models.CharField(max_length=1024, blank=True, verbose_name='name')  # TODO safely decrease length
     last_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
     email = models.EmailField()
