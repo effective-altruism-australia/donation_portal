@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 import json
-
+from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import transaction as django_transaction
@@ -13,10 +13,13 @@ from ipware.ip import get_ip
 from redis import StrictRedis
 from rratelimit import Limiter
 
+from django.views.decorators.csrf import csrf_exempt
+
 from donation import emails
 from donation.forms import PledgeForm, PledgeComponentFormSet
 from donation.models import Receipt, PinTransaction, PaymentMethod
 from donation.tasks import send_bank_transfer_instructions_task
+from django.conf import settings
 
 
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
@@ -40,6 +43,10 @@ def download_receipt(request, pk, secret):
 
 
 class PledgeViewNew(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PledgeViewNew, self).dispatch(request, *args, **kwargs)
+
     @xframe_options_exempt
     def get(self, request):
         charity = request.GET.get('charity')
