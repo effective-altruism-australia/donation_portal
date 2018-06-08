@@ -1,6 +1,6 @@
 import {connect} from "react-redux";
-import React, { Component } from "react";
-import {reduxForm, getFormValues} from 'redux-form';
+import React, {Component} from "react";
+import {getFormValues, reduxForm} from 'redux-form';
 import DonorDetails from "./donor-details"
 import DonationModeOptions from "./donation-mode-options"
 import DonationFrequency from "./donation-frequency"
@@ -10,7 +10,7 @@ import DonationFaq from "./donation-faq";
 import DonationSubmit from "./donation-submit";
 import DonationAsGift from "./donation-as-gift";
 import APIService from '../../services/api';
-import {setDonationResult} from "../../services/reduxStorage/actions";
+import {setCharity, setDonationResult} from "../../services/reduxStorage/actions";
 
 let valid = require('card-validator');
 
@@ -22,6 +22,21 @@ class DonationForm extends Component {
 
         this.chooseDifferentCharity = this.chooseDifferentCharity.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+
+        this.apiService = new APIService();
+        this.state = {
+            charities: []
+        };
+
+        this.getCharities();
+    }
+
+    getCharities() {
+        this.apiService.getCharities().then((charities) => {
+            this.setState({
+                charities: charities
+            });
+        })
     }
 
     chooseDifferentCharity(e) {
@@ -93,10 +108,9 @@ class DonationForm extends Component {
     render() {
         const donationMode = (this.props.charity) ? (
             <div>
-                <h2>100% of your donation will go to support the {this.props.charity.name}</h2>
-                <a href="#" onClick={this.chooseDifferentCharity}>Choose a different program to support</a>
+                <h2>100% of your donation will go to support {this.props.charity.name}</h2>
             </div>
-        ): (
+        ) : (
             <div>
                 <h2>100% of your donation will go to support our partner charities</h2>
                 <DonationModeOptions/>
@@ -113,7 +127,7 @@ class DonationForm extends Component {
                     <div className="panel panel-default">
                         <div className="panel-body form-horizontal">
                             <DonationFrequency/>
-                            <DonationAmount charity={this.props.charity}/>
+                            <DonationAmount charity={this.props.charity} charities={this.state.charities}/>
                         </div>
                     </div>
                     <div className="panel panel-default form-container details-section donor-details-section">
@@ -125,7 +139,6 @@ class DonationForm extends Component {
                         <div className="panel-body form-horizontal">
                             <legend>Payment Details</legend>
                             <PaymentMethod change={this.props.change}/>
-                            <div className="error-text">{this.props.pin_errors}</div>
                         </div>
                     </div>
                     <div className="panel panel-default">
@@ -163,9 +176,23 @@ const mapStateToProps = (state) => {
     }
 };
 
-const mapDispatchToProps = (dispatch) => ({
-    onSubmitResponse: (response) => {
-        dispatch(setDonationResult(response))
+
+function set_initial_charity(dispatch) {
+    let apiService = new APIService();
+    return apiService.getCharities().then((charities) => {
+        let charity_filtered = charities.filter(function(x) {if (x.slug_id === window.presetCharity){return x}});
+        if (charity_filtered.length === 1){
+            dispatch(setCharity(charity_filtered[0]));
+        }
+    })
+}
+
+const mapDispatchToProps = (dispatch) => {
+    let charities = set_initial_charity(dispatch);
+    return {
+        onSubmitResponse: (response) => {
+            dispatch(setDonationResult(response))
+        }
     }
-});
+};
 export default connect(mapStateToProps, mapDispatchToProps)(DonationForm);
