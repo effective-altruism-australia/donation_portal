@@ -3,7 +3,6 @@ import {Radio, RadioGroup} from "react-radio-group";
 import React, {Component} from "react";
 import {Field, formValueSelector} from 'redux-form'
 import classNames from 'classnames';
-import APIService from "../../services/api";
 import {customCurrencyInput, customInput} from "../../components/custom-fields";
 import {minValue2, required} from "../../services/validation";
 import {getTotalDonation} from "../../services/utils";
@@ -12,22 +11,8 @@ class DonationAmount extends Component {
     constructor(props) {
         super(props);
         this.calculateTotal(props);
-
-        this.apiService = new APIService();
-        this.state = {
-            charities: []
-        };
-
-        this.getCharities();
     }
 
-    getCharities() {
-        this.apiService.getCharities().then((charities) => {
-            this.setState({
-                charities: charities
-            });
-        })
-    }
 
     componentWillReceiveProps(nextProps) {
         this.calculateTotal(nextProps);
@@ -42,15 +27,15 @@ class DonationAmount extends Component {
         const contributeHeading = !this.props.charity ?
             <div className="form-group" style={{marginLeft: '5px'}}>
                 <div className="checkbox col-sm-12">
-                        <label htmlFor="id_will_contribute">
-                            <Field id="id_will_contribute"
-                                   name="will_contribute"
-                                   component={customInput}
-                                   type="checkbox"/>
-                            I would also like to contribute to covering Effective Altruism Australia's running costs
-                        </label>
-                    </div>
-                </div>:
+                    <label htmlFor="id_will_contribute">
+                        <Field id="id_will_contribute"
+                               name="will_contribute"
+                               component={customInput}
+                               type="checkbox"/>
+                        I would also like to contribute to covering Effective Altruism Australia's running costs
+                    </label>
+                </div>
+            </div> :
             <div><br/><br/><br/></div>;
 
         const contributeSection = this.props.will_contribute ?
@@ -80,7 +65,7 @@ class DonationAmount extends Component {
                         </span>
                     </div>
                 </div>
-            </div>: '';
+            </div> : '';
 
 
         const amountRadio = (field) => (
@@ -121,7 +106,7 @@ class DonationAmount extends Component {
         const allocateSection = <div>
             <h3>How would you like to allocate your donation?</h3>
             {
-                this.state.charities.map(function (charity) {
+                this.props.charities.map(function (charity) {
                     return <div className="form-group" key={charity.slug_id}>
                         <label className="control-label col-sm-5">{charity.name}</label>
                         <div className="col-sm-7">
