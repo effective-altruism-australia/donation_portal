@@ -82,6 +82,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "tmp/static")
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'tmp/react')
 )
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
@@ -126,7 +127,7 @@ STATICFILES_DIRS = STATICFILES_DIRS + (
 
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'js/react',
+        'BUNDLE_DIR_NAME': '',
 
         'STATS_FILE': 'react/build/webpack-stats.{}.json'.format('dev' if DEBUG else 'prod'),
 
