@@ -122,7 +122,8 @@ TESTING_EMAIL = "@".join(['ben.toner', 'eaa.org.au'])
 DEBUG = True  # TODO: where should we set this default?
 
 STATICFILES_DIRS = STATICFILES_DIRS + (
-    os.path.join(BASE_DIR, 'static', 'js', 'react'),
+    os.path.join(BASE_DIR, 'react', 'dist'),
+    os.path.join(BASE_DIR, 'react', 'public'),
 )
 
 WEBPACK_LOADER = {
