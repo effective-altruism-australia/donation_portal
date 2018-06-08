@@ -199,7 +199,7 @@ function set_initial_charity(dispatch) {
 }
 
 const mapDispatchToProps = (dispatch) => {
-    let charities = set_initial_charity(dispatch);
+    set_initial_charity(dispatch);
     return {
         onSubmitResponse: (response) => {
             dispatch(setDonationResult(response))
