@@ -5,6 +5,7 @@ import APIService from "../../services/api";
 import {Field} from 'redux-form'
 import {required} from "../../services/validation";
 
+import {customInput} from "../../components/custom-fields";
 
 export default class DonorDetails extends Component {
 
@@ -37,7 +38,7 @@ export default class DonorDetails extends Component {
                             name="name"
                             placeholder="Name"
                             type="text"
-                            component="input"
+                            component={customInput}
                             validate={[required]}
                         />
                     </div>
@@ -52,7 +53,7 @@ export default class DonorDetails extends Component {
                             placeholder="Email"
                             type="text"
                             maxLength="254"
-                            component="input"
+                            component={customInput}
                             validate={[required]}
 
                         />
@@ -60,7 +61,8 @@ export default class DonorDetails extends Component {
                 </div>
 
                 <div className="form-group">
-                    <label className="control-label col-sm-3 long-control-label" htmlFor="id_how_did_you_hear_about_us_db">
+                    <label className="control-label col-sm-3 long-control-label"
+                           htmlFor="id_how_did_you_hear_about_us_db">
                         How did you hear about us?</label>
                     <div className="col-sm-9">
                         <Field
@@ -68,15 +70,15 @@ export default class DonorDetails extends Component {
                             name="how_did_hear"
                             component={(field) => (
                                 <Select
-                                        value={field.input.value}
-                                        onChange={field.input.onChange}
-                                        searchable={false}
-                                        options={[
-                                            {value:'', label: '---------'}
-                                        ].concat(this.state.sources)} clearable={false}>
+                                    value={field.input.value}
+                                    onChange={field.input.onChange}
+                                    searchable={false}
+                                    options={[
+                                        {value: '', label: '---------'}
+                                    ].concat(this.state.sources)} clearable={false}>
                                 </Select>
                             )}
-                            />
+                        />
 
 
                     </div>
@@ -91,7 +93,7 @@ export default class DonorDetails extends Component {
                                 placeholder="Email"
                                 type="checkbox"
                                 maxLength="254"
-                                component="input" />
+                                component="input"/>
 
                             Send me news and updates
                         </label>
