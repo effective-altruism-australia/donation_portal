@@ -152,8 +152,7 @@ DonationForm = createReduxForm(DonationForm);
 
 const mapStateToProps = (state) => {
     return {
-        // charity: state.charity.currentCharity,
-        charity: {slug_id: 'give_directly', name: 'blha'},
+        charity: state.charity.currentCharity,
         donation: getFormValues('donation')(state),
         initialValues: {
             payment: {
