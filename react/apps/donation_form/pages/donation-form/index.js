@@ -25,7 +25,8 @@ class DonationForm extends Component {
 
         this.apiService = new APIService();
         this.state = {
-            charities: []
+            charities: [],
+            submitting: false
         };
 
         this.getCharities();
@@ -80,6 +81,9 @@ class DonationForm extends Component {
             } else {
                 // TODO: display pin errors on the form
                 window.alert(response.messages[0].message);
+                donation_form.setState({
+                    submitting: false
+                });
             }
         }
     }
@@ -94,6 +98,9 @@ class DonationForm extends Component {
     }
 
     onSubmit() {
+        this.setState({
+            submitting: true
+        });
         let response_data = {
             charity: this.props.charity,
             donation: this.props.donation
@@ -150,7 +157,7 @@ class DonationForm extends Component {
                         <p className="help-text">Having a problem donating?
                             Please let us know at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a>.
                         </p>
-                        <DonationSubmit router={this.props.router} submitting={this.props.submitting}/>
+                        <DonationSubmit router={this.props.router} submitting={this.state.submitting}/>
                     </div>
                     <DonationFaq/>
                 </div>
@@ -180,8 +187,12 @@ const mapStateToProps = (state) => {
 function set_initial_charity(dispatch) {
     let apiService = new APIService();
     return apiService.getCharities().then((charities) => {
-        let charity_filtered = charities.filter(function(x) {if (x.slug_id === window.presetCharity){return x}});
-        if (charity_filtered.length === 1){
+        let charity_filtered = charities.filter(function (x) {
+            if (x.slug_id === window.presetCharity) {
+                return x
+            }
+        });
+        if (charity_filtered.length === 1) {
             dispatch(setCharity(charity_filtered[0]));
         }
     })
