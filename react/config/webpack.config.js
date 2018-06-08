@@ -33,7 +33,7 @@ module.exports = {
 
     output: {
         // The directory to place the built assets in.
-        path: path.resolve(__dirname, '../../static/js/react'),  // TODO: fix
+        path: path.resolve(__dirname, '../../tmp/react'),  // TODO: fix
         // The root from which content is served.
         publicPath: '/static/',
         // This is the JS bundle containing code for a particular app.
@@ -118,7 +118,7 @@ module.exports = {
 
     plugins: [
         // This keeps track of Webpack builds for Django's usage.
-        new BundleTracker({path: path.resolve(__dirname, '../build'), filename: 'webpack-stats.dev.json'}),
+        new BundleTracker({path: path.resolve(__dirname, '../../tmp/react'), filename: 'webpack-stats.dev.json'}),
 
         // This makes environment variables from `./env.js` available to the JS code, for example:
         // `if (process.env.NODE_ENV === 'development') { ... }`
