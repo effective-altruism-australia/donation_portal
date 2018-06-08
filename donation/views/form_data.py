@@ -15,8 +15,6 @@ class PartnerCharityView(View):
 
 class ReferralSourceView(View):
     def get(self, request):
-        referral_sources = ReferralSource.objects.filter(enabled=True).order_by('order').annotate(value=F('slug_id'),
-                                                                                                  label=F(
-                                                                                                      'reason')).values(
-            'value', 'label')
+        referral_sources = ReferralSource.objects.filter(
+            enabled=True).order_by('order').annotate(value=F('slug_id'), label=F('reason')).values('value', 'label')
         return JsonResponse(list(referral_sources), safe=False)

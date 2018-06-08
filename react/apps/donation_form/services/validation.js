@@ -1,3 +1,5 @@
+let valid = require('card-validator');
+console.log(valid);
 export const required = value => (value ? undefined : 'The field is required');
 export const maxLength = max => value =>
     value && value.length > max ? `Must be ${max} characters or less` : undefined;
@@ -29,3 +31,20 @@ export const phoneNumber = value =>
     value && !/^(0|[1-9][0-9]{9})$/i.test(value)
         ? 'Invalid phone number, must be 10 digits'
         : undefined;
+export const expirationDate = value =>
+    value && !valid.expirationDate(value).isValid
+        ? 'Invalid expiration date'
+        : undefined;
+export const cvv = value =>
+    value && !valid.cvv(value, 3).isValid // Set max length as 3, as we do not accept American Express
+        ? 'Invalid CVV'
+        : undefined;
+export function cardNumber(value) {
+    let validated = valid.number(value);
+    if (validated.isValid && validated.card.type === 'american-express'){
+        return 'Sorry, we do not accept American Express at this time'
+    }
+    return value && !validated.isValid
+        ? 'Invalid credit card number'
+        : undefined;
+}

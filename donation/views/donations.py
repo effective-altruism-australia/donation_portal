@@ -16,8 +16,8 @@ from rratelimit import Limiter
 from django.views.decorators.csrf import csrf_exempt
 
 from donation import emails
-from donation.forms import PledgeForm, PledgeComponentFormSet
-from donation.models import Receipt, PinTransaction, PaymentMethod
+from donation.forms import PledgeForm, PledgeComponentFormSet, PinTransactionForm
+from donation.models import Receipt, PinTransaction, PaymentMethod, Receipt
 from donation.tasks import send_bank_transfer_instructions_task
 from django.conf import settings
 
@@ -50,41 +50,66 @@ class PledgeViewNew(View):
     @xframe_options_exempt
     def get(self, request):
         charity = request.GET.get('charity')
-        return render(request, 'pledge_new.html', {'charity': charity})
+        pin_environment = settings.PIN_DEFAULT_ENVIRONMENT
+        pin_key = settings.PIN_ENVIRONMENTS[pin_environment].get('key')
+        return render(request, 'pledge_new.html', {'charity': charity, 'pin_key': pin_key,
+                                                   'pin_environment': pin_environment})
 
     @xframe_options_exempt
     def post(self, request):
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        print body
-        form = PledgeForm(body)
-        formset = PledgeComponentFormSet(body)
+        body = json.loads(request.body.decode('utf-8'))
 
-        if not (form.is_valid() and formset.is_valid()):
+        pledge_form = PledgeForm(body)
+        component_formset = PledgeComponentFormSet(body)
+
+        if not (pledge_form.is_valid() and component_formset.is_valid()):
             return JsonResponse({
                 'error': 'form-error',
-                'form_errors': [form.errors] + formset.errors
+                'form_errors': [pledge_form.errors] + component_formset.errors
             }, status=400)
 
         with django_transaction.atomic():
-            pledge = form.save()
-            for component in formset.forms:
+            pledge = pledge_form.save()
+            for component in component_formset.forms:
                 component.instance.pledge = pledge
-            formset.save()
+            component_formset.save()
 
         response_data = {}
 
         if pledge.payment_method == PaymentMethod.BANK:
             response_data['bank_reference'] = pledge.generate_reference()
             send_bank_transfer_instructions_task.delay(pledge.id)
+            return JsonResponse(response_data)
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
-            pass
-            # TODO: Handle credit card stuff
+            pin_data = body.get('pin_response')
+            pin_data['amount'] = pledge.amount_from_components
+            pin_data['pledge'] = pledge.id
+            pin_form = PinTransactionForm(pin_data)
+            if not pin_form.is_valid():
+                return JsonResponse({
+                    'error': 'form-error',
+                    'form_errors': pin_form.errors
+                }, status=400)
+
+            transaction = pin_form.save()
+            transaction.process_transaction()
+            if transaction.succeeded:
+                Receipt.objects.create_from_pin_transaction(transaction)
+                response_data['succeeded'] = True
+                receipt = transaction.receipt_set.first()
+                response_data['receipt_url'] = reverse('download-receipt',
+                                                       kwargs={'pk': receipt.pk, 'secret': receipt.secret})
+                return JsonResponse(response_data)
+            else:
+                return JsonResponse({
+                    'error': 'pin-error',
+                    'pin_response': transaction.pin_response,
+                    'pin_response_text': transaction.pin_response_text,
+                }, status=400)
+
         else:
             raise StandardError('We currently only support new donations via credit card or bank transfer.')
-
-        return JsonResponse(response_data)
 
 
 # TODO It's weird these are combined since one is JSON and one is not

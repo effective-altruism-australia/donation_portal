@@ -1,18 +1,17 @@
-import arrow
 import datetime
 import itertools
 import os
-import pdfkit
-from PyPDF2 import PdfFileReader, PdfFileMerger
 import shutil
 import tempfile
 
-from django.template.loader import render_to_string
-from django.core.mail import EmailMessage, get_connection
+import arrow
+import pdfkit
+from PyPDF2 import PdfFileReader, PdfFileMerger
 from django.conf import settings
-from django.utils import timezone
+from django.core.mail import EmailMessage, get_connection
 from django.db.models.functions import Lower
-
+from django.template.loader import render_to_string
+from django.utils import timezone
 from raven.contrib.django.raven_compat.models import client
 
 from models import Donation, EOFYReceipt
@@ -140,4 +139,3 @@ def send_eofy_receipts(test=True):
             shutil.rmtree(tempdir)
         if not test:
             eofy_receipt.save()
-

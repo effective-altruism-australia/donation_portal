@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Field, reduxForm } from 'redux-form'
-import {required, minValue2} from "../../services/validation";
+import {required, minValue2, cardNumber, expirationDate, cvv} from "../../services/validation";
 import {customInput, cardNumberInput} from "../../components/custom-fields";
 
 class CardPaymentDetails extends Component {
@@ -38,7 +38,7 @@ class CardPaymentDetails extends Component {
                                    component={cardNumberInput}
                                    type="tel" placeholder="Card Number"
                                    normalize={normalizeCardNumber}
-                                   validate={[required]}
+                                   validate={[cardNumber, required]}
                             />
                         </div>
                     </div>
@@ -54,7 +54,7 @@ class CardPaymentDetails extends Component {
                                        component={customInput}
                                        type="tel" placeholder="MM / YY"
                                        normalize={normalizeExpiry}
-                                       validate={[required]}
+                                       validate={[expirationDate, required]}
                                 />
                             </div>
                         </div>
@@ -65,7 +65,7 @@ class CardPaymentDetails extends Component {
                                        name="payment.cardCVC"
                                        component={customInput}
                                        type="text" placeholder="CVC"
-                                       validate={[required]} />
+                                       validate={[cvv, required]} />
                             </div>
                         </div>
                     </div>
@@ -89,8 +89,7 @@ class CardPaymentDetails extends Component {
                                    name="payment.cardAddress2"
                                    component={customInput}
                                    type="text"
-                                   placeholder="Address Line 2"
-                                   validate={[required]}/>
+                                   placeholder="Address Line 2"/>
                         </div>
                     </div>
                     <div className="multi-form-group">
@@ -135,7 +134,7 @@ class CardPaymentDetails extends Component {
                                    name="payment.cardCountry"
                                    component={customInput}
                                    type="text"
-                                   placeholder="Postal Code"
+                                   placeholder="Country"
                                    required=""
                                    aria-required="true"
                                    validate={[required]}/>
