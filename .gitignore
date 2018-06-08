@@ -56,3 +56,6 @@ venv/
 
 # Uploaded/downloaded files; receipts
 /media
+
+*.pem
+*.crt

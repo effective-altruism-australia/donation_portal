@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "card-validator": "^5.0.0",
     "classnames": "^2.2.5",
     "e": "0.0.4",
     "moment": "^2.22.1",

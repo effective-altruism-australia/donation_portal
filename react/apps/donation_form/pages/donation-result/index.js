@@ -10,11 +10,10 @@ class DonationResult extends Component {
 
     render() {
         let total = getTotalDonation(this.props.form.mode, this.props.form.amount, this.props.form.contribute);
-
         return (
             <div>
                 {
-                    this.props.form.method === 'bank-transfer' &&
+                    this.props.form.payment.method === 'credit-card' &&
                     (<div className="payment_option">
                         <h2>Thank you {this.props.form.name}!</h2>
                         <p>
@@ -36,7 +35,7 @@ class DonationResult extends Component {
                     </div>)
                 }
                 {
-                    this.props.form.method !== 'bank-transfer' &&
+                    this.props.form.payment.method === 'bank-transfer' &&
                     <div className="payment_option">
                         <h2>Thank you {this.props.form.name}!</h2>
                         <p>

@@ -12,6 +12,9 @@ import DonationAsGift from "./donation-as-gift";
 import APIService from '../../services/api';
 import {setDonationResult} from "../../services/reduxStorage/actions";
 
+let valid = require('card-validator');
+
+
 class DonationForm extends Component {
     constructor(props) {
         super(props);
@@ -27,16 +30,64 @@ class DonationForm extends Component {
         return false;
     }
 
-    onSubmit(val) {
-        // TODO: send http
+
+    callPinAPI(response_data, callBack) {
+        let payment = this.props.donation.payment;
+        let expiry = valid.expirationDate(payment.cardExpiry);
+        let donation_form = this;
+
+        // Fetch details required for the createToken call to Pin
+        let card = {
+            // Removing spaces from cc-number is necessary for the Pin test cards to work
+            number: payment.cardNumber.replace(/\s/g, ''),
+            name: payment.cardName,
+            expiry_month: expiry.month,
+            expiry_year: expiry.year,
+            cvc: payment.cardCVC,
+            address_line1: payment.cardAddress,
+            address_line2: payment.cardAddress2,
+            address_city: payment.cardCity,
+            address_state: payment.cardState,
+            address_postcode: payment.cardPostcode,
+            address_country: payment.cardCountry
+        };
+
+        window.Pin.createToken(card, handlePinResponse);
+
+        function handlePinResponse(response) {
+            console.log(response);
+            if (response.response) {
+                // Add the card token and ip address of the customer to the form
+                // You will need to post these to Pin when creating the charge.
+                response_data.pin_response = response.response;
+                response_data.pin_response.ip_address = response.ip_address;
+                callBack(response_data, donation_form)
+            } else {
+                // TODO: display pin errors on the form
+                window.alert(response.messages[0].message);
+            }
+        }
+    }
+
+    submitForm(response_data, donation_form) {
         let service = new APIService();
-        service.submit({
+        console.log(response_data);
+        service.submit(response_data).then((res) => {
+            donation_form.props.onSubmitResponse(res);
+            donation_form.props.router.pushPage('donationResult');
+        });
+    }
+
+    onSubmit() {
+        let response_data = {
             charity: this.props.charity,
             donation: this.props.donation
-        }).then((res) => {
-            this.props.onSubmitResponse(res);
-            this.props.router.pushPage('donationResult');
-        });
+        };
+        if (this.props.donation.payment.method === 'credit-card') {
+            this.callPinAPI(response_data, this.submitForm);
+        } else {
+            this.submitForm(response_data, this)
+        }
     }
 
     render() {
@@ -51,10 +102,8 @@ class DonationForm extends Component {
                 <DonationModeOptions/>
             </div>
         );
-
-
         return (
-            <form onSubmit={this.handleSubmit(this.onSubmit.bind(this))}>
+            <form onSubmit={this.handleSubmit(this.onSubmit)}>
                 <div className="donation-form">
                     {donationMode}
 
@@ -76,6 +125,7 @@ class DonationForm extends Component {
                         <div className="panel-body form-horizontal">
                             <legend>Payment Details</legend>
                             <PaymentMethod change={this.props.change}/>
+                            <div className="error-text">{this.props.pin_errors}</div>
                         </div>
                     </div>
                     <div className="panel panel-default">
@@ -102,7 +152,8 @@ DonationForm = createReduxForm(DonationForm);
 
 const mapStateToProps = (state) => {
     return {
-        charity: state.charity.currentCharity,
+        // charity: state.charity.currentCharity,
+        charity: {slug_id: 'give_directly', name: 'blha'},
         donation: getFormValues('donation')(state),
         initialValues: {
             payment: {

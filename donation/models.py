@@ -251,11 +251,11 @@ class BankTransaction(models.Model):
 class PinTransaction(BasePinTransaction):
     pledge = models.ForeignKey(Pledge, on_delete=models.CASCADE)
 
-    def save(self, *args, **kwargs):
-        super(PinTransaction, self).save(*args, **kwargs)
-        if self.succeeded:
-            # Let's see how it goes doing this not in celery for now.
-            Receipt.objects.create_from_pin_transaction(self)
+    # def save(self, *args, **kwargs):
+    #     super(PinTransaction, self).save(*args, **kwargs)
+    #     if self.succeeded:
+    #         # Let's see how it goes doing this not in celery for now.
+    #         Receipt.objects.create_from_pin_transaction(self)
 
 
 class Donation(models.Model):

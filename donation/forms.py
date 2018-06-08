@@ -54,7 +54,7 @@ class PledgeForm(forms.ModelForm):
                   'payment_method', 'recurring', 'recurring_frequency']
 
     how_did_you_hear_about_us_db = forms.ModelChoiceField(queryset=ReferralSource.objects.all(),
-                                                          to_field_name='slug_id')
+                                                          to_field_name='slug_id', required=False)
     payment_method = PaymentMethodField()
     recurring_frequency = RecurringFrequencyField()
 
@@ -76,7 +76,10 @@ class PledgeComponentForm(forms.ModelForm):
 PledgeComponentFormSet = forms.modelformset_factory(PledgeComponent, form=PledgeComponentForm,
                                                     fields=('pledge', 'partner_charity', 'amount'))
 
-# class PinTransactionForm(forms.ModelForm):
-#     class Meta:
-#         model = PinTransaction
-#         fields = '__all__'
+
+class PinTransactionForm(forms.ModelForm):
+    class Meta:
+        model = PinTransaction
+        fields = '__all__'
+
+    date = forms.DateTimeField(required=False)  # Allow the pin save method to complete this field for us

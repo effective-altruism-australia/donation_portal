@@ -97,7 +97,8 @@ export class Main extends Component {
         let pageId = this.state.pageQueue[this.state.pageQueue.length - 1];
         let PageComponent = this.pages[pageId].component;
         let step = this.pages[pageId].step;
-        let pageTitle = step !== 3 ? this.pages[pageId].title : this.props.method === 'credit-card' ? 'Complete payment' : 'Success';
+        console.log(this);
+        let pageTitle = step !== 3 ? this.pages[pageId].title : this.props.method === 'credit-card' ? 'Success' : 'Complete payment';
 
         return (
             <div className="container">
