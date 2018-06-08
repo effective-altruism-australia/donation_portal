@@ -52,7 +52,7 @@ class PledgeViewNew(View):
         charity = request.GET.get('charity')
         pin_environment = settings.PIN_DEFAULT_ENVIRONMENT
         pin_key = settings.PIN_ENVIRONMENTS[pin_environment].get('key')
-        return render(request, 'pledge_new.html', {'charity': charity, 'pin_key': pin_key,
+        return render(request, 'donation_form.html', {'charity': charity, 'pin_key': pin_key,
                                                    'pin_environment': pin_environment})
 
     @xframe_options_exempt
