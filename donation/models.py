@@ -21,6 +21,7 @@ class PartnerCharity(models.Model):
     email = models.EmailField(help_text="Used to cc the charity on receipts")
     xero_account_name = models.TextField(help_text="Exact text of incoming donation account in xero")
     active = models.BooleanField(default=True)
+    thumbnail = models.CharField(blank=True, null=True, max_length=100)
 
     order = models.IntegerField(null=True)
 
