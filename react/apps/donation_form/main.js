@@ -13,23 +13,18 @@ export class Main extends Component {
     constructor(props) {
         super(props);
         this.pages = {
-            "charityList": {
-                title: "TMP",
-                step: 1,
-                component: CharityList
-            },
             "paymentForm": {
                 title: "Make a Donation",
-                step: 2,
+                step: 1,
                 component: DonationForm
             },
             "paymentAdvice": {
                 title: "Make a Donation",
-                step: 2,
+                step: 1,
                 component: DonationAdvice
             },
             "donationResult": {
-                step: 3,
+                step: 2,
                 component: DonationResult
             }
         };
@@ -88,7 +83,7 @@ export class Main extends Component {
     getInitialState() {
         setCharity({'slug_id': window.presetCharity});
         return {
-            'pageQueue': ['charityList', 'paymentForm'] // TODO: remove charity list
+            'pageQueue': ['paymentForm'] // TODO: remove charity list
         }
     }
 
@@ -97,25 +92,12 @@ export class Main extends Component {
         let pageId = this.state.pageQueue[this.state.pageQueue.length - 1];
         let PageComponent = this.pages[pageId].component;
         let step = this.pages[pageId].step;
-        console.log(this);
         let pageTitle = step !== 3 ? this.pages[pageId].title : this.props.method === 'credit-card' ? 'Success' : 'Complete payment';
 
         return (
             <div className="container">
                 <div className="donation-page-header">
                     <h1 className="page-title">{pageTitle}</h1>
-                    {step !== 3 &&
-                    <div className="donation-progress">
-                        <div className={classNames("progress-step", {
-                            "current-step": step === 1,
-                            "clickable": step !== 1
-                        })}
-                             onClick={this.handleClickStep}>1
-                        </div>
-                        <div className={classNames("progress-step", {"current-step": step === 2})}>2</div>
-                    </div>
-                    }
-
                 </div>
                 <PageComponent router={this}/>
             </div>

@@ -27,7 +27,6 @@ export default class APIService {
         pledge_clean.email = pledge_raw.email;
 
         if (pledge_raw.mode === 'auto') {
-            console.log('hi');
             let amount = null;
             if (pledge_raw.amount.preset === 'other') {
                 amount = pledge_raw.amount.value;

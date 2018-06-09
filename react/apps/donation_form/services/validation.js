@@ -1,5 +1,4 @@
 let valid = require('card-validator');
-console.log(valid);
 export const required = value => (value ? undefined : 'The field is required');
 export const maxLength = max => value =>
     value && value.length > max ? `Must be ${max} characters or less` : undefined;
