@@ -80,10 +80,6 @@ class Pledge(models.Model):
     completed_time = models.DateTimeField()
     ip = models.GenericIPAddressField(null=True)
     reference = models.TextField(blank=True)
-    # TODO: Remove, this is now captured by PledgeComponent
-    recipient_org = models.ForeignKey(PartnerCharity, null=True)
-    # TODO: Consider deleting and using the amount_from_components property
-    amount = models.DecimalField(decimal_places=2, max_digits=12, null=True) # TODO: remove?
     first_name = models.CharField(max_length=1024, blank=True, verbose_name='name')  # TODO safely decrease length
     last_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
     email = models.EmailField()
@@ -105,7 +101,7 @@ class Pledge(models.Model):
     drupal_preferred_donation_method = models.TextField(blank=True, editable=False)
 
     @property
-    def amount_from_components(self):
+    def amount(self):
         return self.components.aggregate(total=models.Sum('amount'))['total']
 
     @property
@@ -118,9 +114,6 @@ class Pledge(models.Model):
             return '{} and {}'.format(', '.join(partner_names[:-1]), partner_names[-1])
         else:
             raise Exception('Pledge does not have any associated components')
-
-    def check_pledge_component_amounts_reconcile(self):
-        return self.amount == self.amount_from_components
 
     def generate_reference(self):
         if self.reference:  # for safety, don't overwrite
@@ -153,7 +146,7 @@ class PledgeComponent(models.Model):
 
     @property
     def proportion(self):
-        return self.amount / self.pledge.amount_from_components
+        return self.amount / self.pledge.amount
 
     def __unicode__(self):
         return "${0.amount} to {0.partner_charity}".format(self)

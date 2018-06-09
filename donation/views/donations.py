@@ -83,7 +83,7 @@ class PledgeViewNew(View):
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
             pin_data = body.get('pin_response')
-            pin_data['amount'] = pledge.amount_from_components
+            pin_data['amount'] = pledge.amount
             pin_data['pledge'] = pledge.id
             pin_form = PinTransactionForm(pin_data)
             if not pin_form.is_valid():
