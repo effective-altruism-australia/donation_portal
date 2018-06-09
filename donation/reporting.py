@@ -79,7 +79,7 @@ def send_partner_charity_reports(test=True):
                 subject='Effective Altruism Australia donation report',
                 body=body,
                 to=to if not test else [settings.TESTING_EMAIL],
-                cc=['info@eaa.org.au', settings.TESTING_EMAIL] if not test else [settings.TESTING_EMAIL],
+                cc=[settings.EAA_INFO_EMAIL, settings.TESTING_EMAIL] if not test else [settings.TESTING_EMAIL],
                 # There is a filter in info@eaa.org.au
                 #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
                 # that automatically archives messages sent to info+receipt and adds the label 'receipts'

@@ -20,7 +20,7 @@ def send_bank_transfer_instructions(pledge):
             #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
             # that automatically archives messages sent to info+receipt and adds the label 'receipts'
             # bcc=["info+receipt@eaa.org.au", ],
-            cc=["info@eaa.org.au"],
+            cc=[settings.EAA_INFO_EMAIL],
             from_email=settings.POSTMARK_SENDER,
         )
         message.attach_alternative(body_html, "text/html")

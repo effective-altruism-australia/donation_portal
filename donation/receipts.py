@@ -53,7 +53,7 @@ def send_receipt(receipt):
             #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
             # that automatically archives messages sent to info+receipt and adds the label 'receipts'
             # bcc=["info+receipt@eaa.org.au", ],
-            bcc=["info+receipts@eaa.org.au"],
+            bcc=[settings.EAA_INFO_EMAIL],
             from_email=settings.POSTMARK_SENDER,
         )
         message.attach_file(receipt.pdf_receipt_location, mimetype='application/pdf')
