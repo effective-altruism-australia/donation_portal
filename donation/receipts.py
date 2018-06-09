@@ -48,12 +48,13 @@ def send_receipt(receipt):
             subject='Receipt for your donation to Effective Altruism Australia',
             body=body,
             to=[receipt.pledge.email],
-            cc=[receipt.pledge.recipient_org.email],
+            # cc=[receipt.pledge.recipient_org.email], TODO: Is it okay
             # There is a filter in info@eaa.org.au
             #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
             # that automatically archives messages sent to info+receipt and adds the label 'receipts'
             # bcc=["info+receipt@eaa.org.au", ],
-            bcc=[settings.EAA_INFO_EMAIL],
+            bcc=[settings.
+                     EAA_INFO_EMAIL],
             from_email=settings.POSTMARK_SENDER,
         )
         message.attach_file(receipt.pdf_receipt_location, mimetype='application/pdf')
