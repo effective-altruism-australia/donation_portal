@@ -2,10 +2,7 @@ import React from "react";
 
 export default class APIService {
     getCharities() {
-        console.log(1);
-
         return fetch('/partner_charities').then(function (response) {
-            console.log(2);
             return response.json();
         });
     }
