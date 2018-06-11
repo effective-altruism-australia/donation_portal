@@ -123,7 +123,7 @@ EAA_INFO_EMAIL = 'info@eaa.org.au'
 DEBUG = True  # TODO: where should we set this default?
 
 STATICFILES_DIRS = STATICFILES_DIRS + (
-    os.path.join(BASE_DIR, 'react', 'dist'),
+    os.path.join(BASE_DIR, 'react', 'build', 'bundle'),
     os.path.join(BASE_DIR, 'react', 'public'),
 )
 
