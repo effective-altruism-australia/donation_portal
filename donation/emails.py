@@ -15,7 +15,6 @@ def send_bank_transfer_instructions(pledge):
             subject='Instructions to complete your donation',
             body=body,
             to=[pledge.email],
-            # cc=[self.pledge.recipient_org.email],
             # There is a filter in info@eaa.org.au
             #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
             # that automatically archives messages sent to info+receipt and adds the label 'receipts'
