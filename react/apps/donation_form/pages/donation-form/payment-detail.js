@@ -14,13 +14,11 @@ class PaymentDetail extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.frequency === 'monthly' && nextProps.method === 'credit-card') {
-            console.log(nextProps);
             nextProps.change('payment.method', 'bank-transfer');
         }
     }
 
     render() {
-        console.log(this);
         const detailSection = (this.props.method === 'credit-card') ?
             <CardPaymentDetails/>
             :

@@ -71,7 +71,6 @@ class DonationForm extends Component {
         window.Pin.createToken(card, handlePinResponse);
 
         function handlePinResponse(response) {
-            console.log(response);
             if (response.response) {
                 // Add the card token and ip address of the customer to the form
                 // You will need to post these to Pin when creating the charge.
