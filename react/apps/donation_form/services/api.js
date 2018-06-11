@@ -100,7 +100,7 @@ export default class APIService {
             pledge_clean.pin_response = pin_clean;
         }
 
-        return fetch('/pledge_new/', {
+        return fetch('/pledge/', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
