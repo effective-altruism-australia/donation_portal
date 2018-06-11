@@ -14,8 +14,6 @@ export default class APIService {
     }
 
     submit(data) {
-        console.log(data);
-
         let pledge_raw = data.donation;
         let pledge_clean = {};
 
@@ -101,8 +99,6 @@ export default class APIService {
 
             pledge_clean.pin_response = pin_clean;
         }
-        console.log(pledge_clean);
-
 
         return fetch('/pledge_new/', {
             method: 'POST',
