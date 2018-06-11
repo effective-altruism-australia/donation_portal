@@ -25,12 +25,6 @@ class ReceiptManager(models.Manager):
                            pledge=pin_transaction.pledge,
                            email=pin_transaction.pledge.email)
 
-    def create(self, *args, **kwargs):
-        receipt = super(ReceiptManager, self).create(*args, **kwargs)
-        from receipts import send_receipt
-        send_receipt(receipt)
-        return receipt
-
 
 class Receipt(models.Model):
     objects = ReceiptManager()
