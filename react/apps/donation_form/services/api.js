@@ -58,6 +58,14 @@ export default class APIService {
         pledge_clean.how_did_you_hear_about_us_db = pledge_raw.how_did_hear ?
             pledge_raw.how_did_hear.value : undefined;
 
+        pledge_clean.is_gift = pledge_raw.is_gift;
+        if (pledge_clean.is_gift){
+            pledge_clean.gift_recipient_name = pledge_raw.gift.recipient_name;
+            pledge_clean.gift_recipient_email = pledge_raw.gift.recipient_email;
+            pledge_clean.gift_personal_message = pledge_raw.gift.personal_message;
+        }
+
+
         pledge_clean['form-TOTAL_FORMS'] = pledge_raw.components.length;
         pledge_clean['form-INITIAL_FORMS'] = pledge_raw.components.length;
 

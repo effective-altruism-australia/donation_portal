@@ -51,7 +51,8 @@ class PledgeForm(forms.ModelForm):
     class Meta:
         model = Pledge
         fields = ['first_name', 'last_name', 'email', 'how_did_you_hear_about_us_db', 'subscribe_to_updates',
-                  'payment_method', 'recurring', 'recurring_frequency']
+                  'payment_method', 'recurring', 'recurring_frequency', 'is_gift', 'gift_recipient_name',
+                  'gift_recipient_email', 'gift_personal_message']
 
     how_did_you_hear_about_us_db = forms.ModelChoiceField(queryset=ReferralSource.objects.all(),
                                                           to_field_name='slug_id', required=False)

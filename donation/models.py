@@ -87,9 +87,16 @@ class Pledge(models.Model):
     payment_method = EnumIntegerField(PaymentMethod)
     recurring = models.BooleanField(default=False)
     recurring_frequency = EnumIntegerField(RecurringFrequency, blank=True, null=True)
-    publish_donation = models.BooleanField(default=False)
+    publish_donation = models.BooleanField(default=False)  # TODO remove?
     how_did_you_hear_about_us_db = models.ForeignKey(ReferralSource, blank=True, null=True, on_delete=models.PROTECT,
                                                      verbose_name='How did you hear about us?')
+
+    is_gift = models.BooleanField(default=False)
+    gift_recipient_name = models.CharField(max_length=100, blank=True, null=True)
+    gift_recipient_email = models.EmailField(blank=True, null=True)
+    gift_personal_message = models.TextField(blank=True, null=True)
+    give_message_sent = models.BooleanField(default=False)
+
     # TODO rename these historical_drupal_share_...
     share_with_givewell = models.BooleanField(default=False)
     share_with_gwwc = models.BooleanField(default=False)
