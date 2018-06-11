@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from donation.views.accounting import accounting_reconciliation, donation_counter
-from donation.views.donations import PledgeView, download_receipt
+from donation.views.pledge import PledgeView, download_receipt
 from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
 from donation.views.form_data import PartnerCharityView, ReferralSourceView
 

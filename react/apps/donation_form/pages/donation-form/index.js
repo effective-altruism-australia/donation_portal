@@ -79,8 +79,9 @@ class DonationForm extends Component {
                 response_data.pin_response.ip_address = response.ip_address;
                 callBack(response_data, donation_form)
             } else {
-                // TODO: display pin errors on the form
-                window.alert(response.messages[0].message);
+                this.setState({
+                    error_message: response.messages[0].message
+                });
                 donation_form.setState({
                     submitting: false
                 });
@@ -90,10 +91,17 @@ class DonationForm extends Component {
 
     submitForm(response_data, donation_form) {
         let service = new APIService();
-        console.log(response_data);
         service.submit(response_data).then((res) => {
-            donation_form.props.onSubmitResponse(res);
-            donation_form.props.router.pushPage('donationResult');
+
+            if (res.error_message) {
+                donation_form.setState({
+                    error_message: res.error_message,
+                    submitting: false
+                });
+            } else {
+                donation_form.props.onSubmitResponse(res);
+                donation_form.props.router.pushPage('donationResult');
+            }
         });
     }
 
@@ -148,7 +156,7 @@ class DonationForm extends Component {
                     <div className="panel panel-default form-container details-section payment-details-section">
                         <div className="panel-body form-horizontal">
                             <legend>Payment Details</legend>
-                            <PaymentMethod change={this.props.change}/>
+                            <PaymentMethod change={this.props.change} error_message={this.state.error_message}/>
                         </div>
                     </div>
                     <div className="panel panel-default">
