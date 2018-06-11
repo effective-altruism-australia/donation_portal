@@ -1,0 +1,11 @@
+{{ pledge.gift_personal_message }}
+
+Dear {{ pledge.gift_recipient_name }},
+
+{{ pledge.first_name }} {{ pledge.last_name }} has made a donation of ${{ pledge.amount }} on your behalf to Effective Altruism Australia, designated for {{ pledge.partner_charity_str }}.
+
+For more information please see https://effectivealtruism.org.au/.
+
+Best wishes,
+
+Effective Altruism Australia

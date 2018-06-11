@@ -28,7 +28,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'pinpayments',
     'reversion',
-    'donation',
+    'donation.apps.DonationConfig',
     'paypal.standard.ipn',
     'webpack_loader',
 )
