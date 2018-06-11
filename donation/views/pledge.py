@@ -54,15 +54,6 @@ class PledgeView(View):
 
     @xframe_options_exempt
     def post(self, request):
-        ip = get_ip(request)
-        if not rate_limiter.checked_insert(ip):
-            # Pretend it's a PIN error to save us from handling it separately in the javascript.
-            return JsonResponse({
-                'error': 'pin-error',
-                'pin_response': "Our apologies: credit card donations are currently unavailable. " +
-                                "Please try again tomorrow or make a payment by bank transfer.",
-                'pin_response_text': '',
-            }, status=400)
 
         body = json.loads(request.body.decode('utf-8'))
         pledge_form = PledgeForm(body)
@@ -70,8 +61,7 @@ class PledgeView(View):
 
         if not (pledge_form.is_valid() and component_formset.is_valid()):
             return JsonResponse({
-                'error': 'form-error',
-                'form_errors': [pledge_form.errors] + component_formset.errors
+                'error_message': [pledge_form.errors] + component_formset.errors
             }, status=400)
 
         with django_transaction.atomic():
@@ -88,14 +78,20 @@ class PledgeView(View):
             return JsonResponse(response_data)
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
+            ip = get_ip(request)
+            if not rate_limiter.checked_insert(ip):
+                return JsonResponse({
+                    'error_message': "Our apologies: credit card donations are currently unavailable. "
+                                     "Please try again tomorrow or make a payment by bank transfer.",
+                }, status=400)
+
             pin_data = body.get('pin_response')
             pin_data['amount'] = pledge.amount
             pin_data['pledge'] = pledge.id
             pin_form = PinTransactionForm(pin_data)
             if not pin_form.is_valid():
                 return JsonResponse({
-                    'error': 'form-error',
-                    'form_errors': pin_form.errors
+                    'error_message': pin_form.errors
                 }, status=400)
 
             transaction = pin_form.save()
@@ -109,9 +105,7 @@ class PledgeView(View):
                 return JsonResponse(response_data)
             else:
                 return JsonResponse({
-                    'error': 'pin-error',
-                    'pin_response': transaction.pin_response,
-                    'pin_response_text': transaction.pin_response_text,
+                    'error_message': transaction.pin_response_text,
                 }, status=400)
 
         else:
