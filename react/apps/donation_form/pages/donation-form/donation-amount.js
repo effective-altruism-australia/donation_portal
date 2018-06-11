@@ -42,8 +42,7 @@ class DonationAmount extends Component {
             <div>
                 <div className="form-group">
                     <div className="col-sm-12">
-                        Thank you! These funds will help cover our administrative and operations costs,
-                        including web hosting, bank transfer fees and promoting the benefits of effective giving.
+                        Thank you! These funds will help cover our administrative and operations costs.
                         As we are not-for-profit organisation,
                         any excess donations will be granted to our partner charities.
                     </div>
