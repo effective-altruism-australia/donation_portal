@@ -13,7 +13,7 @@ class PartnerCharity(models.Model):
     active = models.BooleanField(default=True)
     thumbnail = models.CharField(blank=True, null=True, max_length=100)
 
-    order = models.IntegerField(null=True)
+    order = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
