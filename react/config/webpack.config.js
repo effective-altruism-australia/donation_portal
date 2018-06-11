@@ -33,7 +33,7 @@ module.exports = {
 
     output: {
         // The directory to place the built assets in.
-        path: path.resolve(__dirname, '../dist'),  // TODO: fix
+        path: path.resolve(__dirname, '../build/bundle'),
         // The root from which content is served.
         publicPath: '/static/',
         // This is the JS bundle containing code for a particular app.
