@@ -16,7 +16,7 @@ def create_partner_charity_slugs(apps, schema_editor):
         if partner_charity.name in mapping:
             slug, thumbnail = mapping[partner_charity.name]
             if partner_charity.slug_id is None:
-                partner_charity.slug_id, = slug
+                partner_charity.slug_id = slug
                 partner_charity.save()
             if partner_charity.thumbnail is None:
                 partner_charity.thumbnail = 'thumbnails/%s' % thumbnail
