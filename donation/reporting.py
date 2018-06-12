@@ -71,7 +71,7 @@ def send_partner_charity_reports(test=True):
             to = [PartnerCharity.objects.get(id=ids[0]).email]
             # SCI requests that the report get sent to a second address.
             # Special case this rather than come up with a general solution.
-            if partner == 'Schistosomiasis Control Initiative':
+            if partner == 'Schistosomiasis Control Initiative' and not settings.DEBUG:
                 # Obfuscate email since open source
                 to += ["@".join(['giftadmin', 'imperial.ac.uk'])]
             body = render_to_string('partner_report_message.txt', {'name': partner})
