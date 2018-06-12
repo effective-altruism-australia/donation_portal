@@ -1,4 +1,5 @@
 from .account import Account, XeroReconciledDate
+from .bank_transfer_instruction import BankTransferInstruction
 from .donation import Donation, DonationComponent
 from .partner_charity import PartnerCharity
 from .partner_charity_report import PartnerCharityReport

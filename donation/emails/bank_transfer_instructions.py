@@ -1,12 +1,22 @@
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
+from django.utils import timezone
 from raven.contrib.django.raven_compat.models import client
 
+from donation.models import BankTransferInstruction
 
-# TODO better tracking of these messages
+
 def send_bank_transfer_instructions(pledge):
+    bank_transfer_instruction, _ = BankTransferInstruction.objects.update_or_create(
+        pledge=pledge,
+        defaults={
+            'email': pledge.email
+        }
+    )
     try:
+        assert not bank_transfer_instruction.sent
+
         context = {'pledge': pledge}
         body = render_to_string('bank_transfer_instructions.txt', context)
         body_html = render_to_string('bank_transfer_instructions.html', context)
@@ -25,5 +35,10 @@ def send_bank_transfer_instructions(pledge):
         message.attach_alternative(body_html, "text/html")
         get_connection().send_messages([message])
 
+        bank_transfer_instruction.time_sent = timezone.now()
+
     except Exception as e:
+        bank_transfer_instruction.failed_message = e.message
         client.captureException()
+
+    bank_transfer_instruction.save()
