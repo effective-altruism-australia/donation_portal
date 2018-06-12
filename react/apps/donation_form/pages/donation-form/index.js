@@ -10,6 +10,7 @@ import DonationFaq from "./donation-faq";
 import DonationSubmit from "./donation-submit";
 import DonationAsGift from "./donation-as-gift";
 import APIService from '../../services/api';
+import InitialisePin from '../../services/eaa-pin';
 import {setCharity, setDonationResult} from "../../services/reduxStorage/actions";
 
 let valid = require('card-validator');
@@ -30,6 +31,7 @@ class DonationForm extends Component {
         };
 
         this.getCharities();
+        this.pin = InitialisePin();
     }
 
     getCharities() {
@@ -68,7 +70,7 @@ class DonationForm extends Component {
             address_country: payment.cardCountry
         };
 
-        window.Pin.createToken(card, handlePinResponse);
+        this.pin.createToken(card, handlePinResponse);
 
         function handlePinResponse(response) {
             if (response.response) {
