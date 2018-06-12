@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { Field, reduxForm } from 'redux-form'
-import {required, minValue2, cardNumber, expirationDate, cvv} from "../../services/validation";
-import {customInput, cardNumberInput} from "../../components/custom-fields";
+import React, {Component} from "react";
+import {Field} from 'redux-form'
+import {cardNumber, cvv, expirationDate, required} from "../../services/validation";
+import {cardNumberInput, customInput} from "../../components/custom-fields";
 
 class CardPaymentDetails extends Component {
     constructor(props) {
@@ -14,7 +14,21 @@ class CardPaymentDetails extends Component {
             return value.replace(/\s/g, '');
         };
         const normalizeExpiry = (value) => {
-            return value.replace(/[a-zA-Z ]/g, '');
+            return value.replace(
+                /^([1-9]\/|[2-9])$/g, '0$1 / ' // To handle 3/ > 03/
+            ).replace(
+                /^(0[1-9]{1}|1[0-2]{1})$/g, '$1 / ' // 11 > 11/
+            ).replace(
+                /^([0-1]{1})([3-9]{1})$/g, '0$1 / $2' // 13 > 01/3
+            ).replace(
+                /^(\d)\/(\d\d)$/g, '0$1 / $2' // To handle 1/11 > 01/11
+            ).replace(
+                /^(0?[1-9]{1}|1[0-2]{1})([0-9]{2})$/g, '$1 / $2' // 141 > 01/41
+            ).replace(
+                /^([0]{1,})\/|[0]{1,}$/g, '0' // To handle 0/ > 0 and 00 > 0
+            ).replace(
+                /\/\//g, '/' // Prevent entering more than 1 /
+            );
         };
 
         return (
@@ -65,7 +79,7 @@ class CardPaymentDetails extends Component {
                                        name="payment.cardCVC"
                                        component={customInput}
                                        type="text" placeholder="CVC"
-                                       validate={[cvv, required]} />
+                                       validate={[cvv, required]}/>
                             </div>
                         </div>
                     </div>
@@ -83,7 +97,8 @@ class CardPaymentDetails extends Component {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label className="control-label sr-only labels" hidden="" aria-hidden="true" htmlFor="address-line2">Billing Address line 2</label>
+                        <label className="control-label sr-only labels" hidden="" aria-hidden="true"
+                               htmlFor="address-line2">Billing Address line 2</label>
                         <div className="col-sm-9 col-sm-offset-3">
                             <Field className="form-control cc-form"
                                    name="payment.cardAddress2"
@@ -94,7 +109,8 @@ class CardPaymentDetails extends Component {
                     </div>
                     <div className="multi-form-group">
                         <div className="form-group col-sm-6">
-                            <label className="control-label labels col-sm-3 visible-xs" htmlFor="address-city">City</label>
+                            <label className="control-label labels col-sm-3 visible-xs"
+                                   htmlFor="address-city">City</label>
                             <div className="col-sm-3 col-sm-offset-3">
                                 <Field className="form-control cc-form"
                                        name="payment.cardCity"
@@ -105,7 +121,8 @@ class CardPaymentDetails extends Component {
                             </div>
                         </div>
                         <div className="form-group col-sm-3">
-                            <label className="control-label labels col-sm-3 visible-xs" htmlFor="address-state">State</label>
+                            <label className="control-label labels col-sm-3 visible-xs"
+                                   htmlFor="address-state">State</label>
                             <div className="col-sm-3">
                                 <Field className="form-control cc-form"
                                        name="payment.cardState"
@@ -113,10 +130,11 @@ class CardPaymentDetails extends Component {
                                        type="text"
                                        placeholder="State"
                                        validate={[required]}/>
-                             </div>
+                            </div>
                         </div>
                         <div className="form-group col-sm-3">
-                            <label className="control-label labels col-sm-3 visible-xs" htmlFor="address-postcode">Postcode</label>
+                            <label className="control-label labels col-sm-3 visible-xs"
+                                   htmlFor="address-postcode">Postcode</label>
                             <div className="col-sm-3">
                                 <Field className="form-control cc-form"
                                        name="payment.cardPostcode"
@@ -142,7 +160,8 @@ class CardPaymentDetails extends Component {
                     </div>
                 </fieldset>
             </div>
-        )}
+        )
+    }
 }
 
 export default CardPaymentDetails;
