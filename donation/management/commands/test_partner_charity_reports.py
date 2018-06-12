@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from donation.reporting import send_partner_charity_reports
+from donation.emails import send_partner_charity_reports
 
 
 class Command(BaseCommand):

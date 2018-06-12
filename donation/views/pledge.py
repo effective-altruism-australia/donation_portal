@@ -104,8 +104,9 @@ class PledgeView(View):
                                                        kwargs={'pk': receipt.pk, 'secret': receipt.secret})
                 return JsonResponse(response_data)
             else:
+                pin_repsonse_dict = json.loads(transaction.pin_response_text)
                 return JsonResponse({
-                    'error_message': transaction.pin_response_text,
+                    'error_message': pin_repsonse_dict['error_description'],
                 }, status=400)
 
         else:
