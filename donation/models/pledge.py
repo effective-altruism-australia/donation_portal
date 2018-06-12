@@ -58,7 +58,7 @@ class Pledge(models.Model):
     gift_recipient_name = models.CharField(max_length=100, blank=True, null=True)
     gift_recipient_email = models.EmailField(blank=True, null=True)
     gift_personal_message = models.TextField(blank=True, null=True)
-    give_message_sent = models.BooleanField(default=False)
+    gift_message_sent = models.BooleanField(default=False)
 
     # TODO rename these historical_drupal_share_...
     share_with_givewell = models.BooleanField(default=False)

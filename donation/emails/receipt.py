@@ -14,6 +14,7 @@ from .gift_notification import send_gift_notification
 
 @receiver(post_save, sender=Receipt)
 def send_receipt(sender, instance, created, **kwargs):
+    print 1, created
     if created:
         receipt = instance
         if receipt.sent:
