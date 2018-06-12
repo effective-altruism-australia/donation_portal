@@ -43,8 +43,8 @@ class Pledge(models.Model):
     completed_time = models.DateTimeField()
     ip = models.GenericIPAddressField(null=True)
     reference = models.TextField(blank=True)
-    first_name = models.CharField(max_length=1024, blank=True, verbose_name='name')  # TODO safely decrease length
-    last_name = models.CharField(max_length=1024, blank=True)  # TODO safely decrease length
+    first_name = models.CharField(max_length=100, blank=True, verbose_name='name')
+    last_name = models.CharField(max_length=100, blank=True)
     email = models.EmailField()
     subscribe_to_updates = models.BooleanField(default=False, verbose_name='Send me news and updates')
     payment_method = EnumIntegerField(PaymentMethod)

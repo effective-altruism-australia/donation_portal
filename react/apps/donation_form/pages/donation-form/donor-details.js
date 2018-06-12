@@ -3,7 +3,7 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import APIService from "../../services/api";
 import {Field} from 'redux-form'
-import {required} from "../../services/validation";
+import {required, maxLength100} from "../../services/validation";
 
 import {customInput} from "../../components/custom-fields";
 
@@ -39,7 +39,7 @@ export default class DonorDetails extends Component {
                             placeholder="Name"
                             type="text"
                             component={customInput}
-                            validate={[required]}
+                            validate={[required, maxLength100]}
                         />
                     </div>
                 </div>
