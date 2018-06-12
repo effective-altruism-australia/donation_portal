@@ -1,8 +1,7 @@
-import reporting
 from donation.models import Pledge
 from donation_portal.eaacelery import app
 from .eaaxero import import_bank_transactions, import_trial_balance as import_trial_balance_non_delayed
-from .emails import send_bank_transfer_instructions
+from .emails import send_bank_transfer_instructions, send_partner_charity_reports
 
 
 @app.task()
@@ -25,4 +24,4 @@ def import_trial_balance():
 
 @app.task()
 def send_partner_charity_reports():
-    reporting.send_partner_charity_reports(test=False)
+    send_partner_charity_reports(test=False)

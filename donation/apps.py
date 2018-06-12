@@ -5,4 +5,4 @@ class DonationConfig(AppConfig):
     name = 'donation'
 
     def ready(self):
-        from .receipts import send_receipt
+        from .emails import *  # Make celery disover these tasks
