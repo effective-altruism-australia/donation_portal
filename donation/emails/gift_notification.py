@@ -23,4 +23,5 @@ def send_gift_notification(pledge):
         pledge.gift_message_sent = True
         pledge.save()
     except Exception as e:
+        print e
         client.captureException()

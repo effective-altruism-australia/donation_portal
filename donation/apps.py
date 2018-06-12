@@ -5,4 +5,6 @@ class DonationConfig(AppConfig):
     name = 'donation'
 
     def ready(self):
-        from .emails import *  # Make celery disover these tasks
+        # Make celery disover these tasks
+        from .emails import *
+        from .tasks import *
