@@ -3,9 +3,14 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
 from raven.contrib.django.raven_compat.models import client
 
+from donation.models import Pledge
+from donation_portal.eaacelery import app
 
-def send_gift_notification(pledge):
+
+@app.task()
+def send_gift_notification(pledge_id):
     try:
+        pledge = Pledge.objects.get(id=pledge_id)
         assert pledge.is_gift, 'Expected the pledge to be marked as a gift'
         assert not pledge.gift_message_sent, 'Gift message has already been sent'
         context = {'pledge': pledge,
