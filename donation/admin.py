@@ -85,14 +85,9 @@ class PledgeFundsReceivedFilter(admin.SimpleListFilter):
 
 
 class PledgeComponentInline(admin.TabularInline):
-    readonly_fields = ('partner_charity', 'amount',)
-    fields = readonly_fields
+    fields = ('partner_charity', 'amount',)
     model = PledgeComponent
     extra = 0
-    can_delete = False
-
-    def has_add_permission(self, request):
-        return False
 
 
 class PledgeAdmin(VersionAdmin):
