@@ -39,10 +39,10 @@ def download_receipt(request, pk, secret):
     return response
 
 
-class PledgeViewNew(View):
+class PledgeView(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
-        return super(PledgeViewNew, self).dispatch(request, *args, **kwargs)
+        return super(PledgeView, self).dispatch(request, *args, **kwargs)
 
     @xframe_options_exempt
     def get(self, request):
@@ -54,7 +54,6 @@ class PledgeViewNew(View):
 
     @xframe_options_exempt
     def post(self, request):
-
         body = json.loads(request.body.decode('utf-8'))
         pledge_form = PledgeForm(body)
         component_formset = PledgeComponentFormSet(body)
@@ -113,7 +112,7 @@ class PledgeViewNew(View):
             raise StandardError('We currently only support new donations via credit card or bank transfer.')
 
 
-class PledgeView(View):
+class PledgeViewOld(View):
     @xframe_options_exempt
     def post(self, request):
         form = PledgeFormOld(request.POST)
