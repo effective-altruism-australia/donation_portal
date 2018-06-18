@@ -15,8 +15,8 @@ from ipware.ip import get_ip
 from redis import StrictRedis
 from rratelimit import Limiter
 
-from donation.forms import PledgeForm, PledgeComponentFormSet, PinTransactionForm
-from donation.models import PaymentMethod, Receipt
+from donation.forms import PledgeForm, PledgeComponentFormSet, PinTransactionForm, PledgeFormOld
+from donation.models import PaymentMethod, Receipt, PartnerCharity, PinTransaction, RecurringFrequency
 from donation.tasks import send_bank_transfer_instructions_task
 
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
@@ -39,10 +39,10 @@ def download_receipt(request, pk, secret):
     return response
 
 
-class PledgeView(View):
+class PledgeViewNew(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
-        return super(PledgeView, self).dispatch(request, *args, **kwargs)
+        return super(PledgeViewNew, self).dispatch(request, *args, **kwargs)
 
     @xframe_options_exempt
     def get(self, request):
@@ -111,3 +111,85 @@ class PledgeView(View):
 
         else:
             raise StandardError('We currently only support new donations via credit card or bank transfer.')
+
+
+class PledgeView(View):
+    @xframe_options_exempt
+    def post(self, request):
+        form = PledgeFormOld(request.POST)
+        print request.POST
+        amount = request.POST.get('amount')
+        partner_id = request.POST.get('recipient_org')
+        partner_slug = PartnerCharity.objects.get(id=partner_id).slug_id
+        components_data = {'form-TOTAL_FORMS': 1, 'form-INITIAL_FORMS': 1, 'form-0-id': None,
+                           'form-0-amount': amount, 'form-0-partner_charity': partner_slug}
+        component_formset = PledgeComponentFormSet(components_data)
+
+        if form.is_valid() and component_formset.is_valid():
+            pledge = form.save()
+            for component in component_formset.forms:
+                component.instance.pledge = pledge
+            component_formset.save()
+        else:
+            return JsonResponse({
+                'error': 'form-error',
+                'form_errors': form.errors
+            }, status=400)
+
+        pledge = form.instance
+        if pledge.recurring:
+            pledge.recurring_frequency = RecurringFrequency.MONTHLY
+            pledge.save()
+        payment_method = request.POST.get('payment_method')
+        response_data = {'payment_method': payment_method}
+
+        if int(payment_method) == 1:
+            # bank transaction
+            response_data['bank_reference'] = pledge.generate_reference()
+            send_bank_transfer_instructions_task.delay(pledge.id)
+            return JsonResponse(response_data)
+        elif int(payment_method) == 3:
+            # Rate limiting
+            ip = get_ip(request)
+            if not rate_limiter.checked_insert(ip):
+                # Pretend it's a PIN error to save us from handling it separately in the javascript.
+                return JsonResponse({
+                    'error': 'pin-error',
+                    'pin_response': "Our apologies: credit card donations are currently unavailable. " +
+                                    "Please try again tomorrow or make a payment by bank transfer.",
+                    'pin_response_text': '',
+                }, status=400)
+
+            transaction = PinTransaction()
+            transaction.card_token = request.POST.get('card_token')
+            transaction.ip_address = request.POST.get('ip_address')
+            transaction.amount = pledge.amount  # Amount in dollars. Define with your own business logic.
+            transaction.currency = 'AUD'  # Pin supports AUD and USD. Fees apply for currency conversion.
+            transaction.description = 'Donation to Effective Altruism Australia'  # Define with your own business logic
+            transaction.email_address = pledge.email
+            transaction.pledge = pledge
+            transaction.save()
+            transaction.process_transaction()  # Typically "Success" or an error message
+            if transaction.succeeded:
+                Receipt.objects.create_from_pin_transaction(transaction)
+                response_data['succeeded'] = True
+                receipt = transaction.receipt_set.first()
+                response_data['receipt_url'] = reverse('download-receipt',
+                                                       kwargs={'pk': receipt.pk, 'secret': receipt.secret})
+                return JsonResponse(response_data)
+            else:
+                return JsonResponse({
+                    'error': 'pin-error',
+                    'pin_response': transaction.pin_response,
+                    'pin_response_text': transaction.pin_response_text,
+                }, status=400)
+
+    @xframe_options_exempt
+    def get(self, request):
+
+        form = PledgeFormOld()
+
+        return render(request, 'pledge.html', {
+            'form': form,
+            'charity_database_ids': PartnerCharity.get_cached_database_ids(),
+        })

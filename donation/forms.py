@@ -3,7 +3,7 @@ from django import forms
 from django.forms.extras.widgets import SelectDateWidget
 from enumfields.fields import EnumChoiceField
 
-from donation.models import RecurringFrequency, Pledge, ReferralSource, PaymentMethod, PartnerCharity, PledgeComponent,\
+from donation.models import RecurringFrequency, Pledge, ReferralSource, PaymentMethod, PartnerCharity, PledgeComponent, \
     PinTransaction
 
 
@@ -84,3 +84,26 @@ class PinTransactionForm(forms.ModelForm):
         fields = '__all__'
 
     date = forms.DateTimeField(required=False)  # Allow the pin save method to complete this field for us
+
+
+class PledgeFormOld(forms.ModelForm):
+    class Meta:
+        model = Pledge
+        fields = ['first_name', 'email', 'how_did_you_hear_about_us_db', 'subscribe_to_updates',
+                  'payment_method', 'recurring']
+
+    class Media:
+        # Don't use Media as it's compatible with ManifestStaticFilesStorage on Django 1.8
+        # https://code.djangoproject.com/ticket/21221
+        pass
+
+    # These values control the donation amount buttons shown
+    donation_amounts_raw = (25, 50, 100, 250)
+    donation_amounts = [('$' + str(x), x) for x in donation_amounts_raw]
+
+    # The template will display labels for these fields
+    hide_labels = ['subscribe_to_updates', ]
+
+    def __init__(self, *args, **kwargs):
+        super(PledgeFormOld, self).__init__(*args, **kwargs)
+        self.referral_sources = ReferralSource.objects.filter(enabled=True).order_by('order')
