@@ -111,7 +111,7 @@ class Pledge(models.Model):
 
     def __unicode__(self):
         return "Pledge of ${0.amount} to {0.recipient_org} by {0.first_name} {0.last_name}, " \
-            "made on {1}. Reference {0.reference}".format(self, self.completed_time.date())
+            "made on {1}. Reference {0.reference}".format(self, timezone.localtime(self.completed_time).date())
 
 
 # It's possible that we get the reference wrong when a BankTransaction is imported, for example if the donor
