@@ -15,7 +15,7 @@ def send_gift_notification(pledge_id):
         assert not pledge.gift_message_sent, 'Gift message has already been sent'
         context = {'pledge': pledge,
                    'personal_message': 'A personal message from %s\n\n:%s' %
-                                       (pledge.first_name, pledge.gift_personal_message)}
+                                       (pledge.first_name, pledge.gift_personal_message or '')}
         body = render_to_string('gift_message.txt', context)
 
         message = EmailMultiAlternatives(
@@ -25,7 +25,7 @@ def send_gift_notification(pledge_id):
             cc=[settings.EAA_INFO_EMAIL],
             from_email=settings.POSTMARK_SENDER,
         )
-        get_connection().send_messages([message])
+        message.send()
 
         pledge.gift_message_sent = True
         pledge.save()

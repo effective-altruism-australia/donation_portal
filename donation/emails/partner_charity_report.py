@@ -1,14 +1,13 @@
-import arrow
 import datetime
 import os
 from collections import OrderedDict
 
+import arrow
 from django.conf import settings
+from django.core.mail import EmailMessage
 from django.db.models import Max, Q
 from django.template.loader import render_to_string
-from django.core.mail import EmailMessage, get_connection
 from django.utils import timezone
-
 from raven.contrib.django.raven_compat.models import client
 
 from donation.models import PartnerCharity, PartnerCharityReport, Donation
@@ -24,7 +23,8 @@ def send_partner_charity_reports(test=True):
     for partner, ids in partners.iteritems():
         # Start time is when we last reported
         last_report_datetime = PartnerCharityReport.objects.filter(partner__id=ids[0]
-                                        ).aggregate(Max('date'))['date__max'] or datetime.datetime(2016, 1, 1, 0, 0, 0)
+                                                                   ).aggregate(Max('date'))[
+                                   'date__max'] or datetime.datetime(2016, 1, 1, 0, 0, 0)
         start = arrow.get(last_report_datetime).datetime
         # End date is midnight yesterday (i.e. midnight between yesterday and today) UTC
         # It could be the current time too (or rather a minute ago, to avoid races).
@@ -47,17 +47,17 @@ def send_partner_charity_reports(test=True):
                                      components__pledge_component__partner_charity__id__in=ids).order_by('datetime'))])
 
         template = OrderedDict([
-                                   ('Date', 'datetime'),
-                                   ('Amount', 'components__amount'),
-                                   ('Fees', 'components__fees'),
-                                   ('EAA Reference', 'reference'),
-                                   ('First Name', 'pledge__first_name'),
-                                   ('Last Name', 'pledge__last_name'),
-                                   ('Email', 'pledge__email'),
-                                   ('Payment method', 'payment_method'),
-                                   ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
-                                   ('Designation', 'components__pledge_component__partner_charity__name')
-                               ])
+            ('Date', 'datetime'),
+            ('Amount', 'components__amount'),
+            ('Fees', 'components__fees'),
+            ('EAA Reference', 'reference'),
+            ('First Name', 'pledge__first_name'),
+            ('Last Name', 'pledge__last_name'),
+            ('Email', 'pledge__email'),
+            ('Payment method', 'payment_method'),
+            ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
+            ('Designation', 'components__pledge_component__partner_charity__name')
+        ])
 
         filename = 'EAA donation report - {0} - {1}.xlsx'.format(partner,
                                                                  # Avoid collisions of filename while testing
@@ -88,10 +88,12 @@ def send_partner_charity_reports(test=True):
                 from_email=settings.POSTMARK_SENDER,
             )
             message.attach_file(location, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            get_connection().send_messages([message])
+            message.send()
+
         except Exception as e:
             client.captureException()
 
         if not test:
             partner = PartnerCharity.objects.get(id=ids[0])
             PartnerCharityReport(partner=partner, date=end).save()
+

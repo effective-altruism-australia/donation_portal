@@ -78,7 +78,8 @@ class PledgeView(View):
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
             ip = get_ip(request)
-            if not rate_limiter.checked_insert(ip) and not settings.DEBUG:
+            print 1
+            if not rate_limiter.checked_insert(ip) and not settings.DEBUG and settings.CREDIT_CARD_RATE_LIMIT_ENABLED:
                 return JsonResponse({
                     'error_message': "Our apologies: credit card donations are currently unavailable. "
                                      "Please try again tomorrow or make a payment by bank transfer.",
@@ -116,7 +117,6 @@ class PledgeViewOld(View):
     @xframe_options_exempt
     def post(self, request):
         form = PledgeFormOld(request.POST)
-        print request.POST
         amount = request.POST.get('amount')
         partner_id = request.POST.get('recipient_org')
         partner_slug = PartnerCharity.objects.get(id=partner_id).slug_id

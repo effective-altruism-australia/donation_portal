@@ -102,7 +102,7 @@ class DonationAmount extends Component {
         </div>;
 
 
-        const allocateSection = <div>
+        const allocateSection = <div id="id-allocate-donation-section">
             <h3>How would you like to allocate your donation?</h3>
             {
                 this.props.charities.map(function (charity) {

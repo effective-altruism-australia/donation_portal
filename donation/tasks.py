@@ -23,5 +23,5 @@ def import_trial_balance():
 
 
 @app.task()
-def send_partner_charity_reports():
+def send_partner_charity_reports_task():
     send_partner_charity_reports(test=False)
