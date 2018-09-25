@@ -27,8 +27,8 @@ def generate_data_for_eofy_receipts(year):
     return [list(donations) for _, donations in itertools.groupby(donations, lambda d: d.email_lower)]
 
 
-def send_eofy_receipts(test=True):
-    year = timezone.now().year
+def send_eofy_receipts(test=True, year=None):
+    year = year or timezone.now().year
     for donations_from_email in generate_data_for_eofy_receipts(year):
         pledge = donations_from_email[-1].pledge
         email = pledge.email

@@ -33,7 +33,7 @@ def send_bank_transfer_instructions(pledge):
             from_email=settings.POSTMARK_SENDER,
         )
         message.attach_alternative(body_html, "text/html")
-        get_connection().send_messages([message])
+        message.send()
 
         bank_transfer_instruction.time_sent = timezone.now()
 

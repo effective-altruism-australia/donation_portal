@@ -36,6 +36,7 @@ def create_and_send_receipt(sender, instance, created, **kwargs):
         except Exception as e:
             client.captureException()
             receipt.failed_message = e.message if e.message else "Sending failed"
+            receipt.save()
 
 
 @app.task()
@@ -71,8 +72,7 @@ def email_receipt(receipt_id):
             from_email=settings.POSTMARK_SENDER,
         )
         message.attach_file(receipt.pdf_receipt_location, mimetype='application/pdf')
-        get_connection().send_messages([message])
-
+        message.send()
         receipt.time_sent = timezone.now()
     except Exception as e:
         client.captureException()
