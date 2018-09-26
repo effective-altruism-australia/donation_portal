@@ -15,6 +15,10 @@ Install the modules:
 Run the local server:
 
     npm run start
+
+## Combine for production
+
+    npm run build
     
 
 ## Status
