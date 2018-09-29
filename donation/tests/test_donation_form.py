@@ -25,8 +25,9 @@ class DonationFormTestCase(StaticLiveServerTestCase):
         PartnerCharity.objects.update_or_create(slug_id='eaa', defaults={'name': 'Effective Altruism Australia'})
         PartnerCharity.objects.update_or_create(slug_id='unallocated', defaults={'name': 'Unallocated'})
 
-    def initialise_form(self):
-        self.selenium.get('%s%s' % (self.live_server_url, '/pledge_new/'))
+    def initialise_form(self, charity=None):
+        url_params = '?charity=%s' % charity if charity else ''
+        self.selenium.get('%s%s%s' % (self.live_server_url, '/pledge_new/', url_params))
 
     def select_allocate_donation(self, allocate=False):
         option_number = 2 if allocate else 1
@@ -126,9 +127,10 @@ class DonationFormTestCase(StaticLiveServerTestCase):
 
     def complete_form(self, allocate=False, one_time=True, amounts=[100], donor_details=None,
                       bank_transfer=False, card_details=None, assert_total_calculation=None,
-                      contribute=None, is_gift=False, gift_details=None):
-        self.initialise_form()
-        self.select_allocate_donation(allocate=allocate)
+                      contribute=None, is_gift=False, gift_details=None, charity=None):
+        self.initialise_form(charity)
+        if charity is None:
+            self.select_allocate_donation(allocate=allocate)
         self.select_frequency(one_time=one_time)
         if allocate:
             self.select_donation_amount_allocate(amounts=amounts)
@@ -219,3 +221,11 @@ class DonationFormTestCase(StaticLiveServerTestCase):
             self.complete_form(bank_transfer=False)
             time.sleep(5)
         self.assert_warnings(1)
+
+    def test_direct_donation(self):
+        self.selenium.get('%s%s' % (self.live_server_url, '/pledge_new/?charity=test_charity'))
+        self.assertTrue(
+            'Test Charity' in self.selenium.find_element_by_css_selector('form').find_element_by_css_selector(
+                'h2').text)
+        self.complete_form(bank_transfer=True, charity='test_charity')
+        self.assert_is_not_final_screen()
