@@ -11,7 +11,6 @@ export default class DonationFrequency extends Component {
             <div>
                 <h3>How often will you be donating?</h3>
                 <Field name="frequency" component={FrequencyComponent} />
-                {/*<Error visible={!this.props.frequency}>Please choose a donation frequency.</Error>*/}
             </div>
         );
     }

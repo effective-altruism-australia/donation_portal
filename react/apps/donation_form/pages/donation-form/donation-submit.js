@@ -10,7 +10,10 @@ class DonationSubmit extends Component {
     render() {
         return (
         <div className="form-actions">
-            <button type="submit" className="btn btn-success btn-lg" disabled={this.props.submitting}>Donate</button>
+            <button type="submit" className="btn btn-success btn-lg"
+                    disabled={
+                        this.props.submitting || this.props.donation.frequency == null || this.props.donation.amount == null
+                    }>Donate</button>
         </div>
     )}
 }
