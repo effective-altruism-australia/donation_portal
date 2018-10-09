@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import APIService from '../services/api';
 import {setCharity} from "../services/reduxStorage/actions";
 import {connect} from 'react-redux';
@@ -49,7 +49,7 @@ class CharityList extends Component {
                 onClick={(event) => {
                     event.preventDefault();
                     this.props.onSetCharity(charity);
-                    if(charity.directDonationOnly) {
+                    if (charity.directDonationOnly) {
                         this.props.router.pushPage('paymentAdvice');
                     } else {
                         this.props.router.pushPage('paymentForm');
