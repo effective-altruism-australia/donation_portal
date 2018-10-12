@@ -1,0 +1,330 @@
+#!/usr/bin/env python3
+
+# TODO make 'eaa' a variable so can use the same script across companies
+
+import logging
+import os
+import sys
+from argparse import ArgumentParser
+from grp import getgrgid
+from pwd import getpwnam, getpwuid
+from shutil import copy
+
+import coloredlogs
+
+SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+REPO_DIR = os.path.abspath(os.path.dirname(SCRIPT_DIR))
+PILLAR_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, '../deploy/pillar'))
+PILLAR_DEFAULTS_FILE = os.path.join(PILLAR_DIR, 'defaults.yml')
+
+SALT_REPO_DIR = os.path.expanduser('~/salt')
+SALT_REPO_TEST_FILE = 'bin/setup-minion'
+
+DEFAULT_PILLAR_FILE = os.path.join(PILLAR_DIR, 'eaa.sls')
+
+
+def parse_args():
+    parser = ArgumentParser(description="Configure Salt Pillar",
+                            add_help=False)
+
+    parser.add_argument('-h', '--help',
+                        action='help',
+                        help="Show available parameters")
+    parser.add_argument('-v', '--verbose',
+                        action='store_true',
+                        help="Display verbose output")
+    parser.add_argument('-s', '--simulate',
+                        action='store_true',
+                        help="Don't make any changes")
+
+    parser.add_argument('-sr', '--salt-repo',
+                        metavar='PATH',
+                        help="Path to Salt repository")
+    parser.add_argument('-p', '--pillar',
+                        default=DEFAULT_PILLAR_FILE,
+                        metavar='PATH',
+                        help="Path to Salt Pillar")
+
+    parser.add_argument('-nm', '--no-merge',
+                        action='store_true',
+                        help="Don't merge in existing Pillar config")
+    parser.add_argument('-nb', '--no-backup',
+                        action='store_true',
+                        help="Don't backup the existing Pillar config")
+    parser.add_argument('--skip-db-version-check',
+                        action='store_true',
+                        help="Skip version check of PostgreSQL server")
+
+    return parser.parse_args()
+
+
+def pillar_eaa(defaults, skip_db_version_check=False):
+    logging.debug("[#] Configuring pillar key: eaa")
+
+    config = {}
+
+    eaa = {}
+    eaa['system_user'] = pillar_eaa_sysuser(defaults['eaa']['system_user'])
+    eaa['roles'] = pillar_eaa_roles(defaults['eaa']['roles'])
+    eaa['git'] = pillar_eaa_git(defaults['eaa']['git'],
+                                            'eaa',
+                                            eaa['system_user']['home_dir'])
+    eaa['django'] = pillar_eaa_django(defaults['eaa']['django'],
+                                                  'default',
+                                                  'eaa',
+                                                  eaa['system_user']['name'])
+    config['eaa'] = eaa
+
+    from lib.pillar import pillar_postgresql, pillar_postgresql_lookup, pillar_postgresql_server, \
+        pillar_postgresql_server_database, pillar_postgresql_server_role
+    postgresql_server_role = pillar_postgresql_server_role(eaa['system_user']['name'])
+    postgresql_server_database = pillar_postgresql_server_database(eaa['django']['databases']['default']['name'],
+                                                                   owner=eaa['system_user']['name'])
+    postgresql_server = pillar_postgresql_server(roles=postgresql_server_role,
+                                                 databases=postgresql_server_database)
+    if skip_db_version_check:
+        logging.warning('[*] Skipping version check of PostgreSQL server ...')
+        postgresql_lookup = defaults['postgresql']['lookup'] = pillar_postgresql_lookup()
+    else:
+        postgresql_lookup = pillar_postgresql_lookup(min_version=defaults['postgresql']['lookup']['version'])
+    postgresql = pillar_postgresql(lookup=postgresql_lookup,
+                                   server=postgresql_server)
+    config['postgresql'] = merge_dicts(postgresql, defaults['postgresql'])
+
+    from lib.pillar import pillar_nginx, pillar_nginx_vhost
+    nginx_vhost = pillar_nginx_vhost('eaa',
+                                     settings=defaults['nginx']['virtual_hosts']['eaa']['conf_settings'])
+    nginx = pillar_nginx(vhosts=nginx_vhost)
+    config['nginx'] = merge_dicts(nginx, defaults['nginx'])
+
+    ignore_keys = ['eaa', 'postgresql', 'nginx']
+    for key in defaults.keys():
+        if key not in ignore_keys:
+            config[key] = defaults[key]
+
+    return config
+
+
+def pillar_eaa_django(config, db_key, db_name, db_owner):
+    logging.debug("[#] Configuring pillar key: eaa:django")
+
+    if config['databases'].get(db_key):
+        database = config['databases'][db_key]
+    else:
+        database = {}
+
+    if database.get('name'):
+        name = database['name']
+    else:
+        name = db_name
+
+    logging.info("[?] eaa:django:databases:%s:name", db_key)
+    database['name'] = input("Name for the database? [{0}] ".format(name))
+    if not database['name']:
+        database['name'] = name
+
+    database['user'] = db_owner
+
+    config['databases'][db_key] = database
+
+    return config
+
+
+def pillar_eaa_git(config, repo_key, base_dir):
+    logging.debug("[#] Configuring pillar key: eaa:git")
+
+    if config['repositories'].get(repo_key):
+        repo = config['repositories'][repo_key]
+    else:
+        repo = {}
+
+    if input_boolean("Have Salt manage your Git repository?", False):
+        if repo.get('target'):
+            target = repo['target']
+        else:
+            target = REPO_DIR
+
+        logging.info("[?] eaa:git:repositories:%s:target", repo_key)
+        repo['target'] = input("Path to clone the Git repository? [{0}] ".format(target))
+        if not repo['target']:
+            repo['target'] = target
+
+        if repo.get('remote_ref'):
+            remote_ref = repo['remote_ref']
+        else:
+            remote_ref = 'master'
+
+        logging.info("[?] eaa:git:repositories:%s:remote_ref", repo_key)
+        repo['remote_ref'] = input("Git branch to initially checkout? [{0}] ".format(remote_ref))
+        if not repo['remote_ref']:
+            repo['remote_ref'] = remote_ref
+
+        if repo.get('private_key_file'):
+            private_key_file = repo['private_key_file']
+        else:
+            private_key_file = "{0}/.ssh/id_rsa".format(base_dir)
+
+        logging.info("[?] eaa:git:repositories:%s:private_key_file", repo_key)
+        repo['private_key_file'] = input("Private key location to access Git? [{0}] ".format(private_key_file))
+        if not repo['private_key_file']:
+            repo['private_key_file'] = private_key_file
+
+        if repo.get('use_ssh_agent'):
+            use_ssh_agent = repo['use_ssh_agent']
+        else:
+            use_ssh_agent = False
+
+        repo['use_ssh_agent'] = input_boolean("Attempt SSH agent authentication for Git access?", use_ssh_agent)
+    else:
+        repo['target'] = REPO_DIR
+        logging.info("[-] eaa:git:repositories:%s:target: %s", repo_key, repo['target'])
+
+    config['repositories'][repo_key] = repo
+
+    return config
+
+
+def pillar_eaa_roles(config):
+    logging.debug("[#] Configuring pillar key: eaa:roles")
+
+    logging.info("[?] eaa:roles:web:install_nginx")
+    config['web']['install_nginx'] = input_boolean("Install & configure Nginx?",
+                                                   config['web']['install_nginx'])
+
+    logging.info("[?] eaa:roles:web:install_supervisor")
+    config['web']['install_supervisor'] = input_boolean("Install & configure Supervisor?",
+                                                        config['web']['install_supervisor'])
+
+    return config
+
+
+def pillar_eaa_sysuser(config):
+    logging.debug("[#] Configuring pillar key: eaa:system_user")
+
+    if config.get('name'):
+        name = config['name']
+    else:
+        name = getpwuid(os.geteuid()).pw_name
+
+    logging.info("[?] eaa:system_user:name")
+    config['name'] = input("Which user account should we install to? [{0}] ".format(name))
+
+    if not config['name']:
+        config['name'] = name
+
+    try:
+        user_record = getpwnam(config['name'])
+    except KeyError:
+        user_record = False
+
+    # We're deploying under an existing user account
+    if user_record:
+        group_record = getgrgid(user_record.pw_gid)
+
+        config['group_name'] = group_record.gr_name
+        logging.info("[-] eaa:system_user:group_name: %s", config['group_name'])
+
+        config['full_name'] = user_record.pw_gecos.split(',', 1)[0]
+        logging.info("[-] eaa:system_user:full_name: %s", config['full_name'])
+
+        config['home_dir'] = user_record.pw_dir
+        logging.info("[-] eaa:system_user:home_dir: %s", config['home_dir'])
+
+        config['shell'] = user_record.pw_shell
+        logging.info("[-] eaa:system_user:shell: %s", config['shell'])
+
+    # We're deploying under a new user account
+    else:
+        group_name = config['name']
+        logging.info("[?] eaa:system_user:group_name")
+        config['group_name'] = input("What's the group name for this account? [{0}] ".format(group_name))
+        if not config['group_name']:
+            config['group_name'] = group_name
+
+        full_name = config['name'].capitalize()
+        logging.info("[?] eaa:system_user:full_name")
+        config['full_name'] = input("What's the full name for this account? [{0}] ".format(full_name))
+        if not config['full_name']:
+            config['full_name'] = full_name
+
+        home_dir = os.path.join('/home', config['name'])
+        logging.info("[?] eaa:system_user:home_dir")
+        config['home_dir'] = input("Where should we create the home directory? [{0}] ".format(home_dir))
+        if not config['home_dir']:
+            config['home_dir'] = home_dir
+
+        shell = getpwuid(os.geteuid()).pw_shell
+        logging.info("[?] eaa:system_user:shell")
+        config['shell'] = input("What login shell should this account use? [{0}] ".format(shell))
+        if not config['shell']:
+            config['shell'] = shell
+
+    return config
+
+
+def main():
+    check_os()
+
+    logging.debug("[#] Loading Salt Pillar defaults from: %s", PILLAR_DEFAULTS_FILE)
+    pillar_defaults = load_yaml(PILLAR_DEFAULTS_FILE)
+
+    defaults = {}
+    pillar_exists = os.path.isfile(args.pillar)
+
+    if pillar_exists:
+        logging.info("[-] Loading Salt Pillar config from: %s", args.pillar)
+        pillar_current = load_yaml(args.pillar)
+    else:
+        logging.info("[-] Creating a new Salt Pillar at: %s", args.pillar)
+        pillar_current = {}
+
+    if args.no_merge or not pillar_exists:
+        defaults = pillar_defaults
+    else:
+        logging.info("[-] Merging defaults with existing Salt Pillar config ...")
+        defaults = merge_dicts(pillar_current, pillar_defaults)
+
+    config = pillar_eaa(defaults, skip_db_version_check=args.skip_db_version_check)
+
+    if not (args.simulate or args.no_backup) and pillar_exists:
+        logging.info("[-] Backing-up existing Salt Pillar config to: %s.bak", args.pillar)
+        copy(args.pillar, args.pillar + '.bak')
+
+    if not args.simulate:
+        logging.info("[-] Saving Salt Pillar config to: %s", args.pillar)
+        save_yaml(config, args.pillar)
+
+
+if __name__ == '__main__':
+    try:
+        args = parse_args()  # pylint: disable=invalid-name
+
+        LOG_LEVEL = logging.DEBUG if args.verbose else logging.INFO
+        coloredlogs.install(fmt='%(message)s', level=LOG_LEVEL, stream=sys.stdout)
+
+        # No repository directory was specified on the command line
+        if not args.salt_repo:
+            # Use the SALT_REPO_DIR environment variable if present
+            SALT_REPO_ENV = os.environ.get('SALT_REPO_DIR')
+            if SALT_REPO_ENV:
+                logging.info("[-] Using path from SALT_REPO_DIR: %s", SALT_REPO_ENV)
+                args.salt_repo = SALT_REPO_ENV
+            # Fallback to the default repository directory path
+            else:
+                logging.info("[-] Using the default Salt repository path: %s", SALT_REPO_DIR)
+                args.salt_repo = SALT_REPO_DIR
+
+        # Sanity check the Salt repo path and attempt imports
+        if os.path.isfile(os.path.join(args.salt_repo, SALT_REPO_TEST_FILE)):
+            sys.path.insert(0, "{0}/bin".format(os.path.abspath(args.salt_repo)))
+            from lib.utilities import check_os, input_boolean, load_yaml, merge_dicts, save_yaml
+        else:
+            logging.error("[!] Unable to find in Salt states repository: %s", SALT_REPO_TEST_FILE)
+            sys.exit(1)
+
+        main()
+
+    except KeyboardInterrupt:
+        pass
+
+# vim: cc=120 tw=119 ts=4 sw=4 sts=4 et sr
