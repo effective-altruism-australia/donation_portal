@@ -64,3 +64,6 @@ venv/
 
 *.rdb
 *.coverage
+
+# Salt
+deploy/pillar/eaa.sls*
