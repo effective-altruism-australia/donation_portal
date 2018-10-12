@@ -46,6 +46,7 @@ eaa_web_git_known_hosts:
     - require:
       - sls: eaa.sysuser
 
+{% if false %}
 eaa_web_git_repo_update:
   git.latest:
     - name: {{ eaa.git.repositories.donation_portal.source }}
@@ -67,3 +68,4 @@ eaa_web_git_repo_update:
       - file: eaa_web_git_private_key
       {% endif %}
       - ssh_known_hosts: eaa_web_git_known_hosts
+{% endif %}
