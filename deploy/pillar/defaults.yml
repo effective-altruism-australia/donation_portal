@@ -88,6 +88,12 @@ eaa:
     secret_key: 'development'
     ssl_security_checks_enabled: False
 
+    # The environment to run the Draftable Django application under:
+    # - dev
+    # - testing
+    # - prod
+    default_env: 'dev'
+
     # The database connection details for the Django application. Note that
     # these settings should be in sync with those in the PostgreSQL pillar.
     databases:
