@@ -67,7 +67,7 @@ def pillar_eaa(defaults, skip_db_version_check=False):
     eaa['system_user'] = pillar_eaa_sysuser(defaults['eaa']['system_user'])
     eaa['roles'] = pillar_eaa_roles(defaults['eaa']['roles'])
     eaa['git'] = pillar_eaa_git(defaults['eaa']['git'],
-                                            'eaa',
+                                            'donation_portal',
                                             eaa['system_user']['home_dir'])
     eaa['django'] = pillar_eaa_django(defaults['eaa']['django'],
                                                   'default',
