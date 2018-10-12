@@ -47,6 +47,31 @@ eaa_web_django_config:
     - require:
       - sls: eaa.sysuser
 
+
+{# TODO move this into separated frontend state #}
+eaa_web_django_frontend_npm:
+  npm.bootstrap:
+    - name: {{ eaa.git.repositories.donation_portal.target }}/react
+    - user: {{ eaa.system_user.name }}
+    - require:
+      - sls: eaa.sysuser
+
+
+eaa_web_django_frontend_webpack:
+  cmd.run:
+    - name: npm run build
+    - cwd: {{ eaa.git.repositories.donation_portal.target }}/react
+    {# Added as a precaution. See the comment for the Combiner. - SDL #}
+    - reset_system_locale: False
+    - runas: {{ eaa.system_user.name }}
+    - env:
+      {% if eaa.django.default_env == 'prod' %}
+      - NODE_ENV: 'production'
+      {% else %}
+      - NODE_ENV: 'development'
+      {% endif %}
+
+
 eaa_web_django_collectstatic:
   cmd.run:
     - name: {{ eaa.django.venv_path }}/bin/python {{ eaa.git.repositories.donation_portal.target }}/manage.py collectstatic --verbosity 0 --no-color --noinput
