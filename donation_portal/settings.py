@@ -8,12 +8,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
-import os
 import datetime
+import os
+
 from celery.schedules import crontab
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Application definition
 
@@ -64,7 +64,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'donation_portal.wsgi.application'
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
@@ -74,7 +73,6 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
@@ -82,7 +80,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "tmp/static")
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
-#    os.path.join(BASE_DIR, 'tmp/react')
 )
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
@@ -111,34 +108,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 PAYPAL_TEST = True
 
 CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS = 6
-CREDIT_CARD_RATE_LIMIT_PERIOD = 12*60*60
+CREDIT_CARD_RATE_LIMIT_PERIOD = 12 * 60 * 60
 CREDIT_CARD_RATE_LIMIT_ENABLED = True
 
 TESTING_EMAIL = "@".join(['ben.toner', 'eaa.org.au'])
 EAA_INFO_EMAIL = 'info@eaa.org.au'
 
-#########
-# Webpack
-#########
-
-DEBUG = True  # TODO: where should we set this default?
-
-STATICFILES_DIRS = STATICFILES_DIRS + (
-    os.path.join(BASE_DIR, 'react', 'build', 'bundle'),
-    os.path.join(BASE_DIR, 'react', 'public'),
-)
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': '',
-
-        'STATS_FILE': 'react/build/webpack-stats.{}.json'.format('dev' if DEBUG else 'prod'),
-
-        # This disables polling in production. We assume the bundles are built and stay unchanged while the application is running.
-        'CACHE': not DEBUG,
-    }
-}
-
+DEBUG = False
 
 # Deployment
 
@@ -155,9 +131,29 @@ if os.path.exists(os.path.join(os.path.dirname(__file__), "local_settings.py")):
     from local_settings import *  # NOQA
 
 if ENABLE_SENTRY:
-    INSTALLED_APPS += ('raven.contrib.django.raven_compat', )
+    INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
 
 # Date from which to start sending receipts automatically (inclusive)
 AUTOMATION_START_DATE = datetime.date(2016, 10, 19)
+
+#########
+# Webpack
+#########
+
+STATICFILES_DIRS = STATICFILES_DIRS + (
+    os.path.join(BASE_DIR, 'react', 'build', 'bundle'),
+    os.path.join(BASE_DIR, 'react', 'public'),
+)
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': '',
+
+        'STATS_FILE': 'react/build/webpack-stats.{}.json'.format('dev' if DEBUG else 'prod'),
+
+        # This disables polling in production. We assume the bundles are built and stay unchanged while the application is running.
+        'CACHE': not DEBUG,
+    }
+}
 
 # vim: cc=80 tw=79 ts=4 sw=4 sts=4 et sr
