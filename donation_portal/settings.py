@@ -149,7 +149,7 @@ WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundle/',
 
-        'STATS_FILE': 'react/build/webpack-stats.json',
+        'STATS_FILE': os.path.join(BASE_DIR, 'react/build/webpack-stats.json'),
 
         # This disables polling in production. We assume the bundles are built and stay unchanged while the application is running.
         'CACHE': not DEBUG,
