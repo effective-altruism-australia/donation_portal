@@ -11,7 +11,7 @@ include:
 
 {% if eaa.roles.web.install_supervisor %}
 extend:
-  supervisor_include_eaa_create:
+  supervisor_include_donations_create:
     file:
       - require:
         - sls: eaa.db.migrate
