@@ -141,15 +141,15 @@ AUTOMATION_START_DATE = datetime.date(2016, 10, 19)
 #########
 
 STATICFILES_DIRS = STATICFILES_DIRS + (
-    os.path.join(BASE_DIR, 'react', 'build', 'bundle'),
+    os.path.join(BASE_DIR, 'react', 'build'),
     os.path.join(BASE_DIR, 'react', 'public'),
 )
 
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'BUNDLE_DIR_NAME': '',
+        'BUNDLE_DIR_NAME': 'bundle/',
 
-        'STATS_FILE': 'react/build/webpack-stats.{}.json'.format('dev' if DEBUG else 'prod'),
+        'STATS_FILE': 'react/build/webpack-stats.json',
 
         # This disables polling in production. We assume the bundles are built and stay unchanged while the application is running.
         'CACHE': not DEBUG,
