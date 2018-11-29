@@ -23,9 +23,9 @@ class Donation(models.Model):
     fees = models.DecimalField(decimal_places=2, max_digits=12, )
     payment_method = models.CharField(max_length=128)
     reference = models.TextField(blank=True)
-    pledge = models.ForeignKey(Pledge, blank=True, null=True)
-    bank_transaction = models.OneToOneField(BankTransaction, blank=True, null=True)
-    pin_transaction = models.OneToOneField(PinTransaction, blank=True, null=True)
+    pledge = models.ForeignKey(Pledge, blank=True, null=True, on_delete=models.DO_NOTHING)
+    bank_transaction = models.OneToOneField(BankTransaction, blank=True, null=True, on_delete=models.DO_NOTHING)
+    pin_transaction = models.OneToOneField(PinTransaction, blank=True, null=True, on_delete=models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -41,8 +41,9 @@ class DonationComponent(models.Model):
     """Database view which calculates the amount donated to each partner charity
     Implemented in donation/migrations/0054_donation_component_view.py
     """
-    pledge_component = models.ForeignKey(PledgeComponent, related_name='donation_component')
-    donation = models.ForeignKey(Donation, related_name='components')
+    pledge_component = models.ForeignKey(PledgeComponent, related_name='donation_component',
+                                         on_delete=models.DO_NOTHING)
+    donation = models.ForeignKey(Donation, related_name='components', on_delete=models.DO_NOTHING)
     amount = models.FloatField()
     fees = models.FloatField()
 
