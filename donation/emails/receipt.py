@@ -1,7 +1,9 @@
+import time
+
 import arrow
 import pdfkit
 from django.conf import settings
-from django.core.mail import EmailMessage, get_connection
+from django.core.mail import EmailMessage
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
@@ -41,6 +43,9 @@ def create_and_send_receipt(sender, instance, created, **kwargs):
 
 @app.task()
 def email_receipt(receipt_id):
+    # HACK: There appears to be a weird race condition where the receipt doesnt get committed quickly enough
+    # So we just wait a second.
+    time.sleep(1)
     receipt = Receipt.objects.get(id=receipt_id)
     if receipt.sent:
         raise Exception("Receipt already sent.")
