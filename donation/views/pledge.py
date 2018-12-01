@@ -18,6 +18,10 @@ from rratelimit import Limiter
 from donation.forms import PledgeForm, PledgeComponentFormSet, PinTransactionForm, PledgeFormOld
 from donation.models import PaymentMethod, Receipt, PartnerCharity, PinTransaction, RecurringFrequency
 from donation.tasks import send_bank_transfer_instructions_task
+import datetime
+import time
+import requests
+import os
 
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 rate_limiter = Limiter(r,
@@ -37,6 +41,26 @@ def download_receipt(request, pk, secret):
                             content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="EAA_Receipt_{0}.pdf"'.format(receipt.pk)
     return response
+
+
+class PledgeJS(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PledgeJS, self).dispatch(request, *args, **kwargs)
+
+    @xframe_options_exempt
+    def get(self, request):
+        with open(os.path.join(settings.BASE_DIR, 'react/build/webpack-stats.json')) as f:
+            data = json.load(f)
+
+        time_last_compiled = datetime.datetime.utcfromtimestamp(data['endTime'] / 1000)
+        time_last_compiled.timetuple()
+
+        url = data['chunks']['donation_form'][0]['publicPath']
+
+        response = HttpResponseRedirect(url, content_type="application/x-javascript")
+        response['Last-Modified'] = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time_last_compiled.timetuple())
+        return response
 
 
 class PledgeView(View):
