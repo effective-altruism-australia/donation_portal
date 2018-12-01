@@ -67,7 +67,7 @@ def donation_counter(request):
     totals = {partner.name: float(Account.objects
                              .filter(date__gte=xero_start_date, date__lte=xero_end_date, name=partner.xero_account_name)
                              .aggregate(Sum('amount'))['amount__sum'] or 0) +
-                            total_donations_for_partner(django_start_date, django_end_date, partner)
+                            float(total_donations_for_partner(django_start_date, django_end_date, partner))
               for partner in PartnerCharity.objects.all().order_by('name')}
 
     unknown_total = BankTransaction.objects.filter(date__gte=django_start_date, date__lte=django_end_date,
