@@ -74,7 +74,7 @@ def donation_counter(request):
                                                    do_not_reconcile=False, pledge__isnull=True, amount__gte=0) \
         .aggregate(Sum('amount'))['amount__sum']
     if unknown_total:
-        totals['Unknown as yet'] = unknown_total
+        totals['Unknown as yet'] = float(unknown_total)
 
     # Temporary hack - these will be included in the partners soon.
     # Add donations present in xero but not in the partners
@@ -87,7 +87,7 @@ def donation_counter(request):
                              name=account_name)
                      .aggregate(Sum('amount'))['amount__sum'] or 0)
         if account_total:
-            totals[account_description] = account_total
+            totals[account_description] = float(account_total)
 
     receipt_date = BankTransaction.objects.filter(do_not_reconcile=False, pledge__isnull=True, amount__gte=0) \
         .aggregate(Min('date'))['date__min']
