@@ -64,7 +64,7 @@ def donation_counter(request):
                         " in xero. Please set the start date to the start of a month and the end date to the end of" + \
                         " a month."
 
-    totals = {partner.name: (Account.objects
+    totals = {partner.name: float(Account.objects
                              .filter(date__gte=xero_start_date, date__lte=xero_end_date, name=partner.xero_account_name)
                              .aggregate(Sum('amount'))['amount__sum'] or 0) +
                             total_donations_for_partner(django_start_date, django_end_date, partner)
