@@ -26,6 +26,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'bootstrap3',
+    'corsheaders',
     'pinpayments',
     'reversion',
     'donation.apps.DonationConfig',
@@ -36,6 +37,7 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -136,6 +138,11 @@ if ENABLE_SENTRY:
 
 # Date from which to start sending receipts automatically (inclusive)
 AUTOMATION_START_DATE = datetime.date(2016, 10, 19)
+
+CORS_ORIGIN_WHITELIST = (
+    'donations.effectivealtruism.org.au',
+    'localhost:8000'
+)
 
 #########
 # Webpack

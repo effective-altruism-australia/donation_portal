@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <script type='text/javascript'>
         var pin_environment = "{{ pin_environment }}";
+        var site_root = "";
     </script>
     {% render_bundle 'donation_form' 'css' %}
 
@@ -43,7 +44,7 @@
 
 
 </body>
-<script src="http://192.168.157.206:8001/pledge.js"></script>
+<script src="http://127.0.0.1:8000/pledge.js"></script>
 
     <script type='text/javascript'>
         Pin.setPublishableKey("{{ pin_key }}");

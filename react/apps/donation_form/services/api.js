@@ -2,13 +2,13 @@ import React from "react";
 
 export default class APIService {
     getCharities() {
-        return fetch('/partner_charities').then(function (response) {
+        return fetch( window.site_root.concat('/partner_charities')).then(function (response) {
             return response.json();
         });
     }
 
     getReferralSources() {
-        return fetch('/referral_sources').then(function (response) {
+        return fetch(window.site_root.concat('/referral_sources')).then(function (response) {
             return response.json();
         });
     }
@@ -57,7 +57,7 @@ export default class APIService {
             pledge_raw.how_did_hear.value : undefined;
 
         pledge_clean.is_gift = pledge_raw.is_gift;
-        if (pledge_clean.is_gift){
+        if (pledge_clean.is_gift) {
             pledge_clean.gift_recipient_name = pledge_raw.gift.recipient_name;
             pledge_clean.gift_recipient_email = pledge_raw.gift.recipient_email;
             pledge_clean.gift_personal_message = pledge_raw.gift.personal_message;
@@ -100,7 +100,7 @@ export default class APIService {
             pledge_clean.pin_response = pin_clean;
         }
 
-        return fetch('/pledge_new/', {
+        return fetch(window.site_root.concat('/pledge_new/'), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
