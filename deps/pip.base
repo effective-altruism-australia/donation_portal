@@ -23,6 +23,7 @@ cryptography
 # The 1.8 LTS release is supported through to at least April 2018
 Django==1.8.*
 django-bootstrap3
+django-cors-headers
 django-enumfields
 django-ipware
 django-paypal
