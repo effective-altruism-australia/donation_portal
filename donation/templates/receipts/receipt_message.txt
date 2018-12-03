@@ -1,6 +1,6 @@
 Dear {{ pledge.first_name }},
 
-Thank you so much for your donation to Effective Altruism Australia, designated for {{ pledge.partner_charity_str }}. We confirm that we received the sum of ${{ transaction.amount }} on {{ transaction.date }}. Please find attached your receipt.
+Thank you so much for your donation to Effective Altruism Australia, designated for {{ pledge.partner_charity_str }}. We confirm that we received the sum of ${{ transaction.amount }} on {{ transaction.date }} Please find attached your receipt.
 
 For your convenience, we will also send you an end of financial year receipt by {{ eofy_receipt_date }}. Please feel welcome to reply to this address if you have any questions or thoughts and one of our volunteers will get back to you as soon as they can.
 
