@@ -177,5 +177,12 @@ nginx:
           donations:
             server: '127.0.0.1:8000'
 
+nodejs:
+  # Use the NodeSource repository
+  use_nodesource_repo: True
+  # Branch of Node.js we wish to use. This only needs to be set when using the
+  # NodeSource repository. Consult the documentation for available branches:
+  # https://github.com/nodesource/distributions#manual-installation
+  nodesource_repo_branch: 'node_8.x'
 
 # vim: cc=80 tw=79 ts=2 sw=2 sts=2 et sr
