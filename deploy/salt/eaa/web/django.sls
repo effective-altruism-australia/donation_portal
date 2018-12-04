@@ -8,6 +8,7 @@ include:
   - eaa.sysuser
   - python2
   - postgresql.client
+  - nodejs
 
 eaa_web_django_venv_create:
   virtualenv.managed:
@@ -55,7 +56,7 @@ eaa_web_django_frontend_npm:
     - user: {{ eaa.system_user.name }}
     - require:
       - sls: eaa.sysuser
-
+      - sls: nodejs.install
 
 eaa_web_django_frontend_webpack:
   cmd.run:
