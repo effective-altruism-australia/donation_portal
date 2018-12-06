@@ -4,7 +4,7 @@ import React, {Component} from "react";
 import {Field, formValueSelector} from 'redux-form'
 import classNames from 'classnames';
 import {customCurrencyInput, customInput} from "../../components/custom-fields";
-import {minValue2, required} from "../../services/validation";
+import {minValue1cent, required} from "../../services/validation";
 import {getTotalDonation} from "../../services/utils";
 
 class DonationAmount extends Component {
@@ -58,7 +58,7 @@ class DonationAmount extends Component {
                                     type="number"
                                     placeholder="Amount"
                                     aria-describedby="Amount"
-                                    validate={[required, minValue2]}
+                                    validate={[required, minValue1cent]}
                                 />
                             </div>
                         </span>
@@ -94,7 +94,7 @@ class DonationAmount extends Component {
                                component={customCurrencyInput}
                                type="number"
                                placeholder="Amount"
-                               validate={[required, minValue2]}
+                               validate={[required, minValue1cent]}
                         />
                     </span>
                 )

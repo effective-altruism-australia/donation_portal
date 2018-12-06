@@ -12,7 +12,7 @@ const number = value =>
 const minValue = min => value =>
     value && value < min ? `Please enter a value greater than or equal to ${min}` : undefined;
 const minValue18 = minValue(18);
-export const minValue2 = minValue(2);
+export const minValue1cent = minValue(0.01);
 const email = value =>
     value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
         ? 'Invalid email address'
