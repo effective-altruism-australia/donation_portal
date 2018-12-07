@@ -63,6 +63,7 @@ def email_receipt(receipt_id):
         body = render_to_string('receipts/receipt_message.txt',
                                 {'pledge': receipt.pledge,
                                  'transaction': receipt.transaction,
+                                 'date_str': receipt.transaction.date.strftime('%-d %b %Y at %-I:%M%p'),
                                  'eofy_receipt_date': eofy_receipt_date,
                                  })
         message = EmailMessage(
