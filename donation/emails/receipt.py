@@ -52,8 +52,11 @@ def email_receipt(receipt_id):
     try:
         if receipt.bank_transaction:
             received_date = receipt.bank_transaction.date
+            date_str = received_date.strftime('%-d %b %Y')
         else:
             received_date = arrow.get(receipt.pin_transaction.date).to(settings.TIME_ZONE).date()
+            date_str = received_date.strftime('%-d %b %Y at %-I:%M%p')
+
         eofy_receipt_date = (arrow.get(received_date)
                              .replace(month=7)
                              .replace(day=31)
@@ -63,7 +66,7 @@ def email_receipt(receipt_id):
         body = render_to_string('receipts/receipt_message.txt',
                                 {'pledge': receipt.pledge,
                                  'transaction': receipt.transaction,
-                                 'date_str': receipt.transaction.date.strftime('%-d %b %Y at %-I:%M%p'),
+                                 'date_str': date_str,
                                  'eofy_receipt_date': eofy_receipt_date,
                                  })
         message = EmailMessage(
