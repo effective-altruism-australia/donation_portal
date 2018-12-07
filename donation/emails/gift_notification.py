@@ -22,7 +22,7 @@ def send_gift_notification(pledge_id):
             subject='%s has made a donation on your behalf' % pledge.first_name,
             body=body,
             to=[pledge.gift_recipient_email],
-            cc=[settings.EAA_INFO_EMAIL],
+            cc=[settings.EAA_INFO_EMAIL, pledge.email],
             from_email=settings.POSTMARK_SENDER,
         )
         message.send()
