@@ -142,6 +142,7 @@ AUTOMATION_START_DATE = datetime.date(2016, 10, 19)
 CORS_ORIGIN_WHITELIST = (
     'donations.effectivealtruism.org.au',
     'effectivealtruism.org.au',
+    'dev.effectivealtruism.org.au',
     'localhost:8000'
 )
 
