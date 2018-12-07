@@ -2,7 +2,7 @@ import React from "react";
 
 export default class APIService {
     getCharities() {
-        return fetch( window.site_root.concat('/partner_charities')).then(function (response) {
+        return fetch(window.site_root.concat('/partner_charities')).then(function (response) {
             return response.json();
         });
     }
@@ -43,7 +43,9 @@ export default class APIService {
                 if (charity === 'preset') {
                     continue;
                 }
-                pledge_raw.components.push({'charity': charity, 'amount': pledge_raw.amount[charity]});
+                if (pledge_raw.amount[charity] !== "0") {
+                    pledge_raw.components.push({'charity': charity, 'amount': pledge_raw.amount[charity]});
+                }
             }
         }
 

@@ -93,10 +93,10 @@ class DonationForm extends Component {
     submitForm(response_data, donation_form) {
         let service = new APIService();
         service.submit(response_data).then((res) => {
-
             if (res.error_message) {
                 donation_form.setState({
-                    error_message: res.error_message,
+                    // We shouldn't ever hit this.
+                    error_message: 'There was a problem submitting your donation. Please try again later.',
                     submitting: false
                 });
             } else {

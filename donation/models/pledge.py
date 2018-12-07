@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import decimal
 import random
 import string
 
@@ -112,7 +113,8 @@ class PledgeComponent(models.Model):
 
     pledge = models.ForeignKey(Pledge, related_name='components')
     partner_charity = models.ForeignKey(PartnerCharity, related_name='pledge_components')
-    amount = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
+    amount = models.DecimalField(decimal_places=2, max_digits=12,
+                                 validators=[MinValueValidator(decimal.Decimal(1) / 100)])
 
     @property
     def proportion(self):
