@@ -32,7 +32,7 @@ django-reversion
 django-webpack-loader
 gunicorn
 mock
-model-mommy==1.6.0
+model-mommy
 pdfkit
 Pillow
 psycopg2
