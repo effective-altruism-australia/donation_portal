@@ -42,7 +42,6 @@ pathlib2==2.3.3
 pbr==4.2.0
 pdfkit==0.6.1
 Pillow==4.0.0
-pkg-resources==0.0.0
 pluggy==0.8.0
 psycopg2==2.7.4
 py==1.7.0
