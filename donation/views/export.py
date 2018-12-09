@@ -48,7 +48,6 @@ def download_spreadsheet(request, extra_fields=None):
                                ('Email', 'pledge__email'),
                                ('Payment method', 'payment_method'),
                                ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
-                               ('Can publish donation', 'pledge__publish_donation'),
                                ('Designation', 'components__pledge_component__partner_charity__name')
                            ] + extra_fields)
 
