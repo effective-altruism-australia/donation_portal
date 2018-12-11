@@ -7,6 +7,7 @@
 include:
   - eaa.web.git
   - eaa.web.django
+  - eaa.web.testing
   {% if eaa.roles.web.install_supervisor %}
   - eaa.web.supervisor
   {% endif %}
