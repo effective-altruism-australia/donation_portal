@@ -23,7 +23,7 @@ class DonationFormTestCase(StaticLiveServerTestCase):
         PartnerCharity.objects.update_or_create(slug_id='test_charity', defaults={'name': 'Test Charity'})
         PartnerCharity.objects.update_or_create(slug_id='test_charity2', defaults={'name': 'Test Charity 2'})
         PartnerCharity.objects.update_or_create(slug_id='eaa', defaults={'name': 'Effective Altruism Australia'})
-        PartnerCharity.objects.update_or_create(slug_id='unallocated', defaults={'name': 'Unallocated'})
+        PartnerCharity.objects.update_or_create(slug_id='unallocated', defaults={'name': 'our partner charities'})
 
     def initialise_form(self, charity=None):
         url_params = '?charity=%s' % charity if charity else ''
