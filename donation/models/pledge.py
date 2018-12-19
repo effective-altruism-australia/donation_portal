@@ -79,7 +79,8 @@ class Pledge(models.Model):
     def partner_charity_str(self):
         num_components = self.components.count()
         if num_components == 1:
-            return self.components.get().partner_charity.name
+            name = self.components.get().partner_charity.name
+            return "our most effective partner charities, based on evidence and need" if name == "Unallocated" else name
         elif num_components > 1:
             partner_names = [component.partner_charity.name for component in self.components.all()]
             return '{} and {}'.format(', '.join(partner_names[:-1]), partner_names[-1])
