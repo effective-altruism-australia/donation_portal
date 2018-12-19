@@ -58,7 +58,7 @@ class DonationAmount extends Component {
                                     name="contribute.value"
                                     component={customCurrencyInput}
                                     type="number"
-                                    placeholder="Amount"
+                                    placeholder="0.00"
                                     aria-describedby="Amount"
                                     validate={[required, minValue1cent]}
                                 />
@@ -95,7 +95,7 @@ class DonationAmount extends Component {
                                name="amount.value"
                                component={customCurrencyInput}
                                type="number"
-                               placeholder="Amount"
+                               placeholder="0.00"
                                validate={[required, minValue1cent]}
                         />
                     </span>
@@ -117,7 +117,7 @@ class DonationAmount extends Component {
                                        name={"amount." + charity.slug_id}
                                        component={customInput}
                                        type="number"
-                                       placeholder="Amount"
+                                       placeholder="0.00"
                                 />
                             </div>
                         </div>
