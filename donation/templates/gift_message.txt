@@ -1,6 +1,6 @@
 Dear {{ pledge.gift_recipient_name }},
 
-{{ pledge.first_name }} {{ pledge.last_name }} has made a donation of ${{ pledge.amount }} on your behalf to Effective Altruism Australia, which will go directly to helping people through {{ pledge.partner_charity_str }}.
+{{ pledge.first_name }} {{ pledge.last_name }} has made a donation of ${{ pledge.amount }} on your behalf to Effective Altruism Australia, designated for {{ pledge.partner_charity_str }}.
 
 For more information please see https://effectivealtruism.org.au/.
 
