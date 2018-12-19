@@ -29,11 +29,11 @@ class DonationAmount extends Component {
                 <div>
                     <label htmlFor="id_will_contribute" style={{fontWeight: '400'}}>
                         <div style={{float: 'left'}}>
-                        <Field id="id_will_contribute"
-                               name="will_contribute"
-                               component={customInput}
-                               type="checkbox"/>
-                            </div>
+                            <Field id="id_will_contribute"
+                                   name="will_contribute"
+                                   component={customInput}
+                                   type="checkbox"/>
+                        </div>
                         I would also like to contribute to covering Effective Altruism Australia's running costs
                     </label>
                 </div>
@@ -111,12 +111,15 @@ class DonationAmount extends Component {
                     return <div className="form-group" key={charity.slug_id}>
                         <label className="control-label col-sm-5">{charity.name}</label>
                         <div className="col-sm-7">
-                            <Field className="form-control"
-                                   name={"amount." + charity.slug_id}
-                                   component={customInput}
-                                   type="number"
-                                   placeholder="Amount"
-                            />
+                            <div className="input-group">
+                                <span className="input-group-addon">$</span>
+                                <Field className="form-control"
+                                       name={"amount." + charity.slug_id}
+                                       component={customInput}
+                                       type="number"
+                                       placeholder="Amount"
+                                />
+                            </div>
                         </div>
                     </div>
                         ;
