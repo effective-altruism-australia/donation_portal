@@ -26,12 +26,14 @@ class DonationAmount extends Component {
 
         const contributeHeading = !this.props.charity ?
             <div className="form-group" style={{marginLeft: '5px'}}>
-                <div className="checkbox col-sm-12">
-                    <label htmlFor="id_will_contribute">
+                <div>
+                    <label htmlFor="id_will_contribute" style={{fontWeight: '400'}}>
+                        <div style={{float: 'left'}}>
                         <Field id="id_will_contribute"
                                name="will_contribute"
                                component={customInput}
                                type="checkbox"/>
+                            </div>
                         I would also like to contribute to covering Effective Altruism Australia's running costs
                     </label>
                 </div>
