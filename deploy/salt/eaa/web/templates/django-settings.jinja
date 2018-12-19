@@ -15,9 +15,6 @@ from settings import BASE_DIR
 # Debug mode (do *not* use in production)
 DEBUG = {{ config.django.debug }}
 
-# Directory where various secrets are stored (e.g. RSA keys)
-SECRETS_DIR = os.path.join(BASE_DIR, 'secrets')
-
 # Directory where static files are collected and served from
 STATIC_ROOT = os.path.join(BASE_DIR, 'tmp/static')
 
