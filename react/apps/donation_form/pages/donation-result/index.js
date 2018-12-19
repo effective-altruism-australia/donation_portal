@@ -48,9 +48,9 @@ class DonationResult extends Component {
                                 {
                                     this.props.form.frequency === 'monthly'
                                         ?
-                                        'setting up a monthly periodic payment for '
+                                        ' setting up a monthly periodic payment for '
                                         :
-                                        'making a bank transfer of '
+                                        ' making a bank transfer of '
                                 } ${total} to:
                             </p>
                             <p>
