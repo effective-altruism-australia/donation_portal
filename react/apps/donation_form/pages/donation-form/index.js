@@ -190,7 +190,8 @@ const mapStateToProps = (state) => {
             payment: {
                 method: 'credit-card'
             },
-            mode: 'auto'
+            mode: 'auto',
+            subscribe_for_updates: true,
         }
     }
 };
