@@ -10,6 +10,7 @@ import DonationFaq from "./donation-faq";
 import DonationSubmit from "./donation-submit";
 import DonationAsGift from "./donation-as-gift";
 import APIService from '../../services/api';
+import {getAllUrlParams} from "../../services/utils";
 import InitialisePin from '../../services/eaa-pin';
 import {setCharity, setDonationResult} from "../../services/reduxStorage/actions";
 
@@ -201,7 +202,7 @@ function set_initial_charity(dispatch) {
     let apiService = new APIService();
     return apiService.getCharities().then((charities) => {
         let charity_filtered = charities.filter(function (x) {
-            if (x.slug_id === window.presetCharity) {
+            if (x.slug_id === getAllUrlParams().charity) {
                 return x
             }
         });
