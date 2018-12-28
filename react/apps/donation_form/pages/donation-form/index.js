@@ -124,11 +124,12 @@ class DonationForm extends Component {
 
     render() {
         const charity_thumbnail = (this.props.charity && this.props.charity.thumbnail) ? (
-            <img src={"/static/" + this.props.charity.thumbnail}/>) : '';
+            <img src={window.site_root.concat("/static/" + this.props.charity.thumbnail)}/>) : '';
         const donationMode = (this.props.charity) ? (
             <div>
                 <h2>100% of your donation will go to support {this.props.charity.name}</h2>
                 {charity_thumbnail}
+            <br/><br/>
             </div>
         ) : (
             <div>
