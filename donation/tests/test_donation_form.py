@@ -222,10 +222,10 @@ class DonationFormTestCase(StaticLiveServerTestCase):
             time.sleep(5)
         self.assert_warnings(1)
 
-    # def test_direct_donation(self):
-    #     self.selenium.get('%s%s' % (self.live_server_url, '/pledge_new/?charity=test_charity'))
-    #     self.assertTrue(
-    #         'Test Charity' in self.selenium.find_element_by_css_selector('form').find_element_by_css_selector(
-    #             'h2').text)
-    #     self.complete_form(bank_transfer=True, charity='test_charity')
-    #     self.assert_is_not_final_screen()
+    def test_direct_donation(self):
+        self.selenium.get('%s%s' % (self.live_server_url, '/pledge_new/?charity=test_charity'))
+        self.assertTrue(
+            'Test Charity' in self.selenium.find_element_by_css_selector('form').find_element_by_css_selector(
+                'h2').text)
+        self.complete_form(bank_transfer=True, charity='test_charity')
+        self.assert_is_on_final_screen()
