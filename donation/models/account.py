@@ -31,5 +31,5 @@ class XeroReconciledDate(models.Model):
         # Reload up-to-date data from xero after advancing the date
         # Do it on on user's thread not via celery for obviousness.
         # Lazy imports because circular dependencies
-        from tasks import import_trial_balance
+        from donation.eaaxero import import_trial_balance
         import_trial_balance.delay()
