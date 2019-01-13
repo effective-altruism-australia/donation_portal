@@ -54,7 +54,7 @@ def email_receipt(receipt_id):
             received_date = receipt.bank_transaction.date
             date_str = received_date.strftime('%-d %b %Y')
         else:
-            received_date = arrow.get(receipt.pin_transaction.date).to(settings.TIME_ZONE).date()
+            received_date = arrow.get(receipt.pin_transaction.date).to(settings.TIME_ZONE)
             date_str = received_date.strftime('%-d %b %Y at %-I:%M%p')
 
         eofy_receipt_date = (arrow.get(received_date)

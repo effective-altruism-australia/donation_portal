@@ -45,12 +45,12 @@ class EmailTestCase(TestCase):
         self.assert_emails_sent()
 
     def test_gift_notification(self):
-        send_gift_notification(self.pledge.id)
+        send_gift_notification(self.bank_transaction.donation.id)
         self.assertFalse(self.pledge.gift_message_sent)
         self.pledge.is_gift = True
         self.pledge.gift_recipient_email = 'test@example.com'
         self.pledge.save()
-        send_gift_notification(self.pledge.id)
+        send_gift_notification(self.bank_transaction.donation.id)
         self.pledge.refresh_from_db()
         self.assertTrue(self.pledge.gift_message_sent)
         self.assert_emails_sent()
