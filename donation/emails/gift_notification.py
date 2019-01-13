@@ -18,7 +18,10 @@ def send_gift_notification(donation_id):
         context = {
             'pledge': pledge,
             'donation': donation,
-            'personal_message': mark_safe(pledge.gift_personal_message)
+            'personal_message': mark_safe(pledge.gift_personal_message),
+            'components': donation.components.exclude(pledge_component__partner_charity__slug_id__in=[
+                'unallocated', 'eaa'  # We don't include descriptions / bios for these internal allocations.
+            ])
         }
         body_html = render_to_string('gift_message.html', context)
         body_plain_txt = render_to_string('gift_message.txt', context)
