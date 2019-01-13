@@ -1,0 +1,44 @@
+[
+  {
+    "slug_id": "against-malaria",
+    "bio": "The Against Malaria Foundation (AMF) provides long-lasting insecticide-treated nets (LLINs) as protection against malaria. Malaria, transmitted via infected mosquitoes, kills just under half a million people every year according to the World Health Organization (WHO); 70% of the deaths are of children under five. It is one of the world's largest killers of pregnant women, one of the leading causes of child deaths in Africa and a major obstacle to social and economic development in sub-Saharan Africa, where 90% of malaria deaths occur.",
+    "website": "https://www.againstmalaria.com/",
+    "impact_text": "Provides {0} bednets to protect against malaria",
+    "impact_cost": 5.5673
+  },
+  {
+    "slug_id": "de-worm",
+    "bio": "Deworm the World Initiative works with governments to support national school-based deworming programs that treat more than 160 million children for parasitic worm infections annually in India, Kenya, Vietnam, and Ethiopia. Deworm the World is one of the programs run by an organisation called Evidence Action. Evidence Action is dedicated to scaling up cost-effective interventions that are supported by rigorous evidence. They oversees three initiatives, however we have partnered with Evidence Action to help scale their deworming programs as these are considered to be particularly cost-effective.",
+    "website": "https://www.evidenceaction.org/dewormtheworld",
+    "impact_text": "Deworms {0} children (estimated costs going forward not including drug costs or government costs)",
+    "impact_cost": 0.60686
+  },
+  {
+    "slug_id": "sci",
+    "bio": "Worms and other parasitic and bacterial Neglected Tropical Diseases (NTDs) affect two billion people worldwide, most of whom live on less than $2 a day. The most deadly of these is schistosomiasis, which the WHO estimates is responsible for 200,000 deaths a year. Another 300 million, roughly the population of the United States, suffer from severe illness, and half of those are school-aged children. NTDs are responsible for a range of serious health problems from malnutrition, to impaired cognitive development, to blindness. They can increase the morbidity and mortality of malaria, tuberculosis and HIV/AIDS, and infected children are often too sick to attend school. Schistosomiasis Control Initiative (SCI) works with governments across sub-Saharan Africa to create or scale up mass school-based deworming programs, which have a strong track record of success. These programs provide school children with pills that protect against the most prevalent NTDs.",
+    "website": "http://www.imperial.ac.uk/schistosomiasis-control-initiative",
+    "impact_text": "Protects {0} children from schistosomiasis for one year.",
+    "impact_cost": 0.60686
+  },
+  {
+    "slug_id": "give-directly",
+    "bio": "GiveDirectly provides unconditional cash transfers to extremely poor households in Kenya and Uganda. Recipients are selected using objective criteria like housing material. GiveDirectly then transfers US$1,000 directly to recipients using mobile payments technology, and recipients use the money to pursue their own goals. Rigorous evaluation has shown that recipients use their transfers for a range of purchases, including food, medical and education expenses, durables, home improvement, social events, iron roofs, livestock, and furniture.",
+    "website": "https://www.givedirectly.org/",
+    "impact_text": "Provides {0} AUD cash directly to people to use as they wish.",
+    "impact_cost": 1
+  },
+  {
+    "slug_id": "gd-basic-income",
+    "bio": "GiveDirectly provides unconditional cash transfers to extremely poor households in Kenya and Uganda. Recipients are selected using objective criteria like housing material. GiveDirectly then transfers US$1,000 directly to recipients using mobile payments technology, and recipients use the money to pursue their own goals. Rigorous evaluation has shown that recipients use their transfers for a range of purchases, including food, medical and education expenses, durables, home improvement, social events, iron roofs, livestock, and furniture.",
+    "website": "https://givedirectly.org/basic-income",
+    "impact_text": "Provides {0} AUD cash directly to people to use as they wish.",
+    "impact_cost": 1
+  },
+  {
+    "slug_id": "malaria-consortium",
+    "bio": "Malaria Consortium conducts a range of programs for the prevention, control and treatment of malaria and other communicable diseases. Malaria, a disease transmitted via infected mosquitoes, kills just under half a million people every year, with children under five the most vulnerable to infection. Part of Malaria Consortium's approach to malaria prevention is supporting seasonal malaria chemoprevention (SMC) programs in areas where the malaria burden is particularly high for a few months of the year, an approach recommended by the World Health Organization. We have partnered with Malaria Consortium to support SMC programs as these are considered to be particularly cost-effective.",
+    "website": "https://www.malariaconsortium.org/",
+    "impact_text": "Protects {0} children from malaria for one year.",
+    "impact_cost": 6.2797
+  }
+]

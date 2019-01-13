@@ -56,6 +56,15 @@ class Receipt(models.Model):
     def pdf_receipt_location(self):
         return os.path.join(settings.MEDIA_ROOT, 'receipts', 'EAA_Receipt_{0}.pdf'.format(self.pk))
 
+    @property
+    def donation(self):
+        if self.bank_transaction:
+            return self.bank_transaction.donation
+        elif self.pin_transaction:
+            return self.pin_transaction.donation
+        else:
+            raise StandardError('Expected a bank or pin transaction')
+
     def save(self, *args, **kwargs):
         # Generate a secret for credit card receipts so that people can download them.
         if self.pin_transaction and not self.secret:

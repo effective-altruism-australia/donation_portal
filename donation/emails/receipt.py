@@ -3,7 +3,7 @@ import time
 import arrow
 import pdfkit
 from django.conf import settings
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
@@ -23,7 +23,7 @@ def create_and_send_receipt(sender, instance, created, **kwargs):
             raise Exception("Receipt already sent.")
         try:
             if receipt.pledge.is_gift and not receipt.pledge.gift_message_sent:
-                send_gift_notification.delay(receipt.pledge.id)
+                send_gift_notification.delay(receipt.donation.id)
             # Store receipts in database, for auditing purposes
             receipt.receipt_html = render_to_string('receipts/receipt.html',
                                                     {'unique_reference': receipt.pk,
@@ -63,15 +63,16 @@ def email_receipt(receipt_id):
                              .shift(years=+1 if received_date.month > 6 else 0)
                              .date())
 
-        body = render_to_string('receipts/receipt_message.txt',
-                                {'pledge': receipt.pledge,
-                                 'transaction': receipt.transaction,
-                                 'date_str': date_str,
-                                 'eofy_receipt_date': eofy_receipt_date,
-                                 })
-        message = EmailMessage(
+        context = {'pledge': receipt.pledge,
+                   'transaction': receipt.transaction,
+                   'date_str': date_str,
+                   'eofy_receipt_date': eofy_receipt_date,
+                   }
+        body_plain_txt = render_to_string('receipts/receipt_message.txt', context)
+        body_html = render_to_string('receipts/receipt_message.html', context)
+        message = EmailMultiAlternatives(
             subject='Receipt for your donation to Effective Altruism Australia',
-            body=body,
+            body=body_plain_txt,
             to=[receipt.pledge.email],
             # There is a filter in info@eaa.org.au
             #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
@@ -80,6 +81,7 @@ def email_receipt(receipt_id):
             bcc=[settings.EAA_INFO_EMAIL],
             from_email=settings.POSTMARK_SENDER,
         )
+        message.attach_alternative(body_html, "text/html")
         message.attach_file(receipt.pdf_receipt_location, mimetype='application/pdf')
         message.send()
         receipt.time_sent = timezone.now()

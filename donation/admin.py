@@ -172,6 +172,10 @@ class ReferralSourceAdmin(VersionAdmin):
     list_filter = ('enabled', )
     ordering = ('order', )
 
+class PartnerCharityAdmin(VersionAdmin):
+    fields = ('name', 'slug_id', 'email', 'xero_account_name', 'active', 'thumbnail', 'bio', 'website',
+              'impact_text', 'impact_cost')
+
 
 admin.site.register(Pledge, PledgeAdmin)
 admin.site.register(BankTransaction, BankTransactionAdmin)

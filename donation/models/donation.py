@@ -49,3 +49,9 @@ class DonationComponent(models.Model):
 
     class Meta:
         managed = False
+
+    def impact_str(self):
+        return self.pledge_component.partner_charity.impact_str(self.amount)
+
+    def amount_str(self):
+        return '${:0,.0f}'.format(self.amount)

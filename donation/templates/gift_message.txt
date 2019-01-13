@@ -1,11 +1,13 @@
 Dear {{ pledge.gift_recipient_name }},
 
-{{ pledge.first_name }} {{ pledge.last_name }} has made a donation of ${{ pledge.amount }} on your behalf to Effective Altruism Australia, designated for {{ pledge.partner_charity_str }}.
+{{ pledge.first_name }} has made a donation of ${{ donation.amount }} on your behalf to Effective Altruism
+Australia, which will be granted in full to {{ pledge.partner_charity_str }}.
 
-For more information please see https://effectivealtruism.org.au/.
-
-Best wishes,
-
-Effective Altruism Australia
+Message from {{ pledge.first_name }}:
 
 {{ personal_message }}
+
+----
+
+You received this email because the donor opted to send you an email as part of their donation. You have not been
+signed up to any mailing lists because of this.

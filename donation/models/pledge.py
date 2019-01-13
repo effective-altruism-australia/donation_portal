@@ -122,3 +122,4 @@ class PledgeComponent(models.Model):
 
     def __unicode__(self):
         return "${0.amount} to {0.partner_charity}".format(self)
+
