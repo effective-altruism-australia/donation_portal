@@ -7,7 +7,7 @@ import tempfile
 import pdfkit
 from PyPDF2 import PdfFileReader, PdfFileMerger
 from django.conf import settings
-from django.core.mail import EmailMessage, get_connection
+from django.core.mail import EmailMultiAlternatives, get_connection
 from django.db.models.functions import Lower
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -64,18 +64,20 @@ def send_eofy_receipts(test=True, year=None):
 
             merger.write(eofy_receipt.pdf_receipt_location)
 
-            body = render_to_string('receipts/eofy_receipt_message.txt',
-                                    {'first_name': pledge.first_name,
-                                     'two_digit_year': year - 2000,
-                                     })
+            context = {'first_name': pledge.first_name,
+                       'two_digit_year': year - 2000,
+                       }
+            body_html = render_to_string('receipts/eofy_receipt_message.html', context)
+            body_plain_txt = render_to_string('receipts/eofy_receipt_message.txt', context)
 
-            message = EmailMessage(
+            message = EmailMultiAlternatives(
                 subject='EOFY Receipt from Effective Altruism Australia',
-                body=body,
+                body=body_plain_txt,
                 to=[email],
                 bcc=["info+receipts@eaa.org.au"],
                 from_email=settings.POSTMARK_SENDER,
             )
+            message.attach_alternative(body_html, "text/html")
             message.attach_file(eofy_receipt.pdf_receipt_location, mimetype='application/pdf')
             if not test or email == "@".join(["shop", "bentoner.com"]):
                 get_connection().send_messages([message])
