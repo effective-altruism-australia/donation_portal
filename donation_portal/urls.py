@@ -21,42 +21,8 @@ from donation.views.accounting import accounting_reconciliation, donation_counte
 from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
 from donation.views.form_data import PartnerCharityView, ReferralSourceView
 from donation.views.pledge import PledgeView, download_receipt, PledgeViewOld, PledgeJS
-from datetime import date
-
-import arrow
-from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
-from django.db.models import Max, Sum, Min, F
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-
-from donation.forms import DateRangeSelector
-from donation.models import XeroReconciledDate, Account, Donation, PartnerCharity, BankTransaction
-from django.utils.safestring import mark_safe
-
-def asdf(request):
-    donation = Donation.objects.get(id=1000004)
-    pledge = donation.pledge
-    assert pledge.is_gift, 'Expected the pledge to be marked as a gift'
-    assert not pledge.gift_message_sent, 'Gift message has already been sent'
-    # charities = []
-    # for component in donation.components.all():
-    #     charities.append(
-    #         {
-    #             'partner': component.pledge_component.partner_charity,
-    #             'impact': component.impact_str(),
-    #             'component': component
-    #         }
-    #     )
-    context = {'pledge': pledge,
-               'donation': donation,
-               'personal_message': mark_safe(pledge.gift_personal_message)
-               }
-    return render(request, 'gift_message.html', context)
 
 urlpatterns = [
-    url(r'^test', asdf, name='asdf-sadfd'),
-
     # Accounting
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
