@@ -99,7 +99,7 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour='*/4')
     },
     'send-partner-charity-reports': {
-        'task': 'donation.tasks.send_partner_charity_reports',
+        'task': 'donation.tasks.send_partner_charity_reports_task',
         'schedule': crontab(minute=0, hour=5, day_of_week='1')
     }
 }
