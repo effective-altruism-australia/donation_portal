@@ -129,7 +129,10 @@ class DonationForm extends Component {
             <div>
                 <h2>100% of your donation will go to support {this.props.charity.name}</h2>
                 {charity_thumbnail}
-            <br/><br/>
+                <br/>
+                <p>
+                    <a href=".">Choose a different program to support</a>
+                </p>
             </div>
         ) : (
             <div>
