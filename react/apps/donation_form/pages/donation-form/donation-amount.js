@@ -34,7 +34,7 @@ class DonationAmount extends Component {
                                    component={customInput}
                                    type="checkbox"/>
                         </div>
-                        <p style={{'padding-left': '20px'}}>
+                        <p style={{'padding-left': '20px', 'padding-top': '20px'}}>
                             I would also like to contribute to covering Effective Altruism Australia's running costs
                         </p>
                     </label>
