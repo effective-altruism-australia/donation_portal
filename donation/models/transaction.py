@@ -44,6 +44,8 @@ class BankTransaction(models.Model):
         if self._state.adding:
             self.find_reference_in_bank_statement_text()
         elif self.reference != self._loaded_reference:
+            # so that if extra whitespace is entered when copy pasting the reference number, it doesn't matter
+            self.reference = self.reference.strip()
             # Reference changed. Delete any existing pledge
             self.pledge = None
         # Things marked 'do_not_reconcile' should have any existing reconciliation removed
