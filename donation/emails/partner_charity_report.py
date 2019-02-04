@@ -50,6 +50,7 @@ def send_partner_charity_reports(test=True):
             ('Date', 'datetime'),
             ('Amount', 'components__amount'),
             ('Fees', 'components__fees'),
+            ('Amount (net)', 'components__amount_net'),
             ('EAA Reference', 'reference'),
             ('First Name', 'pledge__first_name'),
             ('Last Name', 'pledge__last_name'),
@@ -91,9 +92,9 @@ def send_partner_charity_reports(test=True):
             message.send()
 
         except Exception as e:
+            print e.message
             client.captureException()
 
         if not test:
             partner = PartnerCharity.objects.get(id=ids[0])
             PartnerCharityReport(partner=partner, date=end).save()
-

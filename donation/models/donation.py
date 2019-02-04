@@ -46,6 +46,7 @@ class DonationComponent(models.Model):
     donation = models.ForeignKey(Donation, related_name='components', on_delete=models.DO_NOTHING)
     amount = models.FloatField()
     fees = models.FloatField()
+    amount_net = models.FloatField()
 
     class Meta:
         managed = False
