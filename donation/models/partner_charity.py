@@ -17,7 +17,8 @@ def validate_impact_text(impact_text):
 class PartnerCharity(models.Model):
     slug_id = models.CharField(max_length=30, unique=True, null=True)
     name = models.TextField(unique=True, verbose_name='Name (human readable)')
-    email = models.EmailField(help_text="Used to cc the charity on receipts")
+    email = models.EmailField(help_text="Used to send the partner charity reports")
+    email_cc = models.EmailField(null=True, blank=True, help_text="Cced on partner charity reports")
     xero_account_name = models.TextField(help_text="Exact text of incoming donation account in xero")
     active = models.BooleanField(default=True)
     thumbnail = models.CharField(blank=True, null=True, max_length=100)

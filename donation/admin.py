@@ -173,7 +173,7 @@ class ReferralSourceAdmin(VersionAdmin):
     ordering = ('order', )
 
 class PartnerCharityAdmin(VersionAdmin):
-    fields = ('name', 'slug_id', 'email', 'xero_account_name', 'active', 'thumbnail', 'bio', 'website',
+    fields = ('name', 'slug_id', 'email', 'email_cc', 'xero_account_name', 'active', 'thumbnail', 'bio', 'website',
               'impact_text', 'impact_cost')
 
 
