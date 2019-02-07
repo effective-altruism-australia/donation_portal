@@ -75,7 +75,6 @@ def send_partner_charity_reports(test=True):
 
             if partner_obj.email_cc:
                 cc.append(partner_obj.email_cc)
-            print to, cc
             body = render_to_string('partner_report_message.txt', {'name': partner})
             message = EmailMessage(
                 subject='Effective Altruism Australia donation report',
