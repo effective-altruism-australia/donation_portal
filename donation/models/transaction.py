@@ -23,6 +23,10 @@ class BankTransaction(models.Model):
     pledge = models.ForeignKey(Pledge, blank=True, null=True)
     time_reconciled = models.DateTimeField(blank=True, null=True, editable=False)
     bank_account_id = models.TextField()
+    match_future_statement_text = models.BooleanField(
+        default=False, help_text='Tick this box if we should link all future transactions with this text '
+                                 'to the same pledge. This should only be ticked if the text is reasonably unique. '
+                                 'e.g. Do NOT tick it if the text is "donation", or "GiveDirectly" etc.')
 
     def __unicode__(self):
         return ("UNRECONCILED -- " if not self.reconciled else "") + \
@@ -76,7 +80,7 @@ class BankTransaction(models.Model):
             # Next, try to find a pledge by looking for previously reconciled transactions with identical
             # bank_statement_text.
             earlier_references = BankTransaction.objects.filter(bank_statement_text=self.bank_statement_text,
-                                                                pledge__isnull=False,
+                                                                pledge__isnull=False, match_future_statement_text=True
                                                                 ) \
                 .exclude(id=self.id) \
                 .order_by('reference').distinct('reference') \

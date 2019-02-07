@@ -129,7 +129,7 @@ class BankTransactionAdmin(VersionAdmin):
         ("Bank Transaction", {
             'fields': ('date',
                        'amount',
-                       'bank_statement_text',
+                       ('bank_statement_text', 'match_future_statement_text'),
                        'reference',
                        'reconciled',
                        'pledge',
