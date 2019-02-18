@@ -4,8 +4,6 @@ Please find attached the latest donation report from Effective Altruism Australi
 
 This report includes donations received by bank transfer or credit card that have been designated to you. It does not include donations we receive via other mechanisms, in particular our workplace giving programs.
 
-Note from Andrew (5 Feb 19): A new column "Amount (net)" has been added, equal to total donation minus credit card fees. Please update any existing workflows accordingly.
-
 Best wishes,
 
 Effective Altruism Australia
