@@ -108,8 +108,8 @@ class DonationForm extends Component {
                 donation_form.props.router.pushPage('donationResult');
                 ReactGA.event({
                     category: 'Donation',
-                    action: 'Completed',
-                    label: 'Donation',
+                    action: 'SubmitForm',
+                    label: 'SubmitDonationForm'
                 });
             }
         });
