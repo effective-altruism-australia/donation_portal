@@ -13,6 +13,9 @@ import APIService from '../../services/api';
 import {getAllUrlParams} from "../../services/utils";
 import InitialisePin from '../../services/eaa-pin';
 import {setCharity, setDonationResult} from "../../services/reduxStorage/actions";
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('UA-62759567-4');
 
 let valid = require('card-validator');
 
@@ -103,6 +106,11 @@ class DonationForm extends Component {
             } else {
                 donation_form.props.onSubmitResponse(res);
                 donation_form.props.router.pushPage('donationResult');
+                ReactGA.event({
+                    category: 'Donation',
+                    action: 'Completed',
+                    label: 'Donation',
+                });
             }
         });
     }
