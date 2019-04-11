@@ -166,8 +166,8 @@ class ReceiptAdmin(VersionAdmin):
     readonly_fields = ('status',)
     fields = ('status',)
     actions = ['send_receipts', ]
-    search_fields = ['pledge__reference__icontains', 'pledge__first_name__icontains',
-                     'pledge__last_name__icontains', 'email', 'pledge__email',
+    search_fields = ['pledge__reference', 'pledge__first_name',
+                     'email', 'pledge__email',
                      'bank_transaction__reference']
 
 
