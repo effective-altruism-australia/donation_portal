@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 from django.contrib import messages
-
 from reversion.admin import VersionAdmin
 from reversion.models import Revision, Version
 
@@ -76,7 +75,8 @@ class PledgeFundsReceivedFilter(admin.SimpleListFilter):
         if not self.value():
             return Pledge.objects.all()
         # Only payments by bank transfer can be unpaid.
-        paid_pledges_by_bank_transfer = BankTransaction.objects.filter(pledge__isnull=False).values_list('pledge__id', flat=True)
+        paid_pledges_by_bank_transfer = BankTransaction.objects.filter(pledge__isnull=False).values_list('pledge__id',
+                                                                                                         flat=True)
         unpaid = Pledge.objects.filter(payment_method=PaymentMethod.BANK).exclude(id__in=paid_pledges_by_bank_transfer)
         if self.value() == 'No':
             return unpaid
@@ -118,9 +118,9 @@ class BankTransactionAdmin(VersionAdmin):
 
     search_fields = ('bank_statement_text', 'reference')
     readonly_fields = ('date', 'amount', 'bank_statement_text', 'reconciled', 'pledge')
-    list_filter = (BankTransactionReconciliationListFilter, )
-    inlines = (ReceiptInline, )
-    ordering = ('-date', '-id', )
+    list_filter = (BankTransactionReconciliationListFilter,)
+    inlines = (ReceiptInline,)
+    ordering = ('-date', '-id',)
 
     class Meta:
         model = BankTransaction
@@ -166,11 +166,15 @@ class ReceiptAdmin(VersionAdmin):
     readonly_fields = ('status',)
     fields = ('status',)
     actions = ['send_receipts', ]
+    search_fields = ['pledge__reference__icontains', 'pledge__first_name__icontains',
+                     'pledge__last_name__icontains', 'email', 'pledge__email',
+                     'bank_transaction__reference']
 
 
 class ReferralSourceAdmin(VersionAdmin):
-    list_filter = ('enabled', )
-    ordering = ('order', )
+    list_filter = ('enabled',)
+    ordering = ('order',)
+
 
 class PartnerCharityAdmin(VersionAdmin):
     fields = ('name', 'slug_id', 'email', 'email_cc', 'xero_account_name', 'active', 'thumbnail', 'bio', 'website',
@@ -206,7 +210,7 @@ class RevisionAdmin(admin.ModelAdmin):
     readonly_fields = ('user', 'comment', 'date_created')
     search_fields = ('=user__username', '=user__email')
     date_hierarchy = 'date_created'
-    inlines = (VersionInline, )
+    inlines = (VersionInline,)
 
     def has_add_permission(self, request):
         return False
