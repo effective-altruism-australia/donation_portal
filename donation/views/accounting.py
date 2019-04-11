@@ -6,12 +6,13 @@ import arrow
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Max, Sum, Min, F
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 from donation.forms import DateRangeSelector
 from donation.models import XeroReconciledDate, Account, Donation, PartnerCharity, BankTransaction
 
+from raven.contrib.django.raven_compat.models import client
 
 def total_donations_for_partner(start_date, end_date, partner, payment_method=None, after_fees=False):
     # We use the Donation view because I've thought carefully about the time zone handling for that.
@@ -130,8 +131,12 @@ def accounting_reconciliation(request):
                                                                                     'credit_card_after_fees', 'total')}
 
     # This shouldn't/can't happen but it will mess up the reconciliation so let's check.
-    if BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True).exists():
-        raise Exception("Error: transaction reconciled to pledge and also marked 'Do not reconcile'")
+    qs = BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True)
+    if qs.exists():
+        message = "Error: transaction reconciled to pledge and also marked 'Do not reconcile', please check " \
+                  "bank transactions with id: %s" % ', '.join(qs.values_list('id', flat=True))
+        client.captureException("Error: transaction reconciled to pledge and also marked 'Do not reconcile'")
+        return HttpResponse(message)
 
     exceptions = BankTransaction.objects.filter(date__gte=start, date__lte=end).exclude(pledge__isnull=False).order_by(
         'date')
