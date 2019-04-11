@@ -67,7 +67,7 @@ class BankTransaction(models.Model):
             Receipt.objects.create_from_bank_transaction(self)
 
     def reconcile(self):
-        if self.pledge is None:
+        if self.pledge is None and not self.do_not_reconcile:
             if self.reference:
                 # Try to find a matching pledge
                 pledges = Pledge.objects.filter(reference=self.reference)
