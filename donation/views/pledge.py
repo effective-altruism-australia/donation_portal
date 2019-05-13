@@ -1,6 +1,9 @@
 from __future__ import absolute_import
 
+import datetime
 import json
+import os
+import time
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -12,16 +15,13 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from ipware.ip import get_ip
+from raven.contrib.django.raven_compat.models import client
 from redis import StrictRedis
 from rratelimit import Limiter
 
 from donation.forms import PledgeForm, PledgeComponentFormSet, PinTransactionForm, PledgeFormOld
 from donation.models import PaymentMethod, Receipt, PartnerCharity, PinTransaction, RecurringFrequency
 from donation.tasks import send_bank_transfer_instructions_task
-import datetime
-import time
-import requests
-import os
 
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 rate_limiter = Limiter(r,
@@ -83,6 +83,7 @@ class PledgeView(View):
         component_formset = PledgeComponentFormSet(body)
 
         if not (pledge_form.is_valid() and component_formset.is_valid()):
+            client.captureException(', '.join([pledge_form.errors] + component_formset.errors))
             return JsonResponse({
                 'error_message': [pledge_form.errors] + component_formset.errors
             }, status=400)
@@ -102,6 +103,7 @@ class PledgeView(View):
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
             ip = get_ip(request)
+            client.captureException('Hit rate limiter for ip: %s' % ip)
             if not rate_limiter.checked_insert(ip) and not settings.DEBUG and settings.CREDIT_CARD_RATE_LIMIT_ENABLED:
                 return JsonResponse({
                     'error_message': "Our apologies: credit card donations are currently unavailable. "
@@ -113,6 +115,7 @@ class PledgeView(View):
             pin_data['pledge'] = pledge.id
             pin_form = PinTransactionForm(pin_data)
             if not pin_form.is_valid():
+                client.captureException(', '.join(pin_form.errors))
                 return JsonResponse({
                     'error_message': pin_form.errors
                 }, status=400)
@@ -128,6 +131,7 @@ class PledgeView(View):
                 return JsonResponse(response_data)
             else:
                 pin_repsonse_dict = json.loads(transaction.pin_response_text)
+                client.captureException(pin_repsonse_dict['error_description'])
                 return JsonResponse({
                     'error_message': pin_repsonse_dict['error_description'],
                 }, status=400)
