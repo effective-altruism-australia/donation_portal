@@ -103,8 +103,8 @@ class PledgeView(View):
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
             ip = get_ip(request)
-            client.captureException('Hit rate limiter for ip: %s' % ip)
             if not rate_limiter.checked_insert(ip) and not settings.DEBUG and settings.CREDIT_CARD_RATE_LIMIT_ENABLED:
+                client.captureException('Hit rate limiter for ip: %s' % ip)
                 return JsonResponse({
                     'error_message': "Our apologies: credit card donations are currently unavailable. "
                                      "Please try again tomorrow or make a payment by bank transfer.",
