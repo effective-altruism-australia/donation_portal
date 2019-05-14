@@ -83,7 +83,7 @@ class PledgeView(View):
         component_formset = PledgeComponentFormSet(body)
 
         if not (pledge_form.is_valid() and component_formset.is_valid()):
-            client.captureException(', '.join([pledge_form.errors] + component_formset.errors))
+            client.captureMessage(', '.join([pledge_form.errors] + component_formset.errors))
             return JsonResponse({
                 'error_message': [pledge_form.errors] + component_formset.errors
             }, status=400)
@@ -104,7 +104,7 @@ class PledgeView(View):
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
             ip = get_ip(request)
             if not rate_limiter.checked_insert(ip) and not settings.DEBUG and settings.CREDIT_CARD_RATE_LIMIT_ENABLED:
-                client.captureException('Hit rate limiter for ip: %s' % ip)
+                client.captureMessage('Hit rate limiter for ip: %s' % ip)
                 return JsonResponse({
                     'error_message': "Our apologies: credit card donations are currently unavailable. "
                                      "Please try again tomorrow or make a payment by bank transfer.",
@@ -115,7 +115,7 @@ class PledgeView(View):
             pin_data['pledge'] = pledge.id
             pin_form = PinTransactionForm(pin_data)
             if not pin_form.is_valid():
-                client.captureException(', '.join(pin_form.errors))
+                client.captureMessage(', '.join(pin_form.errors))
                 return JsonResponse({
                     'error_message': pin_form.errors
                 }, status=400)
@@ -131,7 +131,7 @@ class PledgeView(View):
                 return JsonResponse(response_data)
             else:
                 pin_repsonse_dict = json.loads(transaction.pin_response_text)
-                client.captureException(pin_repsonse_dict['error_description'])
+                client.captureMessage(pin_repsonse_dict['error_description'])
                 return JsonResponse({
                     'error_message': pin_repsonse_dict['error_description'],
                 }, status=400)
