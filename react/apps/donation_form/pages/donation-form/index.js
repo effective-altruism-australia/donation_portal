@@ -205,6 +205,7 @@ const mapStateToProps = (state) => {
             },
             mode: 'auto',
             subscribe_for_updates: true,
+            frequency: "one-time",
         }
     }
 };
