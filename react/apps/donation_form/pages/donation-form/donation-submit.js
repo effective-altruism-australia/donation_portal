@@ -12,7 +12,7 @@ class DonationSubmit extends Component {
         <div className="form-actions">
             <button type="submit" className="btn btn-success btn-lg"
                     disabled={
-                        this.props.submitting || this.props.donation.frequency == null || this.props.donation.amount == null
+                        this.props.submitting
                     }>Donate</button>
         </div>
     )}
