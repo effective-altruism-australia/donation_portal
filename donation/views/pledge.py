@@ -83,7 +83,7 @@ class PledgeView(View):
         component_formset = PledgeComponentFormSet(body)
 
         if not (pledge_form.is_valid() and component_formset.is_valid()):
-            client.captureMessage(', '.join([pledge_form.errors] + component_formset.errors))
+            client.captureMessage(str(pledge_form.errors) + str(component_formset.errors))
             return JsonResponse({
                 'error_message': [pledge_form.errors] + component_formset.errors
             }, status=400)
@@ -115,7 +115,7 @@ class PledgeView(View):
             pin_data['pledge'] = pledge.id
             pin_form = PinTransactionForm(pin_data)
             if not pin_form.is_valid():
-                client.captureMessage(', '.join(pin_form.errors))
+                client.captureMessage(str(pin_form.errors))
                 return JsonResponse({
                     'error_message': pin_form.errors
                 }, status=400)
