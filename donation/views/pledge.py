@@ -123,7 +123,7 @@ class PledgeView(View):
             if not pin_form.is_valid():
                 client.captureMessage(str(pin_form.errors))
                 return JsonResponse({
-                    'error_message': pin_form.errors
+                    'error_message': "There was a problem submitting your donation. Please contact info@eaa.org.au if problems persist."
                 }, status=400)
 
             transaction = pin_form.save()
@@ -139,7 +139,7 @@ class PledgeView(View):
                 pin_repsonse_dict = json.loads(transaction.pin_response_text)
                 client.captureMessage(pin_repsonse_dict['error_description'])
                 return JsonResponse({
-                    'error_message': pin_repsonse_dict['error_description'],
+                    'error_message': "There was a problem submitting your donation. Please contact info@eaa.org.au if problems persist.",
                 }, status=400)
 
         else:

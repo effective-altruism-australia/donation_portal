@@ -106,8 +106,7 @@ class DonationForm extends Component {
         service.submit(response_data).then((res) => {
             if (res.error_message) {
                 donation_form.setState({
-                    // We shouldn't ever hit this.
-                    error_message: 'There was a problem submitting your donation. Please try again later.',
+                    error_message: res.error_message,
                     submitting: false
                 });
             } else {
@@ -189,6 +188,12 @@ class DonationForm extends Component {
                         <p className="help-text">Having a problem donating?
                             Please let us know at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a>.
                         </p>
+                        {
+                            this.state.error_message &&
+                            <div className="text-danger" align="right">
+                                {this.state.error_message}
+                            </div>
+                        }
                         <DonationSubmit router={this.props.router} submitting={this.state.submitting}/>
                     </div>
                     <DonationFaq/>

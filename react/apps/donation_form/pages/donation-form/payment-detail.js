@@ -60,12 +60,6 @@ class PaymentDetail extends Component {
                 <div className="payment-subsections" id="id_payment_options">
                     {detailSection}
                 </div>
-                {
-                    this.props.error_message &&
-                    <div className="text-danger" align="right">
-                        {this.props.error_message}
-                    </div>
-                }
             </div>
         )
     }
