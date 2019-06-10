@@ -85,7 +85,13 @@ class PledgeView(View):
         if not (pledge_form.is_valid() and component_formset.is_valid()):
             client.captureMessage(str(pledge_form.errors) + str(component_formset.errors))
             return JsonResponse({
-                'error_message': [pledge_form.errors] + component_formset.errors
+                'error_message': "There was a problem submitting your donation. Please contact info@eaa.org.au if problems persist."
+            }, status=400)
+
+        total = sum([component.instance.amount for component in component_formset.forms])
+        if total < 2:
+            return JsonResponse({
+                'error_message': "The minimum donation possible is $2.",
             }, status=400)
 
         with django_transaction.atomic():
