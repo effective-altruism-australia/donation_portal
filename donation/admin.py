@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django import forms
 from django.contrib import admin
 from django.contrib import messages
 from reversion.admin import VersionAdmin
@@ -112,10 +113,20 @@ class ReceiptInline(admin.TabularInline):
         return False
 
 
+class BankTransactionForm(forms.ModelForm):
+    model = BankTransaction
+    def clean(self):
+        form_data = super(BankTransactionForm, self).clean()
+        if form_data['do_not_reconcile'] and form_data['reference']:
+            self.add_error('do_not_reconcile', 'If do not reconcile is ticked, there should not be any reference')
+
+        return form_data
+
+
 class BankTransactionAdmin(VersionAdmin):
     # TODO make a filter for needs_to_be_reconciled transactions
     # https://docs.djangoproject.com/en/1.8/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
-
+    form = BankTransactionForm
     search_fields = ('bank_statement_text', 'reference')
     readonly_fields = ('date', 'amount', 'bank_statement_text', 'reconciled', 'pledge')
     list_filter = (BankTransactionReconciliationListFilter,)
