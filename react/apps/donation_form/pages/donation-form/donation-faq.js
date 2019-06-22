@@ -7,7 +7,7 @@ export default function DonationFaq(props) { return (
             What credit cards do you accept?
         </p>
         <p className="payment-faq-answer">
-            We accept Visa and Mastercard. Sorry, we do not accept American Express at this time.
+            We accept Visa, Mastercard and American Express.
         </p>
         <p className="payment-faq-question">
             Are credit card donations secure?

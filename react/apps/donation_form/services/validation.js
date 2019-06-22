@@ -41,9 +41,6 @@ export const cvv = value =>
         : undefined;
 export function cardNumber(value) {
     let validated = valid.number(value);
-    if (validated.isValid && validated.card.type === 'american-express'){
-        return 'Sorry, we do not accept American Express at this time'
-    }
     return value && !validated.isValid
         ? 'Invalid credit card number'
         : undefined;
