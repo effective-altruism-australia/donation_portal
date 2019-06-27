@@ -116,6 +116,13 @@ class PledgeView(View):
                                      "Please try again tomorrow or make a payment by bank transfer.",
                 }, status=400)
 
+            if pledge.amount > 6000:
+                client.captureMessage('User attempted credit card donation over $6K')
+                return JsonResponse({
+                    'error_message': "Our apologies: we can only accept credit card donations of up to $6000 AUD.  "
+                                     "Please use bank transfer or make multiple smaller donations.",
+                }, status=400)
+
             pin_data = body.get('pin_response')
             pin_data['amount'] = pledge.amount
             pin_data['pledge'] = pledge.id
