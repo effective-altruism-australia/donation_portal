@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import 'react-datepicker/dist/react-datepicker.css';
 import {Field, formValueSelector} from 'redux-form'
-import {maxLength100, required} from "../../services/validation";
+import {maxLength100, required, email} from "../../services/validation";
 import {customInput} from "../../components/custom-fields";
 
 class DonationAsGift extends Component {
@@ -55,7 +55,7 @@ class DonationAsGift extends Component {
                                            name="gift.recipient_email"
                                            component={customInput}
                                            placeholder="Email"
-                                           validate={[required, maxLength100]}
+                                           validate={[required, maxLength100, email]}
                                     />
                                 </div>
                             </div>
