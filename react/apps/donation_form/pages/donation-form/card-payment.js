@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Field} from 'redux-form'
-import {cardNumber, cvv, expirationDate, required} from "../../services/validation";
+import {cardNumber, minLength3, expirationDate, required} from "../../services/validation";
 import {cardNumberInput, customInput} from "../../components/custom-fields";
 
 class CardPaymentDetails extends Component {
@@ -92,7 +92,7 @@ class CardPaymentDetails extends Component {
                                        name="payment.cardCVC"
                                        component={customInput}
                                        type="text" placeholder="CVC"
-                                       validate={[cvv, required]}/>
+                                       validate={[minLength3, required]}/>
                             </div>
                         </div>
                     </div>

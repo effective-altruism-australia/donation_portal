@@ -7,6 +7,7 @@ export const maxLength100 = maxLength(100);
 export const minLength = min => value =>
     value && value.length < min ? `Must be ${min} characters or more` : undefined;
 export const minLength2 = minLength(2);
+export const minLength3 = minLength(3);
 const number = value =>
     value && isNaN(Number(value)) ? 'Must be a number' : undefined;
 const minValue = min => value =>
@@ -36,7 +37,7 @@ export const expirationDate = value =>
         ? 'Invalid expiration date'
         : undefined;
 export const cvv = value =>
-    value && !valid.cvv(value, 4).isValid
+    value && !valid.cvv(value, 3).isValid
         ? 'Invalid CVV'
         : undefined;
 export function cardNumber(value) {
