@@ -84,7 +84,7 @@ class DonationForm extends Component {
                 response_data.pin_response.ip_address = response.ip_address;
                 callBack(response_data, donation_form)
             } else {
-                this.setState({
+                donation_form.setState({
                     error_message: response.messages[0].message
                 });
                 donation_form.setState({
