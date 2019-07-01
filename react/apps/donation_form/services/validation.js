@@ -36,7 +36,7 @@ export const expirationDate = value =>
         ? 'Invalid expiration date'
         : undefined;
 export const cvv = value =>
-    value && !valid.cvv(value, 3).isValid // Set max length as 3, as we do not accept American Express
+    value && !valid.cvv(value, 4).isValid
         ? 'Invalid CVV'
         : undefined;
 export function cardNumber(value) {
