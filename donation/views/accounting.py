@@ -8,22 +8,29 @@ from django.core.urlresolvers import reverse
 from django.db.models import Max, Sum, Min, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
+from raven.contrib.django.raven_compat.models import client
 
 from donation.forms import DateRangeSelector
 from donation.models import XeroReconciledDate, Account, Donation, PartnerCharity, BankTransaction
 
-from raven.contrib.django.raven_compat.models import client
 
-def total_donations_for_partner(start_date, end_date, partner, payment_method=None, after_fees=False):
+def total_donations_for_partner(start_date, end_date, partner, payment_method=None, after_fees=False, card_type=None):
     # We use the Donation view because I've thought carefully about the time zone handling for that.
     # If you were to use the PinTransaction model directly to calculate total credit card donations,
     # you need to think more carefully about time zones.
+    filters = {
+        'date__gte': start_date,
+        'date__lt': arrow.get(end_date).shift(days=1).date(),
+        'components__pledge_component__partner_charity': partner,
+    }
+    if payment_method:
+        filters['payment_method'] = payment_method
+
+    if card_type:
+        filters['pin_transaction__card_type'] = card_type
+
     return Donation.objects \
-                .filter(**({'payment_method': payment_method} if payment_method else {})) \
-               .filter(date__gte=start_date,
-                       date__lt=arrow.get(end_date).shift(days=1).date(),
-                       # use date_lt rather than date_lte so that it shows same-day credit card donations
-                       components__pledge_component__partner_charity=partner) \
+               .filter(**filters) \
                .annotate(amount_maybe_less_fees=F('components__amount') - (F('components__fees') if after_fees else 0)) \
                .aggregate(Sum('amount_maybe_less_fees'))['amount_maybe_less_fees__sum'] or 0
 
@@ -60,14 +67,15 @@ def donation_counter(request):
     # We don't do the accounting in a way that provides daily data so this is not possible to improve.
     error_message = ''
     if (xero_start_date <= xero_reconciled_date and xero_start_date.day != 1) or \
-                    arrow.get(xero_end_date).replace(days=1).date().day != 1:
+            arrow.get(xero_end_date).replace(days=1).date().day != 1:
         error_message = "You must specify complete months for this period because of the way we do the accounting" + \
                         " in xero. Please set the start date to the start of a month and the end date to the end of" + \
                         " a month."
 
     totals = {partner.name: float(Account.objects
-                             .filter(date__gte=xero_start_date, date__lte=xero_end_date, name=partner.xero_account_name)
-                             .aggregate(Sum('amount'))['amount__sum'] or 0) +
+                                  .filter(date__gte=xero_start_date, date__lte=xero_end_date,
+                                          name=partner.xero_account_name)
+                                  .aggregate(Sum('amount'))['amount__sum'] or 0) +
                             float(total_donations_for_partner(django_start_date, django_end_date, partner))
               for partner in PartnerCharity.objects.all().order_by('name')}
 
@@ -80,13 +88,14 @@ def donation_counter(request):
     # Temporary hack - these will be included in the partners soon.
     # Add donations present in xero but not in the partners
     for account_description, account_name in [
-        ("TBD - for partner charity of our choice", "Donations received - for partner charity of our choice (250-PARTNE)"),
+        ("TBD - for partner charity of our choice",
+         "Donations received - for partner charity of our choice (250-PARTNE)"),
         ("Unrestricted", "Donations received - Unrestricted (251)")
-        ]:
+    ]:
         account_total = (Account.objects
-                     .filter(date__gte=xero_start_date, date__lte=xero_end_date,
-                             name=account_name)
-                     .aggregate(Sum('amount'))['amount__sum'] or 0)
+                         .filter(date__gte=xero_start_date, date__lte=xero_end_date,
+                                 name=account_name)
+                         .aggregate(Sum('amount'))['amount__sum'] or 0)
         if account_total:
             totals[account_description] = float(account_total)
 
@@ -121,13 +130,20 @@ def accounting_reconciliation(request):
 
     totals = {partner.name:
                   {'bank': total_donations_for_partner(start, end, partner, payment_method='Bank transfer'),
+                   'visa': total_donations_for_partner(start, end, partner, payment_method='Credit card',
+                                                       card_type='visa'),
+                   'master': total_donations_for_partner(start, end, partner, payment_method='Credit card',
+                                                         card_type='master'),
+                   'amex': total_donations_for_partner(start, end, partner, payment_method='Credit card',
+                                                       card_type='american_express'),
                    'credit_card': total_donations_for_partner(start, end, partner, payment_method='Credit card'),
                    'credit_card_after_fees': total_donations_for_partner(start, end, partner,
                                                                          payment_method='Credit card', after_fees=True),
                    'total': total_donations_for_partner(start, end, partner)}
               for partner in PartnerCharity.objects.all().order_by('name')}
 
-    grand_total = {kind: sum(total[kind] for total in totals.values()) for kind in ('bank', 'credit_card',
+    grand_total = {kind: sum(total[kind] for total in totals.values()) for kind in ('bank', 'visa', 'master', 'amex',
+                                                                                    'credit_card',
                                                                                     'credit_card_after_fees', 'total')}
 
     # This shouldn't/can't happen but it will mess up the reconciliation so let's check.
