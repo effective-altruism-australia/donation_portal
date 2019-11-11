@@ -57,7 +57,8 @@ def send_partner_charity_reports(test=True):
             ('Email', 'pledge__email'),
             ('Payment method', 'payment_method'),
             ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
-            ('Designation', 'components__pledge_component__partner_charity__name')
+            ('Designation', 'components__pledge_component__partner_charity__name'),
+            ('Source', 'pledge__how_did_you_hear_about_us_db__reason'),
         ])
 
         filename = 'EAA donation report - {0} - {1}.xlsx'.format(partner,
