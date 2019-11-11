@@ -58,6 +58,7 @@ def send_partner_charity_reports(test=True):
             ('Payment method', 'payment_method'),
             ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
             ('Designation', 'components__pledge_component__partner_charity__name'),
+            ('Recurring (monthly)', 'pledge__recurring'),
             ('Source', 'pledge__how_did_you_hear_about_us_db__reason'),
         ])
 
