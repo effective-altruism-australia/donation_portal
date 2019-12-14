@@ -96,10 +96,12 @@ class DonationForm extends Component {
 
     submitForm(response_data, donation_form) {
         if (response_data.donation.amount === undefined) {
-            window.alert('Please select a donation amount');
-            donation_form.setState({
-                submitting: false
-            });
+            if (!(response_data.donation.will_contribute && response_data.donation.contribute !== undefined)) {
+                window.alert('Please select a donation amount');
+                donation_form.setState({
+                    submitting: false
+                });
+            }
             return
         }
         let service = new APIService();
