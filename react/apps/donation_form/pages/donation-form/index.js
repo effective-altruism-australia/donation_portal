@@ -101,8 +101,8 @@ class DonationForm extends Component {
                 donation_form.setState({
                     submitting: false
                 });
+                return
             }
-            return
         }
         let service = new APIService();
         service.submit(response_data).then((res) => {
