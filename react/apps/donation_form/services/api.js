@@ -23,30 +23,34 @@ export default class APIService {
         pledge_clean.first_name = pledge_raw.name.split(' ').slice(0, -1).join(' ');
         pledge_clean.last_name = pledge_raw.name.split(' ').slice(-1).join(' ');
         pledge_clean.email = pledge_raw.email;
-
-        if (pledge_raw.mode === 'auto') {
-            let amount = null;
-            if (pledge_raw.amount.preset === 'other') {
-                amount = pledge_raw.amount.value;
-            } else {
-                amount = pledge_raw.amount.preset;
-            }
-
-            let charity = 'unallocated';
-            if (data.charity) {
-                charity = data.charity.slug_id
-            }
-            pledge_raw.components = [{'charity': charity, 'amount': amount}];
-        } else if (pledge_raw.mode === 'custom') {
-            pledge_raw.components = [];
-            for (let charity in pledge_raw.amount) {
-                if (charity === 'preset') {
-                    continue;
+    
+        if (pledge_raw.amount!==undefined) {
+            if (pledge_raw.mode === 'auto') {
+                let amount = null;
+                if (pledge_raw.amount.preset === 'other') {
+                    amount = pledge_raw.amount.value;
+                } else {
+                    amount = pledge_raw.amount.preset;
                 }
-                if (pledge_raw.amount[charity] !== "0") {
-                    pledge_raw.components.push({'charity': charity, 'amount': pledge_raw.amount[charity]});
+
+                let charity = 'unallocated';
+                if (data.charity) {
+                    charity = data.charity.slug_id
+                }
+                pledge_raw.components = [{'charity': charity, 'amount': amount}];
+            } else if (pledge_raw.mode === 'custom') {
+                pledge_raw.components = [];
+                for (let charity in pledge_raw.amount) {
+                    if (charity === 'preset') {
+                        continue;
+                    }
+                    if (pledge_raw.amount[charity] !== "0") {
+                        pledge_raw.components.push({'charity': charity, 'amount': pledge_raw.amount[charity]});
+                    }
                 }
             }
+        } else {
+            pledge_raw.components = []
         }
 
         if (pledge_raw.will_contribute) {
