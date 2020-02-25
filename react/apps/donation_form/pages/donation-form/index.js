@@ -143,7 +143,7 @@ class DonationForm extends Component {
             <img src={window.site_root.concat("/static/" + this.props.charity.thumbnail)}/>) : '';
         const donationMode = (this.props.charity) ? (
             <div>
-                <h2>100% of your donation will go to support {this.props.charity.name}</h2>
+                <h2>Your donation will go to support {this.props.charity.name}</h2>
                 {charity_thumbnail}
                 <br/>
                 <p>
@@ -152,7 +152,6 @@ class DonationForm extends Component {
             </div>
         ) : (
             <div>
-                <h2>100% of your donation will go to support our partner charities</h2>
                 <DonationModeOptions/>
             </div>
         );
@@ -218,7 +217,7 @@ const mapStateToProps = (state) => {
                 method: 'credit-card'
             },
             mode: 'auto',
-            subscribe_for_updates: true,
+            subscribe_for_updates: false,
             frequency: "one-time",
         }
     }

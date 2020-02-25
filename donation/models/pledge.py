@@ -55,6 +55,11 @@ class Pledge(models.Model):
     how_did_you_hear_about_us_db = models.ForeignKey(ReferralSource, blank=True, null=True, on_delete=models.PROTECT,
                                                      verbose_name='How did you hear about us?')
 
+    subscribe_to_newsletter = models.BooleanField(default=False, verbose_name='Subscribe me to the global Effective Altruism newsletter')
+    connect_to_community = models.BooleanField(default=False, verbose_name='Connect me with my local Effective Altruism community')
+    postcode = models.CharField(max_length=20, null=True, blank=True)
+    country = models.CharField(max_length=50, null=True, blank=True)
+
     is_gift = models.BooleanField(default=False)
     gift_recipient_name = models.CharField(max_length=100, blank=True, null=True)
     gift_recipient_email = models.EmailField(blank=True, null=True)

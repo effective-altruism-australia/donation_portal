@@ -61,7 +61,6 @@ class CharityList extends Component {
 
         return (
             <div className="donation-step" id="step-1">
-                <h2>100% of your donation will be granted to the charity of your choice</h2>
                 <h3>Select a charity:</h3>
                 <div className="charities-container">
                     {choices}

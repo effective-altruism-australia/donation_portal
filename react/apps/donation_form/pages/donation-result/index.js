@@ -17,7 +17,7 @@ class DonationResult extends Component {
                     (<div className="payment_option">
                         <h2>Thank you {this.props.form.name}!</h2>
                         <p>
-                            100% of your donation will be granted to {this.props.charity ? this.props.charity.name: 'our partner charities'}.
+                            Your donation will be granted to {this.props.charity ? this.props.charity.name: 'our partner charities'}.
                         </p>
                         <div className="complete-other-info">
                             <p>Here is your <a href={window.site_root.concat(this.props.result.receipt_url)} download target="_blank">receipt</a>. We have also emailed it to you &ndash; please check your spam folder if you have not received it.</p>
@@ -39,7 +39,7 @@ class DonationResult extends Component {
                     <div className="payment_option">
                         <h2>Thank you {this.props.form.name}!</h2>
                         <p>
-                            100% of your donation will be granted to {this.props.charity ? this.props.charity.name: 'our partner charities'}.
+                            Your donation will be granted to {this.props.charity ? this.props.charity.name: 'our partner charities'}.
                         </p>
                         <div className="complete-next-steps">
                             <h3>What to do next?</h3>
@@ -66,7 +66,7 @@ class DonationResult extends Component {
                                 Receipt
                             </h3>
                             <p>
-                                We will send you a tax deductible receipt once we have confirmed the bank transfer.
+                                We will send you a tax deductible receipt <b>once we have confirmed the bank transfer.</b>
                             </p>
 
                             <h3>Any questions?</h3>

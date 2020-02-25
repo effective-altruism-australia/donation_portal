@@ -99,6 +99,34 @@ export default class DonorDetails extends Component {
                         </label>
                     </div>
                 </div>
+
+                <div className="form-group" id="id_formgroup_subscribe_to_newsletter">
+                    <div className="checkbox col-sm-offset-3">
+                        <label htmlFor="id_subscribe_to_newsletter">
+                            <Field
+                                id="id_subscribe_to_newsletter"
+                                name="subscribe_to_newsletter"
+                                type="checkbox"
+                                maxLength="254"
+                                component="input"/>
+                            Subscribe me to the global Effective Altruism newsletter
+                        </label>
+                    </div>
+                </div>
+
+                <div className="form-group" id="id_formgroup_sconnect_to_community">
+                    <div className="checkbox col-sm-offset-3">
+                        <label htmlFor="id_connect_to_community">
+                            <Field
+                                id="id_connect_to_community"
+                                name="connect_to_community"
+                                type="checkbox"
+                                maxLength="254"
+                                component="input"/>
+                            Connect me with my local Effective Altruism community
+                        </label>
+                    </div>
+                </div>
             </div>
         )
     }

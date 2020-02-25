@@ -58,6 +58,8 @@ export default class APIService {
         }
 
         pledge_clean.subscribe_to_updates = pledge_raw.subscribe_for_updates === true;
+        pledge_clean.subscribe_to_newsletter = pledge_raw.subscribe_to_newsletter === true;
+        pledge_clean.connect_to_community = pledge_raw.connect_to_community === true;
 
         pledge_clean.how_did_you_hear_about_us_db = pledge_raw.how_did_hear ?
             pledge_raw.how_did_hear.value : undefined;
@@ -104,6 +106,13 @@ export default class APIService {
             pin_clean.description = 'Donation to Effective Altruism Australia';
 
             pledge_clean.pin_response = pin_clean;
+
+            pledge_clean.country = pin_clean.address_country;
+            pledge_clean.postcode = pin_clean.address_postcode;
+        } else {
+            console.log(pledge_raw);
+            pledge_clean.country = pledge_raw.country;
+            pledge_clean.postcode = pledge_raw.postcode;
         }
 
         return fetch(window.site_root.concat('/pledge_new/'), {

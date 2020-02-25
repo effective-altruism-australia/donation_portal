@@ -103,6 +103,7 @@ class DonationAmount extends Component {
                     </span>
                 )
             }
+            <br/><br/>
         </div>;
 
 
@@ -134,8 +135,8 @@ class DonationAmount extends Component {
         return (
             <div>
                 {modeSwitch}
-                {contributeHeading}
-                {contributeSection}
+                {/*<br/><br/>*/}
+                <p>Donations are inclusive of all transaction fees and operational costs.</p>
                 <div className="total-amount-group">
                     <label className={classNames("control-label", {
                         "col-sm-1": this.props.mode !== 'custom',

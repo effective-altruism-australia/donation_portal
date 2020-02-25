@@ -14,12 +14,12 @@ export class Main extends Component {
         super(props);
         this.pages = {
             "paymentForm": {
-                title: "Make a Donation",
+                title: "Donate",
                 step: 1,
                 component: DonationForm
             },
             "paymentAdvice": {
-                title: "Make a Donation",
+                title: "Donate",
                 step: 1,
                 component: DonationAdvice
             },

@@ -3,6 +3,8 @@ import {connect} from "react-redux";
 import {Radio, RadioGroup} from "react-radio-group";
 import {Field, formValueSelector} from 'redux-form'
 import CardPaymentDetails from "./card-payment";
+import {customInput} from "../../components/custom-fields";
+import {required} from "../../services/validation";
 
 class PaymentDetail extends Component {
     constructor(props) {
@@ -23,6 +25,31 @@ class PaymentDetail extends Component {
             <CardPaymentDetails/>
             :
             <div className="payment-subsection" id="bank-transfer-instructions">
+                <div className="form-group">
+                    <label className="control-label labels col-sm-3"
+                           htmlFor="address-postcode">Postcode</label>
+                    <div className="col-sm-3">
+                        <Field className="form-control cc-form"
+                               name="postcode"
+                               component={customInput}
+                               type="text"
+                               placeholder="Postal Code"
+                               validate={[required]}/>
+                    </div>
+                </div>
+                <div className="form-group">
+                    <label className="control-label labels col-sm-3" htmlFor="address-country">Country</label>
+                    <div className="col-sm-9">
+                        <Field className="form-control cc-form"
+                               name="country"
+                               component={customInput}
+                               type="text"
+                               placeholder="Country"
+                               required=""
+                               aria-required="true"
+                               validate={[required]}/>
+                    </div>
+                </div>
                 <p>After you submit this form, we will give you our account details and a unique reference number.</p>
                 <p>You then need to log in to your bank and make a bank transfer using these details.</p>
             </div>;
