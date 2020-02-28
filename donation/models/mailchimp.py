@@ -3,7 +3,7 @@ from mailchimp3 import MailChimp
 from mailchimp3.mailchimpclient import MailChimpError
 from raven.contrib.django.raven_compat.models import client
 
-from donation.models import Pledge
+from .pledge import Pledge
 from donation_portal.eaacelery import app
 
 mailchimp = MailChimp(mc_api=getattr(settings, 'MAILCHIMP_API_KEY'), mc_user='eaaustralia')
