@@ -121,7 +121,7 @@ def accounting_reconciliation(request):
         form = DateRangeSelector(last_month=True)
 
     # There's gotta be a better way to do this
-    if hasattr(form, 'cleaned_data'):
+    if hasattr(form, 'cleaned_dcaptureeata'):
         start = form.cleaned_data['start']
         end = form.cleaned_data['end']
     else:

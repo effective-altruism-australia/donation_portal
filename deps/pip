@@ -30,6 +30,7 @@ gunicorn==19.6.0
 idna==2.2
 ipaddress==1.0.18
 kombu==3.0.37
+mailchimp3==3.0.13
 mccabe==0.6.1
 mock==2.0.0
 model-mommy==1.6.0

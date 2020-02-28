@@ -98,6 +98,9 @@ class Pledge(models.Model):
         if not self.completed_time:
             self.completed_time = timezone.now()
         super(Pledge, self).save(*args, **kwargs)
+        if self.subscribe_to_updates:
+            from .mailchimp import add_pledge_contact_to_mailchimp
+            add_pledge_contact_to_mailchimp.delay(self.id)
 
     def __unicode__(self):
         components = ', '.join([c.__unicode__() for c in self.components.all()])
