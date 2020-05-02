@@ -41,7 +41,7 @@ export default class APIService {
             } else if (pledge_raw.mode === 'custom') {
                 pledge_raw.components = [];
                 for (let charity in pledge_raw.amount) {
-                    if (charity === 'preset') {
+                    if (charity === 'preset' || charity === 'value') {
                         continue;
                     }
                     if (pledge_raw.amount[charity] !== "0") {
