@@ -83,7 +83,7 @@ class PledgeView(View):
         component_formset = PledgeComponentFormSet(body)
 
         if not (pledge_form.is_valid() and component_formset.is_valid()):
-            client.captureMessage(str(pledge_form.errors) + str(component_formset.errors))
+            client.captureMessage(str(pledge_form.errors) + str(component_formset.errors), data=body)
             return JsonResponse({
                 'error_message': "There was a problem submitting your donation. Please contact info@eaa.org.au if problems persist."
             }, status=400)
