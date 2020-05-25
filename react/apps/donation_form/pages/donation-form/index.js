@@ -217,7 +217,7 @@ const mapStateToProps = (state) => {
                 method: 'credit-card'
             },
             mode: 'auto',
-            subscribe_for_updates: false,
+            subscribe_for_updates: true,
             frequency: "one-time",
         }
     }
