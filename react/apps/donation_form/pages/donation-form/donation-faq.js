@@ -4,6 +4,13 @@ export default function DonationFaq(props) { return (
     <div className="details-section payment-faq">
         <h2>Donation FAQ</h2>
         <p className="payment-faq-question">
+            Are donations tax-deductible in Australia?
+        </p>
+        <p className="payment-faq-answer">
+            Yes! Effective Altruism Australia (ABN 87 608 863 467) is endorsed as a Deductible Gift Recipient (DGR)
+            by the Australian Taxation Office (ATO). Donations of $2 or more are tax deductible in Australia
+        </p>
+        <p className="payment-faq-question">
             When will I get a receipt?
         </p>
         <p className="payment-faq-answer">
