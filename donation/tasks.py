@@ -50,3 +50,23 @@ def add_pledge_contact_to_mailchimp(pledge_id):
     except MailChimpError as e:
         if e[0]['title'] not in ('Invalid Resource', 'Member Exists'):
             client.captureException()
+
+@app.task()
+def add_pledge_contact_to_ea_newsletter(pledge_id):
+    mailchimp = MailChimp(mc_api=getattr(settings, 'EA_NEWSLETTER_MAILCHIMP_API_KEY'))
+    pledge = Pledge.objects.get(id=pledge_id)
+    assert pledge.subscribe_to_newsletter
+    try:
+        mailchimp.lists.members.create('51c1df13ac', {
+            'email_address': pledge.email,
+            'status': 'subscribed',
+            'source': 'Donation form',
+            'merge_fields': {
+                'FNAME': pledge.first_name,
+                'LNAME': pledge.last_name,
+            },
+        })
+    except MailChimpError as e:
+        if e[0]['title'] not in ('Invalid Resource', 'Member Exists'):
+            client.captureException()
+

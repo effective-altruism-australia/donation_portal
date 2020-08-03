@@ -106,6 +106,9 @@ class Pledge(models.Model):
         if self.subscribe_to_updates:
             from ..tasks import add_pledge_contact_to_mailchimp
             add_pledge_contact_to_mailchimp.delay(self.id)
+        if self.subscribe_to_newsletter:
+            from ..tasks import add_pledge_contact_to_ea_newsletter
+            add_pledge_contact_to_ea_newsletter.delay(self.id)
 
     def __unicode__(self):
         components = ', '.join([c.__unicode__() for c in self.components.all()])
