@@ -31,29 +31,6 @@ export default function DonationFaq(props) { return (
             We suggest that you use whichever payment method is most convenient for you.
             For major donations (over $2,000), we prefer that you donate via bank transfer to reduce fees.
         </p>
-
-
-        <p className="payment-faq-question">
-            How does Effective Altruism Australia meet its operational costs?
-        </p>
-        <p className="payment-faq-answer">
-            Running any charity has costs. To get your donation to its destination we need to meet our regulatory
-            obligations and cover the costs of auditors, accountants, government registrations, banking facilities,
-            websites, software and more. Like most charities, a portion of each donation goes to these kinds of
-            expenses. In the last financial year (2018-2019), our operational expenses were 2.84% of the overall
-            amount of donations we received.
-        </p>
-        <p className="payment-faq-question">
-            Has Effective Altruism Australia changed its operational expenses policy?
-        </p>
-        <p className="payment-faq-answer">
-            Yes. Previously Effective Altruism Australia separately raised funds to meet its operational expenses while
-            providing 100% of donations received through this website to our partner charities. Our new policy is more
-            transparent, more administratively efficient and sustainable. Read more about the
-            <a href={"https://blog.givewell.org/2009/12/07/robin-hood-smile-train-and-the-0-overhead-donor-illusion/"}>illusion
-                of
-                “0% overheads”.</a>
-        </p>
         <p className="payment-faq-question">
             What credit cards do you accept?
         </p>
@@ -67,6 +44,38 @@ export default function DonationFaq(props) { return (
             Yes. Your credit card details are encrypted and submitted directly from your web browser to our
             payment processor, Pin Payments (ABN: 46 154 451 582). Our accounting staff only have access to
             the last 4 digits of your credit card number.
+        </p>
+
+        <p className="payment-faq-question">
+            How does Effective Altruism Australia meet its operational costs?
+        </p>
+        <p className="payment-faq-answer">
+            Running any charity has costs. To get your donation to its destination we need to meet our regulatory
+            obligations and cover the costs of auditors, accountants, government registrations, banking facilities,
+            websites, software and more. Like most charities, a portion of each donation goes to these kinds of
+            expenses. In the last financial year (2019-2020), our operational expenses were 2.6% of the overall
+            amount of donations we received. Some donors also choose to directly fund our operational costs so that a
+            higher proportion of other donations can go directly to partner charities (in the 2019-2020 financial year
+            70% of our operational costs were directly funded).
+        </p>
+        <p className="payment-faq-question">
+            Has Effective Altruism Australia changed its operational expenses policy?
+        </p>
+        <p className="payment-faq-answer">
+            Yes, in April 2020. Previously Effective Altruism Australia separately raised funds to meet its operational expenses while
+            providing 100% of donations received through this website to our partner charities. Our new policy is more
+            transparent, more administratively efficient and sustainable. Read more about the
+            <a href={"https://blog.givewell.org/2009/12/07/robin-hood-smile-train-and-the-0-overhead-donor-illusion/"}>illusion
+                of
+                “0% overheads”.</a>
+        </p>
+        <p className="payment-faq-question">
+            Can I donate directly to Effective Altruism Australia operational costs or other special projects?
+            (e.g. conferences, events, advertising, community building)
+        </p>
+        <p className="payment-faq-answer">
+            Yes! Simply select “I would like to choose how to allocate my donation” and then “Effective Altruism
+            Australia Operations” in the donation form
         </p>
     </div>
 )}
