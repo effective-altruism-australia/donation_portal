@@ -75,7 +75,7 @@ export default function DonationFaq(props) { return (
         </p>
         <p className="payment-faq-answer">
             Yes! Simply select “I would like to choose how to allocate my donation” and then “Effective Altruism
-            Australia Operations” in the donation form
+            Australia Operations” in the donation form.
         </p>
     </div>
 )}
