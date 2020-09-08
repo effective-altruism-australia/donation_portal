@@ -29,6 +29,7 @@ class PartnerCharity(models.Model):
     impact_text = models.CharField(blank=True, null=True, max_length=500, validators=[validate_impact_text])
     impact_cost = models.FloatField(blank=True, null=True, help_text='Total impact will be calculated as donation '
                                                                      'amount divided by impact cost')
+    ordering = models.IntegerField(default=1)
 
     def __unicode__(self):
         return self.name
