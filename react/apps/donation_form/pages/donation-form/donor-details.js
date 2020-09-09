@@ -109,7 +109,7 @@ export default class DonorDetails extends Component {
                                 type="checkbox"
                                 maxLength="254"
                                 component="input"/>
-                            Subscribe me to the <a href={"https://www.effectivealtruism.org/ea-newsletter-archives/"}>global Effective Altruism newsletter</a>
+                            Subscribe me to the <a target={"_blank"} href={"https://www.effectivealtruism.org/ea-newsletter-archives/"}>global Effective Altruism newsletter</a>
                         </label>
                     </div>
                 </div>
@@ -123,7 +123,7 @@ export default class DonorDetails extends Component {
                                 type="checkbox"
                                 maxLength="254"
                                 component="input"/>
-                            Connect me with my <a href={"https://eahub.org/groups/"}>local Effective Altruism community</a>
+                            Connect me with my <a target={"_blank"} href={"https://eahub.org/groups/"}>local Effective Altruism community</a>
                         </label>
                     </div>
                 </div>
