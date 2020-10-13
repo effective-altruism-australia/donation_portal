@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from raven.contrib.django.raven_compat.models import client
 
+import time
 from donation.models import Donation
 from donation_portal.eaacelery import app
 
@@ -11,6 +12,7 @@ from donation_portal.eaacelery import app
 @app.task()
 def send_gift_notification(donation_id):
     try:
+        time.sleep(3) # There's some race condition that i don't have time to figure out right now.  This should fix it.
         donation = Donation.objects.get(id=donation_id)
         pledge = donation.pledge
         assert pledge.is_gift, 'Expected the pledge to be marked as a gift'
