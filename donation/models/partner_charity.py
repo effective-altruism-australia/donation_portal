@@ -5,6 +5,10 @@ import json
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+import stripe
+from django.conf import settings
+
+stripe.api_key = settings.STRIPE_API_KEY
 
 
 def validate_impact_text(impact_text):
@@ -31,6 +35,8 @@ class PartnerCharity(models.Model):
                                                                      'amount divided by impact cost')
     ordering = models.IntegerField(default=1)
 
+    stripe_product_id = models.CharField(null=True, blank=True, max_length=100)
+
     def __unicode__(self):
         return self.name
 
@@ -50,6 +56,8 @@ class PartnerCharity(models.Model):
         return cls._cached_database_ids
 
     def save(self, *args, **kwargs):
+        if not self.stripe_product_id:
+            self.stripe_product_id =  stripe.Product.create(name=self.name).id
         super(PartnerCharity, self).save(*args, **kwargs)
         PartnerCharity.cache_database_ids()
 

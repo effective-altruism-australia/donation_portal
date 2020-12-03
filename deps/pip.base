@@ -48,6 +48,7 @@ raven
 redis
 rratelimit
 selenium
+stripe
 XlsxWriter
 
 ################################

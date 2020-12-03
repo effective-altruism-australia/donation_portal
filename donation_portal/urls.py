@@ -21,6 +21,7 @@ from donation.views.accounting import accounting_reconciliation, donation_counte
 from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
 from donation.views.form_data import PartnerCharityView, ReferralSourceView
 from donation.views.pledge import PledgeView, download_receipt, PledgeViewOld, PledgeJS
+from donation.views.stripe_checkout import create_checkout_session
 
 urlpatterns = [
     # Accounting
@@ -42,6 +43,8 @@ urlpatterns = [
 
     url(r'^partner_charities', PartnerCharityView.as_view(), name='partner-charities'),
     url(r'^referral_sources', ReferralSourceView.as_view(), name='referral-sources'),
+
+    url(r'^create-checkout-session', create_checkout_session, name='create-checkout-session'),
 
 ]
 
