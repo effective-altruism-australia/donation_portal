@@ -143,7 +143,7 @@ def stripe_webhooks(request):
     data = from_stripe['data']['object']
     if from_stripe['type'] == 'checkout.session.completed':
         import time
-        time.sleep(1)
+        time.sleep(5)
         pledge = Pledge.objects.get(stripe_checkout_id=data['id'])
         pledge.stripe_subscription_id = data.get('subscription', None)
         pledge.stripe_payment_intent_id = data.get('payment_intent', None)
