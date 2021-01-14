@@ -139,35 +139,32 @@ class PledgeView(View):
 @require_POST
 @csrf_exempt
 def stripe_webhooks(request):
-    try:
-        from_stripe = json.loads(request.body.decode('utf-8'))
-        data = from_stripe['data']['object']
-        if from_stripe['type'] == 'checkout.session.completed':
-            import time
-            time.sleep(1)
-            pledge = Pledge.objects.get(stripe_checkout_id=data['id'])
-            pledge.stripe_subscription_id = data.get('subscription', None)
-            pledge.stripe_payment_intent_id = data.get('payment_intent', None)
-            pledge.stripe_customer_id = data.get('customer', None)
-            pledge.save()
-            transaction = StripeTransaction.objects.filter(customer_id=pledge.stripe_customer_id).latest('datetime')
-            transaction.pledge = pledge
-            transaction.save()
-            Receipt.objects.create_from_stripe_transaction(transaction)
+    from_stripe = json.loads(request.body.decode('utf-8'))
+    data = from_stripe['data']['object']
+    if from_stripe['type'] == 'checkout.session.completed':
+        import time
+        time.sleep(1)
+        pledge = Pledge.objects.get(stripe_checkout_id=data['id'])
+        pledge.stripe_subscription_id = data.get('subscription', None)
+        pledge.stripe_payment_intent_id = data.get('payment_intent', None)
+        pledge.stripe_customer_id = data.get('customer', None)
+        pledge.save()
+        transaction = StripeTransaction.objects.filter(customer_id=pledge.stripe_customer_id).latest('datetime')
+        transaction.pledge = pledge
+        transaction.save()
+        Receipt.objects.create_from_stripe_transaction(transaction)
 
-        if from_stripe['type'] == 'payment_intent.succeeded':
-            charge = data['charges']['data'][0]
-            balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
-            StripeTransaction.objects.create(
-                datetime=timezone.now(),
-                date=timezone.now().date(),
-                amount=data['amount_received'] / 100,
-                fees=balance_trans.fee / 100.0,
-                reference=data['id'],
-                payment_intent_id=data['id'],
-                customer_id=charge['customer'],
-                charge_id=charge['id'],
-            )
-        return HttpResponse(status=201)
-    except Exception as e:
-        print(e)
+    if from_stripe['type'] == 'payment_intent.succeeded':
+        charge = data['charges']['data'][0]
+        balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
+        StripeTransaction.objects.create(
+            datetime=timezone.now(),
+            date=timezone.now().date(),
+            amount=data['amount_received'] / 100,
+            fees=balance_trans.fee / 100.0,
+            reference=data['id'],
+            payment_intent_id=data['id'],
+            customer_id=charge['customer'],
+            charge_id=charge['id'],
+        )
+    return HttpResponse(status=201)

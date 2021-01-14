@@ -56,7 +56,7 @@ class Receipt(models.Model):
 
     @property
     def transaction(self):
-        return self.bank_transaction or self.pin_transaction
+        return self.bank_transaction or self.pin_transaction or self.stripe_transaction
 
     @property
     def pdf_receipt_location(self):
@@ -68,6 +68,8 @@ class Receipt(models.Model):
             return self.bank_transaction.donation
         elif self.pin_transaction:
             return self.pin_transaction.donation
+        elif self.stripe_transaction:
+            return self.stripe_transaction.donation
         else:
             raise StandardError('Expected a bank or pin transaction')
 
