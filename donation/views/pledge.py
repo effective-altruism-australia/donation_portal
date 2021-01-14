@@ -23,6 +23,7 @@ from rratelimit import Limiter
 from donation.forms import PledgeForm, PledgeComponentFormSet
 from donation.models import PaymentMethod, Receipt, RecurringFrequency, Pledge, StripeTransaction
 from donation.tasks import send_bank_transfer_instructions_task
+from donation_portal.eaacelery import app
 
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 rate_limiter = Limiter(r,
@@ -136,23 +137,27 @@ class PledgeView(View):
             raise StandardError('We currently only support new donations via credit card or bank transfer.')
 
 
+@app.task()
+def process_session_completed(data):
+    import time
+    pledge = Pledge.objects.get(stripe_checkout_id=data['id'])
+    pledge.stripe_subscription_id = data.get('subscription', None)
+    pledge.stripe_payment_intent_id = data.get('payment_intent', None)
+    pledge.stripe_customer_id = data.get('customer', None)
+    pledge.save()
+    transaction = StripeTransaction.objects.filter(customer_id=pledge.stripe_customer_id).latest('datetime')
+    transaction.pledge = pledge
+    transaction.save()
+    Receipt.objects.create_from_stripe_transaction(transaction)
+
+
 @require_POST
 @csrf_exempt
 def stripe_webhooks(request):
     from_stripe = json.loads(request.body.decode('utf-8'))
     data = from_stripe['data']['object']
     if from_stripe['type'] == 'checkout.session.completed':
-        import time
-        time.sleep(10)
-        pledge = Pledge.objects.get(stripe_checkout_id=data['id'])
-        pledge.stripe_subscription_id = data.get('subscription', None)
-        pledge.stripe_payment_intent_id = data.get('payment_intent', None)
-        pledge.stripe_customer_id = data.get('customer', None)
-        pledge.save()
-        transaction = StripeTransaction.objects.filter(customer_id=pledge.stripe_customer_id).latest('datetime')
-        transaction.pledge = pledge
-        transaction.save()
-        Receipt.objects.create_from_stripe_transaction(transaction)
+        process_session_completed.apply_async(countdown=5)
 
     if from_stripe['type'] == 'payment_intent.succeeded':
         charge = data['charges']['data'][0]

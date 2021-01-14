@@ -8,3 +8,4 @@ class DonationConfig(AppConfig):
         # Make celery disover these tasks
         from .emails import *
         from .tasks import *
+        from .views.pledge import *
