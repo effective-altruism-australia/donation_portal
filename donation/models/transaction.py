@@ -124,4 +124,4 @@ class StripeTransaction(models.Model):
 
     def stripe_transaction(self):
         return mark_safe('<a href="{0}">{0}</a>'.format(
-            'https://dashboard.stripe.com/test/payments/%s' % self.payment_intent_id))
+            'https://dashboard.stripe.com/payments/%s' % self.payment_intent_id))
