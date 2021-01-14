@@ -6,7 +6,6 @@ import os
 import time
 
 import stripe
-from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.db import transaction as django_transaction
 from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
@@ -15,6 +14,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.views.generic import View
 from raven.contrib.django.raven_compat.models import client
 from redis import StrictRedis
@@ -128,8 +128,8 @@ class PledgeView(View):
                 payment_method_types=['card'],
                 line_items=line_items,
                 mode='subscription' if pledge.recurring_frequency == RecurringFrequency.MONTHLY else 'payment',
-                success_url='http://192.168.220.154:8000/pledge_new/?thankyou',
-                cancel_url='http://192.168.220.154:8000/pledge_new/',
+                success_url='https://effectivealtruism.org.au/donate/?thankyou',
+                cancel_url='https://effectivealtruism.org.au/donate/',
             )
             print(session.__dict__)
             pledge.stripe_checkout_id = session.id
@@ -174,4 +174,3 @@ def stripe_webhooks(request):
         return HttpResponse(status=201)
     except Exception as e:
         print(e)
-
