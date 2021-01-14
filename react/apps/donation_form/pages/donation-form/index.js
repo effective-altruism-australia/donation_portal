@@ -34,7 +34,7 @@ class DonationForm extends Component {
         };
 
         this.getCharities();
-        this.stripe = window.Stripe('pk_test_51I1Q7kEO8N9VNJdmyMo0YEudkFMpRHZrkC4mstwlONj5kR81SRzebGlCQbJBSk6d5qT6QUObEqV9Q3tjPQiFmGZH00wvKu7GSr');
+        this.stripe = window.Stripe('pk_live_51I1Q7kEO8N9VNJdmgqN19KmuB7haiTg9A9bHfEkHlS7cxlPk0A5ejkHlWuq2sAVvE7QWQXYnTQhRbtEXAT9dSx7A00fl6fhFl5');
     }
 
     getCharities() {
