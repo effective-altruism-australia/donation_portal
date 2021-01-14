@@ -7,19 +7,6 @@ import {customInput} from "../../components/custom-fields";
 import {required} from "../../services/validation";
 
 class PaymentDetail extends Component {
-    constructor(props) {
-        super(props);
-        if (props.frequency === 'monthly' && props.method === 'credit-card') {
-            props.change('payment.method', 'bank-transfer');
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.frequency === 'monthly' && nextProps.method === 'credit-card') {
-            nextProps.change('payment.method', 'bank-transfer');
-        }
-    }
-
     render() {
         const detailSection = (this.props.method === 'credit-card') ?
             <CardPaymentDetails/>
@@ -68,9 +55,9 @@ class PaymentDetail extends Component {
                                                selectedValue={field.input.value}
                                                onChange={field.input.onChange}>
                                        <Radio value="credit-card" id="id-credit-card"
-                                              disabled={this.props.frequency === 'monthly'}/>
+                                              />
                                        <label htmlFor="id-credit-card" className="btn btn-default"
-                                              disabled={this.props.frequency === 'monthly'}>Credit Card</label>
+                                              >Credit Card</label>
                                        <Radio value="bank-transfer" id="id-bank-transfer"/>
                                        <label htmlFor="id-bank-transfer" className="btn btn-default">Bank
                                            Transfer</label>
@@ -78,12 +65,6 @@ class PaymentDetail extends Component {
                                )}/>
                     </div>
                 </div>
-                {
-                    this.props.frequency === 'monthly' &&
-                    <div className="">
-                        <label>Note: </label> We currently only accept monthly donations via bank transfer.
-                    </div>
-                }
                 <div className="payment-subsections" id="id_payment_options">
                     {detailSection}
                 </div>

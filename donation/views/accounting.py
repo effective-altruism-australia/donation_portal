@@ -23,11 +23,12 @@ def total_donations_for_partner(start_date, end_date, partner, payment_method=No
         'date__lt': arrow.get(end_date).shift(days=1).date(),
         'components__pledge_component__partner_charity': partner,
     }
-    if payment_method:
-        filters['payment_method'] = payment_method
-
-    if card_type:
-        filters['pin_transaction__card_type'] = card_type
+    if payment_method == 'Stripe':
+        filters['stripe_transaction_id__isnull'] = False
+    elif payment_method == 'Pin':
+        filters['pin_transaction_id__isnull'] = False
+    elif payment_method == 'Bank transfer':
+        filters['bank_transaction_id__isnull'] = False
 
     return Donation.objects \
                .filter(**filters) \
@@ -130,21 +131,18 @@ def accounting_reconciliation(request):
 
     totals = {partner.name:
                   {'bank': total_donations_for_partner(start, end, partner, payment_method='Bank transfer'),
-                   'visa': total_donations_for_partner(start, end, partner, payment_method='Credit card',
-                                                       card_type='visa'),
-                   'master': total_donations_for_partner(start, end, partner, payment_method='Credit card',
-                                                         card_type='master'),
-                   'amex': total_donations_for_partner(start, end, partner, payment_method='Credit card',
-                                                       card_type='american_express'),
-                   'credit_card': total_donations_for_partner(start, end, partner, payment_method='Credit card'),
-                   'credit_card_after_fees': total_donations_for_partner(start, end, partner,
-                                                                         payment_method='Credit card', after_fees=True),
+                   'pin_payments': total_donations_for_partner(start, end, partner, payment_method='Pin'),
+                   'pin_payments_after_fees': total_donations_for_partner(start, end, partner,
+                                                                         payment_method='Pin', after_fees=True),
+                   'stripe': total_donations_for_partner(start, end, partner, payment_method='Stripe'),
+                   'stripe_after_fees': total_donations_for_partner(start, end, partner, payment_method='Stripe', after_fees=True),
                    'total': total_donations_for_partner(start, end, partner)}
               for partner in PartnerCharity.objects.all().order_by('name')}
 
-    grand_total = {kind: sum(total[kind] for total in totals.values()) for kind in ('bank', 'visa', 'master', 'amex',
-                                                                                    'credit_card',
-                                                                                    'credit_card_after_fees', 'total')}
+    grand_total = {kind: sum(total[kind] for total in totals.values()) for kind in ('bank', 'pin_payments',
+                                                                                    'pin_payments_after_fees',
+                                                                                    'stripe',
+                                                                                    'stripe_after_fees', 'total')}
 
     # This shouldn't/can't happen but it will mess up the reconciliation so let's check.
     qs = BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True)

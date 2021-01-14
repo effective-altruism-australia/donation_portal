@@ -19,7 +19,6 @@ ReactGA.initialize('UA-62759567-4');
 
 let valid = require('card-validator');
 
-
 class DonationForm extends Component {
     constructor(props) {
         super(props);
@@ -35,7 +34,7 @@ class DonationForm extends Component {
         };
 
         this.getCharities();
-        this.pin = InitialisePin();
+        this.stripe = window.Stripe('pk_test_51I1Q7kEO8N9VNJdmyMo0YEudkFMpRHZrkC4mstwlONj5kR81SRzebGlCQbJBSk6d5qT6QUObEqV9Q3tjPQiFmGZH00wvKu7GSr');
     }
 
     getCharities() {
@@ -52,48 +51,6 @@ class DonationForm extends Component {
         return false;
     }
 
-
-    callPinAPI(response_data, callBack) {
-        let payment = this.props.donation.payment;
-        let expiry = valid.expirationDate(payment.cardExpiry);
-        let donation_form = this;
-
-        // Fetch details required for the createToken call to Pin
-        let card = {
-            // Removing spaces from cc-number is necessary for the Pin test cards to work
-            number: payment.cardNumber.replace(/\s/g, ''),
-            name: payment.cardName,
-            expiry_month: expiry.month,
-            expiry_year: expiry.year,
-            cvc: payment.cardCVC,
-            address_line1: payment.cardAddress,
-            address_line2: payment.cardAddress2,
-            address_city: payment.cardCity,
-            address_state: payment.cardState,
-            address_postcode: payment.cardPostcode,
-            address_country: payment.cardCountry
-        };
-
-        this.pin.createToken(card, handlePinResponse);
-
-        function handlePinResponse(response) {
-            if (response.response) {
-                // Add the card token and ip address of the customer to the form
-                // You will need to post these to Pin when creating the charge.
-                response_data.pin_response = response.response;
-                response_data.pin_response.ip_address = response.ip_address;
-                callBack(response_data, donation_form)
-            } else {
-                donation_form.setState({
-                    error_message: response.messages[0].message
-                });
-                donation_form.setState({
-                    submitting: false
-                });
-            }
-        }
-    }
-
     submitForm(response_data, donation_form) {
         if (response_data.donation.amount === undefined) {
             if (!(response_data.donation.will_contribute && response_data.donation.contribute !== undefined)) {
@@ -106,21 +63,25 @@ class DonationForm extends Component {
         }
         let service = new APIService();
         service.submit(response_data).then((res) => {
-            if (res.error_message) {
-                donation_form.setState({
-                    error_message: res.error_message,
-                    submitting: false
-                });
-            } else {
-                donation_form.props.onSubmitResponse(res);
-                donation_form.props.router.pushPage('donationResult');
-                ReactGA.event({
-                    category: 'Donation',
-                    action: 'SubmitForm',
-                    label: 'SubmitDonationForm'
-                });
-            }
-        });
+                if (res.error_message) {
+                    donation_form.setState({
+                        error_message: res.error_message,
+                        submitting: false
+                    });
+                } else {
+                    donation_form.props.onSubmitResponse(res);
+                    if (this.props.donation.payment.method === 'credit-card') {
+                        this.stripe.redirectToCheckout({sessionId: res.id})
+                    } else {
+                        donation_form.props.router.pushPage('donationResult');
+                    }
+                    ReactGA.event({
+                        category: 'Donation',
+                        action: 'SubmitForm',
+                        label: 'SubmitDonationForm'
+                    });
+                };
+        })
     }
 
     onSubmit() {
@@ -131,11 +92,7 @@ class DonationForm extends Component {
             charity: this.props.charity,
             donation: this.props.donation
         };
-        if (this.props.donation.payment.method === 'credit-card') {
-            this.callPinAPI(response_data, this.submitForm);
-        } else {
-            this.submitForm(response_data, this)
-        }
+        this.submitForm(response_data, this)
     }
 
     render() {

@@ -60,6 +60,11 @@ class Pledge(models.Model):
     postcode = models.CharField(max_length=20, null=True, blank=True)
     country = models.CharField(max_length=50, null=True, blank=True)
 
+    stripe_checkout_id = models.CharField(max_length=100, blank=True, null=True)
+    stripe_subscription_id = models.CharField(max_length=100, blank=True, null=True)
+    stripe_payment_intent_id = models.CharField(max_length=100, blank=True, null=True)
+    stripe_customer_id = models.CharField(max_length=100, blank=True, null=True)
+
     is_gift = models.BooleanField(default=False)
     gift_recipient_name = models.CharField(max_length=100, blank=True, null=True)
     gift_recipient_email = models.EmailField(blank=True, null=True)

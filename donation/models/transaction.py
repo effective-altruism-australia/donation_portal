@@ -4,6 +4,7 @@ import re
 
 from django.db import models
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from pinpayments.models import PinTransaction as BasePinTransaction
 
 from .pledge import Pledge
@@ -109,8 +110,18 @@ class BankTransaction(models.Model):
 class PinTransaction(BasePinTransaction):
     pledge = models.ForeignKey(Pledge, on_delete=models.CASCADE)
 
-    # def save(self, *args, **kwargs):
-    #     super(PinTransaction, self).save(*args, **kwargs)
-    #     if self.succeeded:
-    #         # Let's see how it goes doing this not in celery for now.
-    #         Receipt.objects.create_from_pin_transaction(self)
+
+class StripeTransaction(models.Model):
+    datetime = models.DateTimeField()
+    date = models.DateField()
+    amount = models.DecimalField(decimal_places=2, max_digits=12)
+    fees = models.DecimalField(decimal_places=2, max_digits=12)
+    reference = models.TextField(blank=True)
+    pledge = models.ForeignKey(Pledge, blank=True, null=True, on_delete=models.DO_NOTHING)
+    payment_intent_id = models.CharField(max_length=100, null=True, blank=True)
+    charge_id = models.CharField(max_length=100, null=True, blank=True)
+    customer_id = models.CharField(max_length=100, null=True, blank=True)
+
+    def stripe_transaction(self):
+        return mark_safe('<a href="{0}">{0}</a>'.format(
+            'https://dashboard.stripe.com/test/payments/%s' % self.payment_intent_id))

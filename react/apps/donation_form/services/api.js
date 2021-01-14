@@ -16,13 +16,13 @@ export default class APIService {
     submit(data) {
         let pledge_raw = data.donation;
         let pledge_clean = {};
-
         pledge_clean.payment_method = pledge_raw.payment.method;
         pledge_clean.recurring_frequency = pledge_raw.frequency;
         pledge_clean.recurring = pledge_raw.recurring_frequency === 'monthly';
         pledge_clean.first_name = pledge_raw.name.split(' ').slice(0, -1).join(' ');
         pledge_clean.last_name = pledge_raw.name.split(' ').slice(-1).join(' ');
         pledge_clean.email = pledge_raw.email;
+        console.log(pledge_clean, pledge_raw)
     
         if (pledge_raw.amount!==undefined) {
             if (pledge_raw.mode === 'auto') {
@@ -83,33 +83,7 @@ export default class APIService {
         });
 
 
-        if (pledge_raw.payment.method === 'credit-card') {
-            let pin_clean = {};
-            let pin_raw = data.pin_response;
-            pin_clean.card_city = pin_raw.address_city;
-            pin_clean.card_country = pin_raw.address_country;
-            pin_clean.card_address1 = pin_raw.address_line1;
-            pin_clean.card_address1 = pin_raw.address_line1;
-            pin_clean.card_postcode = pin_raw.address_postcode;
-            pin_clean.card_state = pin_raw.address_state;
-            pin_clean.card_token = pin_raw.token;
-            pin_clean.display_number = pin_raw.display_number;
-            pin_clean.expiry_month = pin_raw.expiry_month;
-            pin_clean.expiry_year = pin_raw.expiry_year;
-            pin_clean.name = pin_raw.name;
-            pin_clean.scheme = pin_raw.scheme;
-            pin_clean.primary = pin_raw.primary;
-            pin_clean.ip_address = pin_raw.ip_address;
-            pin_clean.customer_token = pin_raw.customer_token;
-            pin_clean.email_address = pledge_clean.email;
-            pin_clean.currency = 'AUD';
-            pin_clean.description = 'Donation to Effective Altruism Australia';
-
-            pledge_clean.pin_response = pin_clean;
-
-            pledge_clean.country = pin_clean.address_country;
-            pledge_clean.postcode = pin_clean.address_postcode;
-        } else {
+        if (pledge_raw.payment.method !== 'credit-card') {
             console.log(pledge_raw);
             pledge_clean.country = pledge_raw.country;
             pledge_clean.postcode = pledge_raw.postcode;

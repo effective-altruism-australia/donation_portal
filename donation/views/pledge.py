@@ -5,22 +5,23 @@ import json
 import os
 import time
 
+import stripe
+from django.views.decorators.http import require_POST
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db import transaction as django_transaction
 from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
-from ipware.ip import get_ip
 from raven.contrib.django.raven_compat.models import client
 from redis import StrictRedis
 from rratelimit import Limiter
 
-from donation.forms import PledgeForm, PledgeComponentFormSet, PinTransactionForm, PledgeFormOld
-from donation.models import PaymentMethod, Receipt, PartnerCharity, PinTransaction, RecurringFrequency
+from donation.forms import PledgeForm, PledgeComponentFormSet
+from donation.models import PaymentMethod, Receipt, RecurringFrequency, Pledge, StripeTransaction
 from donation.tasks import send_bank_transfer_instructions_task
 
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
@@ -28,6 +29,7 @@ rate_limiter = Limiter(r,
                        action='test_credit_card',
                        limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
                        period=settings.CREDIT_CARD_RATE_LIMIT_PERIOD)
+stripe.api_key = settings.STRIPE_API_KEY
 
 
 def download_receipt(request, pk, secret):
@@ -79,6 +81,7 @@ class PledgeView(View):
     @xframe_options_exempt
     def post(self, request):
         body = json.loads(request.body.decode('utf-8'))
+        print(body)
         pledge_form = PledgeForm(body)
         component_formset = PledgeComponentFormSet(body)
 
@@ -96,6 +99,9 @@ class PledgeView(View):
 
         with django_transaction.atomic():
             pledge = pledge_form.save()
+            if pledge.recurring_frequency == RecurringFrequency.MONTHLY:
+                pledge.recurring = True
+                pledge.save()
             for component in component_formset.forms:
                 component.instance.pledge = pledge
             component_formset.save()
@@ -108,127 +114,64 @@ class PledgeView(View):
             return JsonResponse(response_data)
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
-            ip = get_ip(request)
-            if not rate_limiter.checked_insert(ip) and not settings.DEBUG and settings.CREDIT_CARD_RATE_LIMIT_ENABLED:
-                client.captureMessage('Hit rate limiter for ip: %s' % ip)
-                return JsonResponse({
-                    'error_message': "Our apologies: credit card donations are currently unavailable. "
-                                     "Please try again tomorrow or make a payment by bank transfer.",
-                }, status=400)
-
-            if pledge.amount > 6000:
-                client.captureMessage('User attempted credit card donation over $6K')
-                return JsonResponse({
-                    'error_message': "Our apologies: we can only accept credit card donations of up to $6000 AUD.  "
-                                     "Please use bank transfer or make multiple smaller donations.",
-                }, status=400)
-
-            pin_data = body.get('pin_response')
-            pin_data['amount'] = pledge.amount
-            pin_data['pledge'] = pledge.id
-            pin_form = PinTransactionForm(pin_data)
-            if not pin_form.is_valid():
-                client.captureMessage(str(pin_form.errors))
-                return JsonResponse({
-                    'error_message': "There was a problem submitting your donation. Please contact info@eaa.org.au if problems persist."
-                }, status=400)
-
-            transaction = pin_form.save()
-            transaction.process_transaction()
-            if transaction.succeeded:
-                Receipt.objects.create_from_pin_transaction(transaction)
-                response_data['succeeded'] = True
-                receipt = transaction.receipt_set.first()
-                response_data['receipt_url'] = reverse('download-receipt',
-                                                       kwargs={'pk': receipt.pk, 'secret': receipt.secret})
-                return JsonResponse(response_data)
-            else:
-                pin_repsonse_dict = json.loads(transaction.pin_response_text)
-                client.captureMessage(pin_repsonse_dict['error_description'])
-                return JsonResponse({
-                    'error_message': "There was a problem submitting your donation. Please contact info@eaa.org.au if problems persist.",
-                }, status=400)
-
+            line_items = []
+            for pledge_component in pledge.components.all():
+                line_items.append(
+                    {'price_data': {'currency': 'aud',
+                                    'product': pledge_component.partner_charity.stripe_product_id,
+                                    'unit_amount': int(float(pledge_component.amount) * 100),
+                                    'recurring': {
+                                        'interval': 'month'} if pledge.recurring_frequency == RecurringFrequency.MONTHLY else None},
+                     'quantity': 1, }
+                )
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=line_items,
+                mode='subscription' if pledge.recurring_frequency == RecurringFrequency.MONTHLY else 'payment',
+                success_url='http://192.168.220.154:8000/pledge_new/?thankyou',
+                cancel_url='http://192.168.220.154:8000/pledge_new/',
+            )
+            print(session.__dict__)
+            pledge.stripe_checkout_id = session.id
+            pledge.save()
+            return JsonResponse({'id': session.id})
         else:
             raise StandardError('We currently only support new donations via credit card or bank transfer.')
 
 
-class PledgeViewOld(View):
-    @xframe_options_exempt
-    def post(self, request):
-        form = PledgeFormOld(request.POST)
-        amount = request.POST.get('amount')
-        partner_id = request.POST.get('recipient_org')
-        partner_slug = PartnerCharity.objects.get(id=partner_id).slug_id
-        components_data = {'form-TOTAL_FORMS': 1, 'form-INITIAL_FORMS': 1, 'form-0-id': None,
-                           'form-0-amount': amount, 'form-0-partner_charity': partner_slug}
-        component_formset = PledgeComponentFormSet(components_data)
-
-        if form.is_valid() and component_formset.is_valid():
-            pledge = form.save()
-            for component in component_formset.forms:
-                component.instance.pledge = pledge
-            component_formset.save()
-        else:
-            return JsonResponse({
-                'error': 'form-error',
-                'form_errors': form.errors
-            }, status=400)
-
-        pledge = form.instance
-        if pledge.recurring:
-            pledge.recurring_frequency = RecurringFrequency.MONTHLY
+@require_POST
+@csrf_exempt
+def stripe_webhooks(request):
+    try:
+        from_stripe = json.loads(request.body.decode('utf-8'))
+        data = from_stripe['data']['object']
+        if from_stripe['type'] == 'checkout.session.completed':
+            import time
+            time.sleep(1)
+            pledge = Pledge.objects.get(stripe_checkout_id=data['id'])
+            pledge.stripe_subscription_id = data.get('subscription', None)
+            pledge.stripe_payment_intent_id = data.get('payment_intent', None)
+            pledge.stripe_customer_id = data.get('customer', None)
             pledge.save()
-        payment_method = request.POST.get('payment_method')
-        response_data = {'payment_method': payment_method}
-
-        if int(payment_method) == 1:
-            # bank transaction
-            response_data['bank_reference'] = pledge.generate_reference()
-            send_bank_transfer_instructions_task.delay(pledge.id)
-            return JsonResponse(response_data)
-        elif int(payment_method) == 3:
-            # Rate limiting
-            ip = get_ip(request)
-            if not rate_limiter.checked_insert(ip):
-                # Pretend it's a PIN error to save us from handling it separately in the javascript.
-                return JsonResponse({
-                    'error': 'pin-error',
-                    'pin_response': "Our apologies: credit card donations are currently unavailable. " +
-                                    "Please try again tomorrow or make a payment by bank transfer.",
-                    'pin_response_text': '',
-                }, status=400)
-
-            transaction = PinTransaction()
-            transaction.card_token = request.POST.get('card_token')
-            transaction.ip_address = request.POST.get('ip_address')
-            transaction.amount = pledge.amount  # Amount in dollars. Define with your own business logic.
-            transaction.currency = 'AUD'  # Pin supports AUD and USD. Fees apply for currency conversion.
-            transaction.description = 'Donation to Effective Altruism Australia'  # Define with your own business logic
-            transaction.email_address = pledge.email
+            transaction = StripeTransaction.objects.filter(customer_id=pledge.stripe_customer_id).latest('datetime')
             transaction.pledge = pledge
             transaction.save()
-            transaction.process_transaction()  # Typically "Success" or an error message
-            if transaction.succeeded:
-                Receipt.objects.create_from_pin_transaction(transaction)
-                response_data['succeeded'] = True
-                receipt = transaction.receipt_set.first()
-                response_data['receipt_url'] = reverse('download-receipt',
-                                                       kwargs={'pk': receipt.pk, 'secret': receipt.secret})
-                return JsonResponse(response_data)
-            else:
-                return JsonResponse({
-                    'error': 'pin-error',
-                    'pin_response': transaction.pin_response,
-                    'pin_response_text': transaction.pin_response_text,
-                }, status=400)
+            Receipt.objects.create_from_stripe_transaction(transaction)
 
-    @xframe_options_exempt
-    def get(self, request):
+        if from_stripe['type'] == 'payment_intent.succeeded':
+            charge = data['charges']['data'][0]
+            balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
+            StripeTransaction.objects.create(
+                datetime=timezone.now(),
+                date=timezone.now().date(),
+                amount=data['amount_received'] / 100,
+                fees=balance_trans.fee / 100.0,
+                reference=data['id'],
+                payment_intent_id=data['id'],
+                customer_id=charge['customer'],
+                charge_id=charge['id'],
+            )
+        return HttpResponse(status=201)
+    except Exception as e:
+        print(e)
 
-        form = PledgeFormOld()
-
-        return render(request, 'pledge.html', {
-            'form': form,
-            'charity_database_ids': PartnerCharity.get_cached_database_ids(),
-        })

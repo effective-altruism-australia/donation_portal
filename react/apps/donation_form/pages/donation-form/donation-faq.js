@@ -42,7 +42,7 @@ export default function DonationFaq(props) { return (
         </p>
         <p className="payment-faq-answer">
             Yes. Your credit card details are encrypted and submitted directly from your web browser to our
-            payment processor, Pin Payments (ABN: 46 154 451 582). Our accounting staff only have access to
+            payment processor, Stripe. Our accounting staff only have access to
             the last 4 digits of your credit card number.
         </p>
 

@@ -5,4 +5,4 @@ from .partner_charity import PartnerCharity
 from .partner_charity_report import PartnerCharityReport
 from .pledge import Pledge, PledgeComponent, PaymentMethod, ReferralSource, RecurringFrequency
 from .receipt import EOFYReceipt, Receipt, ReceiptManager
-from .transaction import BankTransaction, PinTransaction
+from .transaction import BankTransaction, PinTransaction, StripeTransaction

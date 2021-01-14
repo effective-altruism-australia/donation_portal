@@ -9,6 +9,7 @@ class DonationResult extends Component {
     }
 
     render() {
+        if (this.props.form) {
         let total = getTotalDonation(this.props.form.mode, this.props.form.amount, this.props.form.contribute);
         return (
             <div>
@@ -87,7 +88,29 @@ class DonationResult extends Component {
                     </div>
                 }
             </div>
-        );
+        )} else {
+            return (
+                <div>
+                    <div className="payment_option">
+                        <h2>Thank you!</h2>
+                        <p>
+                            Your receipt will be sent to your email address.
+                        </p>
+                        <div className="complete-other-info">
+                            <h3>Any questions?</h3>
+                            <p>
+                                Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 3 9349 4062, if you have any questions.
+                            </p>
+                        </div>
+                        <p>
+                            Best wishes and thanks,<br/>
+                            The team at Effective Altruism Australia
+                        </p>
+                    </div>
+                </div>
+            )
+        }
+        ;
     }
 }
 

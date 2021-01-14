@@ -20,8 +20,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from donation.views.accounting import accounting_reconciliation, donation_counter
 from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
 from donation.views.form_data import PartnerCharityView, ReferralSourceView
-from donation.views.pledge import PledgeView, download_receipt, PledgeViewOld, PledgeJS
-from donation.views.stripe_checkout import create_checkout_session
+from donation.views.pledge import PledgeView, download_receipt, PledgeJS, stripe_webhooks
 
 urlpatterns = [
     # Accounting
@@ -36,7 +35,6 @@ urlpatterns = [
     # url(r'^pledge/([0-9])/$', pledge, name='pledge')
     url(r'^pledge.js', PledgeJS.as_view(), name='pledge-js'),
     url(r'^pledge_new/', PledgeView.as_view(), name='pledge-new'),
-    url(r'^pledge/', PledgeViewOld.as_view(), name='pledge'),
 
     url(r'^receipt/(?P<pk>[0-9]+)/(?P<secret>[a-zA-Z0-9]+)', download_receipt, name='download-receipt'),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
@@ -44,7 +42,7 @@ urlpatterns = [
     url(r'^partner_charities', PartnerCharityView.as_view(), name='partner-charities'),
     url(r'^referral_sources', ReferralSourceView.as_view(), name='referral-sources'),
 
-    url(r'^create-checkout-session', create_checkout_session, name='create-checkout-session'),
+    url(r'^stripe-webhooks', stripe_webhooks, name='stripe-webhooks'),
 
 ]
 

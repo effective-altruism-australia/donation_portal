@@ -1,13 +1,11 @@
 import './main.css';
 import React, {Component} from "react";
-import CharityList from "./pages/charity-list";
 import DonationForm from "./pages/donation-form/index";
 import DonationResult from "./pages/donation-result/index";
 import DonationAdvice from "./pages/donation-advice";
-import classNames from "classnames";
 import {formValueSelector} from 'redux-form'
 import {connect} from "react-redux";
-import {setCharity} from "./services/reduxStorage/actions";
+import {getAllUrlParams} from "./services/utils";
 
 export class Main extends Component {
     constructor(props) {
@@ -81,7 +79,13 @@ export class Main extends Component {
     }
 
     getInitialState() {
-        setCharity({'slug_id': window.presetCharity});
+        if (getAllUrlParams().thankyou) {
+            console.log(this.state)
+            return {
+                'mode': 'credit-card',
+                'pageQueue': ['donationResult']
+            }
+        }
         return {
             'pageQueue': ['paymentForm'] // TODO: remove charity list
         }

@@ -8,6 +8,7 @@
         var pin_environment = "{{ pin_environment }}";
         var site_root = "";
     </script>
+    <script src="https://js.stripe.com/v3/"></script>
     {% render_bundle 'donation_form' 'css' %}
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -47,7 +48,4 @@
 </body>
 <script src="/pledge.js"></script>
 
-    <script type='text/javascript'>
-        Pin.setPublishableKey("{{ pin_key }}");
-    </script>
 </html>

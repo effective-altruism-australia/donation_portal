@@ -9,7 +9,7 @@ from django.conf import settings
 from django.db import models
 
 from .pledge import Pledge
-from .transaction import BankTransaction, PinTransaction
+from .transaction import BankTransaction, PinTransaction, StripeTransaction
 
 
 class ReceiptManager(models.Manager):
@@ -25,6 +25,11 @@ class ReceiptManager(models.Manager):
                            pledge=pin_transaction.pledge,
                            email=pin_transaction.pledge.email)
 
+    def create_from_stripe_transaction(self, stripe_transaction):
+        return self.create(stripe_transaction=stripe_transaction,
+                           pledge=stripe_transaction.pledge,
+                           email=stripe_transaction.pledge.email)
+
 
 class Receipt(models.Model):
     objects = ReceiptManager()
@@ -32,6 +37,7 @@ class Receipt(models.Model):
     # Let's keep receipts around, even if the bank transaction/pledge gets changed/deleted (ideally shouldn't happen).
     bank_transaction = models.ForeignKey(BankTransaction, blank=True, null=True, on_delete=models.SET_NULL)
     pin_transaction = models.ForeignKey(PinTransaction, blank=True, null=True, on_delete=models.SET_NULL)
+    stripe_transaction = models.ForeignKey(StripeTransaction, blank=True, null=True, on_delete=models.SET_NULL)
     pledge = models.ForeignKey(Pledge, blank=True, null=True, on_delete=models.SET_NULL)
     # The email on the pledge might get edited, so let's record the one we used here.
     email = models.EmailField()
@@ -86,8 +92,11 @@ class Receipt(models.Model):
             transaction_part = ("Receipt for bank donation of ${0.bank_transaction.amount}" +
                                 " on {0.bank_transaction.date}").format(self)
         elif self.pin_transaction:
-            transaction_part = ("Receipt for credit card donation of ${0.pin_transaction.amount}" +
+            transaction_part = ("Receipt for pin donation of ${0.pin_transaction.amount}" +
                                 " at {0.pin_transaction.date}").format(self)
+        elif self.stripe_transaction:
+            transaction_part = ("Receipt for stripe donation of ${0.stripe_transaction.amount}" +
+                                " at {0.stripe_transaction.date}").format(self)
         else:
             transaction_part = "Receipt for deleted transaction"
         if self.pledge:

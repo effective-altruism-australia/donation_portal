@@ -3,11 +3,12 @@ from __future__ import unicode_literals
 from django import forms
 from django.contrib import admin
 from django.contrib import messages
+from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 from reversion.models import Revision, Version
 
 from .models import Pledge, PledgeComponent, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, \
-    PaymentMethod, PartnerCharityReport, ReferralSource
+    PaymentMethod, PartnerCharityReport, ReferralSource, StripeTransaction
 
 
 class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
@@ -91,11 +92,18 @@ class PledgeComponentInline(admin.TabularInline):
     extra = 0
 
 
+class StripeTransactionInline(admin.TabularInline):
+    model = StripeTransaction
+    fields = ('amount', 'date', 'stripe_transaction')
+    readonly_fields = fields
+    extra = 0
+
+
 class PledgeAdmin(VersionAdmin):
     search_fields = ('first_name', 'last_name', 'reference', 'email')
     readonly_fields = ('ip', 'completed_time')
-    list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency')
-    inlines = [PledgeComponentInline]
+    list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency', 'payment_method')
+    inlines = [PledgeComponentInline, StripeTransactionInline]
 
     class Meta:
         model = Pledge
@@ -121,6 +129,15 @@ class BankTransactionForm(forms.ModelForm):
             self.add_error('do_not_reconcile', 'If do not reconcile is ticked, there should not be any reference')
 
         return form_data
+
+
+class StripeTransactionAdmin(VersionAdmin):
+    list_display = ('reference', 'pledge_link', 'amount', 'fees', 'stripe_transaction')
+    readonly_fields = list_display
+    fields = list_display + ('customer_id', )
+
+    def pledge_link(self, obj):
+        return mark_safe('<a href="/admin/donation/pledge/%s/">%s</a>' % (obj.pledge_id, str(obj.pledge)))
 
 
 class BankTransactionAdmin(VersionAdmin):
@@ -199,6 +216,7 @@ admin.site.register(PartnerCharity, VersionAdmin)
 admin.site.register(XeroReconciledDate)
 admin.site.register(PartnerCharityReport)
 admin.site.register(ReferralSource, ReferralSourceAdmin)
+admin.site.register(StripeTransaction, StripeTransactionAdmin)
 
 
 ################################
