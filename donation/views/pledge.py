@@ -139,7 +139,6 @@ class PledgeView(View):
 
 @app.task()
 def process_session_completed(data):
-    import time
     pledge = Pledge.objects.get(stripe_checkout_id=data['id'])
     pledge.stripe_subscription_id = data.get('subscription', None)
     pledge.stripe_payment_intent_id = data.get('payment_intent', None)
@@ -157,7 +156,7 @@ def stripe_webhooks(request):
     from_stripe = json.loads(request.body.decode('utf-8'))
     data = from_stripe['data']['object']
     if from_stripe['type'] == 'checkout.session.completed':
-        process_session_completed.apply_async(countdown=5)
+        process_session_completed.apply_async(countdown=5, args=(data,))
 
     if from_stripe['type'] == 'payment_intent.succeeded':
         charge = data['charges']['data'][0]
