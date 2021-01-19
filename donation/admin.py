@@ -139,6 +139,22 @@ class StripeTransactionAdmin(VersionAdmin):
     def pledge_link(self, obj):
         return mark_safe('<a href="/admin/donation/pledge/%s/">%s</a>' % (obj.pledge_id, str(obj.pledge)))
 
+    def resend_receipts(self, request, queryset):
+        transactions = list(queryset.all())
+        if len(transactions) > 8:
+            self.message_user(request, "Please select at most 8 transactions at once.", level=messages.WARNING)
+            return
+        any_receipts_sent = False
+        for t in transactions:
+            any_receipts_sent = True
+            Receipt.objects.create_from_stripe_transaction(t)
+        if any_receipts_sent:
+            self.message_user(request, "Additional receipts sent.")
+
+    resend_receipts.short_description = "Resend receipts for selected transactions"
+
+    actions = ['resend_receipts']
+
 
 class BankTransactionAdmin(VersionAdmin):
     # TODO make a filter for needs_to_be_reconciled transactions
