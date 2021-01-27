@@ -1,3 +1,5 @@
+import time
+
 from django.conf import settings
 from mailchimp3 import MailChimp
 from mailchimp3.mailchimpclient import MailChimpError
@@ -34,6 +36,7 @@ def send_partner_charity_reports_task():
 
 @app.task()
 def add_pledge_contact_to_mailchimp(pledge_id):
+    time.sleep(3)
     mailchimp = MailChimp(mc_api=getattr(settings, 'MAILCHIMP_API_KEY'), mc_user='eaaustralia')
     pledge = Pledge.objects.get(id=pledge_id)
     assert pledge.subscribe_to_updates
