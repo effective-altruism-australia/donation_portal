@@ -149,8 +149,8 @@ def process_session_completed(data):
 @app.task()
 def process_payment_intent_succeeded(data):
     charge = data['charges']['data'][0]
-    invoice = stripe.Invoice.retrieve(charge['invoice'])
-    if invoice: # Is subscription
+    if charge['invoice']: # Is subscription
+        invoice = stripe.Invoice.retrieve(charge['invoice'])
         balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
         pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
     else:
