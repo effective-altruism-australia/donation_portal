@@ -171,7 +171,7 @@ def stripe_webhooks(request):
     from_stripe = json.loads(request.body.decode('utf-8'))
     data = from_stripe['data']['object']
     if from_stripe['type'] == 'checkout.session.completed':
-        process_session_completed.delay()
+        process_session_completed.delay(data)
     
     if from_stripe['type'] == 'payment_intent.succeeded':
         process_payment_intent_succeeded.apply_async(countdown=5, args=(data,))
