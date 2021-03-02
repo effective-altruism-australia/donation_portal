@@ -150,8 +150,12 @@ def process_session_completed(data):
 def process_payment_intent_succeeded(data):
     charge = data['charges']['data'][0]
     invoice = stripe.Invoice.retrieve(charge['invoice'])
-    balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
-    pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
+    if invoice: # Is subscription
+        balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
+        pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
+    else:
+        pledge = Pledge.objects.get(stripe_payment_intent_id=data['id'])
+
     transaction = StripeTransaction.objects.create(
         datetime=timezone.now(),
         date=timezone.now().date(),
