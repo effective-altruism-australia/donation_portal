@@ -139,18 +139,31 @@ class PledgeView(View):
 
 @app.task()
 def process_session_completed(data):
-    import time
-    time.sleep(10)
     pledge = Pledge.objects.get(stripe_checkout_id=data['id'])
     pledge.stripe_subscription_id = data.get('subscription', None)
     pledge.stripe_payment_intent_id = data.get('payment_intent', None)
     pledge.stripe_customer_id = data.get('customer', None)
     pledge.save()
-    transaction = StripeTransaction.objects.filter(customer_id=pledge.stripe_customer_id).latest('datetime')
-    transaction.pledge = pledge
-    transaction.save()
-    Receipt.objects.create_from_stripe_transaction(transaction)
+    
 
+@app.task()
+def process_payment_intent_succeeded(data):
+    charge = data['charges']['data'][0]
+    invoice = stripe.Invoice.retrieve(charge['invoice'])
+    balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
+    pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
+    transaction = StripeTransaction.objects.create(
+        datetime=timezone.now(),
+        date=timezone.now().date(),
+        amount=data['amount_received'] / 100,
+        fees=balance_trans.fee / 100.0,
+        reference=data['id'],
+        payment_intent_id=data['id'],
+        customer_id=charge['customer'],
+        charge_id=charge['id'],
+        pledge=pledge,
+    )
+    Receipt.objects.create_from_stripe_transaction(transaction)
 
 @require_POST
 @csrf_exempt
@@ -158,19 +171,8 @@ def stripe_webhooks(request):
     from_stripe = json.loads(request.body.decode('utf-8'))
     data = from_stripe['data']['object']
     if from_stripe['type'] == 'checkout.session.completed':
-        process_session_completed.apply_async(countdown=5, args=(data,))
-
+        process_session_completed.delay()
+    
     if from_stripe['type'] == 'payment_intent.succeeded':
-        charge = data['charges']['data'][0]
-        balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
-        StripeTransaction.objects.create(
-            datetime=timezone.now(),
-            date=timezone.now().date(),
-            amount=data['amount_received'] / 100,
-            fees=balance_trans.fee / 100.0,
-            reference=data['id'],
-            payment_intent_id=data['id'],
-            customer_id=charge['customer'],
-            charge_id=charge['id'],
-        )
+        process_payment_intent_succeeded.apply_async(countdown=5, args=(data,))
     return HttpResponse(status=201)
