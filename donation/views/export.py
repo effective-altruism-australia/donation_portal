@@ -48,7 +48,9 @@ def download_spreadsheet(request, extra_fields=None):
                                ('Email', 'pledge__email'),
                                ('Payment method', 'payment_method'),
                                ('Subscribe to marketing updates', 'pledge__subscribe_to_updates'),
-                               ('Designation', 'components__pledge_component__partner_charity__name')
+                               ('Designation', 'components__pledge_component__partner_charity__name'),
+                               ('Recurring donor', 'pledge__recurring'),
+                               ('Recurring frequency', 'pledge__recurring_frequency')
                            ] + extra_fields)
 
     filename = 'EAA donations {0} to {1} downloaded {2}.xlsx'.format(start, end, datetime.now())
