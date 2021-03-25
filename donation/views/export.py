@@ -86,8 +86,6 @@ def download_full_spreadsheet(request):
     # TODO add credit card donation details (e.g., address), to the extent we have them
     extra_fields = [
         ('Fees', 'components__fees'),
-        ('Recurring donor', 'pledge__recurring'),
-        ('Recurring frequency', 'pledge__recurring_frequency'),
         ('How did you hear about us?', 'pledge__how_did_you_hear_about_us_db__reason'),
         ('Share with GiveWell', 'pledge__share_with_givewell'),
         ('Share with GWWC', 'pledge__share_with_gwwc'),
