@@ -15,4 +15,4 @@ class ImpactCalculator(TemplateView):
 
     @xframe_options_exempt
     def get(self, request):
-        return super().get(request)
+        return super(ImpactCalculator, self).get(request)
