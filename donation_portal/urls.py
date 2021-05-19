@@ -21,11 +21,13 @@ from donation.views.accounting import accounting_reconciliation, donation_counte
 from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
 from donation.views.form_data import PartnerCharityView, ReferralSourceView
 from donation.views.pledge import PledgeView, download_receipt, PledgeJS, stripe_webhooks
+from donation.views.impact_calculator import ImpactCalculator
 
 urlpatterns = [
     # Accounting
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
+    url(r'^impact', ImpactCalculator.as_view(), name='impact'),
     url(r'^secret_donation_counter', donation_counter, name='donation-counter'),
     # Data export
     url(r'^export', render_export_page, name='export-page'),
