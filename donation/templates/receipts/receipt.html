@@ -4,6 +4,10 @@
   <p>
     On behalf of everyone you’re helping, thank you for your gift. This receipt serves as confirmation that your donation has been received and processed.
   </p>
+  {% if pledge.recurring %}
+  <p>
+    To cancel your donation or update your credit card details, please do so here. {{ pledge.donor_portal }}
+  </p>
   </br>
   <h3>Details</h3>
   <p><b>Receipt number</b>: {{ unique_reference }}</p>

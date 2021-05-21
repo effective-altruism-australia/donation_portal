@@ -8,6 +8,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from enumfields import Enum, EnumIntegerField
+from django.core.urlresolvers import reverse
 
 from .partner_charity import PartnerCharity
 
@@ -114,6 +115,10 @@ class Pledge(models.Model):
         if self.subscribe_to_newsletter:
             from ..tasks import add_pledge_contact_to_ea_newsletter
             add_pledge_contact_to_ea_newsletter.delay(self.id)
+
+    @property
+    def donor_portal(self):
+        return reverse('donor-portal', kwargs={'customer_id': self.stripe_customer_id'})
 
     def __unicode__(self):
         components = ', '.join([c.__unicode__() for c in self.components.all()])
