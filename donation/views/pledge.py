@@ -182,6 +182,5 @@ def stripe_webhooks(request):
     return HttpResponse(status=201)
 
 def stripe_billing_portal(request, customer_id):
-    session = stripe.billing_portal.Session.create(customer= pledge.stripe_customer_id)
+    session = stripe.billing_portal.Session.create(customer=customer_id)
     return HttpResponseRedirect(session.url)
-    
