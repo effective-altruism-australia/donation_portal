@@ -117,6 +117,10 @@ class Pledge(models.Model):
             add_pledge_contact_to_ea_newsletter.delay(self.id)
 
     @property
+    def paid_by_card(self):
+        return self.payment_method == PaymentMethod.CREDIT_CARD
+
+    @property
     def donor_portal(self):
         return reverse('donor-portal', kwargs={'customer_id': self.stripe_customer_id})
 
