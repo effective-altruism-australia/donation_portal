@@ -118,7 +118,7 @@ class Pledge(models.Model):
 
     @property
     def donor_portal(self):
-        return reverse('donor-portal', kwargs={'customer_id': self.stripe_customer_id'})
+        return reverse('donor-portal', kwargs={'customer_id': self.stripe_customer_id})
 
     def __unicode__(self):
         components = ', '.join([c.__unicode__() for c in self.components.all()])
