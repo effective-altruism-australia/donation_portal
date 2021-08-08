@@ -65,6 +65,13 @@ class PledgeJS(View):
         response['Last-Modified'] = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time_last_compiled.timetuple())
         return response
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 class PledgeView(View):
     @method_decorator(csrf_exempt)
@@ -79,7 +86,6 @@ class PledgeView(View):
     @xframe_options_exempt
     def post(self, request):
         body = json.loads(request.body.decode('utf-8'))
-        print(body)
         pledge_form = PledgeForm(body)
         component_formset = PledgeComponentFormSet(body)
 
@@ -98,8 +104,15 @@ class PledgeView(View):
         with django_transaction.atomic():
             pledge = pledge_form.save()
             if pledge.recurring_frequency == RecurringFrequency.MONTHLY:
-                pledge.recurring = True
-                pledge.save()
+                pledge.recurring = True   
+            
+            pledge.ip = get_client_ip(request)
+            if pledge.ip[0:4] == '45.9':
+                if not rate_limiter.checked_insert(pledge.ip[0:4]):
+                    return JsonResponse({
+                        'error_message': "This transaction looks suspicious.  Please contact us at info@eaa.org.au if you are a human!",
+                    }, status=400)
+            pledge.save()
             for component in component_formset.forms:
                 component.instance.pledge = pledge
             component_formset.save()
