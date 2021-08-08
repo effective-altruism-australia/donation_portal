@@ -109,6 +109,7 @@ class PledgeView(View):
             pledge.ip = get_client_ip(request)
             if pledge.ip[0:4] == '45.9':
                 if not rate_limiter.checked_insert(pledge.ip[0:4]):
+                    pledge.delete()
                     return JsonResponse({
                         'error_message': "This transaction looks suspicious.  Please contact us at info@eaa.org.au if you are a human!",
                     }, status=400)
