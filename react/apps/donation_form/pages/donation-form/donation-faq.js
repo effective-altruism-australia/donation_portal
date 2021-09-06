@@ -65,7 +65,7 @@ export default function DonationFaq(props) { return (
             Yes, in April 2020. Previously Effective Altruism Australia separately raised funds to meet its operational expenses while
             providing 100% of donations received through this website to our partner charities. Our new policy is more
             transparent, more administratively efficient and sustainable. Read more about the 
-            <a href={"https://blog.givewell.org/2009/12/07/robin-hood-smile-train-and-the-0-overhead-donor-illusion/"}>illusion
+            <a href={"https://blog.givewell.org/2009/12/07/robin-hood-smile-train-and-the-0-overhead-donor-illusion/"}> illusion
                 of
                 “0% overheads”.</a>
         </p>
