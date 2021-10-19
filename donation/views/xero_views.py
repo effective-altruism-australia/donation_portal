@@ -14,7 +14,7 @@ def start_xero_auth_view(request):
                 XeroScopes.ACCOUNTING_TRANSACTIONS]
     )
     authorization_url = credentials.generate_url()
-    # caches['default'].set('xero_creds', credentials.state)
+    caches['default'].set('xero_creds', credentials.state)
     creds = credentials.state
     return HttpResponseRedirect(authorization_url)
 
