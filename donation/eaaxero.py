@@ -5,9 +5,8 @@ import hashlib
 from collections import defaultdict
 from dateutil.relativedelta import relativedelta
 from xero import Xero
-from xero.auth import PrivateCredentials
 from xero.exceptions import XeroNotFound
-
+from django.core.cache import caches
 from django.conf import settings
 
 from .models import BankTransaction, Account
@@ -16,7 +15,6 @@ from xero.auth import OAuth2Credentials
 from xero import Xero
 from xero.auth import OAuth2Credentials
 from xero.constants import XeroScopes
-from django.conf import settings
 
 
 def xero():
