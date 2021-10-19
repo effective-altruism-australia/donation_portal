@@ -13,10 +13,19 @@ from django.conf import settings
 from .models import BankTransaction, Account
 from xero.constants import XeroScopes
 from xero.auth import OAuth2Credentials
+from xero import Xero
+from xero.auth import OAuth2Credentials
+from xero.constants import XeroScopes
+from django.conf import settings
 
-credentials = OAuth2Credentials(settings.XERO_CLIENT_ID, settings.XERO_CLIENT_SECRET, scope= [XeroScopes.ACCOUNTING_TRANSACTIONS],
-    callback_uri='https://donations.effectivealtruism.org.au')
-xero = Xero(credentials)
+
+def xero():
+    cred_state = caches['default'].get('xero_creds')
+    credentials = OAuth2Credentials(**cred_state)
+    if credentials.expired():
+        credentials.refresh()
+        caches['default'].set('xero_creds', credentials.state)
+    return Xero(credentials)
 
 
 def xero_report_to_iterator(xero_report):
@@ -44,7 +53,7 @@ def import_bank_transactions_from_account(bank_account_id, from_date, to_date, m
 
     rows_seen = defaultdict(int)
     try:
-        bank_transactions = xero.reports.get('BankStatement', params=passed_params)
+        bank_transactions = xero().reports.get('BankStatement', params=passed_params)
     except XeroNotFound:
         if manual:
             # If user invoked this function manually, raise the exception.
@@ -89,7 +98,7 @@ def to_decimal(s):
 def import_trial_balance():
     balance_date = date(2016, 1, 31)
     while balance_date < date.today():
-        trial_balance = xero.reports.get('TrialBalance', params={u'Date': balance_date})
+        trial_balance = xero().reports.get('TrialBalance', params={u'Date': balance_date})
 
         for row in xero_report_to_iterator(trial_balance):
             try:
