@@ -18,7 +18,7 @@ def send_bank_transfer_instructions_task(pledge_id):
 
 @app.task()
 def process_bank_transactions():
-    return caches['default'].get('xero_creds')
+    print(caches['default'].get('xero_creds'))
     # print("Processing bank transactions...")
     # import_bank_transactions()
     # # Everything else with receipts happens automatically. See donation.models.BankTransaction.save()
