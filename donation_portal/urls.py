@@ -22,6 +22,7 @@ from donation.views.export import render_export_page, download_spreadsheet, down
 from donation.views.form_data import PartnerCharityView, ReferralSourceView
 from donation.views.pledge import PledgeView, download_receipt, PledgeJS, stripe_webhooks, stripe_billing_portal
 from donation.views.impact_calculator import ImpactCalculator
+from donation.views.xero import process_callback_view, start_xero_auth_view
 
 urlpatterns = [
     # Accounting
@@ -47,7 +48,9 @@ urlpatterns = [
     url(r'^stripe-webhooks', stripe_webhooks, name='stripe-webhooks'),
 
     url(r'^donor-portal/(?P<customer_id>.*)', stripe_billing_portal, name='donor-portal'),
-
+    
+    url(r'^process_callback', process_callback_view, name='process-callback'),
+    url(r'^xero_auth', start_xero_auth_view, name='start-auth'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -11,9 +11,11 @@ from xero.exceptions import XeroNotFound
 from django.conf import settings
 
 from .models import BankTransaction, Account
+from xero.constants import XeroScopes
+from xero.auth import OAuth2Credentials
 
-
-credentials = PrivateCredentials(settings.XERO_CONSUMER_KEY, settings.XERO_RSA_KEY)
+credentials = OAuth2Credentials(settings.XERO_CLIENT_ID, settings.XERO_CLIENT_SECRET, scope= [XeroScopes.ACCOUNTING_TRANSACTIONS],
+    callback_uri='https://donations.effectivealtruism.org.au')
 xero = Xero(credentials)
 
 
