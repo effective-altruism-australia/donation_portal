@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.cache import caches
 
 from xero import Xero
@@ -34,3 +34,4 @@ def process_callback_view(request):
         credentials.refresh()
         caches['default'].set('xero_creds', credentials.state)
     xero = Xero(credentials)
+    return HttpResponse()
