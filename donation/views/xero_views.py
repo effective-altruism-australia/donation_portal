@@ -5,7 +5,7 @@ from xero import Xero
 from xero.auth import OAuth2Credentials
 from xero.constants import XeroScopes
 from django.conf import settings
-
+creds = None
 def start_xero_auth_view(request):
     # Get client_id, client_secret from config file or settings then
     credentials = OAuth2Credentials(
@@ -14,7 +14,8 @@ def start_xero_auth_view(request):
                 XeroScopes.ACCOUNTING_TRANSACTIONS]
     )
     authorization_url = credentials.generate_url()
-    caches['default'].set('xero_creds', credentials.state)
+    # caches['default'].set('xero_creds', credentials.state)
+    creds = credentials.state
     return HttpResponseRedirect(authorization_url)
 
 
@@ -27,11 +28,13 @@ def process_callback_view(request):
     credentials.verify(auth_secret)
     credentials.set_default_tenant()
     caches['default'].set('xero_creds', credentials.state)
+    creds = credentials.state
 
     cred_state = caches['default'].get('xero_creds')
     credentials = OAuth2Credentials(**cred_state)
     if credentials.expired():
         credentials.refresh()
         caches['default'].set('xero_creds', credentials.state)
+        creds = credentials.state
     xero = Xero(credentials)
     return HttpResponse()
