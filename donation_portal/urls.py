@@ -22,7 +22,7 @@ from donation.views.export import render_export_page, download_spreadsheet, down
 from donation.views.form_data import PartnerCharityView, ReferralSourceView
 from donation.views.pledge import PledgeView, download_receipt, PledgeJS, stripe_webhooks, stripe_billing_portal
 from donation.views.impact_calculator import ImpactCalculator
-from donation.views.xero import process_callback_view, start_xero_auth_view
+from donation.views.xero_views import process_callback_view, start_xero_auth_view
 
 urlpatterns = [
     # Accounting
