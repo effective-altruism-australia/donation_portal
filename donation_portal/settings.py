@@ -167,4 +167,15 @@ WEBPACK_LOADER = {
     }
 }
 
+CACHES = {
+     'default': {
+         'BACKEND':
+         'django.core.cache.backends.memcached.MemcachedCache',
+         'LOCATION': '127.0.0.1:11211',
+         'TIMEOUT': 60 * 60 * 60 * 24,
+         'OPTIONS': {
+             'MAX_ENTRIES': 5000,
+         }
+     } }
+
 # vim: cc=80 tw=79 ts=4 sw=4 sts=4 et sr
