@@ -10,7 +10,7 @@ def start_xero_auth_view(request):
     # Get client_id, client_secret from config file or settings then
     credentials = OAuth2Credentials(
         settings.XERO_CLIENT_ID, settings.XERO_CLIENT_SECRET, callback_uri="https://donations.effectivealtruism.org.au/process_callback",
-        scope=[XeroScopes.OFFLINE_ACCESS, XeroScopes.ACCOUNTING_CONTACTS, XeroScopes.BANKFEEDS,
+        scope=[XeroScopes.OFFLINE_ACCESS, XeroScopes.ACCOUNTING_CONTACTS, XeroScopes.ACCOUNTING_REPORTS_READ,
                 XeroScopes.ACCOUNTING_TRANSACTIONS]
     )
     authorization_url = credentials.generate_url()
@@ -21,17 +21,9 @@ def start_xero_auth_view(request):
 def process_callback_view(request):
     cred_state = caches['default'].get('xero_creds')
     credentials = OAuth2Credentials(**cred_state)
-    print(request.META)
     auth_secret = 'https://' + request.META['HTTP_HOST'] + request.META['RAW_URI']
-    print(auth_secret)
     credentials.verify(auth_secret)
     credentials.set_default_tenant()
     caches['default'].set('xero_creds', credentials.state)
 
-    cred_state = caches['default'].get('xero_creds')
-    credentials = OAuth2Credentials(**cred_state)
-    if credentials.expired():
-        credentials.refresh()
-        caches['default'].set('xero_creds', credentials.state)
-    xero = Xero(credentials)
     return HttpResponse()
