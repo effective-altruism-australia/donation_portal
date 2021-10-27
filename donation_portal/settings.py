@@ -96,7 +96,7 @@ CELERYBEAT_SCHEDULE = {
     'process-transactions': {
         'task': 'donation.tasks.process_bank_transactions',
         # 'schedule': datetime.timedelta(seconds=30)  # For testing
-        'schedule': crontab(minute=0, hour='*/4')
+        'schedule': crontab(minute=0, hour='*/12')
     },
     'send-partner-charity-reports': {
         'task': 'donation.tasks.send_partner_charity_reports_task',
