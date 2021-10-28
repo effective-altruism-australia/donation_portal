@@ -78,7 +78,7 @@ def email_receipt(receipt_id):
             #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
             # that automatically archives messages sent to info+receipt and adds the label 'receipts'
             # bcc=["info+receipt@eaa.org.au", ],
-            bcc=[settings.EAA_INFO_EMAIL],
+            bcc=[settings.EAA_INFO_EMAIL, 'andrew.bird@vesparum.com'],
             from_email=settings.POSTMARK_SENDER,
         )
         message.attach_alternative(body_html, "text/html")
