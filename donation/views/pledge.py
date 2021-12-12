@@ -4,7 +4,7 @@ import datetime
 import json
 import os
 import time
-
+import pytz
 import stripe
 from django.conf import settings
 from django.db import transaction as django_transaction
@@ -170,9 +170,12 @@ def process_payment_intent_succeeded(data):
     else:
         pledge = Pledge.objects.get(stripe_payment_intent_id=data['id'])
 
+    localtz = pytz.timezone('Australia/Melbourne')
+    dt = localtz.normalize(st.datetime.astimezone(localtz))
+
     transaction = StripeTransaction.objects.create(
-        datetime=timezone.now(),
-        date=timezone.now().date(),
+        datetime=dt,
+        date=dt.date(),
         amount=data['amount_received'] / 100,
         fees=balance_trans.fee / 100.0,
         reference=data['id'],
