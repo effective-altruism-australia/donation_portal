@@ -171,7 +171,7 @@ def process_payment_intent_succeeded(data):
         pledge = Pledge.objects.get(stripe_payment_intent_id=data['id'])
 
     localtz = pytz.timezone('Australia/Melbourne')
-    dt = localtz.normalize(st.datetime.astimezone(localtz))
+    dt = localtz.normalize(timezone.now().astimezone(localtz))
 
     transaction = StripeTransaction.objects.create(
         datetime=dt,
