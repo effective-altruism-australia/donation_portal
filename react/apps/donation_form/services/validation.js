@@ -15,7 +15,7 @@ const minValue = min => value =>
 const minValue18 = minValue(18);
 export const minValue1cent = minValue(0.01);
 export const email = value =>
-    value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
+    value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,7}$/i.test(value)
         ? 'Invalid email address'
         : undefined;
 const tooOld = value =>
