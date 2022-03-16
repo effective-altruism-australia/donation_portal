@@ -78,6 +78,7 @@ export default class DonorDetails extends Component {
                                     ].concat(this.state.sources)} clearable={false}>
                                 </Select>
                             )}
+                            validate={[required]}
                         />
 
 
