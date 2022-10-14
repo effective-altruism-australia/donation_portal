@@ -108,9 +108,49 @@ class DonationAmount extends Component {
 
 
         const allocateSection = <div id="id-allocate-donation-section">
-            <h3>How would you like to allocate your donation?</h3>
+            <h3>Our recommended charities</h3>
             {
-                this.props.charities.map(function (charity) {
+                this.props.charities.filter((charity) => charity.category === "Our recommended charities").map(function (charity) {
+                    return <div className="form-group" key={charity.slug_id}>
+                        <label className="control-label col-sm-5">{charity.name}</label>
+                        <div className="col-sm-7">
+                            <div className="input-group">
+                                <span className="input-group-addon">$</span>
+                                <Field className="form-control"
+                                       name={"amount." + charity.slug_id}
+                                       component={customInput}
+                                       type="number"
+                                       placeholder="0.00"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                        ;
+                })
+            }
+            <h3>Other charities we support</h3>
+            {
+                this.props.charities.filter((charity) => charity.category === "Other charities we support").map(function (charity) {
+                    return <div className="form-group" key={charity.slug_id}>
+                        <label className="control-label col-sm-5">{charity.name}</label>
+                        <div className="col-sm-7">
+                            <div className="input-group">
+                                <span className="input-group-addon">$</span>
+                                <Field className="form-control"
+                                       name={"amount." + charity.slug_id}
+                                       component={customInput}
+                                       type="number"
+                                       placeholder="0.00"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                        ;
+                })
+            }
+            <h3>Help us do more good</h3>
+            {
+                this.props.charities.filter((charity) => charity.category === "Help us do more good").map(function (charity) {
                     return <div className="form-group" key={charity.slug_id}>
                         <label className="control-label col-sm-5">{charity.name}</label>
                         <div className="col-sm-7">

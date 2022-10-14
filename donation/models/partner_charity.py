@@ -30,6 +30,8 @@ class PartnerCharity(models.Model):
     bio = models.TextField(blank=True)
     website = models.CharField(null=True, blank=True, max_length=200)
 
+    category = models.CharField(null=True, blank=True, max_length=50, choices=((x, x) for x in ("Our recommended charities", "Other charities we support", "Help us do more good")))
+
     impact_text = models.CharField(blank=True, null=True, max_length=500, validators=[validate_impact_text])
     impact_cost = models.FloatField(blank=True, null=True, help_text='Total impact will be calculated as donation '
                                                                      'amount divided by impact cost')
