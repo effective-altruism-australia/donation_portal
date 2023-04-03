@@ -19,7 +19,8 @@ def send_bank_transfer_instructions_task(pledge_id):
 @app.task()
 def process_bank_transactions():
     print("Processing bank transactions...")
-    import_bank_transactions()
+    import_bank_transactions(tenant="eaa")
+    import_bank_transactions(tenant="eaae")
     # Everything else with receipts happens automatically. See donation.models.BankTransaction.save()
     import_trial_balance_non_delayed()
 

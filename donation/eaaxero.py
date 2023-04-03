@@ -17,12 +17,13 @@ from xero.auth import OAuth2Credentials
 from xero.constants import XeroScopes
 
 
-def xero():
+def xero(tenant):
     cred_state = caches['default'].get('xero_creds')
     credentials = OAuth2Credentials(**cred_state)
     if credentials.expired():
         credentials.refresh()
         caches['default'].set('xero_creds', credentials.state)
+    credentials.tenant_id = settings.TENANT_IDS.get(tenant)
     return Xero(credentials)
 
 
@@ -35,13 +36,13 @@ def xero_report_to_iterator(xero_report):
         yield dict(zip(headers, [cell[u'Value'] for cell in row[u'Cells']]))
 
 
-def import_bank_transactions(manual=False):
+def import_bank_transactions(manual=False, tenant = 'eaa'):
     to_date = date.today()
     from_date = to_date - timedelta(settings.XERO_DAYS_TO_IMPORT)
-    import_bank_transactions_from_account(settings.XERO_INCOMING_ACCOUNT_ID, from_date, to_date, manual)
+    import_bank_transactions_from_account(settings.XERO_INCOMING_ACCOUNT_ID_DICT.get(tenant), from_date, to_date, manual, tenant)
 
 
-def import_bank_transactions_from_account(bank_account_id, from_date, to_date, manual):
+def import_bank_transactions_from_account(bank_account_id, from_date, to_date, manual, tenant = "eaa"):
     passed_params = {
         "fromDate": str(from_date),
         "toDate": str(to_date),
@@ -51,7 +52,7 @@ def import_bank_transactions_from_account(bank_account_id, from_date, to_date, m
 
     rows_seen = defaultdict(int)
     try:
-        bank_transactions = xero().reports.get('BankStatement', params=passed_params)
+        bank_transactions = xero(tenant).reports.get('BankStatement', params=passed_params)
     except XeroNotFound:
         if manual:
             # If user invoked this function manually, raise the exception.
