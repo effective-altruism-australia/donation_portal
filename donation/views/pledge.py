@@ -201,7 +201,7 @@ def _stripe_webhooks(request, org):
         process_session_completed.delay(data)
     
     if from_stripe['type'] == 'payment_intent.succeeded':
-        process_payment_intent_succeeded.apply_async(countdown=5, args=(data,))
+        process_payment_intent_succeeded.apply_async(countdown=5, args=(data, org))
     return HttpResponse(status=201)
 
 @require_POST
