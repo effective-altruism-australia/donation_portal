@@ -136,7 +136,7 @@ class PledgeView(View):
                                         'interval': 'month'} if pledge.recurring_frequency == RecurringFrequency.MONTHLY else None},
                      'quantity': 1, }
                 )
-            is_eaae_vals = set(pledge.components.values("parent_charity__is_eaae", flat=True))
+            is_eaae_vals = set(pledge.components.values_list("parent_charity__is_eaae", flat=True))
             assert len(is_eaae_vals) == 1
             is_eaae = is_eaae_vals.pop()
             stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if is_eaae else "eaa")
