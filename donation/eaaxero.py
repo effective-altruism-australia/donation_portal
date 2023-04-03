@@ -94,10 +94,10 @@ def to_decimal(s):
     return Decimal(s) if s else Decimal(0)
 
 
-def import_trial_balance():
+def import_trial_balance(org):
     balance_date = date(2016, 1, 31)
     while balance_date < date.today():
-        trial_balance = xero().reports.get('TrialBalance', params={u'Date': balance_date})
+        trial_balance = xero(org).reports.get('TrialBalance', params={u'Date': balance_date})
 
         for row in xero_report_to_iterator(trial_balance):
             try:

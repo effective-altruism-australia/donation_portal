@@ -22,12 +22,14 @@ def process_bank_transactions():
     import_bank_transactions(tenant="eaa")
     import_bank_transactions(tenant="eaae")
     # Everything else with receipts happens automatically. See donation.models.BankTransaction.save()
-    import_trial_balance_non_delayed()
+    import_trial_balance_non_delayed("eaa")
+    import_trial_balance_non_delayed("eaae")
 
 
 @app.task()
 def import_trial_balance():
-    import_trial_balance_non_delayed()
+    import_trial_balance_non_delayed("eaa")
+    import_trial_balance_non_delayed("eaae")
 
 
 @app.task()
