@@ -47,7 +47,7 @@ urlpatterns = [
 
     url(r'^stripe-webhooks', stripe_webhooks, name='stripe-webhooks'),
 
-    url(r'^stripe-webhooks-eaae', stripe_webhooks, name='stripe-webhooks-eaae'),
+    url(r'^stripe-webhooks-eaae', stripe_webhooks_eaae, name='stripe-webhooks-eaae'),
 
     url(r'^donor-portal/(?P<customer_id>.*)', stripe_billing_portal, name='donor-portal-eaa'),
     
