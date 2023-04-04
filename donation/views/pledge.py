@@ -169,14 +169,23 @@ def process_session_completed(data):
 @app.task()
 def process_payment_intent_succeeded(data, org):
     stripe.api_key = settings.STRIPE_API_KEY_DICT.get(org)
-    charge = data['charges']['data'][0]
-    balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
-    if charge['invoice']: # Is subscription
-        invoice = stripe.Invoice.retrieve(charge['invoice'])
-        pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
-    else:
-        pledge = Pledge.objects.get(stripe_payment_intent_id=data['id'])
-
+    
+    if org == "eaa":
+        charge = data['charges']['data'][0]
+        balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
+        if charge['invoice']: # Is subscription
+            invoice = stripe.Invoice.retrieve(charge['invoice'])
+            pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
+        else:
+            pledge = Pledge.objects.get(stripe_payment_intent_id=data['id'])
+    elif org == 'eaae':
+        charge = stripe.Charge.retrieve(data.get("latest_charge"))
+        balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
+        if charge['invoice']: # Is subscription
+            invoice = stripe.Invoice.retrieve(charge['invoice'])
+            pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
+        else:
+            pledge = Pledge.objects.get(stripe_payment_intent_id=data['id'])
     localtz = pytz.timezone('Australia/Melbourne')
     dt = localtz.normalize(timezone.now().astimezone(localtz))
 
@@ -219,6 +228,7 @@ def stripe_billing_portal(request, customer_id):
     stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaa")
     session = stripe.billing_portal.Session.create(customer=customer_id)
     return HttpResponseRedirect(session.url)
+
 def stripe_billing_portal_eaae(request, customer_id):
     stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae")
     session = stripe.billing_portal.Session.create(customer=customer_id)
