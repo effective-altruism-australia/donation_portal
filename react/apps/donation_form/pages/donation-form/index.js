@@ -34,7 +34,12 @@ class DonationForm extends Component {
         };
 
         this.getCharities();
-        this.stripe = window.Stripe('pk_live_51I1Q7kEO8N9VNJdmgqN19KmuB7haiTg9A9bHfEkHlS7cxlPk0A5ejkHlWuq2sAVvE7QWQXYnTQhRbtEXAT9dSx7A00fl6fhFl5');
+        if (getAllUrlParams().charity === "eaae") {
+            this.stripe = window.Stripe('pk_live_51MbDLyBiXhYHr2MDTZOSex4Vvu3SQJNL4OylN4m9eg1dNXJLFOEASUUiYWASR3t075ewmrCYhqQAonqJlCv4lFVE00FgbQz9UA');
+        } else {
+            this.stripe = window.Stripe('pk_live_51I1Q7kEO8N9VNJdmgqN19KmuB7haiTg9A9bHfEkHlS7cxlPk0A5ejkHlWuq2sAVvE7QWQXYnTQhRbtEXAT9dSx7A00fl6fhFl5');
+        }
+        
     }
 
     getCharities() {
