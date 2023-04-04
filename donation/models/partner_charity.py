@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 import stripe
 from django.conf import settings
 
-
+stripe.api_version = "2020-08-27"
 
 
 def validate_impact_text(impact_text):

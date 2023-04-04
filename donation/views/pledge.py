@@ -25,6 +25,8 @@ from donation.models import PaymentMethod, Receipt, RecurringFrequency, Pledge, 
 from donation.tasks import send_bank_transfer_instructions_task
 from donation_portal.eaacelery import app
 
+stripe.api_version = "2020-08-27"
+
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 rate_limiter = Limiter(r,
                        action='test_credit_card',
