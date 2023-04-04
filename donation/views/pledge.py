@@ -168,6 +168,7 @@ def process_session_completed(data):
 
 @app.task()
 def process_payment_intent_succeeded(data, org):
+    print('org')
     stripe.api_key = settings.STRIPE_API_KEY_DICT.get(org)
     
     if org == "eaa":
@@ -212,6 +213,7 @@ def _stripe_webhooks(request, org):
         process_session_completed.delay(data)
     
     if from_stripe['type'] == 'payment_intent.succeeded':
+        print(org)
         process_payment_intent_succeeded.apply_async(countdown=5, args=(data, org))
     return HttpResponse(status=201)
 
@@ -222,6 +224,7 @@ def stripe_webhooks(request):
 @require_POST
 @csrf_exempt
 def stripe_webhooks_eaae(request):
+    print('here')
     return _stripe_webhooks(request, "eaae")
 
 def stripe_billing_portal(request, customer_id):
