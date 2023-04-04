@@ -168,7 +168,7 @@ def process_session_completed(data):
 
 @app.task()
 def process_payment_intent_succeeded(data, org):
-    print('org')
+    print(org)
     stripe.api_key = settings.STRIPE_API_KEY_DICT.get(org)
     
     if org == "eaa":
@@ -221,6 +221,7 @@ def _stripe_webhooks(request, org):
 @csrf_exempt
 def stripe_webhooks(request):
     return _stripe_webhooks(request, "eaa")
+    
 @require_POST
 @csrf_exempt
 def stripe_webhooks_eaae(request):

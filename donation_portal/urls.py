@@ -44,14 +44,15 @@ urlpatterns = [
 
     url(r'^partner_charities', PartnerCharityView.as_view(), name='partner-charities'),
     url(r'^referral_sources', ReferralSourceView.as_view(), name='referral-sources'),
+    
+    url(r'^stripe-webhooks-eaae', stripe_webhooks_eaae, name='stripe-webhooks-eaae'),
 
     url(r'^stripe-webhooks', stripe_webhooks, name='stripe-webhooks'),
 
-    url(r'^stripe-webhooks-eaae', stripe_webhooks_eaae, name='stripe-webhooks-eaae'),
 
     url(r'^donor-portal/(?P<customer_id>.*)', stripe_billing_portal, name='donor-portal-eaa'),
     
-    url(r'^donor-portal-eaae/(?P<customer_id>.*)', stripe_billing_portal, name='donor-portal-eaae'),
+    url(r'^donor-portal-eaae/(?P<customer_id>.*)', stripe_billing_portal_eaae, name='donor-portal-eaae'),
     
     url(r'^process_callback', process_callback_view, name='process-callback'),
     url(r'^xero_auth', start_xero_auth_view, name='start-auth'),
