@@ -143,7 +143,7 @@ class PledgeView(View):
             is_eaae = is_eaae_vals.pop()
             stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if is_eaae else "eaa")
             session = stripe.checkout.Session.create(
-                payment_method_types=['card'],
+                payment_method_types=['card', 'au_becs_debit'],
                 line_items=line_items,
                 mode='subscription' if pledge.recurring_frequency == RecurringFrequency.MONTHLY else 'payment',
                 success_url='https://effectivealtruism.org.au/donate/?thankyou',
