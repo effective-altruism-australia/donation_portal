@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 import stripe
 from django.conf import settings
 
-stripe.api_version = "2020-08-27"
+stripe.api_key = settings.STRIPE_API_KEY
 
 
 def validate_impact_text(impact_text):
@@ -39,8 +39,6 @@ class PartnerCharity(models.Model):
 
     stripe_product_id = models.CharField(null=True, blank=True, max_length=100)
 
-    is_eaae = models.BooleanField(default=False)
-
     def __unicode__(self):
         return self.name
 
@@ -61,7 +59,6 @@ class PartnerCharity(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.stripe_product_id:
-            stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if self.is_eaae else "eaa")
             self.stripe_product_id =  stripe.Product.create(name=self.name).id
         super(PartnerCharity, self).save(*args, **kwargs)
         PartnerCharity.cache_database_ids()

@@ -20,7 +20,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from donation.views.accounting import accounting_reconciliation, donation_counter
 from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
 from donation.views.form_data import PartnerCharityView, ReferralSourceView
-from donation.views.pledge import stripe_webhooks_eaae, stripe_billing_portal_eaae, PledgeView, download_receipt, PledgeJS, stripe_webhooks, stripe_billing_portal
+from donation.views.pledge import PledgeView, download_receipt, PledgeJS, stripe_webhooks, stripe_billing_portal
 from donation.views.impact_calculator import ImpactCalculator
 from donation.views.xero_views import process_callback_view, start_xero_auth_view
 
@@ -44,15 +44,10 @@ urlpatterns = [
 
     url(r'^partner_charities', PartnerCharityView.as_view(), name='partner-charities'),
     url(r'^referral_sources', ReferralSourceView.as_view(), name='referral-sources'),
-    
-    url(r'^stripe-webhooks-eaae', stripe_webhooks_eaae, name='stripe-webhooks-eaae'),
 
     url(r'^stripe-webhooks', stripe_webhooks, name='stripe-webhooks'),
 
-
-    url(r'^donor-portal/(?P<customer_id>.*)', stripe_billing_portal, name='donor-portal-eaa'),
-    
-    url(r'^donor-portal-eaae/(?P<customer_id>.*)', stripe_billing_portal_eaae, name='donor-portal-eaae'),
+    url(r'^donor-portal/(?P<customer_id>.*)', stripe_billing_portal, name='donor-portal'),
     
     url(r'^process_callback', process_callback_view, name='process-callback'),
     url(r'^xero_auth', start_xero_auth_view, name='start-auth'),

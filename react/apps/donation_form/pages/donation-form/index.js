@@ -34,12 +34,7 @@ class DonationForm extends Component {
         };
 
         this.getCharities();
-        if (getAllUrlParams().charity === "eaae") {
-            this.stripe = window.Stripe('pk_live_51MbDLyBiXhYHr2MDTZOSex4Vvu3SQJNL4OylN4m9eg1dNXJLFOEASUUiYWASR3t075ewmrCYhqQAonqJlCv4lFVE00FgbQz9UA');
-        } else {
-            this.stripe = window.Stripe('pk_live_51I1Q7kEO8N9VNJdmgqN19KmuB7haiTg9A9bHfEkHlS7cxlPk0A5ejkHlWuq2sAVvE7QWQXYnTQhRbtEXAT9dSx7A00fl6fhFl5');
-        }
-        
+        this.stripe = window.Stripe('pk_live_51I1Q7kEO8N9VNJdmgqN19KmuB7haiTg9A9bHfEkHlS7cxlPk0A5ejkHlWuq2sAVvE7QWQXYnTQhRbtEXAT9dSx7A00fl6fhFl5');
     }
 
     getCharities() {
@@ -108,6 +103,9 @@ class DonationForm extends Component {
                 <h2>Your donation will go to support {this.props.charity.name}</h2>
                 {charity_thumbnail}
                 <br/>
+                <p>
+                    <a href=".">Choose a different program to support</a>
+                </p>
             </div>
         ) : (
             <div>
