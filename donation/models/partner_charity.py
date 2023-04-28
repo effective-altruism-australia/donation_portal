@@ -43,6 +43,14 @@ class PartnerCharity(models.Model):
 
     def __unicode__(self):
         return self.name
+        
+    @property
+    def bsb(self):
+        return "083004" if self.is_eaae else "083170"
+        
+    @property
+    def account_number(self):
+        return "931587719" if self.is_eaae else "306556167"
 
     class Meta:
         verbose_name_plural = "Partner charities"

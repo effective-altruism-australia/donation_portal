@@ -56,8 +56,8 @@ class DonationResult extends Component {
                             </p>
                             <p>
                                 <strong>Account Name</strong>: Effective Altruism Australia (don't worry if it doesn't fit)<br/>
-                                <strong>BSB</strong>: 083170<br/>
-                                <strong>Account No</strong>: 306556167<br/>
+                                <strong>BSB</strong>: {(this.props.charity && this.props.charity.is_eaae) ? '083004': '083170'}<br/>
+                                <strong>Account No</strong>: {(this.props.charity && this.props.charity.is_eaae) ? '931587719': '306556167'}<br/>
                                 <strong>Unique Reference Number</strong>: { this.props.result.bank_reference } (put in the transaction description)
                             </p>
                         </div>

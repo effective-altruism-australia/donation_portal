@@ -10,7 +10,8 @@ from donation.models import PartnerCharity, ReferralSource
 class PartnerCharityView(View):
     def get(self, request):
         charity_names = PartnerCharity.objects.filter(active=True).order_by('ordering').values('slug_id', 'name',
-                                                                                            'thumbnail', "category")
+                                                                                            'thumbnail', "category",
+                                                                                            "is_eaae")
         return JsonResponse(list(charity_names), safe=False)
 
 
