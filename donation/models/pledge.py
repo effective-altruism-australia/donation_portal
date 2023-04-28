@@ -121,6 +121,12 @@ class Pledge(models.Model):
         return self.payment_method == PaymentMethod.CREDIT_CARD
 
     @property
+    def is_eaae(self):
+        s = set(self.components.values_list("partner_charity__is_eaae", flat=True))
+        assert len(s) == 1, "Pledge had partner charities from both EAA and EAAE.  This shouldnt happen"
+        return s.pop()
+
+    @property
     def donor_portal(self):
         return 'https://donations.effectivealtruism.org.au' + reverse('donor-portal-eaae' if self.is_eaae else 'donor-portal-eaa', kwargs={'customer_id': self.stripe_customer_id})
 
