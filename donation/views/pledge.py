@@ -25,12 +25,14 @@ from donation.models import PaymentMethod, Receipt, RecurringFrequency, Pledge, 
 from donation.tasks import send_bank_transfer_instructions_task
 from donation_portal.eaacelery import app
 
+stripe.api_version = "2020-08-27"
+
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 rate_limiter = Limiter(r,
                        action='test_credit_card',
                        limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
                        period=settings.CREDIT_CARD_RATE_LIMIT_PERIOD)
-stripe.api_key = settings.STRIPE_API_KEY
+
 
 
 def download_receipt(request, pk, secret):
@@ -136,6 +138,10 @@ class PledgeView(View):
                                         'interval': 'month'} if pledge.recurring_frequency == RecurringFrequency.MONTHLY else None},
                      'quantity': 1, }
                 )
+            is_eaae_vals = set(pledge.components.values_list("partner_charity__is_eaae", flat=True))
+            assert len(is_eaae_vals) == 1
+            is_eaae = is_eaae_vals.pop()
+            stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if is_eaae else "eaa")
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=line_items,
@@ -161,15 +167,26 @@ def process_session_completed(data):
     
 
 @app.task()
-def process_payment_intent_succeeded(data):
-    charge = data['charges']['data'][0]
-    balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
-    if charge['invoice']: # Is subscription
-        invoice = stripe.Invoice.retrieve(charge['invoice'])
-        pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
-    else:
-        pledge = Pledge.objects.get(stripe_payment_intent_id=data['id'])
-
+def process_payment_intent_succeeded(data, org):
+    print(org)
+    stripe.api_key = settings.STRIPE_API_KEY_DICT.get(org)
+    
+    if org == "eaa":
+        charge = data['charges']['data'][0]
+        balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
+        if charge['invoice']: # Is subscription
+            invoice = stripe.Invoice.retrieve(charge['invoice'])
+            pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
+        else:
+            pledge = Pledge.objects.get(stripe_payment_intent_id=data['id'])
+    elif org == 'eaae':
+        charge = stripe.Charge.retrieve(data.get("latest_charge"))
+        balance_trans = stripe.BalanceTransaction.retrieve(charge['balance_transaction'])
+        if charge['invoice']: # Is subscription
+            invoice = stripe.Invoice.retrieve(charge['invoice'])
+            pledge = Pledge.objects.get(stripe_subscription_id=invoice['subscription'])
+        else:
+            pledge = Pledge.objects.get(stripe_payment_intent_id=data['id'])
     localtz = pytz.timezone('Australia/Melbourne')
     dt = localtz.normalize(timezone.now().astimezone(localtz))
 
@@ -188,16 +205,35 @@ def process_payment_intent_succeeded(data):
 
 @require_POST
 @csrf_exempt
-def stripe_webhooks(request):
+def _stripe_webhooks(request, org):
+    stripe.api_key = settings.STRIPE_API_KEY_DICT.get(org)
     from_stripe = json.loads(request.body.decode('utf-8'))
     data = from_stripe['data']['object']
     if from_stripe['type'] == 'checkout.session.completed':
         process_session_completed.delay(data)
     
     if from_stripe['type'] == 'payment_intent.succeeded':
-        process_payment_intent_succeeded.apply_async(countdown=5, args=(data,))
+        print(org)
+        process_payment_intent_succeeded.apply_async(countdown=5, args=(data, org))
     return HttpResponse(status=201)
 
+@require_POST
+@csrf_exempt
+def stripe_webhooks(request):
+    return _stripe_webhooks(request, "eaa")
+    
+@require_POST
+@csrf_exempt
+def stripe_webhooks_eaae(request):
+    print('here')
+    return _stripe_webhooks(request, "eaae")
+
 def stripe_billing_portal(request, customer_id):
+    stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaa")
+    session = stripe.billing_portal.Session.create(customer=customer_id)
+    return HttpResponseRedirect(session.url)
+
+def stripe_billing_portal_eaae(request, customer_id):
+    stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae")
     session = stripe.billing_portal.Session.create(customer=customer_id)
     return HttpResponseRedirect(session.url)
