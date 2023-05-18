@@ -135,6 +135,10 @@ class Pledge(models.Model):
         return "931587719" if self.is_eaae else "306556167"
 
     @property
+    def abn(self):
+        return "57 659 447 417" if self.is_eaae else "87 608 863 467"
+
+    @property
     def donor_portal(self):
         return 'https://donations.effectivealtruism.org.au' + reverse('donor-portal-eaae' if self.is_eaae else 'donor-portal-eaa', kwargs={'customer_id': self.stripe_customer_id})
 

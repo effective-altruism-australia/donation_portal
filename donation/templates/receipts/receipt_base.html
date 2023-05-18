@@ -243,7 +243,7 @@
         </div>
         <div class="header-text col-3-12">
           <p class="header_text">
-            ABN: 87 6088 634 67</br>
+            ABN: {{ pledge.abn }}</br>
             GPO Box 265<br>
             Melbourne VIC 3001<br>
             Australia
@@ -267,7 +267,7 @@
       <div class="footer-content">
         <hr>
         <p>
-          Effective Altruism Australia (ABN 87 608 863 467) is a Public Benevolent Institution endorsed as a Deductible Gift Recipient by the Australian Taxation Office. Donations of $2 or more are tax deductible in Australia.
+          {% block footercontent %}{% endblock footercontent %}
         </p>
       </div>
     </div>

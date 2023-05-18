@@ -19,3 +19,11 @@
     Effective Altruism Australia
 
 {% endblock content %}
+
+{% block footercontent %}
+{% if pledge.is_eaae %}
+Thank you for your gift representing a donation to the EAA Environment Public Fund. The EAA Environment Public Fund is a public fund listed on the Register of Environmental Organisations under item 6.1.1 of subsection 30-55(1) of the Income Tax Assessment Act 1997. Donations of $2 or more are tax deductible in Australia.
+{% else %}
+Effective Altruism Australia (ABN {{ pledge.abn }}) is a Public Benevolent Institution endorsed as a Deductible Gift Recipient by the Australian Taxation Office. Donations of $2 or more are tax deductible in Australia.
+{% endif %}
+{% endblock footercontent %}
