@@ -87,7 +87,8 @@ def import_bank_transactions_from_account(bank_account_id, from_date, to_date, m
                                            bank_statement_text=bank_statement_text,
                                            amount=amount,
                                            unique_id=unique_id,
-                                           bank_account_id=bank_account_id)
+                                           bank_account_id=bank_account_id,
+                                           is_eaae=tenant=="eaae")
 
 
 def to_decimal(s):

@@ -102,7 +102,7 @@ class StripeTransactionInline(admin.TabularInline):
 class PledgeAdmin(VersionAdmin):
     search_fields = ('first_name', 'last_name', 'reference', 'email')
     readonly_fields = ('ip', 'completed_time')
-    list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency', 'payment_method')
+    list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency', 'payment_method', "is_eaae")
     inlines = [PledgeComponentInline, StripeTransactionInline]
 
     class Meta:
@@ -162,7 +162,7 @@ class BankTransactionAdmin(VersionAdmin):
     form = BankTransactionForm
     search_fields = ('bank_statement_text', 'reference')
     readonly_fields = ('date', 'amount', 'bank_statement_text', 'reconciled', 'pledge')
-    list_filter = (BankTransactionReconciliationListFilter,)
+    list_filter = (BankTransactionReconciliationListFilter, "is_eaae")
     inlines = (ReceiptInline,)
     ordering = ('-date', '-id',)
 

@@ -82,6 +82,8 @@ class Pledge(models.Model):
     drupal_username = models.TextField(blank=True, editable=False)
     drupal_preferred_donation_method = models.TextField(blank=True, editable=False)
 
+    is_eaae = models.BooleanField(default=False)
+
     @property
     def amount(self):
         return self.components.aggregate(total=models.Sum('amount'))['total']
@@ -106,6 +108,7 @@ class Pledge(models.Model):
         return self.reference
 
     def save(self, *args, **kwargs):
+        self.is_eaae = self.get_is_eaae()
         if not self.completed_time:
             self.completed_time = timezone.now()
         super(Pledge, self).save(*args, **kwargs)
@@ -121,7 +124,7 @@ class Pledge(models.Model):
         return self.payment_method == PaymentMethod.CREDIT_CARD
 
     @property
-    def is_eaae(self):
+    def get_is_eaae(self):
         s = set(self.components.values_list("partner_charity__is_eaae", flat=True))
         assert len(s) == 1, "Pledge had partner charities from both EAA and EAAE.  This shouldnt happen"
         return s.pop()
