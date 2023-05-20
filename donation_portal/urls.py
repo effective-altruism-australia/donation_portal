@@ -28,7 +28,7 @@ urlpatterns = [
     # Accounting
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounting_reconciliation', accounting_reconciliation, name='accounting-reconciliation'),
-    url(r'^accounting_reconciliation_eaae', accounting_reconciliation_eaae, name='accounting-reconciliation-eaae'),
+    url(r'^eaae_accounting_reconciliation', accounting_reconciliation_eaae, name='accounting-reconciliation-eaae'),
     url(r'^impact', ImpactCalculator.as_view(), name='impact'),
     url(r'^secret_donation_counter', donation_counter, name='donation-counter'),
     # Data export

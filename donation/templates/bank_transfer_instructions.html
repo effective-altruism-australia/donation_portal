@@ -10,7 +10,7 @@
     Please make sure that you complete the process by {% if pledge.recurring %}setting up a monthly periodic payment for
 {% else %}making a bank transfer of {% endif %}
     <strong>${{ pledge.amount }}</strong> to:<br><br>
-    <strong>Account Name: </strong>Effective Altruism Australia (don't worry if it doesn't fit)<br>
+    <strong>Account Name: </strong>{{ pledge.org_name }} (don't worry if it doesn't fit)<br>
     <strong>BSB:</strong> {{ pledge.bsb }}<br>
     <strong>Account No:</strong> {{ pledge.account_number }}<br>
     <strong>Unique Reference Number:</strong> {{ pledge.reference }}

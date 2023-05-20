@@ -133,6 +133,9 @@ class Pledge(models.Model):
         return "083004" if self.is_eaae else "083170"
         
     @property
+    def org_name(self):
+        return "Effective Altruism Australia Environmentalism" if self.is_eaae else "Effective Altruism Australia"
+    @property
     def account_number(self):
         return "931587719" if self.is_eaae else "306556167"
 

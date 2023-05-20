@@ -145,14 +145,14 @@ def _accounting_reconciliation(request, is_eaae):
                                                                                     'stripe_after_fees', 'total')}
 
     # This shouldn't/can't happen but it will mess up the reconciliation so let's check.
-    qs = BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True, pledge__is_eaae=is_eaae)
+    qs = BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True, is_eaae=is_eaae)
     if qs.exists():
         message = "Error: transaction reconciled to pledge and also marked 'Do not reconcile', please check " \
                   "bank transactions with id: %s" % ', '.join(qs.values_list('id', flat=True))
         client.captureException("Error: transaction reconciled to pledge and also marked 'Do not reconcile'")
         return HttpResponse(message)
 
-    exceptions = BankTransaction.objects.filter(date__gte=start, date__lte=end).exclude(pledge__isnull=False).order_by(
+    exceptions = BankTransaction.objects.filter(date__gte=start, date__lte=end, is_eaae=is_eaae).exclude(pledge__isnull=False).order_by(
         'date')
 
     return render(request, 'reconciliation.html', {'form': form,

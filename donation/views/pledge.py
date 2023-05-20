@@ -105,7 +105,6 @@ class PledgeView(View):
 
         with django_transaction.atomic():
             pledge = pledge_form.save()
-            pledge.is_eaae = pledge.get_is_eaae
             if pledge.recurring_frequency == RecurringFrequency.MONTHLY:
                 pledge.recurring = True   
             
@@ -120,6 +119,9 @@ class PledgeView(View):
             for component in component_formset.forms:
                 component.instance.pledge = pledge
             component_formset.save()
+            
+            pledge.is_eaae = pledge.get_is_eaae
+            pledge.save()
 
         response_data = {}
 
