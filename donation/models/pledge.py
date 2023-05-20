@@ -108,7 +108,7 @@ class Pledge(models.Model):
         return self.reference
 
     def save(self, *args, **kwargs):
-        self.is_eaae = self.get_is_eaae()
+        self.is_eaae = self.get_is_eaae
         if not self.completed_time:
             self.completed_time = timezone.now()
         super(Pledge, self).save(*args, **kwargs)
