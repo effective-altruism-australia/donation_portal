@@ -577,13 +577,6 @@ p.help-text {
     margin-top: 30px;
 }
 
-.payment-faq .payment-faq-question {
-    font-weight: bold;
-    margin-bottom: 0;
-}
-.payment-faq  .payment-faq-answer {
-    margin-bottom: 20px;
-}
 .clickable {
     cursor: pointer;
 }
