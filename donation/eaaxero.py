@@ -79,6 +79,9 @@ def import_bank_transactions_from_account(bank_account_id, from_date, to_date, m
         rows_seen[unique_id] += 1
         if rows_seen[unique_id] > 1:
             unique_id = hashlib.md5(unique_id + str(rows_seen[unique_id])).hexdigest()
+        
+        if "STRIPE EFFECTIVE ALT" in bank_statement_text:
+            continue
 
         try:
             BankTransaction.objects.get(unique_id=unique_id)
