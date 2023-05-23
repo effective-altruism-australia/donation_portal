@@ -26,7 +26,7 @@ class DonationResult extends Component {
                         <div className="complete-other-info">
                             <h3>Any questions?</h3>
                             <p>
-                                Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 3 9349 4062, if you have any questions.
+                                Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 492 841 596, if you have any questions.
                             </p>
                         </div>
                         <p>
@@ -72,7 +72,7 @@ class DonationResult extends Component {
 
                             <h3>Any questions?</h3>
                             <p>
-                                Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 3 9349 4062, if you have any questions.
+                                Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 492 841 596, if you have any questions.
                             </p>
                         </div>
 
