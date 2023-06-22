@@ -9,7 +9,7 @@ from donation.models.pledge import Pledge
 from donation_portal.eaacelery import app
 from .eaaxero import import_bank_transactions, import_trial_balance as import_trial_balance_non_delayed
 from .emails import send_bank_transfer_instructions, send_partner_charity_reports
-
+from donation.views.export import write_spreadsheet
 
 @app.task()
 def send_bank_transfer_instructions_task(pledge_id):
@@ -76,3 +76,7 @@ def add_pledge_contact_to_ea_newsletter(pledge_id):
         if e[0]['title'] not in ('Invalid Resource', 'Member Exists'):
             client.captureException()
 
+
+@app.task()
+def export_spreadsheet(location, queryset, template):
+    write_spreadsheet(location, {'Donations': queryset}, template)

@@ -54,16 +54,14 @@ def download_spreadsheet(request, extra_fields=None):
                            ] + extra_fields)
 
     filename = 'EAA donations {0} to {1} downloaded {2}.xlsx'.format(start, end, datetime.now())
-    location = os.path.join(settings.MEDIA_ROOT, 'downloads', filename)
+    location = os.path.join(settings.STATIC_ROOT, filename)
 
     # Note that the values call below is required to create a donation object for each associated pledge component
     queryset = Donation.objects.values('components').filter(
         date__gte=start, date__lte=end).order_by('datetime')
     write_spreadsheet(location, {'Donations': queryset}, template)
 
-    response = HttpResponse(open(location).read(),
-                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+    response = HttpResponse("https://donations.effectivealtruism.com.au/static/" + filename)
     return response
 
 
