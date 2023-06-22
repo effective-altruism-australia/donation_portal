@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import os
 from collections import OrderedDict
 from datetime import datetime, date
+from donation.tasks import export_spreadsheet
 
 import xlsxwriter
 from django.conf import settings
@@ -59,7 +60,7 @@ def download_spreadsheet(request, extra_fields=None):
     # Note that the values call below is required to create a donation object for each associated pledge component
     queryset = Donation.objects.values('components').filter(
         date__gte=start, date__lte=end).order_by('datetime')
-    write_spreadsheet(location, {'Donations': queryset}, template)
+    export_spreadsheet.delay(location, queryset, template)
 
     response = HttpResponse("https://donations.effectivealtruism.com.au/static/" + filename)
     return response
