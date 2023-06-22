@@ -61,7 +61,7 @@ def download_spreadsheet(request, extra_fields=None):
                                ('Recurring frequency', 'pledge__recurring_frequency')
                            ] + extra_fields)
 
-    filename = 'EAA_donations_{0}.xlsx'.format(str(datetime.date.today()))
+    filename = 'EAA_donations_{0}.xlsx'.format(str(date.today()))
     location = os.path.join("/tmp", filename)
     if not os.path.exists(location):
         # Note that the values call below is required to create a donation object for each associated pledge component
