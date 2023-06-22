@@ -14,6 +14,13 @@ from django.utils import timezone
 from enumfields import Enum
 
 from donation.models import Donation
+import string
+import random
+
+def generate_random_string(length=10):
+    letters = string.ascii_letters
+    result_str = ''.join(random.choice(letters) for _ in range(length))
+    return result_str
 
 
 @login_required()
@@ -54,7 +61,7 @@ def download_spreadsheet(request, extra_fields=None):
                                ('Recurring frequency', 'pledge__recurring_frequency')
                            ] + extra_fields)
 
-    filename = 'EAA_donations_{2}.xlsx'.format(start, end, datetime.now())
+    filename = 'EAA_donations_{0}.xlsx'.format(generate_random_string(10))
     location = os.path.join(settings.STATIC_ROOT, filename)
 
     # Note that the values call below is required to create a donation object for each associated pledge component
