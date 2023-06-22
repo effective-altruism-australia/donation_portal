@@ -61,17 +61,20 @@ def download_spreadsheet(request, extra_fields=None):
                                ('Recurring frequency', 'pledge__recurring_frequency')
                            ] + extra_fields)
 
-    filename = 'EAA_donations_{0}.xlsx'.format(generate_random_string(10))
-    location = os.path.join(settings.STATIC_ROOT, filename)
-
-    # Note that the values call below is required to create a donation object for each associated pledge component
-    queryset = Donation.objects.values('components').filter(
-        date__gte=start, date__lte=end).order_by('datetime')
-    from donation.tasks import export_spreadsheet
-    export_spreadsheet.delay(location, queryset, template)
-
-    response = HttpResponse("https://donations.effectivealtruism.com.au/static/" + filename)
-    return response
+    filename = 'EAA_donations_{0}.xlsx'.format(str(datetime.date.today()))
+    location = os.path.join("/tmp", filename)
+    if not os.path.exists(location):
+        # Note that the values call below is required to create a donation object for each associated pledge component
+        queryset = Donation.objects.values('components').filter(
+            date__gte=start, date__lte=end).order_by('datetime')
+        from donation.tasks import export_spreadsheet
+        export_spreadsheet.delay(location, queryset, template)
+        return HttpResponse("Please wait 5 minutes and refresh this page again.")
+    else:
+        response = HttpResponse(open(location).read(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+        return response
 
 
 def write_spreadsheet(location, querysets, template):
