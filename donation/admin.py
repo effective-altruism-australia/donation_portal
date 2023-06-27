@@ -230,7 +230,7 @@ class PartnerCharityAdmin(VersionAdmin):
 admin.site.register(Pledge, PledgeAdmin)
 admin.site.register(BankTransaction, BankTransactionAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
-admin.site.register(PartnerCharity, VersionAdmin)
+admin.site.register(PartnerCharity, PartnerCharityAdmin)
 admin.site.register(XeroReconciledDate)
 admin.site.register(PartnerCharityReport)
 admin.site.register(ReferralSource, ReferralSourceAdmin)
