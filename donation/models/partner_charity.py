@@ -19,7 +19,7 @@ def validate_impact_text(impact_text):
 
 
 class PartnerCharity(models.Model):
-    slug_id = models.CharField(max_length=30, unique=True, null=True)
+    slug_id = models.CharField(max_length=30, help_text="Machine readable name (no spaces or special characters)", unique=True, null=True, blank=True)
     name = models.TextField(unique=True, verbose_name='Name (human readable)')
     email = models.EmailField(help_text="Used to send the partner charity reports")
     email_cc = models.EmailField(null=True, blank=True, help_text="Cced on partner charity reports")
@@ -71,6 +71,8 @@ class PartnerCharity(models.Model):
         if not self.stripe_product_id:
             stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if self.is_eaae else "eaa")
             self.stripe_product_id =  stripe.Product.create(name=self.name).id
+        if not self.slug_id:
+            self.slug_id = self.name.replace(" ", "-").lower()
         super(PartnerCharity, self).save(*args, **kwargs)
         PartnerCharity.cache_database_ids()
 
