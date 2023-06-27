@@ -221,8 +221,10 @@ class ReferralSourceAdmin(VersionAdmin):
 
 
 class PartnerCharityAdmin(VersionAdmin):
-    fields = ('name', 'slug_id', 'email', 'email_cc', 'xero_account_name', 'active', 'thumbnail', 'bio', 'website',
-              'impact_text', 'impact_cost', "category", "is_eaae")
+    fields = ('name', 'slug_id', 'email', 
+              'email_cc', 
+              'active',
+              'impact_text', 'impact_cost', "category")
 
 
 admin.site.register(Pledge, PledgeAdmin)
