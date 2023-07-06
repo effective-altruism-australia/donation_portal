@@ -12,7 +12,7 @@ from django.db.models.functions import Lower
 from django.template.loader import render_to_string
 from django.utils import timezone
 from raven.contrib.django.raven_compat.models import client
-from tqdm import tqdm
+
 from donation.models import Donation, EOFYReceipt
 
 
@@ -30,7 +30,7 @@ def generate_data_for_eofy_receipts(year, is_eaae):
 
 def send_eofy_receipts(test=True, year=None, is_eaae=False):
     year = year or timezone.now().year
-    for donations_from_email in tqdm(generate_data_for_eofy_receipts(year, is_eaae)):
+    for donations_from_email in generate_data_for_eofy_receipts(year, is_eaae):
         pledge = donations_from_email[-1].pledge
         email = pledge.email
         context = {'email': email,
