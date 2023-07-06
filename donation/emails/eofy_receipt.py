@@ -20,7 +20,7 @@ def generate_data_for_eofy_receipts(year, is_eaae):
     # Some donors aren't consistent with the capitalisation of their email address
     donations = (Donation.objects
                  .select_related('pledge')
-                 .filter(is_eaae=is_eaae,
+                 .filter(pledge__is_eaae=is_eaae,
                          date__gte=datetime.date(year - 1, 7, 1), date__lt=datetime.date(year, 7, 1))
                  .annotate(email_lower=Lower('pledge__email'))
                  .order_by('email_lower', 'datetime')

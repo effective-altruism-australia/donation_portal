@@ -114,7 +114,7 @@ CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS = 6
 CREDIT_CARD_RATE_LIMIT_PERIOD = 12 * 60 * 60
 CREDIT_CARD_RATE_LIMIT_ENABLED = True
 
-TESTING_EMAIL = "@".join(['andrew', 'eaa.org.au'])
+TESTING_EMAIL = "@".join(['andrewbirdemail', 'gmail.com'])
 EAA_INFO_EMAIL = 'info@eaa.org.au'
 
 DEBUG = False
