@@ -16,20 +16,21 @@ from raven.contrib.django.raven_compat.models import client
 from donation.models import Donation, EOFYReceipt
 
 
-def generate_data_for_eofy_receipts(year):
+def generate_data_for_eofy_receipts(year, is_eaae):
     # Some donors aren't consistent with the capitalisation of their email address
     donations = (Donation.objects
                  .select_related('pledge')
-                 .filter(date__gte=datetime.date(year - 1, 7, 1), date__lt=datetime.date(year, 7, 1))
+                 .filter(is_eaae=is_eaae,
+                         date__gte=datetime.date(year - 1, 7, 1), date__lt=datetime.date(year, 7, 1))
                  .annotate(email_lower=Lower('pledge__email'))
                  .order_by('email_lower', 'datetime')
                  )
     return [list(donations) for _, donations in itertools.groupby(donations, lambda d: d.email_lower)]
 
 
-def send_eofy_receipts(test=True, year=None):
+def send_eofy_receipts(test=True, year=None, is_eaae=False):
     year = year or timezone.now().year
-    for donations_from_email in generate_data_for_eofy_receipts(year):
+    for donations_from_email in generate_data_for_eofy_receipts(year, is_eaae):
         pledge = donations_from_email[-1].pledge
         email = pledge.email
         context = {'email': email,
@@ -40,11 +41,13 @@ def send_eofy_receipts(test=True, year=None):
                    }
 
         # Enforce not sending multiple receipts by default
-        if not test and EOFYReceipt.objects.filter(year=year, email=email, time_sent__isnull=False).exists():
+        if not test and EOFYReceipt.objects.filter(year=year, email=email, time_sent__isnull=False,
+                                                   is_eaae=is_eaae).exists():
             continue
 
         eofy_receipt = EOFYReceipt(year=year,
-                                   email=email)
+                                   email=email,
+                                   is_eaae=is_eaae)
 
         try:
             # Note: wkhtmltopdf can combine multiple html pages into one pdf, but not the version on

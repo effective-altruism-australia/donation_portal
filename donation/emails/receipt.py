@@ -29,6 +29,7 @@ def create_and_send_receipt(sender, instance, created, **kwargs):
                                                     {'unique_reference': receipt.pk,
                                                      'pledge': receipt.pledge,
                                                      'transaction': receipt.transaction,
+                                                     "is_eaae": receipt.pledge.is_eaae,
                                                      })
             pdfkit.from_string(receipt.receipt_html, receipt.pdf_receipt_location)
             receipt.save()
