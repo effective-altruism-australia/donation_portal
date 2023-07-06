@@ -38,6 +38,8 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
                    'two_digit_year': year - 2000,
                    'total_amount': sum((donation.amount for donation in donations_from_email)),
                    'donations': donations_from_email,
+                   "is_eaae": is_eaae,
+                   "abn": "57 659 447 417" if is_eaae else "87 608 863 467"
                    }
 
         # Enforce not sending multiple receipts by default
@@ -69,6 +71,8 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
 
             context = {'first_name': pledge.first_name,
                        'two_digit_year': year - 2000,
+                       "is_eaae": is_eaae,
+                        "abn": "57 659 447 417" if is_eaae else "87 608 863 467"
                        }
             body_html = render_to_string('receipts/eofy_receipt_message.html', context)
             body_plain_txt = render_to_string('receipts/eofy_receipt_message.txt', context)
