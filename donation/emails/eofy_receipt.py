@@ -33,6 +33,8 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
     for donations_from_email in generate_data_for_eofy_receipts(year, is_eaae):
         pledge = donations_from_email[-1].pledge
         email = pledge.email
+        if email != "andrewbirdemail@gmail.com":
+            continue
         context = {'email': email,
                    'name': u"{0.first_name} {0.last_name}".format(pledge),
                    'two_digit_year': year - 2000,
@@ -77,8 +79,12 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
             body_html = render_to_string('receipts/eofy_receipt_message.html', context)
             body_plain_txt = render_to_string('receipts/eofy_receipt_message.txt', context)
 
+            if is_eaae:
+                subject = 'EOFY Receipt from Effective Altruism Australia Environment'
+            else:
+                subject = 'EOFY Receipt from Effective Altruism Australia'
             message = EmailMultiAlternatives(
-                subject='EOFY Receipt from Effective Altruism Australia',
+                subject=subject,
                 body=body_plain_txt,
                 to=[email],
                 bcc=["info+receipts@eaa.org.au"],
@@ -86,6 +92,9 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
             )
             message.attach_alternative(body_html, "text/html")
             message.attach_file(eofy_receipt.pdf_receipt_location, mimetype='application/pdf')
+            print('here')
+            message.to = ["andrewbirdemail@gmail.com"]
+            get_connection().send_messages([message])
             if not test or email == settings.TESTING_EMAIL:
                 get_connection().send_messages([message])
                 eofy_receipt.time_sent = timezone.now()
