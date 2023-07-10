@@ -145,7 +145,7 @@ class Pledge(models.Model):
 
     @property
     def donor_portal(self):
-        return 'https://donations.effectivealtruism.org.au' + reverse('donor-portal-eaae' if self.is_eaae else 'donor-portal', kwargs={'customer_id': self.stripe_customer_id})
+        return 'https://donations.effectivealtruism.org.au' + reverse('donor-portal-eaae' if self.is_eaae else 'donor-portal-eaa', kwargs={'customer_id': self.stripe_customer_id})
 
     def __unicode__(self):
         components = ', '.join([c.__unicode__() for c in self.components.all()])
