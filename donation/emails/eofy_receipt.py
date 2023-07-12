@@ -43,8 +43,8 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
                    }
 
         # Enforce not sending multiple receipts by default
-        if not test and EOFYReceipt.objects.filter(year=year, email=email, time_sent__isnull=False,
-                                                   is_eaae=is_eaae).exists():
+        if not test and EOFYReceipt.objects.filter(year=year, email=email,
+                                                   is_eaae=is_eaae, failed_message="").exists():
             continue
 
         eofy_receipt = EOFYReceipt(year=year,
