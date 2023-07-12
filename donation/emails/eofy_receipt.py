@@ -90,7 +90,6 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
             )
             message.attach_alternative(body_html, "text/html")
             message.attach_file(eofy_receipt.pdf_receipt_location, mimetype='application/pdf')
-            get_connection().send_messages([message])
             if not test or email == settings.TESTING_EMAIL:
                 get_connection().send_messages([message])
                 eofy_receipt.time_sent = timezone.now()
