@@ -65,8 +65,7 @@ def download_spreadsheet(request, extra_fields=None):
     location = os.path.join("/tmp", filename)
     if not os.path.exists(location):
         # Note that the values call below is required to create a donation object for each associated pledge component
-        queryset = Donation.objects.values('components').filter(
-            date__gte=start, date__lte=end).order_by('datetime')
+        queryset = Donation.objects.filter(date__gte=start, date__lte=end).order_by('datetime')
         from donation.tasks import export_spreadsheet
         export_spreadsheet.delay(location, queryset, template)
         return HttpResponse("Please wait 5 minutes and refresh this page again.")
