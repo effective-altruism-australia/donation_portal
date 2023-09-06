@@ -116,6 +116,7 @@ class EOFYReceipt(models.Model):
     receipt_html_page_1 = models.TextField(blank=True, editable=False)
     receipt_html_page_2 = models.TextField(blank=True, editable=False)
     failed_message = models.TextField(blank=True, editable=False, default='')
+    is_eaae = models.BooleanField(default=False)
 
     @property
     def sent(self):

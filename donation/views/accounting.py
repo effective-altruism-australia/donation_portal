@@ -113,7 +113,7 @@ def donation_counter(request):
 
 
 @login_required()
-def accounting_reconciliation(request):
+def _accounting_reconciliation(request, is_eaae):
     if request.method == 'POST':
         form = DateRangeSelector(request.POST)
         if not form.is_valid():
@@ -137,7 +137,7 @@ def accounting_reconciliation(request):
                    'stripe': total_donations_for_partner(start, end, partner, payment_method='Stripe'),
                    'stripe_after_fees': total_donations_for_partner(start, end, partner, payment_method='Stripe', after_fees=True),
                    'total': total_donations_for_partner(start, end, partner)}
-              for partner in PartnerCharity.objects.all().order_by('name')}
+              for partner in PartnerCharity.objects.filter(is_eaae=is_eaae).order_by('name')}
 
     grand_total = {kind: sum(total[kind] for total in totals.values()) for kind in ('bank', 'pin_payments',
                                                                                     'pin_payments_after_fees',
@@ -145,17 +145,25 @@ def accounting_reconciliation(request):
                                                                                     'stripe_after_fees', 'total')}
 
     # This shouldn't/can't happen but it will mess up the reconciliation so let's check.
-    qs = BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True)
+    qs = BankTransaction.objects.filter(pledge__isnull=False, do_not_reconcile=True, is_eaae=is_eaae)
     if qs.exists():
         message = "Error: transaction reconciled to pledge and also marked 'Do not reconcile', please check " \
                   "bank transactions with id: %s" % ', '.join(qs.values_list('id', flat=True))
         client.captureException("Error: transaction reconciled to pledge and also marked 'Do not reconcile'")
         return HttpResponse(message)
 
-    exceptions = BankTransaction.objects.filter(date__gte=start, date__lte=end).exclude(pledge__isnull=False).order_by(
+    exceptions = BankTransaction.objects.filter(date__gte=start, date__lte=end, is_eaae=is_eaae).exclude(pledge__isnull=False).order_by(
         'date')
 
     return render(request, 'reconciliation.html', {'form': form,
                                                    'totals': sorted(totals.iteritems()),
                                                    'grand_total': grand_total,
                                                    'exceptions': exceptions})
+
+@login_required()
+def accounting_reconciliation(request):
+    return _accounting_reconciliation(request, False)
+
+@login_required()
+def accounting_reconciliation_eaae(request):
+    return _accounting_reconciliation(request, True)

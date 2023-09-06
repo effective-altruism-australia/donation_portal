@@ -4,6 +4,7 @@ import os
 from collections import OrderedDict
 from datetime import datetime, date
 
+
 import xlsxwriter
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -13,6 +14,13 @@ from django.utils import timezone
 from enumfields import Enum
 
 from donation.models import Donation
+import string
+import random
+
+def generate_random_string(length=10):
+    letters = string.ascii_letters
+    result_str = ''.join(random.choice(letters) for _ in range(length))
+    return result_str
 
 
 @login_required()
@@ -53,18 +61,19 @@ def download_spreadsheet(request, extra_fields=None):
                                ('Recurring frequency', 'pledge__recurring_frequency')
                            ] + extra_fields)
 
-    filename = 'EAA donations {0} to {1} downloaded {2}.xlsx'.format(start, end, datetime.now())
-    location = os.path.join(settings.MEDIA_ROOT, 'downloads', filename)
-
-    # Note that the values call below is required to create a donation object for each associated pledge component
-    queryset = Donation.objects.values('components').filter(
-        date__gte=start, date__lte=end).order_by('datetime')
-    write_spreadsheet(location, {'Donations': queryset}, template)
-
-    response = HttpResponse(open(location).read(),
-                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
-    return response
+    filename = 'EAA_donations_{0}.xlsx'.format(str(date.today()))
+    location = os.path.join("/tmp", filename)
+    if not os.path.exists(location):
+        # Note that the values call below is required to create a donation object for each associated pledge component
+        queryset = Donation.objects.filter(date__gte=start, date__lte=end).order_by('datetime')
+        from donation.tasks import export_spreadsheet
+        export_spreadsheet.delay(location, queryset, template)
+        return HttpResponse("Please wait 5 minutes and refresh this page again.")
+    else:
+        response = HttpResponse(open(location).read(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+        return response
 
 
 def write_spreadsheet(location, querysets, template):

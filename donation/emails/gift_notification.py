@@ -19,6 +19,7 @@ def send_gift_notification(donation_id):
         assert not pledge.gift_message_sent, 'Gift message has already been sent'
         context = {
             'pledge': pledge,
+            'is_eaae': pledge.is_eaae,
             'donation': donation,
             'personal_message': mark_safe(pledge.gift_personal_message),
             'components': donation.components.exclude(pledge_component__partner_charity__slug_id__in=[

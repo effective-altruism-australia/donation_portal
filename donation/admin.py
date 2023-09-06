@@ -102,7 +102,7 @@ class StripeTransactionInline(admin.TabularInline):
 class PledgeAdmin(VersionAdmin):
     search_fields = ('first_name', 'last_name', 'reference', 'email')
     readonly_fields = ('ip', 'completed_time')
-    list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency', 'payment_method')
+    list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency', 'payment_method', "is_eaae")
     inlines = [PledgeComponentInline, StripeTransactionInline]
 
     class Meta:
@@ -162,7 +162,7 @@ class BankTransactionAdmin(VersionAdmin):
     form = BankTransactionForm
     search_fields = ('bank_statement_text', 'reference')
     readonly_fields = ('date', 'amount', 'bank_statement_text', 'reconciled', 'pledge')
-    list_filter = (BankTransactionReconciliationListFilter,)
+    list_filter = (BankTransactionReconciliationListFilter, "is_eaae")
     inlines = (ReceiptInline,)
     ordering = ('-date', '-id',)
 
@@ -221,14 +221,16 @@ class ReferralSourceAdmin(VersionAdmin):
 
 
 class PartnerCharityAdmin(VersionAdmin):
-    fields = ('name', 'slug_id', 'email', 'email_cc', 'xero_account_name', 'active', 'thumbnail', 'bio', 'website',
+    fields = ('name', 'slug_id', 'email', 
+              'email_cc', 
+              'active',
               'impact_text', 'impact_cost', "category")
 
 
 admin.site.register(Pledge, PledgeAdmin)
 admin.site.register(BankTransaction, BankTransactionAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
-admin.site.register(PartnerCharity, VersionAdmin)
+admin.site.register(PartnerCharity, PartnerCharityAdmin)
 admin.site.register(XeroReconciledDate)
 admin.site.register(PartnerCharityReport)
 admin.site.register(ReferralSource, ReferralSourceAdmin)

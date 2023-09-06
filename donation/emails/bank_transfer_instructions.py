@@ -17,7 +17,7 @@ def send_bank_transfer_instructions(pledge):
     try:
         assert not bank_transfer_instruction.sent
 
-        context = {'pledge': pledge}
+        context = {'pledge': pledge, 'is_eaae': pledge.is_eaae}
         body = render_to_string('bank_transfer_instructions.txt', context)
         body_html = render_to_string('bank_transfer_instructions.html', context)
 

@@ -9,7 +9,7 @@ from donation.models.pledge import Pledge
 from donation_portal.eaacelery import app
 from .eaaxero import import_bank_transactions, import_trial_balance as import_trial_balance_non_delayed
 from .emails import send_bank_transfer_instructions, send_partner_charity_reports
-
+from donation.views.export import write_spreadsheet
 
 @app.task()
 def send_bank_transfer_instructions_task(pledge_id):
@@ -19,14 +19,14 @@ def send_bank_transfer_instructions_task(pledge_id):
 @app.task()
 def process_bank_transactions():
     print("Processing bank transactions...")
-    import_bank_transactions()
-    # Everything else with receipts happens automatically. See donation.models.BankTransaction.save()
-    import_trial_balance_non_delayed()
+    import_bank_transactions(tenant="eaa")
+    import_bank_transactions(tenant="eaae")
 
 
 @app.task()
 def import_trial_balance():
-    import_trial_balance_non_delayed()
+    import_trial_balance_non_delayed("eaa")
+    import_trial_balance_non_delayed("eaae")
 
 
 @app.task()
@@ -73,3 +73,7 @@ def add_pledge_contact_to_ea_newsletter(pledge_id):
         if e[0]['title'] not in ('Invalid Resource', 'Member Exists'):
             client.captureException()
 
+
+@app.task()
+def export_spreadsheet(location, queryset, template):
+    write_spreadsheet(location, {'Donations': queryset}, template)

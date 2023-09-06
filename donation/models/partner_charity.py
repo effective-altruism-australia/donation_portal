@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 import stripe
 from django.conf import settings
 
-stripe.api_key = settings.STRIPE_API_KEY
+stripe.api_version = "2020-08-27"
 
 
 def validate_impact_text(impact_text):
@@ -19,11 +19,11 @@ def validate_impact_text(impact_text):
 
 
 class PartnerCharity(models.Model):
-    slug_id = models.CharField(max_length=30, unique=True, null=True)
+    slug_id = models.CharField(max_length=30, help_text="Machine readable name (no spaces or special characters)", unique=True, null=True, blank=True)
     name = models.TextField(unique=True, verbose_name='Name (human readable)')
     email = models.EmailField(help_text="Used to send the partner charity reports")
     email_cc = models.EmailField(null=True, blank=True, help_text="Cced on partner charity reports")
-    xero_account_name = models.TextField(help_text="Exact text of incoming donation account in xero")
+    xero_account_name = models.TextField(default="-", help_text="Exact text of incoming donation account in xero")
     active = models.BooleanField(default=True)
     thumbnail = models.CharField(blank=True, null=True, max_length=100)
 
@@ -39,8 +39,18 @@ class PartnerCharity(models.Model):
 
     stripe_product_id = models.CharField(null=True, blank=True, max_length=100)
 
+    is_eaae = models.BooleanField(default=False)
+
     def __unicode__(self):
         return self.name
+        
+    @property
+    def bsb(self):
+        return "083004" if self.is_eaae else "083170"
+        
+    @property
+    def account_number(self):
+        return "931587719" if self.is_eaae else "306556167"
 
     class Meta:
         verbose_name_plural = "Partner charities"
@@ -59,7 +69,10 @@ class PartnerCharity(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.stripe_product_id:
+            stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if self.is_eaae else "eaa")
             self.stripe_product_id =  stripe.Product.create(name=self.name).id
+        if not self.slug_id:
+            self.slug_id = self.name.replace(" ", "-").lower()
         super(PartnerCharity, self).save(*args, **kwargs)
         PartnerCharity.cache_database_ids()
 

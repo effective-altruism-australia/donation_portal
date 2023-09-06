@@ -28,7 +28,7 @@ class BankTransaction(models.Model):
         default=False, help_text='Tick this box if we should link all future transactions with this text '
                                  'to the same pledge. This should only be ticked if the text is reasonably unique. '
                                  'e.g. Do NOT tick it if the text is "donation", or "GiveDirectly" etc.')
-
+    is_eaae = models.BooleanField(default=False)
     def __unicode__(self):
         return ("UNRECONCILED -- " if not self.reconciled else "") + \
                "{0.date} -- {0.amount} -- {0.bank_statement_text}".format(self)
