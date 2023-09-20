@@ -23,6 +23,7 @@ def total_donations_for_partner(start_date, end_date, partner, payment_method=No
         'date__lt': arrow.get(end_date).shift(days=1).date(),
         'components__pledge_component__partner_charity': partner,
     }
+    id_field = "id"
     if payment_method == 'Stripe':
         filters['stripe_transaction_id__isnull'] = False
         id_field = "stripe_transaction_id"
