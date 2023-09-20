@@ -18,7 +18,7 @@ class Donation(models.Model):
     # 2. If you make it midnight it's ambiguous whether at start or end of day
     datetime = models.DateTimeField()
     # Convenient for date to be field even though it's easily calculated from datetime, so you can filter on it
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     amount = models.DecimalField(decimal_places=2, max_digits=12, )
     fees = models.DecimalField(decimal_places=2, max_digits=12, )
     payment_method = models.CharField(max_length=128)

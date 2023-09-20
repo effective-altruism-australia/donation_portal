@@ -15,7 +15,7 @@ from .pledge import Pledge
 # is correct. Therefore, we pay attention here to whether the reference changes and if it does, we delete the
 # existing Pledge (if any) and search for a matching one.
 class BankTransaction(models.Model):
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     bank_statement_text = models.TextField(blank=True, )
     amount = models.DecimalField(decimal_places=2, max_digits=12, )
     reference = models.TextField(blank=True)
@@ -113,7 +113,7 @@ class PinTransaction(BasePinTransaction):
 
 class StripeTransaction(models.Model):
     datetime = models.DateTimeField()
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     amount = models.DecimalField(decimal_places=2, max_digits=12)
     fees = models.DecimalField(decimal_places=2, max_digits=12)
     reference = models.TextField(blank=True)
