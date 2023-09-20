@@ -32,7 +32,9 @@ def total_donations_for_partner(start_date, end_date, partner, payment_method=No
     elif payment_method == 'Bank transfer':
         filters['bank_transaction_id__isnull'] = False
         id_field = "bank_transaction_id"
-
+    d = Donation.objects.filter(**filters)
+    if not d.exists():
+        return 0
     earliest_id = Donation.objects.filter(**filters).earliest("id").id
     filters[id_field + "__gte"] = earliest_id
     latest_id = Donation.objects.filter(**filters).latest("id").id
