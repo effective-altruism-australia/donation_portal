@@ -35,9 +35,9 @@ def total_donations_for_partner(start_date, end_date, partner, payment_method=No
     d = Donation.objects.filter(**filters)
     if not d.exists():
         return 0
-    earliest_id = Donation.objects.filter(**filters).earliest("id").id
+    earliest_id = Donation.objects.filter(**filters).earliest(id_field).id
     filters[id_field + "__gte"] = earliest_id
-    latest_id = Donation.objects.filter(**filters).latest("id").id
+    latest_id = Donation.objects.filter(**filters).latest(id_field).id
     filters[id_field + "__lte"] = latest_id
 
     return Donation.objects \
