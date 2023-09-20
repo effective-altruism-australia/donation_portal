@@ -25,10 +25,18 @@ def total_donations_for_partner(start_date, end_date, partner, payment_method=No
     }
     if payment_method == 'Stripe':
         filters['stripe_transaction_id__isnull'] = False
+        id_field = "stripe_transaction_id"
     elif payment_method == 'Pin':
         filters['pin_transaction_id__isnull'] = False
+        id_field = "pin_transaction_id"
     elif payment_method == 'Bank transfer':
         filters['bank_transaction_id__isnull'] = False
+        id_field = "bank_transaction_id"
+
+    earliest_id = Donation.objects.filter(**filters).earliest("id").id
+    filters[id_field + "__gte"] = earliest_id
+    latest_id = Donation.objects.filter(**filters).latest("id").id
+    filters[id_field + "__lte"] = latest_id
 
     return Donation.objects \
                .filter(**filters) \
