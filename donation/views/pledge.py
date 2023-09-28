@@ -217,7 +217,7 @@ def _stripe_webhooks(request, org):
     
     if from_stripe['type'] == 'payment_intent.succeeded':
         print(org)
-        process_payment_intent_succeeded.apply_async(countdown=5, args=(data, org))
+        process_payment_intent_succeeded.apply_async(countdown=60 * 2, args=(data, org))
     return HttpResponse(status=201)
 
 @require_POST
