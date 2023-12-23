@@ -224,7 +224,7 @@ class PartnerCharityAdmin(VersionAdmin):
     fields = ('name', 'slug_id', 'email', 
               'email_cc', 
               'active',
-              'impact_text', 'impact_cost', "category")
+              'impact_text', 'impact_cost', "category", "is_eaae")
 
 
 admin.site.register(Pledge, PledgeAdmin)
