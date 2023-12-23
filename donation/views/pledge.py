@@ -157,7 +157,7 @@ class PledgeView(View):
             pledge.save()
             return JsonResponse({'id': session.id})
         else:
-            raise StandardError('We currently only support new donations via credit card or bank transfer.')
+            raise Exception('We currently only support new donations via credit card or bank transfer.')
 
 
 @app.task()

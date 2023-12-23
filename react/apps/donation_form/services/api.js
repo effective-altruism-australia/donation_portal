@@ -2,7 +2,12 @@ import React from "react";
 
 export default class APIService {
     getCharities() {
-        return fetch(window.site_root.concat('/partner_charities')).then(function (response) {
+        // IF there is a URL parameter "eaae=True, then query '/partner_charities?eaae=True, otherwise query '/partner_charities'"
+        let url = '/partner_charities';
+        if (window.location.search.includes('eaae')) {
+            url = '/partner_charities?eaae=True';
+        }
+        return fetch(window.site_root.concat(url)).then(function (response) {
             return response.json();
         });
     }
