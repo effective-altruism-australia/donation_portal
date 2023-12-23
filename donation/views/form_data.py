@@ -12,6 +12,12 @@ class PartnerCharityView(View):
         charity_names = PartnerCharity.objects.filter(active=True).order_by('ordering').values('slug_id', 'name',
                                                                                             'thumbnail', "category",
                                                                                             "is_eaae")
+        
+        # If url params containes "eaae", then filter for eaae charities
+        if request.GET.get('eaae'):
+            charity_names = charity_names.filter(is_eaae=True)
+        else:
+            charity_names = charity_names.filter(is_eaae=False)
         return JsonResponse(list(charity_names), safe=False)
 
 
