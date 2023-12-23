@@ -189,7 +189,7 @@ function set_initial_charity(dispatch) {
     let apiService = new APIService();
     return apiService.getCharities().then((charities) => {
         let charity_filtered = charities.filter(function (x) {
-            if (x.slug_id === getAllUrlParams().charity) {
+            if (x.slug_id === getAllUrlParams().charity && getAllUrlParams().charity !== "eaae") {
                 return x
             }
         });
