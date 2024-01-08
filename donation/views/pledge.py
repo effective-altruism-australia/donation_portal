@@ -16,6 +16,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import View
+from donation.models.partner_charity import PartnerCharity
 from raven.contrib.django.raven_compat.models import client
 from redis import StrictRedis
 from rratelimit import Limiter
@@ -144,6 +145,19 @@ class PledgeView(View):
             is_eaae_vals = set(pledge.components.values_list("partner_charity__is_eaae", flat=True))
             assert len(is_eaae_vals) == 1
             is_eaae = is_eaae_vals.pop()
+
+            # HACK: when on the environment form, if someone submits an unallocated donation, we want to
+            # just route the funds to the main EAAE partner charity
+            # Check if "environment" is in the URL
+            if "environment" in request.build_absolute_uri():
+                if pledge.components.count() == 1:
+                    c = pledge.components.get()
+                    if c.partner_charity.slug == "unallocated":
+                        c.partner_charity = PartnerCharity.objects.get(slug="eaae")
+                        c.save()
+                        is_eaae = True
+
+
             stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if is_eaae else "eaa")
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
