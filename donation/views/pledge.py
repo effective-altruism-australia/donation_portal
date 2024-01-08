@@ -25,7 +25,9 @@ from donation.forms import PledgeForm, PledgeComponentFormSet
 from donation.models import PaymentMethod, Receipt, RecurringFrequency, Pledge, StripeTransaction
 from donation.tasks import send_bank_transfer_instructions_task
 from donation_portal.eaacelery import app
+import logging
 
+logger = logging.getLogger(__name__)
 stripe.api_version = "2020-08-27"
 
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
@@ -149,8 +151,8 @@ class PledgeView(View):
             # HACK: when on the environment form, if someone submits an unallocated donation, we want to
             # just route the funds to the main EAAE partner charity
             # Check if "environment" is in the URL
-            raise Exception(request.build_absolute_uri())
             if "environment" in request.build_absolute_uri():
+                logger.info(request.META.get('HTTP_REFERER', None))
                 if pledge.components.count() == 1:
                     c = pledge.components.get()
                     if c.partner_charity.slug == "unallocated":
@@ -158,6 +160,7 @@ class PledgeView(View):
                         c.save()
                         is_eaae = True
 
+            
 
             stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if is_eaae else "eaa")
             session = stripe.checkout.Session.create(
