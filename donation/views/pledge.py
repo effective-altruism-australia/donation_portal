@@ -149,6 +149,7 @@ class PledgeView(View):
             # HACK: when on the environment form, if someone submits an unallocated donation, we want to
             # just route the funds to the main EAAE partner charity
             # Check if "environment" is in the URL
+            raise Exception(request.build_absolute_uri())
             if "environment" in request.build_absolute_uri():
                 if pledge.components.count() == 1:
                     c = pledge.components.get()
