@@ -152,6 +152,7 @@ class PledgeView(View):
             # just route the funds to the main EAAE partner charity
             # Check if "environment" is in the URL
             logger.warning(request.META.get('HTTP_REFERER', None))
+            print(request.META.get('HTTP_REFERER', None))
             if "environment" in request.META.get('HTTP_REFERER', None):
                 logger.info(request.META.get('HTTP_REFERER', None))
                 if pledge.components.count() == 1:
