@@ -155,7 +155,7 @@ class PledgeView(View):
                 if pledge.components.count() == 1:
                     c = pledge.components.get()
                     if c.partner_charity.slug == "unallocated":
-                        c.partner_charity = PartnerCharity.objects.get(slug="eaae")
+                        c.partner_charity = PartnerCharity.objects.get(slug_id="eaae")
                         c.save()
                         is_eaae = True
 
