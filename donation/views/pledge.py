@@ -154,7 +154,7 @@ class PledgeView(View):
             if "?charity=eaae" in request.META.get('HTTP_REFERER', None):
                 if pledge.components.count() == 1:
                     c = pledge.components.get()
-                    if c.partner_charity.slug == "unallocated":
+                    if c.partner_charity.slug_id == "unallocated":
                         c.partner_charity = PartnerCharity.objects.get(slug_id="eaae")
                         c.save()
                         is_eaae = True
