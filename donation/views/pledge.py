@@ -134,16 +134,6 @@ class PledgeView(View):
             return JsonResponse(response_data)
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
-            line_items = []
-            for pledge_component in pledge.components.all():
-                line_items.append(
-                    {'price_data': {'currency': 'aud',
-                                    'product': pledge_component.partner_charity.stripe_product_id,
-                                    'unit_amount': int(float(pledge_component.amount) * 100),
-                                    'recurring': {
-                                        'interval': 'month'} if pledge.recurring_frequency == RecurringFrequency.MONTHLY else None},
-                     'quantity': 1, }
-                )
             is_eaae_vals = set(pledge.components.values_list("partner_charity__is_eaae", flat=True))
             assert len(is_eaae_vals) == 1
             is_eaae = is_eaae_vals.pop()
@@ -158,6 +148,18 @@ class PledgeView(View):
                         c.partner_charity = PartnerCharity.objects.get(slug_id="eaae")
                         c.save()
                         is_eaae = True
+
+            line_items = []
+            for pledge_component in pledge.components.all():
+                line_items.append(
+                    {'price_data': {'currency': 'aud',
+                                    'product': pledge_component.partner_charity.stripe_product_id,
+                                    'unit_amount': int(float(pledge_component.amount) * 100),
+                                    'recurring': {
+                                        'interval': 'month'} if pledge.recurring_frequency == RecurringFrequency.MONTHLY else None},
+                     'quantity': 1, }
+                )
+
 
             
 
