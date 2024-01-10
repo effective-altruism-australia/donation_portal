@@ -122,8 +122,22 @@ class PledgeView(View):
             for component in component_formset.forms:
                 component.instance.pledge = pledge
             component_formset.save()
+
+            # HACK: when on the environment form, if someone submits an unallocated donation, we want to
+            # just route the funds to the main EAAE partner charity
+            # Check if "environment" is in the URL
+            is_eaae = pledge.get_is_eaae
+            if "?charity=eaae" in request.META.get('HTTP_REFERER', None):
+                if pledge.components.count() == 1:
+                    c = pledge.components.get()
+                    if c.partner_charity.slug_id == "unallocated":
+                        c.partner_charity = PartnerCharity.objects.get(slug_id="eaae")
+                        c.save()
+                        is_eaae = True
+                        
+
             
-            pledge.is_eaae = pledge.get_is_eaae
+            pledge.is_eaae = is_eaae
             pledge.save()
 
         response_data = {}
@@ -134,20 +148,7 @@ class PledgeView(View):
             return JsonResponse(response_data)
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
-            is_eaae_vals = set(pledge.components.values_list("partner_charity__is_eaae", flat=True))
-            assert len(is_eaae_vals) == 1
-            is_eaae = is_eaae_vals.pop()
 
-            # HACK: when on the environment form, if someone submits an unallocated donation, we want to
-            # just route the funds to the main EAAE partner charity
-            # Check if "environment" is in the URL
-            if "?charity=eaae" in request.META.get('HTTP_REFERER', None):
-                if pledge.components.count() == 1:
-                    c = pledge.components.get()
-                    if c.partner_charity.slug_id == "unallocated":
-                        c.partner_charity = PartnerCharity.objects.get(slug_id="eaae")
-                        c.save()
-                        is_eaae = True
 
             line_items = []
             for pledge_component in pledge.components.all():
@@ -163,7 +164,7 @@ class PledgeView(View):
 
             
 
-            stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if is_eaae else "eaa")
+            stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if pledge.is_eaae else "eaa")
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=line_items,
