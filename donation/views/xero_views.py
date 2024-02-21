@@ -11,7 +11,7 @@ def start_xero_auth_view(request):
     credentials = OAuth2Credentials(
         settings.XERO_CLIENT_ID, settings.XERO_CLIENT_SECRET, callback_uri="https://donations.effectivealtruism.org.au/process_callback",
         scope=[XeroScopes.OFFLINE_ACCESS, XeroScopes.ACCOUNTING_CONTACTS, XeroScopes.ACCOUNTING_REPORTS_READ,
-                XeroScopes.ACCOUNTING_TRANSACTIONS]
+                XeroScopes.ACCOUNTING_TRANSACTIONS, "accounting.reports.bankstatement.read"]
     )
     authorization_url = credentials.generate_url()
     caches['default'].set('xero_creds', credentials.state)
