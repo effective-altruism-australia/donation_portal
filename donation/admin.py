@@ -132,7 +132,7 @@ class BankTransactionForm(forms.ModelForm):
 
 
 class StripeTransactionAdmin(VersionAdmin):
-    list_display = ('reference', 'pledge_link', 'amount', 'fees', 'stripe_transaction')
+    list_display = ('reference', 'datetime', 'pledge_link', 'amount', 'fees', 'stripe_transaction')
     readonly_fields = list_display
     fields = list_display + ('customer_id', )
 
