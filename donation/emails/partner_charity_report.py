@@ -31,20 +31,40 @@ def send_partner_charity_reports(test=True):
         end = arrow.get(arrow.utcnow().date()).datetime
 
         # Create spreadsheet
-        querysets = OrderedDict([
-            ('New donations',
-             # For bank transactions, we use time_reconciled
-             Donation.objects.filter(Q(bank_transaction__time_reconciled__gte=start,
-                                       bank_transaction__time_reconciled__lt=end) |
-                                     Q(pin_transaction__isnull=False,
-                                       datetime__gte=start,
-                                       datetime__lt=end),
-                                     components__pledge_component__partner_charity__id__in=ids).order_by('datetime')),
-            ('All donations',
-             Donation.objects.filter(Q(bank_transaction__time_reconciled__lt=end) |
-                                     Q(pin_transaction__isnull=False,
-                                       datetime__lt=end),
-                                     components__pledge_component__partner_charity__id__in=ids).order_by('datetime'))])
+        querysets = OrderedDict(
+            [
+                (
+                    "New donations",
+                    # For bank transactions, we use time_reconciled
+                    Donation.objects.filter(
+                        Q(
+                            bank_transaction__time_reconciled__gte=start,
+                            bank_transaction__time_reconciled__lt=end,
+                        )
+                        | Q(
+                            pin_transaction__isnull=False,
+                            datetime__gte=start,
+                            datetime__lt=end,
+                        )
+                        | Q(
+                            stripe_transaction__isnull=False,
+                            datetime__gte=start,
+                            datetime__lt=end,
+                        ),
+                        components__pledge_component__partner_charity__id__in=ids,
+                    ).order_by("datetime"),
+                ),
+                (
+                    "All donations",
+                    Donation.objects.filter(
+                        Q(bank_transaction__time_reconciled__lt=end)
+                        | Q(pin_transaction__isnull=False, datetime__lt=end)
+                        | Q(stripe_transaction__isnull=False, datetime__lt=end),
+                        components__pledge_component__partner_charity__id__in=ids,
+                    ).order_by("datetime"),
+                ),
+            ]
+        )
 
         template = OrderedDict([
             ('Date', 'datetime'),
