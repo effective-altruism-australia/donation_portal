@@ -93,7 +93,7 @@ def send_partner_charity_reports(test=True):
         try:
             partner_obj = PartnerCharity.objects.get(id=ids[0])
             to = [partner_obj.email]
-            cc = [settings.EAA_INFO_EMAIL, settings.TESTING_EMAIL]
+            cc = [settings.EAA_INFO_EMAIL]
 
             if partner_obj.email_cc:
                 cc.append(partner_obj.email_cc)
