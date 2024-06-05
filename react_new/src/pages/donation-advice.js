@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import {connect} from "react-redux";
 
 class DonationAdvice extends Component {
-    constructor() {
-        super();
-    }
-
     componentDidMount() {
         this.setState({
             charity: this.props.charity
@@ -15,7 +11,7 @@ class DonationAdvice extends Component {
         return (
             <div>
                 <div className="selected-charity-box">
-                    <a href="https://www.againstmalaria.com/Donation.aspx?GroupID=86" target="_blank">
+                    <a href="https://www.againstmalaria.com/Donation.aspx?GroupID=86" target="_blank" rel="noreferrer">
                         <img className="charity-img" src={this.props.charity.logo} alt={this.props.charity.name}/>
                     </a>
                     <p className="donation-info">

@@ -1,13 +1,9 @@
 import React, { Component} from "react";
 import { connect } from "react-redux";
-import { Field, getFormValues} from 'redux-form';
+import { getFormValues} from 'redux-form';
 import {getTotalDonation} from "../../services/utils";
 
 class DonationResult extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         if (this.props.form) {
         let total = getTotalDonation(this.props.form.mode, this.props.form.amount, this.props.form.contribute);
@@ -21,7 +17,7 @@ class DonationResult extends Component {
                             Your donation will be granted to {this.props.charity ? this.props.charity.name: 'our partner charities'}.
                         </p>
                         <div className="complete-other-info">
-                            <p>Here is your <a href={window.site_root.concat(this.props.result.receipt_url)} download target="_blank">receipt</a>. We have also emailed it to you &ndash; please check your spam folder if you have not received it.</p>
+                            <p>Here is your <a href={window.site_root.concat(this.props.result.receipt_url)} rel="noreferrer" download target="_blank">receipt</a>. We have also emailed it to you &ndash; please check your spam folder if you have not received it.</p>
                         </div>
                         <div className="complete-other-info">
                             <h3>Any questions?</h3>

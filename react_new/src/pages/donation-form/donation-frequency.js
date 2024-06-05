@@ -1,8 +1,6 @@
 import React, {Component} from "react";
 import FrequencyComponent from "./frequency-component";
-import { Field, formValueSelector} from 'redux-form'
-import {connect} from "react-redux";
-import Error from "../../components/error";
+import { Field } from 'redux-form'
 
 export default class DonationFrequency extends Component {
 

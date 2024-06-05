@@ -1,5 +1,3 @@
-import React from "react";
-
 export default class APIService {
     getCharities() {
         return fetch(window.site_root.concat('/partner_charities')).then(function (response) {

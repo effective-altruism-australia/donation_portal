@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import {Radio, RadioGroup} from "../../components/radio-group";
-import { Field, reduxForm } from 'redux-form'
+import { Field } from 'redux-form'
 
 export default class DonationModeOption extends Component {
-    constructor() {
-        super();
-    }
 
 
     render() {

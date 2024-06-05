@@ -24,53 +24,6 @@ class DonationAmount extends Component {
 
     render() {
 
-        const contributeHeading = !this.props.charity ?
-            <div className="form-group" style={{marginLeft: '5px'}}>
-                <div>
-                    <label htmlFor="id_will_contribute" style={{fontWeight: '400', paddingTop: '8px'}}>
-                        <div style={{float: 'left'}}>
-                            <Field id="id_will_contribute"
-                                   name="will_contribute"
-                                   component={customInput}
-                                   type="checkbox"/>
-                        </div>
-                        <p style={{paddingLeft: '20px'}}>
-                            I would like to contribute to covering Effective Altruism Australia's running costs
-                        </p>
-                    </label>
-                </div>
-            </div> :
-            <div><br/><br/><br/></div>;
-
-        const contributeSection = this.props.will_contribute ?
-            <div>
-                <div className="form-group">
-                    <div className="col-sm-12">
-                        Thank you! These funds will help cover our administrative and operations costs.
-                        As we are not-for-profit organisation,
-                        any excess donations will be granted to our partner charities.
-                    </div>
-                </div>
-                <div className="form-group cover-amount-group">
-                    <div className="col-sm-12">
-                        <span className="amount-input-wrapper">
-                            <div className="input-group amount-input">
-                                <Field
-                                    className="form-control"
-                                    name="contribute.value"
-                                    component={customCurrencyInput}
-                                    type="number"
-                                    placeholder="0.00"
-                                    aria-describedby="Amount"
-                                    validate={[required, minValue1cent]}
-                                />
-                            </div>
-                        </span>
-                    </div>
-                </div>
-            </div> : '';
-
-
         const amountRadio = (field) => (
             <RadioGroup {...field.input} className="donation-amount-group" selectedValue={field.input.value}>
                 <Radio value="25" id="id-amount-25"/>

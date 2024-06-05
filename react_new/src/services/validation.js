@@ -8,25 +8,12 @@ export const minLength = min => value =>
     value && value.length < min ? `Must be ${min} characters or more` : undefined;
 export const minLength2 = minLength(2);
 export const minLength3 = minLength(3);
-const number = value =>
-    value && isNaN(Number(value)) ? 'Must be a number' : undefined;
 const minValue = min => value =>
     value && value < min ? `Please enter a value greater than or equal to ${min}` : undefined;
-const minValue18 = minValue(18);
 export const minValue1cent = minValue(0.01);
 export const email = value =>
     value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,7}$/i.test(value)
         ? 'Invalid email address'
-        : undefined;
-const tooOld = value =>
-    value && value > 65 ? 'You might be too old for this' : undefined;
-const aol = value =>
-    value && /.+@aol\.com/.test(value)
-        ? 'Really? You still use AOL for your email?'
-        : undefined;
-const alphaNumeric = value =>
-    value && /[^a-zA-Z0-9 ]/i.test(value)
-        ? 'Only alphanumeric characters'
         : undefined;
 export const phoneNumber = value =>
     value && !/^(0|[1-9][0-9]{9})$/i.test(value)

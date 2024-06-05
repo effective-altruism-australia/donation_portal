@@ -11,13 +11,10 @@ import DonationSubmit from "./donation-submit";
 import DonationAsGift from "./donation-as-gift";
 import APIService from '../../services/api';
 import {getAllUrlParams} from "../../services/utils";
-// import InitialisePin from '../../services/eaa-pin';
 import {setCharity, setDonationResult} from "../../services/reduxStorage/actions";
 import ReactGA from 'react-ga';
 
 ReactGA.initialize('UA-62759567-4');
-
-let valid = require('card-validator');
 
 class DonationForm extends Component {
     constructor(props) {
@@ -101,7 +98,7 @@ class DonationForm extends Component {
 
     render() {
         const charity_thumbnail = (this.props.charity && this.props.charity.thumbnail) ? (
-            <img src={window.site_root.concat("/static/" + this.props.charity.thumbnail)}/>) : '';
+            <img alt="Charity thumbnail" src={window.site_root.concat("/static/" + this.props.charity.thumbnail)}/>) : '';
         const donationMode = (this.props.charity) ? (
             <div>
                 <h2>Your donation will go to support {this.props.charity.name}</h2>
@@ -189,6 +186,7 @@ function set_initial_charity(dispatch) {
             if (x.slug_id === getAllUrlParams().charity) {
                 return x
             }
+            return null;
         });
         if (charity_filtered.length === 1) {
             dispatch(setCharity(charity_filtered[0]));

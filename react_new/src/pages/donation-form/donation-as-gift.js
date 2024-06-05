@@ -6,12 +6,7 @@ import {maxLength100, required, email} from "../../services/validation";
 import {customInput} from "../../components/custom-fields";
 
 class DonationAsGift extends Component {
-    constructor() {
-        super();
-    }
-
     render() {
-
         return (
             <div>
                 <h3>Finally, are you making this donation as a gift to someone?</h3>

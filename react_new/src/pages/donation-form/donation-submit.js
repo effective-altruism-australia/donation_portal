@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import { Field, getFormValues} from 'redux-form'
+import { getFormValues} from 'redux-form'
 import {setDonationResult} from "../../services/reduxStorage/actions";
 
 class DonationSubmit extends Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         return (
         <div className="form-actions">
