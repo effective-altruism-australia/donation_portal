@@ -1,5 +1,9 @@
 #!/bin/bash
-sudo -u eaa -H -i
+
+# Run commands as user 'eaa' without an interactive shell
+sudo -u eaa -H bash << EOF
+
+echo "Logged in successfully."
 
 # Navigate to the project directory
 cd /home/eaa/donation_portal
@@ -8,3 +12,5 @@ cd /home/eaa/donation_portal
 git pull
 
 echo "Deployment completed successfully."
+
+EOF
