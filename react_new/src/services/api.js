@@ -1,7 +1,7 @@
 export default class APIService {
     getCharities() {
         return fetch(window.site_root.concat('/partner_charities')).then(function (response) {
-            // TODO: MUST REMOVE BEFORE PRODUCTION
+            // TODO: COMMENT OUT LINE BELOW BEFORE PRODUCTION TO USE REAL DATA
             return [{"category": null, "is_eaae": true, "slug_id": "eaae", "name": "Effective Altruism Australia Environmentalism", "thumbnail": ""}, {"category": "Other charities we support", "is_eaae": false, "slug_id": "give-directly", "name": "GiveDirectly", "thumbnail": "thumbnails/logo_givedirectly.png"}, {"category": "Other charities we support", "is_eaae": false, "slug_id": "unlimit", "name": "Unlimit Health (formerly SCI)", "thumbnail": ""}, {"category": "Other charities we support", "is_eaae": false, "slug_id": "de-worm", "name": "Deworm the World Initiative (led by Evidence Action)", "thumbnail": "thumbnails/logo_evidenceaction.gif"}, {"category": "Other charities we support", "is_eaae": false, "slug_id": "gd-refugees", "name": "GiveDirectly Refugees", "thumbnail": ""}, {"category": "Our recommended charities", "is_eaae": false, "slug_id": "malaria-consortium", "name": "Malaria Consortium", "thumbnail": "thumbnails/logo_mc.jpg"}, {"category": "Other charities we support", "is_eaae": false, "slug_id": "gd-basic-income", "name": "GiveDirectly Basic income research", "thumbnail": "thumbnails/logo_gdbi.png"}, {"category": "Our recommended charities", "is_eaae": false, "slug_id": "new-incentives", "name": "New Incentives", "thumbnail": ""}, {"category": "Our recommended charities", "is_eaae": false, "slug_id": "hki", "name": "Helen Keller International", "thumbnail": ""}, {"category": "Our recommended charities", "is_eaae": false, "slug_id": "against-malaria", "name": "Against Malaria Foundation", "thumbnail": "thumbnails/logo_amf.gif"}, {"category": "Help us do more good", "is_eaae": false, "slug_id": "eaa", "name": "Effective Altruism Australia Operations", "thumbnail": ""}, {"category": "Help us do more good", "is_eaae": false, "slug_id": "eaa-community", "name": "Effective Altruism Australia Community Building", "thumbnail": ""}]
             // return response.json();
         });
@@ -9,7 +9,7 @@ export default class APIService {
 
     getReferralSources() {
         return fetch(window.site_root.concat('/referral_sources')).then(function (response) {
-            // TODO: MUST REMOVE BEFORE PRODUCTION
+            // TODO: COMMENT OUT LINE BELOW BEFORE PRODUCTION TO USE REAL DATA
             return [{"value": "ea-community", "label": "Effective Altruism local group"}, {"value": "ea-online", "label": "Effective Altruism online community"}, {"value": null, "label": "The Life You Can Save"}, {"value": null, "label": "News"}, {"value": null, "label": "Advertising"}, {"value": null, "label": "GiveWell"}, {"value": null, "label": "From the charity (SCI, Evidence Action, GiveDirectly)"}, {"value": null, "label": "Search engine (Google etc.)"}, {"value": null, "label": "Friend"}, {"value": null, "label": "Giving What We Can"}, {"value": "givedirectly-dinner", "label": "Give Directly Dinner"}, {"value": null, "label": "One for the World"}, {"value": "podcast", "label": "Podcast or radio"}, {"value": "cant-remember", "label": "I cannot remember"}, {"value": "other", "label": "Other"}]
             // return response.json();
         });
