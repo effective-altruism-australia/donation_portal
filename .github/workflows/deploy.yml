@@ -21,4 +21,4 @@ jobs:
         known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
     - name: Deploy to server
-      run: ssh -o StrictHostKeyChecking=no your_user@54.206.130.194 'bash /home/eaa/donation_portal/deploy.sh'
+      run: ssh -o StrictHostKeyChecking=no andrew.bird@54.206.130.194 'bash /home/eaa/donation_portal/deploy/deploy.sh'
