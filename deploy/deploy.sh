@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo -u eaa -H -i
 
 # Navigate to the project directory
 cd /home/eaa/donation_portal
