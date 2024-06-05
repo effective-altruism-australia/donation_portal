@@ -4,6 +4,6 @@
 cd /home/eaa/donation_portal
 
 # Pull the latest changes from the repository
-git pull origin
+git pull
 
 echo "Deployment completed successfully."
