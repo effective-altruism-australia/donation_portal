@@ -55,9 +55,9 @@ class DonationResult extends Component {
                                 } ${total} to:
                             </p>
                             <p>
-                                <strong>Account Name</strong>: Effective Altruism Australia{(this.props.charity && this.props.charity.is_eaae) ? ' Environment': ''} (don't worry if it doesn't fit)<br/>
-                                <strong>BSB</strong>: {(this.props.charity && this.props.charity.is_eaae) ? '083004': '083170'}<br/>
-                                <strong>Account No</strong>: {(this.props.charity && this.props.charity.is_eaae) ? '931587719': '306556167'}<br/>
+                                <strong>Account Name</strong>: Effective Altruism Australia{window.location.search.includes('eaae') ? ' Environment': ''} (don't worry if it doesn't fit)<br/>
+                                <strong>BSB</strong>: {window.location.search.includes('eaae') ? '083004': '083170'}<br/>
+                                <strong>Account No</strong>: {window.location.search.includes('eaae') ? '931587719': '306556167'}<br/>
                                 <strong>Unique Reference Number</strong>: { this.props.result.bank_reference } (put in the transaction description)
                             </p>
                         </div>
@@ -83,7 +83,7 @@ class DonationResult extends Component {
                         </div>
                         <p>
                             Best wishes and thanks,<br/>
-                            The team at Effective Altruism Australia{(this.props.charity && this.props.charity.is_eaae) ? ' Environment': ''}
+                            The team at Effective Altruism Australia{window.location.search.includes('eaae') ? ' Environment': ''}
                         </p>
                     </div>
                 }

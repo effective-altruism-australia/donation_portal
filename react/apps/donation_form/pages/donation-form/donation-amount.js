@@ -110,63 +110,77 @@ class DonationAmount extends Component {
         const allocateSection = <div id="id-allocate-donation-section">
             <h3>Our recommended charities <a target="_blank" href = "https://effectivealtruism.org.au/inclusion-criteria/">ℹ️</a></h3>
             {
-                this.props.charities.filter((charity) => charity.category === "Our recommended charities").map(function (charity) {
-                    return <div className="form-group" key={charity.slug_id}>
-                        <label className="control-label col-sm-5">{charity.name}</label>
-                        <div className="col-sm-7">
-                            <div className="input-group">
-                                <span className="input-group-addon">$</span>
-                                <Field className="form-control"
-                                       name={"amount." + charity.slug_id}
-                                       component={customInput}
-                                       type="number"
-                                       placeholder="0.00"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                        ;
-                })
+                this.props.charities.filter((charity) => charity.category === "Our recommended charities").length > 0 &&
+                <div>
+                    <h3>Our recommended charities <a target="_blank" href="https://effectivealtruism.org.au/inclusion-criteria/">ℹ️</a></h3>
+                    {
+                        this.props.charities.filter((charity) => charity.category === "Our recommended charities").map(function (charity) {
+                            return <div className="form-group" key={charity.slug_id}>
+                                <label className="control-label col-sm-5">{charity.name}</label>
+                                <div className="col-sm-7">
+                                    <div className="input-group">
+                                        <span className="input-group-addon">$</span>
+                                        <Field className="form-control"
+                                            name={"amount." + charity.slug_id}
+                                            component={customInput}
+                                            type="number"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                </div>
+                            </div>;
+                        })
+                    }
+                </div>
             }
             <h3>Other charities we support <a target="_blank" href = "https://effectivealtruism.org.au/inclusion-criteria/">ℹ️</a></h3>
             {
-                this.props.charities.filter((charity) => charity.category === "Other charities we support").map(function (charity) {
-                    return <div className="form-group" key={charity.slug_id}>
-                        <label className="control-label col-sm-5">{charity.name}</label>
-                        <div className="col-sm-7">
-                            <div className="input-group">
-                                <span className="input-group-addon">$</span>
-                                <Field className="form-control"
-                                       name={"amount." + charity.slug_id}
-                                       component={customInput}
-                                       type="number"
-                                       placeholder="0.00"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                        ;
-                })
+                this.props.charities.filter((charity) => charity.category === "Other charities we support").length > 0 &&
+                <div>
+                    <h3>Other charities we support <a target="_blank" href="https://effectivealtruism.org.au/inclusion-criteria/">ℹ️</a></h3>
+                    {
+                        this.props.charities.filter((charity) => charity.category === "Other charities we support").map(function (charity) {
+                            return <div className="form-group" key={charity.slug_id}>
+                                <label className="control-label col-sm-5">{charity.name}</label>
+                                <div className="col-sm-7">
+                                    <div className="input-group">
+                                        <span className="input-group-addon">$</span>
+                                        <Field className="form-control"
+                                            name={"amount." + charity.slug_id}
+                                            component={customInput}
+                                            type="number"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                </div>
+                            </div>;
+                        })
+                    }
+                </div>
             }
-            <h3>Help us do more good</h3>
             {
-                this.props.charities.filter((charity) => charity.category === "Help us do more good").map(function (charity) {
-                    return <div className="form-group" key={charity.slug_id}>
-                        <label className="control-label col-sm-5">{charity.name}</label>
-                        <div className="col-sm-7">
-                            <div className="input-group">
-                                <span className="input-group-addon">$</span>
-                                <Field className="form-control"
-                                       name={"amount." + charity.slug_id}
-                                       component={customInput}
-                                       type="number"
-                                       placeholder="0.00"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                        ;
-                })
+                this.props.charities.filter((charity) => charity.category === "Help us do more good").length > 0 &&
+                <div>
+                    <h3>Help us do more good</h3>
+                    {
+                        this.props.charities.filter((charity) => charity.category === "Help us do more good").map(function (charity) {
+                            return <div className="form-group" key={charity.slug_id}>
+                                <label className="control-label col-sm-5">{charity.name}</label>
+                                <div className="col-sm-7">
+                                    <div className="input-group">
+                                        <span className="input-group-addon">$</span>
+                                        <Field className="form-control"
+                                            name={"amount." + charity.slug_id}
+                                            component={customInput}
+                                            type="number"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                </div>
+                            </div>;
+                        })
+                    }
+                </div>
             }
         </div>;
 

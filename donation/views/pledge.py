@@ -16,6 +16,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import View
+from donation.models.partner_charity import PartnerCharity
 from raven.contrib.django.raven_compat.models import client
 from redis import StrictRedis
 from rratelimit import Limiter
@@ -24,7 +25,9 @@ from donation.forms import PledgeForm, PledgeComponentFormSet
 from donation.models import PaymentMethod, Receipt, RecurringFrequency, Pledge, StripeTransaction
 from donation.tasks import send_bank_transfer_instructions_task
 from donation_portal.eaacelery import app
+import logging
 
+logger = logging.getLogger(__name__)
 stripe.api_version = "2020-08-27"
 
 r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
@@ -119,8 +122,22 @@ class PledgeView(View):
             for component in component_formset.forms:
                 component.instance.pledge = pledge
             component_formset.save()
+
+            # HACK: when on the environment form, if someone submits an unallocated donation, we want to
+            # just route the funds to the main EAAE partner charity
+            # Check if "environment" is in the URL
+            is_eaae = pledge.get_is_eaae
+            if "?charity=eaae" in request.META.get('HTTP_REFERER', None):
+                if pledge.components.count() == 1:
+                    c = pledge.components.get()
+                    if c.partner_charity.slug_id == "unallocated":
+                        c.partner_charity = PartnerCharity.objects.get(slug_id="eaae")
+                        c.save()
+                        is_eaae = True
+                        
+
             
-            pledge.is_eaae = pledge.get_is_eaae
+            pledge.is_eaae = is_eaae
             pledge.save()
 
         response_data = {}
@@ -131,6 +148,8 @@ class PledgeView(View):
             return JsonResponse(response_data)
 
         elif pledge.payment_method == PaymentMethod.CREDIT_CARD:
+
+
             line_items = []
             for pledge_component in pledge.components.all():
                 line_items.append(
@@ -141,10 +160,11 @@ class PledgeView(View):
                                         'interval': 'month'} if pledge.recurring_frequency == RecurringFrequency.MONTHLY else None},
                      'quantity': 1, }
                 )
-            is_eaae_vals = set(pledge.components.values_list("partner_charity__is_eaae", flat=True))
-            assert len(is_eaae_vals) == 1
-            is_eaae = is_eaae_vals.pop()
-            stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if is_eaae else "eaa")
+
+
+            
+
+            stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if pledge.is_eaae else "eaa")
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=line_items,
@@ -157,7 +177,7 @@ class PledgeView(View):
             pledge.save()
             return JsonResponse({'id': session.id})
         else:
-            raise StandardError('We currently only support new donations via credit card or bank transfer.')
+            raise Exception('We currently only support new donations via credit card or bank transfer.')
 
 
 @app.task()
@@ -217,7 +237,7 @@ def _stripe_webhooks(request, org):
     
     if from_stripe['type'] == 'payment_intent.succeeded':
         print(org)
-        process_payment_intent_succeeded.apply_async(countdown=5, args=(data, org))
+        process_payment_intent_succeeded.apply_async(countdown=60 * 2, args=(data, org))
     return HttpResponse(status=201)
 
 @require_POST

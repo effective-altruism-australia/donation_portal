@@ -34,7 +34,9 @@ class DonationForm extends Component {
         };
 
         this.getCharities();
-        if (getAllUrlParams().charity === "eaae") {
+    
+
+        if (window.location.search.includes('eaae')) {
             this.stripe = window.Stripe('pk_live_51MbDLyBiXhYHr2MDTZOSex4Vvu3SQJNL4OylN4m9eg1dNXJLFOEASUUiYWASR3t075ewmrCYhqQAonqJlCv4lFVE00FgbQz9UA');
         } else {
             this.stripe = window.Stripe('pk_live_51I1Q7kEO8N9VNJdmgqN19KmuB7haiTg9A9bHfEkHlS7cxlPk0A5ejkHlWuq2sAVvE7QWQXYnTQhRbtEXAT9dSx7A00fl6fhFl5');
@@ -187,7 +189,7 @@ function set_initial_charity(dispatch) {
     let apiService = new APIService();
     return apiService.getCharities().then((charities) => {
         let charity_filtered = charities.filter(function (x) {
-            if (x.slug_id === getAllUrlParams().charity) {
+            if (x.slug_id === getAllUrlParams().charity && getAllUrlParams().charity !== "eaae") {
                 return x
             }
         });
