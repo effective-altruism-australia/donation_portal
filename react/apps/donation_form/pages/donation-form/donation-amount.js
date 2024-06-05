@@ -108,7 +108,6 @@ class DonationAmount extends Component {
 
 
         const allocateSection = <div id="id-allocate-donation-section">
-            <h3>Our recommended charities <a target="_blank" href = "https://effectivealtruism.org.au/inclusion-criteria/">ℹ️</a></h3>
             {
                 this.props.charities.filter((charity) => charity.category === "Our recommended charities").length > 0 &&
                 <div>
@@ -133,7 +132,6 @@ class DonationAmount extends Component {
                     }
                 </div>
             }
-            <h3>Other charities we support <a target="_blank" href = "https://effectivealtruism.org.au/inclusion-criteria/">ℹ️</a></h3>
             {
                 this.props.charities.filter((charity) => charity.category === "Other charities we support").length > 0 &&
                 <div>
