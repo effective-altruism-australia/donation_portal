@@ -16,10 +16,11 @@ npm run build
 
 cd /home/eaa/donation_portal
 
-workon donation_portal
+# Activate the virtual environment
+source /home/eaa/.virtualenvs/donation_portal/bin/activate
 
 echo "Collecting staticfiles."
-./manage.py collectstatic
+./manage.py collectstatic --noinput
 
 echo "Migrating db."
 ./manage.py migrate
