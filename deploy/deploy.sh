@@ -16,6 +16,8 @@ npm run build
 
 cd /home/eaa/donation_portal
 
+workon donation_portal
+
 echo "Collecting staticfiles."
 ./manage.py collectstatic
 
