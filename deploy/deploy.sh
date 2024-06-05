@@ -29,5 +29,4 @@ EOF
 
 echo "Restarting service."
 sudo supervisorctl restart donations:
-
 echo "Deployment completed successfully."
