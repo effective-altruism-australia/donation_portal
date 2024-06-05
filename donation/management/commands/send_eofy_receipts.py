@@ -7,4 +7,5 @@ class Command(BaseCommand):
     help = 'Send EOFY receipts'
 
     def handle(self, *args, **options):
-        send_eofy_receipts(test=False)
+        send_eofy_receipts(test=False, is_eaae=True)
+        send_eofy_receipts(test=False, is_eaae=False)

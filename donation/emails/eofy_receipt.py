@@ -16,20 +16,21 @@ from raven.contrib.django.raven_compat.models import client
 from donation.models import Donation, EOFYReceipt
 
 
-def generate_data_for_eofy_receipts(year):
+def generate_data_for_eofy_receipts(year, is_eaae):
     # Some donors aren't consistent with the capitalisation of their email address
     donations = (Donation.objects
                  .select_related('pledge')
-                 .filter(date__gte=datetime.date(year - 1, 7, 1), date__lt=datetime.date(year, 7, 1))
+                 .filter(pledge__is_eaae=is_eaae,
+                         date__gte=datetime.date(year - 1, 7, 1), date__lt=datetime.date(year, 7, 1))
                  .annotate(email_lower=Lower('pledge__email'))
                  .order_by('email_lower', 'datetime')
                  )
     return [list(donations) for _, donations in itertools.groupby(donations, lambda d: d.email_lower)]
 
 
-def send_eofy_receipts(test=True, year=None):
+def send_eofy_receipts(test=True, year=None, is_eaae=False):
     year = year or timezone.now().year
-    for donations_from_email in generate_data_for_eofy_receipts(year):
+    for donations_from_email in generate_data_for_eofy_receipts(year, is_eaae):
         pledge = donations_from_email[-1].pledge
         email = pledge.email
         context = {'email': email,
@@ -37,14 +38,18 @@ def send_eofy_receipts(test=True, year=None):
                    'two_digit_year': year - 2000,
                    'total_amount': sum((donation.amount for donation in donations_from_email)),
                    'donations': donations_from_email,
+                   "is_eaae": is_eaae,
+                   "abn": "57 659 447 417" if is_eaae else "87 608 863 467"
                    }
 
         # Enforce not sending multiple receipts by default
-        if not test and EOFYReceipt.objects.filter(year=year, email=email, time_sent__isnull=False).exists():
+        if not test and EOFYReceipt.objects.filter(year=year, email=email,
+                                                   is_eaae=is_eaae, failed_message="").exists():
             continue
 
         eofy_receipt = EOFYReceipt(year=year,
-                                   email=email)
+                                   email=email,
+                                   is_eaae=is_eaae)
 
         try:
             # Note: wkhtmltopdf can combine multiple html pages into one pdf, but not the version on
@@ -66,12 +71,18 @@ def send_eofy_receipts(test=True, year=None):
 
             context = {'first_name': pledge.first_name,
                        'two_digit_year': year - 2000,
+                       "is_eaae": is_eaae,
+                        "abn": "57 659 447 417" if is_eaae else "87 608 863 467"
                        }
             body_html = render_to_string('receipts/eofy_receipt_message.html', context)
             body_plain_txt = render_to_string('receipts/eofy_receipt_message.txt', context)
 
+            if is_eaae:
+                subject = 'EOFY Receipt from Effective Altruism Australia Environment'
+            else:
+                subject = 'EOFY Receipt from Effective Altruism Australia'
             message = EmailMultiAlternatives(
-                subject='EOFY Receipt from Effective Altruism Australia',
+                subject=subject,
                 body=body_plain_txt,
                 to=[email],
                 bcc=["info+receipts@eaa.org.au"],

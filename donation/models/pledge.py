@@ -82,6 +82,8 @@ class Pledge(models.Model):
     drupal_username = models.TextField(blank=True, editable=False)
     drupal_preferred_donation_method = models.TextField(blank=True, editable=False)
 
+    is_eaae = models.BooleanField(default=False)
+
     @property
     def amount(self):
         return self.components.aggregate(total=models.Sum('amount'))['total']
@@ -121,8 +123,29 @@ class Pledge(models.Model):
         return self.payment_method == PaymentMethod.CREDIT_CARD
 
     @property
+    def get_is_eaae(self):
+        s = set(self.components.values_list("partner_charity__is_eaae", flat=True))
+        assert len(s) == 1, "Pledge had partner charities from both EAA and EAAE.  This shouldnt happen"
+        return s.pop()
+
+    @property
+    def bsb(self):
+        return "083004" if self.is_eaae else "083170"
+        
+    @property
+    def org_name(self):
+        return "Effective Altruism Australia Environment Limited" if self.is_eaae else "Effective Altruism Australia Limited"
+    @property
+    def account_number(self):
+        return "931587719" if self.is_eaae else "306556167"
+
+    @property
+    def abn(self):
+        return "57 659 447 417" if self.is_eaae else "87 608 863 467"
+
+    @property
     def donor_portal(self):
-        return 'https://donations.effectivealtruism.org.au' + reverse('donor-portal', kwargs={'customer_id': self.stripe_customer_id})
+        return 'https://donations.effectivealtruism.org.au' + reverse('donor-portal-eaae' if self.is_eaae else 'donor-portal-eaa', kwargs={'customer_id': self.stripe_customer_id})
 
     def __unicode__(self):
         components = ', '.join([c.__unicode__() for c in self.components.all()])

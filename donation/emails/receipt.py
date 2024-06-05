@@ -29,6 +29,8 @@ def create_and_send_receipt(sender, instance, created, **kwargs):
                                                     {'unique_reference': receipt.pk,
                                                      'pledge': receipt.pledge,
                                                      'transaction': receipt.transaction,
+                                                     "is_eaae": receipt.pledge.is_eaae,
+                                                     "abn": receipt.pledge.abn,
                                                      })
             pdfkit.from_string(receipt.receipt_html, receipt.pdf_receipt_location)
             receipt.save()
@@ -67,6 +69,8 @@ def email_receipt(receipt_id):
                    'transaction': receipt.transaction,
                    'date_str': date_str,
                    'eofy_receipt_date': eofy_receipt_date,
+                   "is_eaae": receipt.pledge.is_eaae,
+                    "abn": receipt.pledge.abn,
                    }
         body_plain_txt = render_to_string('receipts/receipt_message.txt', context)
         body_html = render_to_string('receipts/receipt_message.html', context)

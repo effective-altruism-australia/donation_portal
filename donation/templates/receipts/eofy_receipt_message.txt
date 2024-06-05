@@ -1,9 +1,17 @@
 Dear {{ first_name }},
 
+{% if is_eaae %}
+Thank you so much for your support of Effective Altruism Australia Environment. Please find attached a receipt for all donations received during the {{ two_digit_year|add:"-1" }}-{{ two_digit_year }} financial year.
+{% else %}
 Thank you so much for your support of Effective Altruism Australia. Please find attached a receipt for all donations received during the {{ two_digit_year|add:"-1" }}-{{ two_digit_year }} financial year.
+{% endif %}
 
-Please feel welcome to reply to this address if you have any questions or thoughts and one of our volunteers will get back to you as soon as they can.
+Please feel welcome to reply to this address if you have any questions or thoughts and one of our team members will get back to you as soon as they can.
 
 Best wishes,
 
+{% if is_eaae %}
+Effective Altruism Australia Environment
+{% else %}
 Effective Altruism Australia
+{% endif %}
