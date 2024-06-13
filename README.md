@@ -18,6 +18,3 @@ and https://github.com/effective-altruism-australia/donation_portal/blob/live/do
 ## Example data
 
 To add some example data: `./manage.py loaddata example-data`
-
-# Todo
-* remove hardcoded mock charity data in api at `./react_new/src/services/api.js`
