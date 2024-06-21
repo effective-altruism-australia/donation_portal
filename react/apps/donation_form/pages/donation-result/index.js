@@ -70,6 +70,16 @@ class DonationResult extends Component {
                                 We will send you a tax deductible receipt <b>once we have confirmed the bank transfer.</b>
                             </p>
 
+                            <h3>
+                                Donating in late June?
+                            </h3>
+                            <p>
+                                Please note that according to the <a href="https://www.ato.gov.au/individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/gifts-and-donations">Australian Taxation Office (ATO)</a>, your donation is deductible for the financial year in which it was made, which is when the funds cleared <b><i>your</i></b> bank account. Therefore, if you made your donation by <b><i>midnight 30 June</i></b>, it is deductible for that financial year, even if our receipt is dated in early July (when we receive the funds). Additionally, if you are otherwise eligible for our June match campaign, your donation will be matched as long as it was made by <b><i>midnight 30 June 2024</i></b>. 
+                            </p>
+                            <p>
+                                For more details, please refer to the ATO guidelines on tax-deductible donations and/or your accountant.
+                            </p>
+
                             <h3>Any questions?</h3>
                             <p>
                                 Please email us at <a href="mailto://info@eaa.org.au">info@eaa.org.au</a> or call us on +61 492 841 596, if you have any questions.
