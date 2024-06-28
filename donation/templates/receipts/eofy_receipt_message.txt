@@ -15,3 +15,5 @@ Effective Altruism Australia Environment
 {% else %}
 Effective Altruism Australia
 {% endif %}
+
+Donating in late June? Please note that according to the Australian Taxation Office (ATO), your donation is deductible for the financial year in which it was made, which is when the funds cleared your bank account. Therefore, if you made your donation by midnight 30 June, it is deductible for that financial year, even if our receipt is dated in early July (when we receive the funds). Additionally, if you are otherwise eligible for our June match campaign, your donation will be matched as long as it was made by midnight 30 June 2024. 
