@@ -18,4 +18,3 @@ and https://github.com/effective-altruism-australia/donation_portal/blob/live/do
 ## Example data
 
 To add some example data: `./manage.py loaddata example-data`
-

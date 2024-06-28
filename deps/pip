@@ -59,7 +59,7 @@ pytest==4.0.1
 python-dateutil==2.6.0
 python-postmark==0.4.12
 pytz==2016.10
-pyxero==0.8.0
+pyxero==0.9.3
 q==2.6
 raven==5.32.0
 redis==2.10.5
