@@ -168,6 +168,7 @@ class PledgeView(View):
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=line_items,
+                submit_type="donate",
                 mode='subscription' if pledge.recurring_frequency == RecurringFrequency.MONTHLY else 'payment',
                 success_url='https://effectivealtruism.org.au/donate/?thankyou',
                 cancel_url='https://effectivealtruism.org.au/donate/',
