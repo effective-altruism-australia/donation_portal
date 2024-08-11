@@ -17,8 +17,9 @@ from donation.views.export import write_spreadsheet
 def send_partner_charity_reports(test=True):
     # Create list of partners, combined the GiveDirectly entries
     partners = {partner.name: [partner.id] for partner in PartnerCharity.objects.all()}
-    # partners['GiveDirectly'] += partners['GiveDirectly Basic income research']
-    # del partners['GiveDirectly Basic income research']
+    if 'GiveDirectly' in partners and 'GiveDirectly Basic income research' in partners:
+        partners['GiveDirectly'] += partners['GiveDirectly Basic income research']
+        del partners['GiveDirectly Basic income research']
 
     for partner, ids in partners.iteritems():
         # Start time is when we last reported
