@@ -162,26 +162,19 @@ class PledgeView(View):
                 )
 
 
-            
-
             stripe.api_key = settings.STRIPE_API_KEY_DICT.get("eaae" if pledge.is_eaae else "eaa")
+            session_options = {
+                'payment_method_types': ['card'],
+                'line_items': line_items,
+                'success_url': 'http://localhost:8000/pledge_new/?thankyou' if settings.DEBUG else 'https://effectivealtruism.org.au/donate/?thankyou',
+                'cancel_url': 'http://localhost:8000/pledge_new/' if settings.DEBUG else 'https://effectivealtruism.org.au/donate/',
+            }
             if (pledge.recurring_frequency == RecurringFrequency.MONTHLY):
-                session = stripe.checkout.Session.create(
-                    payment_method_types=['card'],
-                    line_items=line_items,
-                    mode='subscription',
-                    success_url='https://effectivealtruism.org.au/donate/?thankyou',
-                    cancel_url='https://effectivealtruism.org.au/donate/',
-                )
+                session_options['mode'] = 'subscription'
             else:
-                session = stripe.checkout.Session.create(
-                    payment_method_types=['card'],
-                    line_items=line_items,
-                    submit_type="donate",
-                    mode='payment',
-                    success_url='https://effectivealtruism.org.au/donate/?thankyou',
-                    cancel_url='https://effectivealtruism.org.au/donate/',
-                )
+                session_options['mode'] = 'payment'
+                session_options['submit_type'] = 'donate'
+            session = stripe.checkout.Session.create(**session_options)
             print(session.__dict__)
             pledge.stripe_checkout_id = session.id
             pledge.save()

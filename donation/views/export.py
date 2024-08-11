@@ -76,13 +76,20 @@ def download_spreadsheet(request, extra_fields=None):
         return response
 
 
-def write_spreadsheet(location, querysets, template):
+def write_spreadsheet(location, querysets, template, cleaned):
     with xlsxwriter.Workbook(location, {'default_date_format': 'dd mmm yyyy'}) as wb:
         for name, queryset in querysets.iteritems():
             ws = wb.add_worksheet(name=name)
             ws.write_row(0, 0, template.keys())
             row_number = 0
             for row in queryset.values_list(*template.values()):
+                if cleaned:
+                    row_list = list(row)
+                    if not row_list[9]:
+                        row_list[5] = "anonymous"
+                        row_list[6] = "anonymous"
+                        row_list[7] = "anonymous"    
+                    row = tuple(row_list)
                 row_number += 1
                 # Resolve any Enums
                 row = [value.label if isinstance(value, Enum) else value for value in row]
