@@ -17,8 +17,8 @@ from donation.views.export import write_spreadsheet
 def send_partner_charity_reports(test=True):
     # Create list of partners, combined the GiveDirectly entries
     partners = {partner.name: [partner.id] for partner in PartnerCharity.objects.all()}
-    partners['GiveDirectly'] += partners['GiveDirectly Basic income research']
-    del partners['GiveDirectly Basic income research']
+    # partners['GiveDirectly'] += partners['GiveDirectly Basic income research']
+    # del partners['GiveDirectly Basic income research']
 
     for partner, ids in partners.iteritems():
         # Start time is when we last reported
@@ -82,14 +82,16 @@ def send_partner_charity_reports(test=True):
             ('Source', 'pledge__how_did_you_hear_about_us_db__reason'),
         ])
 
-        filename = 'EAA donation report - {0} - {1}.xlsx'.format(partner,
-                                                                 # Avoid collisions of filename while testing
-                                                                 timezone.now())
+        # We add timezone.now() to avoid collisions of filename while testing
+        filename = 'EAA donation report - {0} - {1}.xlsx'.format(partner, timezone.now())
+        filename_internal = 'EAA donation report - {0} - {1} - internal.xlsx'.format(partner, timezone.now())
         location = os.path.join(settings.MEDIA_ROOT, 'partner_reports', filename)
+        location_internal = os.path.join(settings.MEDIA_ROOT, 'partner_reports', filename_internal)
 
-        write_spreadsheet(location, querysets, template)
+        write_spreadsheet(location, querysets, template, cleaned=True)
+        write_spreadsheet(location_internal, querysets, template, cleaned=False)
 
-        # Create email
+        # Create email for partner charity (personal information removed)
         try:
             partner_obj = PartnerCharity.objects.get(id=ids[0])
             to = [partner_obj.email]
@@ -111,6 +113,31 @@ def send_partner_charity_reports(test=True):
                 from_email=settings.POSTMARK_SENDER,
             )
             message.attach_file(location, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            message.send()
+
+        except Exception as e:
+            print e.message
+            client.captureException()
+
+        # Create internal report (personal information included)
+        try:
+            partner_obj = PartnerCharity.objects.get(id=ids[0])
+            to = [settings.EAA_INFO_EMAIL]
+            cc = []
+            body = "Hi team, here's the internal report for {0} from {1} to {2}".format(partner, start.strftime('%d-%m-%Y'), end.strftime('%d-%m-%Y'))
+            message = EmailMessage(
+                subject="Internal report for {0} from {1} to {2}".format(partner, start.strftime('%d-%m-%Y'), end.strftime('%d-%m-%Y')),
+                body=body,
+                to=to if not test else [settings.TESTING_EMAIL],
+                cc=cc if not test else [settings.TESTING_EMAIL],
+                # There is a filter in info@eaa.org.au
+                #   from:(donations @ eaa.org.au) deliveredto:(info + receipts @ eaa.org.au)
+                # that automatically archives messages sent to info+receipt and adds the label 'receipts'
+                # bcc=["info+receipt@eaa.org.au", ],
+                bcc=[],
+                from_email=settings.POSTMARK_SENDER,
+            )
+            message.attach_file(location_internal, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             message.send()
 
         except Exception as e:
