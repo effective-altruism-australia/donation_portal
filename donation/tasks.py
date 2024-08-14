@@ -76,4 +76,4 @@ def add_pledge_contact_to_ea_newsletter(pledge_id):
 
 @app.task()
 def export_spreadsheet(location, queryset, template):
-    write_spreadsheet(location, {'Donations': queryset}, template)
+    write_spreadsheet(location, {'Donations': queryset}, template, cleaned=False)
