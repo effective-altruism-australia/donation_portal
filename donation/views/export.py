@@ -76,7 +76,7 @@ def download_spreadsheet(request, extra_fields=None):
         return response
 
 
-def write_spreadsheet(location, querysets, template, cleaned):
+def write_spreadsheet(location, querysets, template, cleaned=False):
     with xlsxwriter.Workbook(location, {'default_date_format': 'dd mmm yyyy'}) as wb:
         for name, queryset in querysets.iteritems():
             ws = wb.add_worksheet(name=name)
