@@ -1,0 +1,263 @@
+<form
+  id="donation-form"
+  onsubmit="return handleFormSubmit();"
+  style="display: none"
+>
+  <h2 class="text-lg">How often will you be donating?</h2>
+
+  <div class="radio-group flex gap-2 mb-4">
+    <input
+      type="radio"
+      id="one-time"
+      name="recurring_frequency"
+      value="one-time"
+      checked
+    />
+    <label for="one-time" class="hover:bg-eaa-blue-50 rounded-sm">One-time</label>
+    <input
+      type="radio"
+      id="monthly"
+      name="recurring_frequency"
+      value="monthly"
+    />
+    <label for="monthly" class="hover:bg-eaa-blue-50 rounded-sm">Monthly</label>
+  </div>
+
+  <h2 class="text-lg mt-8">Where would you like your donation to go?</h2>
+  <div class="radio-group flex gap-2 mb-4">
+    <input
+      type="radio"
+      id="default-allocation"
+      name="allocation-type"
+      value="default"
+      checked
+      onclick="hide('custom-allocation-section'); showBlock('default-allocation-section');"
+    />
+    <label for="default-allocation" class="hover:bg-eaa-blue-50 rounded-sm">
+      Please distribute my donation to the most effective charities, based on
+      evidence and need.
+    </label>
+
+    <input
+      type="radio"
+      id="custom-allocation"
+      name="allocation-type"
+      value="custom"
+      onclick="hide('default-allocation-section'); showBlock('custom-allocation-section');"
+    />
+    <label for="custom-allocation" class="hover:bg-eaa-blue-50 rounded-sm">
+      I would like to choose how to allocate my donation.
+    </label>
+  </div>
+  <div id="default-allocation-section">
+    <h2 class="text-lg mt-8">How much would you like to donate?</h2>
+    <div class="radio-group flex gap-2 mb-2">
+      <input
+        type="radio"
+        id="donate-25"
+        name="donation-amount"
+        value="25"
+        onchange="$('custom-amount').classList.remove('selected');"
+      />
+      <label for="donate-25" class="hover:bg-eaa-blue-50 rounded-sm">$25</label>
+      <input
+        type="radio"
+        id="donate-50"
+        name="donation-amount"
+        value="50"
+        onchange="$('custom-amount').classList.remove('selected');"
+      />
+      <label for="donate-50" class="hover:bg-eaa-blue-50 rounded-sm">$50</label>
+      <input
+        type="radio"
+        id="donate-100"
+        name="donation-amount"
+        value="100"
+        onchange="$('custom-amount').classList.remove('selected');"
+      />
+      <label for="donate-100" class="hover:bg-eaa-blue-50 rounded-sm">$100</label>
+      <input
+        type="radio"
+        id="donate-250"
+        name="donation-amount"
+        value="250"
+        onchange="$('custom-amount').classList.remove('selected');"
+      />
+      <label for="donate-250" class="hover:bg-eaa-blue-50 rounded-sm">$250</label>
+    </div>
+
+    <div id="custom-amount" class="hover:bg-eaa-blue-50 rounded-sm">
+      <input
+        type="radio"
+        id="custom-amount-checkbox"
+        name="donation-amount"
+        value="custom"
+        onchange="this.checked ? $('custom-amount-input').focus() : null;"
+      />
+      <label class="inline-block" for="custom-amount-checkbox"> Other </label>
+      <input
+        type="text"
+        inputmode="numeric"
+        id="custom-amount-input"
+        name="custom-amount-input"
+        class="inline-block rounded-sm"
+        onfocus="$('custom-amount-checkbox').checked = true; $('custom-amount').classList.add('selected');"
+      />
+    </div>
+  </div>
+
+  <div id="custom-allocation-section" style="display: none">
+    Fetching charity details...
+    <div>Total $</div>
+  </div>
+
+  <h2 class="text-lg mt-8">Personal Details</h2>
+  <div class="flex flex-col gap-2 mb-4">
+    <label for="first-name" class="flex flex-col flex-grow mb-4">
+      <div>First name</div>
+      <input type="text" id="first-name" name="first_name" class="block p-2 text-md" />
+    </label>
+
+    <label for="last-name" class="flex flex-col flex-grow mb-4">
+      <div>Last name</div>
+      <input type="text" id="last-name" name="last_name" class="block p-2 text-md" />
+    </label>
+
+    <label for="email" class="flex flex-col flex-grow mb-4">
+      <div>Email</div>
+      <input type="email" id="email" name="email" class="block p-2 text-md" />
+    </label>
+
+    <label for="postcode" class="flex flex-col flex-grow mb-4">
+      <div>Postcode</div>
+      <input type="text" id="postcode" name="postcode" class="block p-2 text-md" />
+    </label>
+
+    <label for="country" class="flex flex-col flex-grow mb-4">
+      <div>Country</div>
+      <input type="text" id="country" name="country" class="block p-2 text-md" value="Australia" />
+    </label>
+  </div>
+
+  <label for="referral-sources" class="flex flex-col">
+    <h2 class="text-lg mt-8">How did you hear about us?</h2>
+    <select
+      name="how_did_you_hear_about_us_db"
+      id="referral-sources"
+      class="flex flex-grow mb-4"
+    ></select>
+  </label>
+
+  <div class="flex flex-col items-start">
+    <label class="eaa-checkbox">
+      <input
+        type="checkbox"
+        id="subscribe-to-updates"
+        name="subscribe_to_updates"
+      />
+      Send me news and updates
+      <div class="checkmark rounded-sm"></div>
+    </label>
+
+    <label class="eaa-checkbox">
+      <input
+        type="checkbox"
+        id="subscribe-to-newsletter"
+        name="subscribe_to_newsletter"
+      />
+      Subscribe me to the global Effective Altruism newsletter
+      <div class="checkmark rounded-sm"></div>
+    </label>
+
+    <label class="eaa-checkbox">
+      <input
+        type="checkbox"
+        id="connect-to-community"
+        name="connect_to_community"
+      />
+      Connect me with my local Effective Altruism community
+      <div class="checkmark rounded-sm"></div>
+    </label>
+  </div>
+
+  <h2 class="text-lg mt-8">Payment Method</h2>
+
+  <div class="radio-group flex gap-2 mb-4">
+    <input
+      type="radio"
+      id="credit-card"
+      name="payment_method"
+      value="credit-card"
+      onclick="hide('bank-details-section')"
+      checked
+    />
+    <label for="credit-card" class="hover:bg-eaa-blue-50 rounded-sm">Credit Card</label>
+
+    <input
+      type="radio"
+      id="bank-transfer"
+      name="payment_method"
+      value="bank-transfer"
+      onclick="showBlock('bank-details-section')"
+    />
+    <label for="bank-transfer" class="hover:bg-eaa-blue-50 rounded-sm">Bank Transfer</label>
+  </div>
+
+  <div id="bank-details-section">
+    <div class="mb-4">
+      After you submit this form, we will give you our account details and a
+      unique reference number. You can then log in to your bank and make a bank
+      transfer using these details.
+    </div>
+  </div>
+
+  <div class="flex flex-col items-start">
+    <h2 class="text-lg mt-8">
+      Are you making this donation as a gift to someone?
+    </h2>
+    <label class="eaa-checkbox" for="gift">
+      <input
+        type="checkbox"
+        id="gift"
+        name="is_gift"
+        onclick="this.checked ? showFlex('gift-section'): hide('gift-section')"
+      />
+      Yes, this is a gift.
+      <div class="checkmark rounded-sm"></div>
+    </label>
+
+    <div id="gift-section" class="flex flex-col self-stretch mb-4">
+      <label for="recipient-name" class="flex flex-col mb-4"
+        >Recipient Name
+        <input type="text" id="recipient-name" name="gift_recipient_name" class="p-2 text-md" />
+      </label>
+
+      <label for="recipient-email" class="flex flex-col mb-4"
+        >Recipient Email
+        <input type="email" id="recipient-email" name="gift_recipient_email" class="p-2 text-md" />
+      </label>
+
+      <label for="gift-message" class="flex flex-col mb-4"
+        >Include a personal message (this will be sent to the recipient)
+        <textarea id="gift-message" name="gift_personal_message" class="resize-none h-20 p-2 text-md"></textarea>
+      </label>
+    </div>
+  </div>
+
+  <input id="donate-button" class="mt-4 py-5 px-10 text-white text-md bg-eaa-blue-400 font-bold border-none rounded-sm hover:bg-eaa-blue-300" type="submit" value="Donate" />
+</form>
+
+<div id="thank-you-message" style="display: none">
+  <h2>Thank you!</h2>
+  <p>Your receipt will be sent to your email address.</p>
+
+  <h3>Any questions?</h3>
+
+  <p>
+    Please email us at <a href="mailto:info@eaa.org.au">info@eaa.org.au</a> or
+    call us on +61 492 841 596, if you have any questions.
+  </p>
+
+  <p>Best wishes and thanks,</p>
+  <p>The team at Effective Altruism Australia</p>
+</div>

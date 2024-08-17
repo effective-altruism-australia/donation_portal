@@ -1,0 +1,19 @@
+{
+  "name": "eaa-donation-form",
+  "version": "1.0.0",
+  "description": "A simple dependency free donation form",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "main": "build.mjs",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nathan Sherburn",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

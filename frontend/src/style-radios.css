@@ -1,0 +1,50 @@
+.radio-group input[type="radio"] {
+  display: none;
+}
+.radio-group input[type="radio"] + label {
+  flex-grow: 1;
+  padding: 0.5rem;
+  border: 1px solid #dddddd;
+  text-align: center;
+}
+.radio-group input:not([disabled])[type="radio"] + label {
+  cursor: pointer;
+}
+.radio-group input[type="radio"]:checked + label {
+  background-color: #498fb3;
+  color: white;
+}
+#custom-amount {
+  display: flex;
+  padding: 8px;
+  border: 1px solid #dddddd;
+  box-sizing: border-box;
+  width: 100%;
+  align-items: center;
+}
+#custom-amount.selected {
+  background-color: #498fb3;
+  color: white;
+}
+#custom-amount input[type="radio"] {
+  display: none;
+}
+#custom-amount input[type="radio"] + label {
+  padding: 0.5rem;
+  flex-grow: 1;
+}
+#custom-amount input:not([disabled])[type="radio"] + label {
+  cursor: pointer;
+}
+#custom-amount input[type="text"] {
+  flex-grow: 1;
+  padding: 0.5rem;
+  border: 1px solid #dddddd;
+  width: 100%;
+}
+select,
+input[type="text"],
+textarea {
+  display: block;
+  box-sizing: border-box;
+}
