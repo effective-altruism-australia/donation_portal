@@ -3,17 +3,15 @@
   "version": "1.0.0",
   "description": "A simple dependency free donation form",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=22.9.01"
   },
   "main": "build.mjs",
   "scripts": {
     "build": "node build.js",
-    "dev": "node build.js",
+    "dev": "node --env-file=.env --watch-path=./src build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nathan Sherburn",
   "license": "ISC",
-  "dependencies": {
-    "dotenv": "^16.4.5"
-  }
+  "dependencies": {}
 }

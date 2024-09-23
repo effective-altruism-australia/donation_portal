@@ -40,6 +40,20 @@ if ($("bank-transfer").checked) {
   hide("bank-details-section");
 }
 
+function showGiftSection() {
+  showFlex("gift-section");
+  $("gift-section").disabled = false;
+  $("recipient-name").setAttribute("required", "true");
+  $("recipient-email").setAttribute("required", "true");
+}
+
+function hideGiftSection() {
+  hide("gift-section");
+  $("gift-section").disabled = true;
+  $("recipient-name").setAttribute("required", "false");
+  $("recipient-email").setAttribute("required", "false");
+}
+
 // Fetch partner charities and referral sources lists
 fetch(ORIGIN + "/partner_charities")
   .then((response) => response.json())
@@ -60,7 +74,7 @@ function buildCustomAllocationSection(partnerCharities) {
         inputmode="numeric"
         id="${charity.id}-amount"
         name="${charity.id}-amount"
-        class="block p-1"
+        class="block"
       />
     </div>
     `;

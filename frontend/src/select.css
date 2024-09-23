@@ -1,0 +1,9 @@
+.eaa-select {
+  background-color: var(--gray-100);
+  width: 100%;
+}
+
+.eaa-select:hover {
+  cursor: pointer;
+  background-color: var(--gray-200);
+}

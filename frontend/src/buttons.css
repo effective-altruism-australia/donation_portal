@@ -1,0 +1,9 @@
+button {
+  background-color: var(--eaa-blue-400);
+  font-weight: 700;
+}
+
+button:hover {
+  background-color: var(--eaa-blue-500);
+  cursor: pointer;
+}
