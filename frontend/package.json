@@ -5,7 +5,7 @@
   "engines": {
     "node": ">=22.9.01"
   },
-  "main": "build.mjs",
+  "main": "build.js",
   "scripts": {
     "build": "node build.js",
     "dev": "node --env-file=.env --watch-path=./src build.js",
