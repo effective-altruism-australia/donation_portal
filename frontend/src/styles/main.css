@@ -1,0 +1,57 @@
+/* Set up Theme colours */
+:host {
+  --eaa-blue-600: #1592a5;
+  --eaa-blue-700: #187485;
+
+  --gray-100: #e7e7e7;
+  --gray-200: #d1d1d1;
+}
+
+/* Animations */
+* {
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, display;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 250ms;
+  box-sizing: border-box;
+  /* This is a new widely available properly that lets you animate `display: none` */
+  transition-behavior: allow-discrete;
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+/* Buttons */
+button {
+  background-color: var(--eaa-blue-600);
+  font-weight: 700;
+}
+button:hover {
+  background-color: var(--eaa-blue-700);
+  cursor: pointer;
+}
+
+/* Links */
+a {
+  color: var(--eaa-blue-600);
+}
+
+/* Fieldset - these allow you to group inputs to enable or disable multiple at once */
+fieldset {
+  padding: 0;
+  border: none;
+  margin: 0;
+}
+
+/* Form Validation - shows tick or alert badges based on validity of input */
+.validate input:user-valid {
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 12 12'><path d='M6 0a6 6 0 1 0 6 6 6 6 0 0 0-6-6zm-.5 8.5L3 5.85l.7-.71 1.79 1.86L8.77 3.5 9.5 4.2z' fill='%2336B075'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center right 0.5rem;
+}
+.validate input:user-invalid {
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 12 12'><path d='M6 12a6 6 0 100-12 6 6 0 000 12zm0-4.8a.45.45 0 01-.45-.45V3.45a.45.45 0 01.9 0v3.3A.45.45 0 016 7.2zm-.002 1.8a.6.6 0 110-1.2.6.6 0 010 1.2z' fill='%23FFB800'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center right 0.5rem;
+}

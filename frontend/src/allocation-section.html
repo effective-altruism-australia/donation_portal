@@ -1,0 +1,31 @@
+<section id="allocation-section" style="display: none">
+  <h2 class="text-lg mt-8">I would like my gift to go to</h2>
+  <div class="radio-group flex gap-2 mb-4">
+    <input
+      type="radio"
+      id="default-allocation"
+      name="allocation-type"
+      value="default"
+      checked
+      onclick="hide('#custom-allocation-section'); showBlock('#amount-section');"
+    />
+    <label for="default-allocation" class="rounded text-blue">
+      The most effective charities according to EAA, based on evidence and need
+    </label>
+
+    <input
+      type="radio"
+      id="custom-allocation"
+      name="allocation-type"
+      value="custom"
+      onclick="hide('#amount-section'); showBlock('#custom-allocation-section');"
+    />
+    <label for="custom-allocation" class="rounded text-blue">
+      These specific charities
+    </label>
+  </div>
+  <p>
+    You can read more about how we evaluate charities
+    <a href="https://effectivealtruism.org.au/evaluating-charities/">here</a>.
+  </p>
+</section>

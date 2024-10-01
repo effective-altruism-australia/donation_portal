@@ -1,0 +1,77 @@
+<section id="personal-details-section" style="display: none">
+  <h2 class="text-lg mt-8">Personal Details</h2>
+  <div class="flex flex-col gap-24 validate">
+    <div>
+      <label for="first-name"> First name </label>
+      <input
+        type="text"
+        id="first-name"
+        name="first_name"
+        class="block w-full p-2 text-md border rounded focus-outline"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="last-name"> Last name </label>
+      <input
+        type="text"
+        id="last-name"
+        name="last_name"
+        class="block w-full p-2 text-md border rounded focus-outline"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="email"> Email </label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        class="block w-full p-2 text-md border rounded focus-outline"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="postcode"> Postcode </label>
+      <input
+        id="postcode"
+        name="postcode"
+        type="text"
+        inputmode="numeric"
+        pattern="\d*"
+        class="block w-full p-2 text-md border rounded focus-outline"
+        required
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <label for="country"> Country </label>
+      <select
+        name="country"
+        id="country"
+        class="eaa-select text-md flex flex-grow rounded border h-12 border-none p-2 focus-outline"
+        required
+      ></select>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Build the country list for the select dropdown
+  buildCountriesList();
+
+  function buildCountriesList() {
+    let countriesListHTML = "";
+
+    countryList.forEach((country) => {
+      countriesListHTML += `<option value="${country}" ${
+        country === "Australia" ? "selected" : ""
+      }>${country}</option>`;
+    });
+
+    $("#country").innerHTML = countriesListHTML;
+  }
+</script>

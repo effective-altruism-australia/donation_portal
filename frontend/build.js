@@ -9,7 +9,8 @@ const donationFormHtml = `
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EAA Donation Form</title>
-    <style>      
+    <!-- These styles are just for local development (i.e. when viewing outside of WordPress) -->
+    <style>
       #donation-form-host {
         max-width: 720px;
         margin: 0 auto;
@@ -28,16 +29,24 @@ const donationFormHtml = `
 
     <template id="donation-form">
       <style>
-        ${fs.readFileSync("./src/theme.css", "utf8")}
-        ${fs.readFileSync("./src/utilities.css", "utf8")}
-        ${fs.readFileSync("./src/radios.css", "utf8")}
-        ${fs.readFileSync("./src/checkboxes.css", "utf8")}
-        ${fs.readFileSync("./src/select.css", "utf8")}
-        ${fs.readFileSync("./src/buttons.css", "utf8")}
-        ${fs.readFileSync("./src/fieldsets.css", "utf8")}
-        ${fs.readFileSync("./src/inputs.css", "utf8")}
+        ${fs.readFileSync("./src/styles/main.css", "utf8")}
+        ${fs.readFileSync("./src/styles/utilities.css", "utf8")}
+        ${fs.readFileSync("./src/styles/custom-inputs.css", "utf8")}
       </style>
-      ${fs.readFileSync("./src/form.html", "utf8")}
+
+      <form onsubmit="return handleFormSubmit();">
+        ${fs.readFileSync("./src/donation-frequency-section.html", "utf8")}
+        ${fs.readFileSync("./src/allocation-section.html", "utf8")}
+        ${fs.readFileSync("./src/specific-charity-section.html", "utf8")}
+        ${fs.readFileSync("./src/amount-section.html", "utf8")}
+        ${fs.readFileSync("./src/custom-allocation-section.html", "utf8")}
+        ${fs.readFileSync("./src/personal-details-section.html", "utf8")}
+        ${fs.readFileSync("./src/communications-section.html", "utf8")}
+        ${fs.readFileSync("./src/payment-method-section.html", "utf8")}
+        ${fs.readFileSync("./src/gift-section.html", "utf8")}
+        ${fs.readFileSync("./src/donate-button-section.html", "utf8")}
+        ${fs.readFileSync("./src/thankyou-section.html", "utf8")}
+      </form>
     </template>
 
     <div id="donation-form-host"></div>
@@ -47,8 +56,9 @@ const donationFormHtml = `
       const STRIPE_API_KEY_EAAE = "${process.env.STRIPE_API_KEY_EAAE}";
       const STRIPE_API_KEY_EAA = "${process.env.STRIPE_API_KEY_EAA}";
       const ORIGIN = "${process.env.ORIGIN}";
-      ${fs.readFileSync("./src/utilities.js", "utf8")}
-      ${fs.readFileSync("./src/main.js", "utf8")}
+      ${fs.readFileSync("./src/scripts/utilities.js", "utf8")}
+      ${fs.readFileSync("./src/scripts/countries.js", "utf8")}
+      ${fs.readFileSync("./src/scripts/main.js", "utf8")}
     </script>
 
     <!-- Paste this into WordPress: END -->

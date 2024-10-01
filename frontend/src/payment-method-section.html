@@ -1,0 +1,41 @@
+<section id="payment-method-section" style="display: none">
+  <h2 class="text-lg mt-8">Payment Method</h2>
+
+  <div class="radio-group flex gap-2">
+    <input
+      type="radio"
+      id="credit-card"
+      name="payment_method"
+      value="credit-card"
+      onclick="hide('#bank-details-message')"
+      checked
+    />
+    <label for="credit-card" class="rounded text-blue">Credit Card</label>
+
+    <input
+      type="radio"
+      id="bank-transfer"
+      name="payment_method"
+      value="bank-transfer"
+      onclick="showBlock('#bank-details-message')"
+    />
+    <label for="bank-transfer" class="rounded text-blue">
+      Bank Transfer
+    </label>
+  </div>
+
+  <div id="bank-details-message" style="display: none; opacity: 0;">
+    <div class="mt-4">
+      After you submit this form, we will give you our account details and a
+      unique reference number. You can then log in to your bank and make a bank
+      transfer using these details.
+    </div>
+  </div>
+</section>
+
+<script>
+  // Set initial state
+  if ($("#bank-transfer").checked) {
+    showBlock("#bank-details-message");
+  }
+</script>

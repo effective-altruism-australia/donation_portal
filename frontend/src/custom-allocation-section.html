@@ -1,0 +1,54 @@
+<section id="custom-allocation-section" style="display: none" class="validate">
+  Fetching charity details...
+</section>
+
+<script>
+  // Note: This is only run after the charity data has been fetched in main.js
+  function buildCustomAllocationSection(partnerCharities) {
+    console.log(partnerCharities);
+    let customAllocationSectionHTML = `<h2 class="text-lg mt-8">How would you like to allocate your donation?</h2>`;
+
+    let catagories = {
+      "Our recommended charities": [],
+      "Other charities we support": [],
+      "Help us do more good": [],
+    };
+    partnerCharities.forEach((charity) => {
+      catagories[charity.category].push(charity);
+    });
+
+    Object.keys(catagories).forEach((catagory) => {
+      customAllocationSectionHTML += `<h3>${catagory}</h3>`;
+      catagories[catagory].forEach((charity) => {
+        customAllocationSectionHTML += `
+      <div class="flex" style="justify-content: end; align-items: center; text-align: right; padding-bottom: 0.5rem;">
+        <label for="${charity.slug_id}">${charity.name}</label>
+        <input
+          type="number"
+          inputmode="numeric"
+          min="0"
+          max="999999.99"
+          step="1"
+          id="${charity.slug_id}-amount"
+          name="${charity.slug_id}-amount"
+          class="specific-charity inline-block rounded text-md p-2 text-md border focus-outline"
+          onblur="this.value = Number(this.value)"
+          oninput="updateTotal()"
+          style="margin: 0 0 0 1rem;"
+        />
+      </div>`;
+      });
+    });
+    customAllocationSectionHTML +=
+      "<div id='total' class='text-lg' style='text-align: right;'>Total: 0</div>";
+    $("#custom-allocation-section").innerHTML = customAllocationSectionHTML;
+  }
+
+  function updateTotal() {
+    let total = 0;
+    $$(".specific-charity").forEach((input) => {
+      total += Number(input.value);
+    });
+    $("#total").innerText = `Total: ${total}`;
+  }
+</script>
