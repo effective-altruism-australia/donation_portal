@@ -108,5 +108,6 @@ def download_full_spreadsheet(request):
         ('Share with GiveWell', 'pledge__share_with_givewell'),
         ('Share with GWWC', 'pledge__share_with_gwwc'),
         ('Share with TLYCS', 'pledge__share_with_tlycs'),
+        ('Gift', 'pledge__is_gift'),
     ]
     return download_spreadsheet(request, extra_fields)
