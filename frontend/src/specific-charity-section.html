@@ -9,13 +9,9 @@
 
 <script>
   // Note: This is only run after the charity data has been fetched in main.js
-  function buildSpecificCharitySection(charities) {
-    console.log(charities);
-    const selectedCharity = charities.find(
-      (charity) => charity.slug_id === specificCharity
-    );
-    $("#specific-charity-logo").innerHTML = selectedCharity.thumbnail
-      ? `<img src="${ORIGIN}/static/${selectedCharity.thumbnail}" alt="${selectedCharity.name}" style="width: 100%;" />`
-      : `<h3>${selectedCharity.name}</h3>`;
+  function buildSpecificCharitySection(specificCharityDetails) {
+    $("#specific-charity-logo").innerHTML = specificCharityDetails.thumbnail
+      ? `<img src="${ORIGIN}/static/${specificCharityDetails.thumbnail}" alt="${specificCharityDetails.name}" style="width: 100%;" />`
+      : `<h3>${specificCharityDetails.name}</h3>`;
   }
 </script>
