@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A simple dependency free donation form",
   "engines": {
-    "node": ">=22.9.01"
+    "node": ">=22.4.1"
   },
   "main": "build.js",
   "scripts": {
@@ -13,5 +13,8 @@
   },
   "author": "Nathan Sherburn",
   "license": "ISC",
-  "dependencies": {}
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.7.4"
+  }
 }
