@@ -16,11 +16,17 @@
 	"forwardPorts": [8000],
 
 	// Uncomment the next line to run commands after the container is created.
-	"postCreateCommand": "cat /etc/os-release"
+	"postCreateCommand": "cat /etc/os-release",
 
 	// Configure tool-specific properties.
-	// "customizations": {},
-
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python@2021.9.1246542782",
+        "ms-python.debugpy@2023.1.12492010"
+      ]
+    }
+  }
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
 }
