@@ -26,6 +26,7 @@ input[type="number"] {
 }
 .radio-group input[type="radio"] + label {
   flex-grow: 1;
+  flex-basis: 0;
   padding: 0.5rem;
   border: 1px solid var(--eaa-blue-600);
   text-align: center;
