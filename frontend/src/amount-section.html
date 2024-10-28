@@ -35,10 +35,18 @@
     outline-offset: 1px;
   }
   #custom-amount input[type="number"] {
-    flex-grow: 1;
-    padding: 0.5rem;
-    border: 1px solid var(--eaa-blue-600);
+    border: none;
     width: 100%;
+  }
+  #input-wrapper {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    padding: 0.5rem;
+    width: 100%;
+    border: 1px solid var(--eaa-blue-600);
+    background-color: white;
+    color: black;
   }
 </style>
 
@@ -54,19 +62,22 @@
       checked
     />
     <label class="inline-block" for="custom-amount-radio"> Amount </label>
-    <input
-      type="number"
-      inputmode="numeric"
-      min="2"
-      max="999999.99"
-      step="1"
-      id="custom-amount-input"
-      name="custom-amount-input"
-      class="inline-block rounded text-md"
-      onblur="this.value = Number(this.value)"
-      onfocus="$('#custom-amount-radio').checked = true; $('#custom-amount').classList.add('selected', 'validate');"
-      tabindex="-1"
-    />
+    <span id="input-wrapper">
+      $
+      <input
+        type="number"
+        inputmode="numeric"
+        min="2"
+        max="999999.99"
+        step="1"
+        id="custom-amount-input"
+        name="custom-amount-input"
+        class="inline-block text-md"
+        onblur="this.value = Number(this.value)"
+        onfocus="$('#custom-amount-radio').checked = true; $('#custom-amount').classList.add('selected', 'validate');"
+        tabindex="-1"
+      />
+    </span>
   </div>
   <div class="radio-group flex gap-2 mb-2">
     <input
