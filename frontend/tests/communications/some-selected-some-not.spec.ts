@@ -6,7 +6,7 @@ works as expected.
 */
 
 test("Communications: checkboxes work", async ({ page }) => {
-  await page.goto("http://localhost:8000/donation_form.html");
+  await page.goto("http://localhost:8000/pledge_new/");
 
   await page.locator("#custom-amount-input").fill("5");
 
@@ -14,9 +14,7 @@ test("Communications: checkboxes work", async ({ page }) => {
 
   await page.getByLabel("Last name").fill("Sherburn");
 
-  await page
-    .getByLabel("Email", { exact: true })
-    .fill("nathan.sherburn@eaa.org.au");
+  await page.getByLabel("Email", { exact: true }).fill("testing@eaa.org.au");
 
   await page.getByLabel("Postcode").fill("3000");
 
@@ -37,12 +35,12 @@ test("Communications: checkboxes work", async ({ page }) => {
   page.on("request", (request) => {
     if (request.url().includes("pledge_new")) {
       let data = JSON.parse(request.postData() || "{}");
-      expect(data["payment_method"]).toBe("credit-card!");
+      expect(data["payment_method"]).toBe("credit-card");
       expect(data["recurring_frequency"]).toBe("one-time");
       expect(data["recurring"]).toBe(false);
       expect(data["first_name"]).toBe("Nathan");
       expect(data["last_name"]).toBe("Sherburn");
-      expect(data["email"]).toBe("nathan.sherburn@eaa.org.au");
+      expect(data["email"]).toBe("testing@eaa.org.au");
       expect(data["subscribe_to_updates"]).toBe(true);
       expect(data["subscribe_to_newsletter"]).toBe(false);
       expect(data["connect_to_community"]).toBe(true);
