@@ -18,7 +18,11 @@
     });
 
     Object.keys(catagories).forEach((catagory) => {
-      customAllocationSectionHTML += `<h3>${catagory}</h3>`;
+      customAllocationSectionHTML += `<h3>${catagory} ${
+        catagory !== "Help us do more good"
+          ? "<a href='https://effectivealtruism.org.au/inclusion-criteria/'>ⓘ</a>"
+          : ""
+      }</h3>`;
       catagories[catagory].forEach((charity) => {
         customAllocationSectionHTML += `
       <div class="flex" style="justify-content: end; align-items: center; text-align: right; padding-bottom: 0.5rem;">
