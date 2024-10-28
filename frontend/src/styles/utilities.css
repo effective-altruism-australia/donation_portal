@@ -54,7 +54,7 @@
 }
 
 /* Focus outline */
-.focus-outline:focus {
+.focus-outline:focus, .focus-outline:focus-within {
   outline-style: solid;
   outline-offset: 1px;
   outline-width: 2px;
@@ -79,6 +79,12 @@
 }
 .items-end {
   align-items: flex-end;
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
 }
 .self-stretch {
   align-self: stretch;

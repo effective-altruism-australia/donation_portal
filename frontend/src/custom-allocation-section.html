@@ -5,8 +5,7 @@
 <script>
   // Note: This is only run after the charity data has been fetched in main.js
   function buildCustomAllocationSection(partnerCharities) {
-    console.log(partnerCharities);
-    let customAllocationSectionHTML = `<h2 class="text-lg mt-8">How would you like to allocate your donation?</h2>`;
+    let customAllocationSectionHTML = "";
 
     let catagories = {
       "Our recommended charities": [],
@@ -27,19 +26,22 @@
         customAllocationSectionHTML += `
       <div class="flex" style="justify-content: end; align-items: center; text-align: right; padding-bottom: 0.5rem;">
         <label for="${charity.slug_id}">${charity.name}</label>
-        <input
-          type="number"
-          inputmode="numeric"
-          min="0"
-          max="999999.99"
-          step="1"
-          id="${charity.slug_id}-amount"
-          name="${charity.slug_id}-amount"
-          class="specific-charity inline-block rounded text-md p-2 text-md border focus-outline"
-          onblur="this.value = Number(this.value)"
-          oninput="updateTotal()"
-          style="margin: 0 0 0 1rem;"
-        />
+        <span class="flex rounded p-2 text-md border focus-outline" style="margin: 0 0 0 1rem; max-width: 5rem; width: 100%;">
+          $
+          <input
+            type="number"
+            inputmode="numeric"
+            min="0"
+            max="999999.99"
+            step="1"
+            id="${charity.slug_id}-amount"
+            name="${charity.slug_id}-amount"
+            class="specific-charity inline-block text-md"
+            onblur="this.value = Number(this.value)"
+            oninput="updateTotal()"
+            style="border: none; outline: none; width: 100%;"
+          />
+        </span>
       </div>`;
       });
     });
