@@ -19,14 +19,14 @@
     Object.keys(catagories).forEach((catagory) => {
       customAllocationSectionHTML += `<h3>${catagory} ${
         catagory !== "Help us do more good"
-          ? "<a href='https://effectivealtruism.org.au/inclusion-criteria/'>ⓘ</a>"
+          ? "<sup><a href='https://effectivealtruism.org.au/inclusion-criteria/' style='text-decoration: none;'>ⓘ</a></sup>"
           : ""
       }</h3>`;
       catagories[catagory].forEach((charity) => {
         customAllocationSectionHTML += `
       <div class="flex" style="justify-content: end; align-items: center; text-align: right; padding-bottom: 0.5rem;">
         <label for="${charity.slug_id}">${charity.name}</label>
-        <span class="flex rounded p-2 text-md border focus-outline" style="margin: 0 0 0 1rem; max-width: 5rem; width: 100%;">
+        <span class="flex items-center rounded p-2 text-md border focus-outline" style="margin: 0 0 0 1rem; max-width: 7rem; width: 100%;">
           $
           <input
             type="number"
@@ -46,7 +46,7 @@
       });
     });
     customAllocationSectionHTML +=
-      "<div id='total' class='text-lg' style='text-align: right;'>Total: 0</div>";
+      "<div id='total' class='text-lg' style='text-align: right;'>Total: $0</div>";
     $("#custom-allocation-section").innerHTML = customAllocationSectionHTML;
   }
 
@@ -55,6 +55,6 @@
     $$(".specific-charity").forEach((input) => {
       total += Number(input.value);
     });
-    $("#total").innerText = `Total: ${total}`;
+    $("#total").innerText = `Total: $${total}`;
   }
 </script>
