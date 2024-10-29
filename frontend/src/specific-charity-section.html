@@ -10,8 +10,13 @@
 <script>
   // Note: This is only run after the charity data has been fetched in main.js
   function buildSpecificCharitySection(specificCharityDetails) {
+    if (!specificCharityDetails) {
+      $("#specific-charity-logo").innerHTML = "Sorry, we couldn't find the charity you're looking for. Click <a href='/pledge_new/'>here</a> to start again.";
+      return;
+    }
+
     $("#specific-charity-logo").innerHTML = specificCharityDetails.thumbnail
-      ? `<img src="${ORIGIN}/static/${specificCharityDetails.thumbnail}" alt="${specificCharityDetails.name}" style="width: 100%;" />`
-      : `<h3>${specificCharityDetails.name}</h3>`;
+      ? `<img src="${ORIGIN}/static/${specificCharityDetails.thumbnail}" alt="${specificCharityDetails.name}" style="width: 100%; max-width: 10rem;" />`
+      : `<span>${specificCharityDetails.name}</span>`;
   }
 </script>
