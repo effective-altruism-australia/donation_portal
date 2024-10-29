@@ -5,7 +5,7 @@ Ensure that the form prompts donors to complete form when their default
 allocation section is empty.
 */
 
-test("Custom allocation: submit with empty data", async ({ page }) => {
+test("Default allocation: submit with empty data", async ({ page }) => {
   await page.goto('http://localhost:8000/pledge_new/');
   
   await page.getByLabel('First name').fill('Nathan');
