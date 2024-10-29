@@ -50,25 +50,46 @@ function renderSpecificCharityForm() {
   showBlock("#personal-details-section");
   showBlock("#communications-section");
   showBlock("#payment-method-section");
-  showBlock("#gift-section");
+  // showBlock("#gift-section");
   showBlock("#donate-button-section");
 }
 
 function renderStandardForm() {
   fetch(ORIGIN + "/partner_charities")
     .then((response) => response.json())
-    .then((data) => buildCustomAllocationSection(data));
+    .then((data) => {
+      partnerCharities = data;
+      buildCustomAllocationSection(data);
+    });
   showBlock("#donation-frequency-section");
   showBlock("#allocation-section");
   showBlock("#amount-section");
   showBlock("#personal-details-section");
   showBlock("#communications-section");
   showBlock("#payment-method-section");
-  showBlock("#gift-section");
+  // showBlock("#gift-section");
   showBlock("#donate-button-section");
 }
 
 function handleFormSubmit() {
+  if ($("#custom-allocation").checked) {
+    let total = $("#total").innerText.split("$")[1];
+    if (total < 2) {
+      alert("Please allocate at least $2 across your preferred charities.");
+      $("#custom-allocation").focus();
+      return false;
+    }
+  }
+
+  if ($("#default-allocation").checked) {
+    const amount = getAmountForDefaultAllocation() || 0;
+    if (amount < 2) {
+      alert("Please select an amount of at least $2.");
+      $("#custom-amount-input").focus();
+      return false;
+    }
+  }
+
   $("form").style.opacity = 0.5;
   $("form")
     .querySelectorAll("*")
@@ -88,7 +109,7 @@ function handleFormSubmit() {
       $("form").style.opacity = 1;
       if (data.bank_reference) {
         showBlock("#bank-instructions-section");
-        hide("#gift-section");
+        // hide("#gift-section");
         hide("#payment-method-section");
         hide("#custom-allocation-section");
         hide("#communications-section");
@@ -145,18 +166,7 @@ function buildFormData() {
 }
 
 function addStandardAllocationFormData(formData) {
-  let amount;
-  if ($("#custom-amount-radio").checked) {
-    amount = $("#custom-amount-input").value;
-  } else if ($("#donate-25")) {
-    amount = 25;
-  } else if ($("#donate-50")) {
-    amount = 50;
-  } else if ($("#donate-100")) {
-    amount = 100;
-  } else if ($("#donate-250")) {
-    amount = 250;
-  }
+  const amount = getAmountForDefaultAllocation();
   formData["form-0-id"] = null;
   formData["form-0-amount"] = amount;
   formData["form-0-partner_charity"] = specificCharity || "unallocated";
@@ -165,10 +175,25 @@ function addStandardAllocationFormData(formData) {
   return formData;
 }
 
+function getAmountForDefaultAllocation() {
+  if ($("#custom-amount-radio").checked) {
+    amount = $("#custom-amount-input").value;
+  } else if ($("#donate-25").checked) {
+    amount = 25;
+  } else if ($("#donate-50").checked) {
+    amount = 50;
+  } else if ($("#donate-100").checked) {
+    amount = 100;
+  } else if ($("#donate-250").checked) {
+    amount = 250;
+  }
+  return amount;
+}
+
 function addCustomAllocationFormData(formData) {
   let totalForms = 0;
   partnerCharities.forEach((charity) => {
-    let amount = $(`${charity.slug_id}-amount`).value;
+    let amount = $(`#${charity.slug_id}-amount`).value;
     if (amount > 0) {
       formData[`form-${totalForms}-id`] = null;
       formData[`form-${totalForms}-amount`] = amount;
