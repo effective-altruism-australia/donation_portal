@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 /*
-Ensure that the form submits the correct data when a custom allocation is filled out correctly
+Ensure that the form submits the correct data when a custom allocation is filled
+out correctly
 */
 
 test("Custom allocation: submit with standard data", async ({ page }) => {
