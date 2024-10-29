@@ -39,7 +39,7 @@ function renderSpecificCharityForm() {
     .then((response) => response.json())
     .then((data) => {
       partnerCharities = data;
-      specificCharityDetails = charities.find(
+      specificCharityDetails = partnerCharities.find(
         (charity) => charity.slug_id === specificCharity
       );
       buildSpecificCharitySection(specificCharityDetails);
@@ -168,7 +168,7 @@ function buildFormData() {
 function addStandardAllocationFormData(formData) {
   const amount = getAmountForDefaultAllocation();
   formData["form-0-id"] = null;
-  formData["form-0-amount"] = amount;
+  formData["form-0-amount"] = amount.toString();
   formData["form-0-partner_charity"] = specificCharity || "unallocated";
   formData["form-TOTAL_FORMS"] = 1;
   formData["form-INITIAL_FORMS"] = 1;
