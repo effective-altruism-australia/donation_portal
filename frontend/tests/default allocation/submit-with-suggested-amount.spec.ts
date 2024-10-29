@@ -33,7 +33,7 @@ test("Default allocation: submit with custom, suggested, then custom amount", as
       expect(data["first_name"]).toBe("Nathan");
       expect(data["last_name"]).toBe("Sherburn");
       expect(data["email"]).toBe("testing@eaa.org.au");
-      expect(data["subscribe_to_updates"]).toBe(false);
+      expect(data["subscribe_to_updates"]).toBe(true);
       expect(data["subscribe_to_newsletter"]).toBe(false);
       expect(data["connect_to_community"]).toBe(false);
       expect(data["how_did_you_hear_about_us_db"]).toBe("cant-remember");
