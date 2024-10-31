@@ -11,8 +11,19 @@
   // Note: This is only run after the charity data has been fetched in main.js
   function buildSpecificCharitySection(specificCharityDetails) {
     if (!specificCharityDetails) {
-      $("#specific-charity-logo").innerHTML =
-        "Sorry, we couldn't find the charity you're looking for. Click <a href='/pledge_new/'>here</a> to start again.";
+      showBlock("#error-section");
+
+      // hide("#gift-section");
+      hide("#specific-charity-section");
+      hide("#payment-method-section");
+      hide("#custom-allocation-section");
+      hide("#communications-section");
+      hide("#personal-details-section");
+      hide("#amount-section");
+      hide("#allocation-section");
+      hide("#donation-frequency-section");
+      hide("#thank-you-message");
+      hide("#donate-button-section");
       return;
     }
 

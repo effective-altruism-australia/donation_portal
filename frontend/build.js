@@ -47,6 +47,7 @@ const donationFormHtml = `
         ${fs.readFileSync("./src/donate-button-section.html", "utf8")}
         ${fs.readFileSync("./src/bank-instructions-section.html", "utf8")}
         ${fs.readFileSync("./src/thankyou-section.html", "utf8")}
+        ${fs.readFileSync("./src/error-section.html", "utf8")}
       </form>
     </template>
 
