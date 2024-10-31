@@ -52,29 +52,28 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
     }
   });
 
-  page.on("response", (response) => {
-    if (response.url().includes("pledge_new")) {
-      expect(response.status()).toBe(200);
-      expect(page.getByText("Thank you, Nathan!")).toBeVisible();
-      expect(
-        page.getByText(
-          "Your donation will be granted to our partner charities."
-        )
-      ).toBeVisible();
-      page
-        .locator("#bank-instructions-reference")
-        .textContent()
-        .then((text) => {
-          expect(text).toMatch(/^[0-9A-F]{12}$/);
-        });
-    }
+  let testFinished = new Promise((resolve) => {
+    page.on("response", async (response) => {
+      if (response.url().includes("pledge_new")) {
+        await expect(response.status()).toBe(200);
+        await expect(page.getByText("Thank you, Nathan!")).toBeVisible();
+        await expect(
+          page.getByText(
+            "Your donation will be granted to our partner charities."
+          )
+        ).toBeVisible();
+        await page
+          .locator("#bank-instructions-reference")
+          .textContent()
+          .then((text) => {
+            expect(text).toMatch(/^[0-9A-F]{12}$/);
+          });
+        resolve(true);
+      }
+    });
   });
 
   await page.getByRole("button", { name: "Donate" }).click();
 
-  await page.waitForResponse((response) => {
-    return response.url().includes("pledge_new");
-  });
-
-  await page.waitForTimeout(1000);
+  await testFinished;
 });
