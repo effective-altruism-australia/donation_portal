@@ -29,12 +29,17 @@ test("Default allocation: submit with invalid data", async ({
     await dialog.dismiss();
   });
 
-  page.on("request", (request) => {
-    // The request should never be sent with invalid data
-    if (request.url().includes("pledge_new")) {
-      expect(true).toBe(false);
-    }
+  const testFinished = new Promise<void>((resolve) => {
+    page.on("request", (request) => {
+      // The request should never be sent with invalid data
+      if (request.url().includes("pledge_new")) {
+        expect(true).toBe(false);
+      }
+      resolve();
+    });
   });
 
   await page.getByRole("button", { name: "Donate" }).click();
+  
+  await testFinished;
 });

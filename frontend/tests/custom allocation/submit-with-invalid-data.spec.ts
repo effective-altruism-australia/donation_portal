@@ -25,12 +25,17 @@ test("Custom allocation: submit with invalid data", async ({ page }) => {
 
   await page.locator("#referral-sources").selectOption("cant-remember");
 
-  page.on("request", (request) => {
-    // The request should never be sent with invalid data
-    if (request.url().includes("pledge_new")) {
-      expect(true).toBe(false);
-    }
+  const testFinished = new Promise<void>((resolve) => {
+    page.on("request", (request) => {
+      // The request should never be sent with invalid data
+      if (request.url().includes("pledge_new")) {
+        expect(true).toBe(false);
+      }
+      resolve();
+    });
   });
-  
+
   await page.getByRole("button", { name: "Donate" }).click();
+  
+  await testFinished;
 });
