@@ -2,11 +2,13 @@ import { expect, test } from "@playwright/test";
 
 /*
 Ensure that the form submits the correct data when a "bank transactions" is
-selected.
+selected for a specific charity.
 */
 
-test("Payment method: submit a bank transaction donation", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+test("Payment method: submit a bank transaction donation for a specific charity", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/pledge_new/?charity=give-directly");
 
   await page.locator("#custom-amount-input").fill("2222");
 
@@ -17,8 +19,6 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
   await page.getByLabel("Email", { exact: true }).fill("testing@eaa.org.au");
 
   await page.getByLabel("Postcode").fill("3000");
-
-  await page.locator("#referral-sources").selectOption("cant-remember");
 
   await page.getByText("Bank Transfer", { exact: true }).click();
 
@@ -34,11 +34,11 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
       expect(data["subscribe_to_updates"]).toBe(true);
       expect(data["subscribe_to_newsletter"]).toBe(false);
       expect(data["connect_to_community"]).toBe(false);
-      expect(data["how_did_you_hear_about_us_db"]).toBe("cant-remember");
+      expect(data["how_did_you_hear_about_us_db"]).toBe("");
       expect(data["form-TOTAL_FORMS"]).toBe(1);
       expect(data["form-INITIAL_FORMS"]).toBe(1);
       expect(data["form-0-id"]).toBe(null);
-      expect(data["form-0-partner_charity"]).toBe("unallocated");
+      expect(data["form-0-partner_charity"]).toBe("give-directly");
       expect(data["form-0-amount"]).toBe("2222");
 
       // Make sure things that shouldn't be sent are not sent
@@ -59,9 +59,7 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
         await expect(page.getByText("Thank you, Nathan!")).toBeVisible();
         await expect(page.getByText("$2222")).toBeVisible();
         await expect(
-          page.getByText(
-            "Your donation will be allocated to our partner charities."
-          )
+          page.getByText("Your donation will be allocated to GiveDirectly.")
         ).toBeVisible();
         await page
           .locator("#bank-instructions-reference")
