@@ -59,7 +59,7 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
         await expect(page.getByText("Thank you, Nathan!")).toBeVisible();
         await expect(
           page.getByText(
-            "Your donation will be granted to our partner charities."
+            "Your donation will be allocated to our partner charities."
           )
         ).toBeVisible();
         await page

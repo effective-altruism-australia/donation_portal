@@ -10,6 +10,8 @@ const thankyou = urlParams.get("thankyou") === "";
 const specificCharity = urlParams.get("charity");
 let partnerCharities = [];
 let specificCharityDetails;
+let totalAmount = 0;
+let totalAmountCustom = 0; 
 
 // Initialise Stripe
 let stripe;
@@ -73,16 +75,15 @@ function renderStandardForm() {
 
 function handleFormSubmit() {
   if ($("#custom-allocation").checked) {
-    let total = $("#total").innerText.split("$")[1];
-    if (total < 2) {
+    if (totalAmountCustom < 2) {
       alert("Please allocate at least $2 across your preferred charities.");
       $("#custom-allocation").focus();
       return false;
     }
   }
 
-  if ($("#default-allocation").checked) {
-    const amount = getAmountForDefaultAllocation() || 0;
+  if (specificCharity || $("#default-allocation").checked) {
+    const amount = getAmount() || 0;
     if (amount < 2) {
       alert("Please select an amount of at least $2.");
       $("#custom-amount-input").focus();
@@ -96,6 +97,7 @@ function handleFormSubmit() {
     .forEach((element) => {
       element.disabled = true;
     });
+
   let formData = buildFormData();
   fetch(ORIGIN + "/pledge_new/", {
     method: "POST",
@@ -108,31 +110,7 @@ function handleFormSubmit() {
     .then((data) => {
       $("form").style.opacity = 1;
       if (data.bank_reference) {
-        showBlock("#bank-instructions-section");
-        // hide("#gift-section");
-        hide("#payment-method-section");
-        hide("#custom-allocation-section");
-        hide("#communications-section");
-        hide("#personal-details-section");
-        hide("#amount-section");
-        hide("#allocation-section");
-        hide("#donation-frequency-section");
-        hide("#specific-charity-section");
-        hide("#thank-you-message");
-        hide("#donate-button-section");
-        $("#bank-instructions-name").innerText = formData.first_name;
-        $("#bank-instructions-reference").innerText = data.bank_reference;
-        $("#bank-instructions-amount").innerText = formData["form-0-amount"];
-
-        let nominatedCharity;
-        if (formData["form-1-partner_charity"]) {
-          nominatedCharity = "your chosen partner charities";
-        } else if (specificCharityDetails) {
-          nominatedCharity = specificCharityDetails.name;
-        } else {
-          nominatedCharity = "our partner charities";
-        }
-        $("#bank-instructions-charity").innerText = nominatedCharity;
+        renderBankTransferInstructions(formData, data);
       } else if (data.id) {
         stripe.redirectToCheckout({ sessionId: data.id });
       } else {
@@ -141,6 +119,40 @@ function handleFormSubmit() {
       }
     });
   return false;
+}
+
+function renderBankTransferInstructions(formData, data) {
+  showBlock("#bank-instructions-section");
+  // hide("#gift-section");
+  hide("#payment-method-section");
+  hide("#custom-allocation-section");
+  hide("#communications-section");
+  hide("#personal-details-section");
+  hide("#amount-section");
+  hide("#allocation-section");
+  hide("#donation-frequency-section");
+  hide("#specific-charity-section");
+  hide("#thank-you-message");
+  hide("#donate-button-section");
+  $("#bank-instructions-name").innerText = formData.first_name;
+  $("#bank-instructions-reference").innerText = data.bank_reference;
+  $("#bank-instructions-amount").innerText = totalAmount;
+  $("#bank-instructions-frequency").innerText =
+    formData.recurring === true
+      ? "setting up a monthly periodic payment for"
+      : "making a bank transfer of";
+
+  let nominatedCharity;
+  if (formData["form-1-partner_charity"]) {
+    nominatedCharity = "your chosen partner charities";
+  } else if (specificCharityDetails) {
+    nominatedCharity = specificCharityDetails.name;
+  } else {
+    nominatedCharity = "our partner charities";
+  }
+  $("#bank-instructions-charity").innerText = nominatedCharity;
+
+  $("#bank-instructions-section").scrollIntoView();
 }
 
 function buildFormData() {
@@ -166,7 +178,7 @@ function buildFormData() {
 }
 
 function addStandardAllocationFormData(formData) {
-  const amount = getAmountForDefaultAllocation();
+  const amount = getAmount();
   formData["form-0-id"] = null;
   formData["form-0-amount"] = amount.toString();
   formData["form-0-partner_charity"] = specificCharity || "unallocated";
@@ -175,7 +187,8 @@ function addStandardAllocationFormData(formData) {
   return formData;
 }
 
-function getAmountForDefaultAllocation() {
+function getAmount() {
+  totalAmount = 0;
   if ($("#custom-amount-radio").checked) {
     amount = $("#custom-amount-input").value;
   } else if ($("#donate-25").checked) {
@@ -187,6 +200,7 @@ function getAmountForDefaultAllocation() {
   } else if ($("#donate-250").checked) {
     amount = 250;
   }
+  totalAmount += parseInt(amount);
   return amount;
 }
 
