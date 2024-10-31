@@ -11,7 +11,7 @@ const specificCharity = urlParams.get("charity");
 let partnerCharities = [];
 let specificCharityDetails;
 let totalAmount = 0;
-let totalAmountCustom = 0; 
+let totalAmountCustom = 0;
 
 // Initialise Stripe
 let stripe;
@@ -136,21 +136,24 @@ function renderBankTransferInstructions(formData, data) {
   hide("#donate-button-section");
   $("#bank-instructions-name").innerText = formData.first_name;
   $("#bank-instructions-reference").innerText = data.bank_reference;
-  $("#bank-instructions-amount").innerText = totalAmount;
-  $("#bank-instructions-frequency").innerText =
-    formData.recurring === true
-      ? "setting up a monthly periodic payment for"
-      : "making a bank transfer of";
 
-  let nominatedCharity;
-  if (formData["form-1-partner_charity"]) {
-    nominatedCharity = "your chosen partner charities";
-  } else if (specificCharityDetails) {
-    nominatedCharity = specificCharityDetails.name;
+  if (formData.recurring) {
+    $("#bank-instructions-frequency").innerText =
+      "setting up a monthly periodic payment for";
   } else {
-    nominatedCharity = "our partner charities";
+    $("#bank-instructions-frequency").innerText = "making a bank transfer of";
   }
-  $("#bank-instructions-charity").innerText = nominatedCharity;
+
+  if (formData["form-0-partner_charity"] === "unallocated") {
+    $("#bank-instructions-charity").innerText = "our partner charities";
+    $("#bank-instructions-amount").innerText = totalAmount;
+  } else if (specificCharityDetails) {
+    $("#bank-instructions-charity").innerText = specificCharityDetails.name;
+    $("#bank-instructions-amount").innerText = totalAmount;
+  } else {
+    $("#bank-instructions-charity").innerText = "your chosen partner charities";
+    $("#bank-instructions-amount").innerText = totalAmountCustom;
+  }
 
   $("#bank-instructions-section").scrollIntoView();
 }
