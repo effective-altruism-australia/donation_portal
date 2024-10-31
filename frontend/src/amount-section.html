@@ -73,7 +73,7 @@
         id="custom-amount-input"
         name="custom-amount-input"
         class="inline-block text-md"
-        onblur="this.value = Number(this.value)"
+        onblur="this.value = this.value >= 2 ? Number(this.value).toFixed(0) : ''"
         onfocus="$('#custom-amount-radio').checked = true; $('#custom-amount').classList.add('selected', 'validate');"
         tabindex="-1"
       />
