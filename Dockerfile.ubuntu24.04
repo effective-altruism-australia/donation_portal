@@ -60,7 +60,9 @@ RUN pyenv global 2.7.18
 USER postgres
 RUN service postgresql start && \
   psql -c "ALTER USER postgres PASSWORD 'password';" && \
-  psql -c "CREATE DATABASE eaa;"
+  psql -c "CREATE ROLE eaa WITH LOGIN PASSWORD 'password';" && \
+  psql -c "CREATE DATABASE donations;" && \
+  psql -c "GRANT ALL PRIVILEGES ON DATABASE donations TO eaa;"
 USER devuser
 
 # Upgrade pip to the last version that supports Python 2.7 and install the last
