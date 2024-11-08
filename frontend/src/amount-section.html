@@ -1,68 +1,63 @@
 <style>
-  #custom-amount {
+  #custom-amount-input {
     display: flex;
-    padding: 8px;
-    border: 1px solid var(--eaa-blue-600);
-    box-sizing: border-box;
-    width: 100%;
-    align-items: center;
-  }
-  #custom-amount.selected {
-    background-color: var(--eaa-blue-600);
-    color: white;
-  }
-  #custom-amount input[type="radio"] {
-    /* We don't "display: none;" this so that we can keep keyboard accessibility */
-    opacity: 0;
-    width: 0;
-    height: 0;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-  }
-  #custom-amount-input:focus {
-    outline: none;
-  }
-  #custom-amount input[type="radio"] + label {
-    padding: 0.5rem;
     flex-grow: 1;
-  }
-  #custom-amount input:not([disabled])[type="radio"] + label {
-    cursor: pointer;
-  }
-  #custom-amount:focus-within {
-    outline: 2px solid var(--eaa-blue-600);
-    outline-offset: 1px;
-  }
-  #custom-amount input[type="number"] {
     border: none;
-    width: 100%;
+    background-color: transparent;
+    outline: none;
+    padding: 0.5rem 0.5rem 0.5rem 0.25rem;
   }
   #input-wrapper {
     display: flex;
     flex-grow: 1;
     align-items: center;
-    padding: 0.5rem;
+    padding-left: 0.5rem;
     width: 100%;
-    border: 1px solid var(--eaa-blue-600);
     background-color: white;
-    color: black;
   }
 </style>
 
 <section id="amount-section" style="display: none">
   <h2 class="text-lg mt-8">I would like to gift</h2>
-  <div id="custom-amount" class="selected validate rounded text-blue mb-2">
+  <div class="radio-group flex gap-2">
     <input
       type="radio"
-      id="custom-amount-radio"
+      id="donate-25"
       name="donation-amount"
-      value="custom"
-      onchange="this.checked ? $('#custom-amount-input').focus() : null;"
-      checked
+      value="25"
+      onchange="$('#custom-amount').classList.remove('validate'); $('#custom-amount-input').value = '';"
     />
-    <label class="inline-block" for="custom-amount-radio"> Amount </label>
-    <span id="input-wrapper">
+    <label for="donate-25" class="rounded text-blue">$25</label>
+    <input
+      type="radio"
+      id="donate-50"
+      name="donation-amount"
+      value="50"
+      onchange="$('#custom-amount').classList.remove('validate'); $('#custom-amount-input').value = '';"
+    />
+    <label for="donate-50" class="rounded text-blue">$50</label>
+    <input
+      type="radio"
+      id="donate-100"
+      name="donation-amount"
+      value="100"
+      onchange="$('#custom-amount').classList.remove('validate'); $('#custom-amount-input').value = '';"
+    />
+    <label for="donate-100" class="rounded text-blue">$100</label>
+    <input
+      type="radio"
+      id="donate-250"
+      name="donation-amount"
+      value="250"
+      onchange="$('#custom-amount').classList.remove('validate'); $('#custom-amount-input').value = '';"
+    />
+    <label for="donate-250" class="rounded text-blue">$250</label>
+  </div>
+  <div id="custom-amount" class="flex flex-col validate mb-2">
+    <label class="inline-block mb-2 mt-4" for="custom-amount-input"
+      >Or a custom amount:</label
+    >
+    <span id="input-wrapper" class="border rounded">
       $
       <input
         type="number"
@@ -73,44 +68,11 @@
         id="custom-amount-input"
         name="custom-amount-input"
         class="inline-block text-md"
-        onblur="this.value = this.value >= 2 ? Number(this.value).toFixed(0) : ''"
-        onfocus="$('#custom-amount-radio').checked = true; $('#custom-amount').classList.add('selected', 'validate');"
+        onblur="this.value === '' ? $('#custom-amount').classList.remove('validate') : '';"
+        onfocus="$('#custom-amount').classList.add('validate'); $('#input-wrapper').classList.add('selected'); $('#donate-25').checked = false; $('#donate-50').checked = false; $('#donate-100').checked = false; $('#donate-250').checked = false;"
         tabindex="-1"
+        placeholder="Enter your custom amount here"
       />
     </span>
-  </div>
-  <div class="radio-group flex gap-2 mb-2">
-    <input
-      type="radio"
-      id="donate-25"
-      name="donation-amount"
-      value="25"
-      onchange="$('#custom-amount').classList.remove('selected','validate');"
-    />
-    <label for="donate-25" class="rounded text-blue">$25</label>
-    <input
-      type="radio"
-      id="donate-50"
-      name="donation-amount"
-      value="50"
-      onchange="$('#custom-amount').classList.remove('selected','validate');"
-    />
-    <label for="donate-50" class="rounded text-blue">$50</label>
-    <input
-      type="radio"
-      id="donate-100"
-      name="donation-amount"
-      value="100"
-      onchange="$('#custom-amount').classList.remove('selected','validate');"
-    />
-    <label for="donate-100" class="rounded text-blue">$100</label>
-    <input
-      type="radio"
-      id="donate-250"
-      name="donation-amount"
-      value="250"
-      onchange="$('#custom-amount').classList.remove('selected','validate');"
-    />
-    <label for="donate-250" class="rounded text-blue">$250</label>
   </div>
 </section>

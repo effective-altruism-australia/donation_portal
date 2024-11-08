@@ -191,8 +191,8 @@ function addStandardAllocationFormData(formData) {
 }
 
 function getAmount() {
-  totalAmount = 0;
-  if ($("#custom-amount-radio").checked) {
+  let amount = 0;
+  if ($("#custom-amount-input").value !== "") {
     amount = $("#custom-amount-input").value;
   } else if ($("#donate-25").checked) {
     amount = 25;
@@ -203,7 +203,7 @@ function getAmount() {
   } else if ($("#donate-250").checked) {
     amount = 250;
   }
-  totalAmount += parseInt(amount);
+  totalAmount = parseInt(amount);
   return amount;
 }
 

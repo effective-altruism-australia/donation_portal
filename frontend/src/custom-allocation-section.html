@@ -1,4 +1,4 @@
-<section id="custom-allocation-section" style="display: none" class="validate">
+<section id="custom-allocation-section" style="display: none">
   Fetching charity details...
 </section>
 
@@ -37,7 +37,8 @@
             id="${charity.slug_id}-amount"
             name="${charity.slug_id}-amount"
             class="specific-charity inline-block text-md"
-            onblur="this.value = Number(this.value)"
+            onblur="this.value === '' ? this.classList.remove('validate') : '';"
+            onfocus="this.classList.add('validate')"
             oninput="updateTotal()"
             style="border: none; outline: none; width: 100%;"
           />
