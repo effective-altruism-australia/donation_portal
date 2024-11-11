@@ -1,0 +1,106 @@
+/* Prevent resizing of textarea use normal font*/
+textarea {
+  resize: none;
+  font-family: inherit;
+}
+
+/* Remove arrow spinners on number inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Custom Radio Button Groups */
+.radio-group input[type="radio"] {
+  /* We don't completely remove this so that we can keep keyboard accessibility */
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+}
+.radio-group input[type="radio"] + label {
+  flex-grow: 1;
+  flex-basis: 0;
+  padding: 0.5rem;
+  border: 1px solid var(--eaa-blue-600);
+  text-align: center;
+}
+.radio-group input:not([disabled])[type="radio"] + label {
+  cursor: pointer;
+}
+.radio-group input:not([disabled])[type="radio"]:focus + label {
+  outline: 2px solid var(--eaa-blue-600);
+  outline-offset: 1px;
+}
+.radio-group input[type="radio"]:checked + label {
+  background-color: var(--eaa-blue-600);
+  color: white;
+}
+
+/* Custom Select Dropdowns */
+.eaa-select {
+  width: 100%;
+  border: 1px solid var(--eaa-blue-600);
+}
+.eaa-select:hover {
+  cursor: pointer;
+}
+
+/* Custom Checkboxes */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: var(--gray-100);
+}
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.eaa-checkbox {
+  position: relative;
+  padding-left: 35px;
+  user-select: none;
+  min-height: 25px;
+}
+.eaa-checkbox input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+.eaa-checkbox:hover input ~ .checkmark {
+  cursor: pointer;
+}
+.eaa-checkbox:hover input:not(:checked) ~ .checkmark {
+  background-color: var(--gray-200);
+}
+.eaa-checkbox input:checked ~ .checkmark {
+  background-color: var(--eaa-blue-600);
+}
+.eaa-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+.eaa-checkbox .checkmark:after {
+  left: 8px;
+  top: 2px;
+  width: 6px;
+  height: 14px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+.eaa-checkbox:focus-within .checkmark {
+  outline: 2px solid var(--eaa-blue-600);
+  outline-offset: 2px;
+  border-radius: 1px;
+}

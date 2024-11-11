@@ -1,0 +1,79 @@
+<section id="gift-section" style="display: none">
+  <div class="flex flex-col items-start validate">
+    <h2 class="text-lg mt-8">
+      Are you making this donation as a gift to someone?
+    </h2>
+    <label class="eaa-checkbox mb-4" for="gift">
+      <input
+        type="checkbox"
+        id="gift"
+        name="is_gift"
+        onclick="this.checked ? showGiftSection() : hideGiftSection();"
+      />
+      Yes, this is a gift.
+      <div class="checkmark rounded"></div>
+    </label>
+
+    <fieldset
+      id="gift-details-section"
+      class="flex flex-col gap-2 self-stretch mb-4"
+      disabled
+      style="display: none;"
+    >
+      <div>
+        <label for="recipient-name"> Recipient Name </label>
+        <input
+          type="text"
+          id="recipient-name"
+          name="gift_recipient_name"
+          class="block w-full p-2 text-md border rounded focus-outline"
+        />
+      </div>
+
+      <div>
+        <label for="recipient-email"> Recipient Email </label>
+        <input
+          type="email"
+          id="recipient-email"
+          name="gift_recipient_email"
+          class="block w-full p-2 text-md border rounded focus-outline"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="gift-message">
+          Include a personal message to be sent to the recipient (optional)
+        </label>
+        <textarea
+          id="gift-message"
+          name="gift_personal_message"
+          class="block w-full h-20 p-2 text-md block p-2 border rounded focus-outline"
+        ></textarea>
+      </div>
+    </fieldset>
+  </div>
+</section>
+
+<script>
+  // Set initial state
+  if ($("#gift").checked) {
+    showGiftSection()
+  } else {
+    hideGiftSection()
+  }
+
+  function showGiftSection() {
+    showFlex("#gift-details-section");
+    $("#gift-details-section").disabled = false;
+    $("#recipient-name").setAttribute("required", "true");
+    $("#recipient-email").setAttribute("required", "true");
+  }
+
+  function hideGiftSection() {
+    hide("#gift-details-section");
+    $("#gift-details-section").disabled = true;
+    $("#recipient-name").setAttribute("required", "false");
+    $("#recipient-email").setAttribute("required", "false");
+  }
+</script>

@@ -39,7 +39,9 @@ RUN sudo apt-get update && sudo apt-get install -y \
 USER postgres
 RUN service postgresql start && \
   psql -c "ALTER USER postgres PASSWORD 'password';" && \
-  psql -c "CREATE DATABASE eaa;"
+  psql -c "CREATE ROLE eaa WITH LOGIN PASSWORD 'password';" && \
+  psql -c "CREATE DATABASE donations;" && \
+  psql -c "GRANT ALL PRIVILEGES ON DATABASE donations TO eaa;"
 USER devuser
 
 # Upgrade pip to the last version that supports Python 2.7 and install the last
@@ -64,6 +66,9 @@ RUN mkdir $NVM_DIR && \
 #   . donation_portal_env/bin/activate && \
 #   pip install -r deps/pip.base && \
 #   pip install -r deps/pip
+
+# Fix "missing locales" errors in this Ubuntu image
+RUN sudo locale-gen "en_US.UTF-8"
 
 # Document that the service listens on port 8000. Note, this doesn't actually
 # open the port - you'll need to run `docker run -p 8000:8000 <image name>`.

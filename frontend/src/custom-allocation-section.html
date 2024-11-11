@@ -1,0 +1,61 @@
+<section id="custom-allocation-section" style="display: none">
+  Fetching charity details...
+</section>
+
+<script>
+  // Note: This is only run after the charity data has been fetched in main.js
+  function buildCustomAllocationSection(partnerCharities) {
+    let customAllocationSectionHTML = "";
+
+    let catagories = {
+      "Our recommended charities": [],
+      "Other charities we support": [],
+      "Help us do more good": [],
+    };
+    partnerCharities.forEach((charity) => {
+      catagories[charity.category].push(charity);
+    });
+
+    Object.keys(catagories).forEach((catagory) => {
+      customAllocationSectionHTML += `<h3>${catagory} ${
+        catagory !== "Help us do more good"
+          ? "<sup><a href='https://effectivealtruism.org.au/inclusion-criteria/' style='text-decoration: none;'>ⓘ</a></sup>"
+          : ""
+      }</h3>`;
+      catagories[catagory].forEach((charity) => {
+        customAllocationSectionHTML += `
+      <div class="flex" style="justify-content: end; align-items: center; text-align: right; padding-bottom: 0.5rem;">
+        <label for="${charity.slug_id}">${charity.name}</label>
+        <span class="flex items-center rounded p-2 text-md border focus-outline" style="margin: 0 0 0 1rem; max-width: 7rem; width: 100%;">
+          $
+          <input
+            type="number"
+            inputmode="numeric"
+            min="0"
+            max="999999.99"
+            step="1"
+            id="${charity.slug_id}-amount"
+            name="${charity.slug_id}-amount"
+            class="specific-charity inline-block text-md"
+            onblur="this.value === '' ? this.classList.remove('validate') : '';"
+            onfocus="this.classList.add('validate')"
+            oninput="updateTotal()"
+            style="border: none; outline: none; width: 100%;"
+          />
+        </span>
+      </div>`;
+      });
+    });
+    customAllocationSectionHTML +=
+      "<div id='total' class='text-lg' style='text-align: right;'>Total: $0</div>";
+    $("#custom-allocation-section").innerHTML = customAllocationSectionHTML;
+  }
+
+  function updateTotal() {
+    totalAmountCustom = 0;
+    $$(".specific-charity").forEach((input) => {
+      totalAmountCustom += Number(input.value);
+    });
+    $("#total").innerText = `Total: $${totalAmountCustom}`;
+  }
+</script>

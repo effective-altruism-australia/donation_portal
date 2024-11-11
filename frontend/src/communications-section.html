@@ -1,0 +1,60 @@
+<section id="communications-section" style="display: none">
+  <div class="flex flex-col">
+    <h2 class="inline-block text-lg mt-8">How did you hear about us?</h2>
+    <select
+      placeholder="Select an option"
+      name="how_did_you_hear_about_us_db"
+      id="referral-sources"
+      class="eaa-select text-md flex flex-grow mb-4 rounded border h-12 border-none p-2 focus-outline"
+    ></select>
+  </div>
+
+  <div class="flex flex-col items-start">
+    <label class="eaa-checkbox mb-4">
+      <input
+        type="checkbox"
+        id="subscribe-to-updates"
+        name="subscribe_to_updates"
+        checked
+      />
+      Send me news and updates
+      <div class="checkmark rounded"></div>
+    </label>
+
+    <label class="eaa-checkbox mb-4">
+      <input
+        type="checkbox"
+        id="subscribe-to-newsletter"
+        name="subscribe_to_newsletter"
+      />
+      Subscribe me to the global Effective Altruism newsletter
+      <div class="checkmark rounded"></div>
+    </label>
+
+    <label class="eaa-checkbox">
+      <input
+        type="checkbox"
+        id="connect-to-community"
+        name="connect_to_community"
+      />
+      Connect me with my local Effective Altruism community
+      <div class="checkmark rounded"></div>
+    </label>
+  </div>
+</section>
+
+<script>
+  fetch(ORIGIN + "/referral_sources")
+    .then((response) => response.json())
+    .then((data) => buildReferralSourcesList(data));
+
+  function buildReferralSourcesList(referralSources) {
+    let referralSourcesListHTML = "<option value='' disabled selected>Please select one...</option>";
+
+    referralSources.forEach((referralSource) => {
+      referralSourcesListHTML += `<option value="${referralSource.value}">${referralSource.label}</option>`;
+    });
+
+    $("#referral-sources").innerHTML = referralSourcesListHTML;
+  }
+</script>
