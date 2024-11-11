@@ -70,10 +70,8 @@ deploy/pillar/eaa.sls*
 
 donation_portal_env
 
-# Node
-node_modules/
-
 # Frontend
+frontend/node_modules/
 frontend/test-results/
 frontend/playwright-report/
 frontend/blob-report/
