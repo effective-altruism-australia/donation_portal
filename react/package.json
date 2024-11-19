@@ -16,7 +16,7 @@
     "react-ga": "2.5.7",
     "react-radio-group": "3.0.2",
     "react-redux": "5.0.7",
-    "react-scripts": "1.1.1",
+    "react-scripts": "5.0.1",
     "react-select": "1.2.1",
     "reactstrap": "5.0.0",
     "redux": "4.0.0",
@@ -48,7 +48,7 @@
     "webpack": "1.15.0",
     "webpack-bundle-tracker": "0.2.1",
     "webpack-cleanup-plugin": "0.4.2",
-    "webpack-dev-server": "1.16.2",
+    "webpack-dev-server": "5.0.4",
     "webpack-manifest-plugin": "1.1.0"
   }
 }
