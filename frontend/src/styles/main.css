@@ -7,6 +7,11 @@
   --gray-200: #d1d1d1;
 }
 
+/* Fix bug where cleantalk honeypot field shows up */
+.apbct_special_field {
+  display: none;
+}
+
 /* Animations */
 * {
   transition-property: color, background-color, border-color,
