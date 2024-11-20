@@ -44,10 +44,12 @@ const donationFormHtml = `
         ${fs.readFileSync("./src/communications-section.html", "utf8")}
         ${fs.readFileSync("./src/payment-method-section.html", "utf8")}
         ${fs.readFileSync("./src/gift-section.html", "utf8")}
+        ${fs.readFileSync("./src/festive-gift-section.html", "utf8")}
         ${fs.readFileSync("./src/donate-button-section.html", "utf8")}
         ${fs.readFileSync("./src/bank-instructions-section.html", "utf8")}
         ${fs.readFileSync("./src/thankyou-section.html", "utf8")}
         ${fs.readFileSync("./src/error-section.html", "utf8")}
+        ${fs.readFileSync("./src/loader.html", "utf8")}
       </form>
     </template>
 
