@@ -38,6 +38,7 @@
     }
   }
 </style>
+
 <section id="festive-gift-section" style="display: none">
   <div class="flex flex-col items-start validate">
     <h2 class="text-lg mt-8">
@@ -60,11 +61,14 @@
           Please fill out these details and we’ll email you a personalised card
           to pass on.
         </p>
-        <label for="recipient-name"> Recipient's Name (optional) </label>
+        <label for="recipient-name">
+          Recipient's Name, max. 14 characters
+        </label>
         <div class="info-icon" tabindex="0">
           ℹ️
           <div class="info-tooltip">
-            This will add the recipient’s name to the card’s opening.
+            This will add the recipient’s name to the card’s opening (tip: so if
+            it’s for your mum, enter ‘mum’)
           </div>
         </div>
         <input
@@ -72,17 +76,19 @@
           id="festive-gift-recipient-name"
           name="festive-gift-recipient-name"
           class="block w-full p-2 text-md border mt-1 mb-2 rounded focus-outline"
+          maxlength="14"
+          required
         />
       </div>
 
       <div>
-        <label for="recipient-email"> Recipient Email </label>
+        <label for="recipient-email"> Recipient's Email </label>
         <div class="info-icon" tabindex="0">
           ℹ️
           <div class="info-tooltip">
-            Why? On December 30, we’ll send them a <em>one-time</em> email
-            confirming your donation and sharing info on EAA and a match offer.
-            If you’d prefer, you may include your email address.
+            We’ll send them a <em>one-time</em> email around the 30th of
+            December confirming your donation and sharing info on EAA and a
+            match offer. If you’d prefer, you may enter your email address.
           </div>
         </div>
         <input
@@ -110,7 +116,9 @@
           id="festive-gift-message"
           name="festive-gift-personal-message"
           class="block w-full h-20 p-2 text-md block p-2 border mt-1 mb-2 rounded focus-outline"
+          maxlength="120"
         ></textarea>
+        <!-- TODO: Add character count if time permits -->
       </div>
       <div class="note-box { font-size: 12px; color: #666; margin-top: 8px;">
         <strong>Note:</strong> the card will be sent to <em>your</em> email
@@ -151,12 +159,14 @@
       this.detailsSection.style.display = "block";
       this.detailsSection.disabled = false;
       this.recipientEmail.setAttribute("required", "true");
+      this.recipientName.setAttribute("required", "true");
     }
 
     hideFestiveGiftSection() {
       this.detailsSection.style.display = "none";
       this.detailsSection.disabled = true;
       this.recipientEmail.setAttribute("required", "false");
+      this.recipientName.setAttribute("required", "false");
     }
   }
 
