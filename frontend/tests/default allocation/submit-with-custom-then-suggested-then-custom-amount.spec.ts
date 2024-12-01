@@ -12,7 +12,7 @@ test("Default allocation: submit with custom, suggested, then custom amount", as
 
   await page.getByText("The most effective charities^").click();
 
-  await page.locator('#custom-amount-input').fill('1000');
+  await page.locator('#amount-section--custom-amount-input').fill('1000');
 
   await page.getByText('$50').click();
 
