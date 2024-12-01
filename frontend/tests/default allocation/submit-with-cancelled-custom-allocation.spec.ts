@@ -16,7 +16,7 @@ test("Default allocation: cancel custom allocation and submit default allocation
   
   await page.getByText('The most effective charities^').click();
   
-  await page.locator('#custom-amount-input').fill('1000');
+  await page.locator('#amount-section--custom-amount-input').fill('1000');
 
   await page.getByLabel('First name').fill('Nathan');
 
