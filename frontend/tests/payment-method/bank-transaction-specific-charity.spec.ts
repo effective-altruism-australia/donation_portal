@@ -2,10 +2,10 @@ import { expect, test } from "@playwright/test";
 
 /*
 Ensure that the form submits the correct data when a "bank transactions" is
-selected for a specific charity.
+selected for a direct-linked charity.
 */
 
-test("Payment method: submit a bank transaction donation for a specific charity", async ({
+test("Payment method: submit a bank transaction donation for a direct-linked charity", async ({
   page,
 }) => {
   await page.goto("http://localhost:8000/pledge_new/?charity=give-directly");

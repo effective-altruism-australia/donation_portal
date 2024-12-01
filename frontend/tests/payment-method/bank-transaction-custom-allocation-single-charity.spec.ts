@@ -5,7 +5,7 @@ Ensure that the form submits the correct data when a "bank transactions" is
 selected for a specific charity.
 */
 
-test("Payment method: submit a bank transaction donation for a custom selection of one single charity", async ({
+test("Payment method: submit a bank transaction donation for a specific charity", async ({
   page,
 }) => {
   await page.goto("http://localhost:8000/pledge_new/");

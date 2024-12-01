@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 /*
-Ensure that the form submits the correct data when a specific charity is chosen
+Ensure that the form submits the correct data when a direct-linked charity is chosen
 through the url params. e.g. <base url>/pledge_new/?charity=give-directly
 */
 
-test("Specific allocation: submit a credit card donation", async ({ page }) => {
+test("Direct-linked allocation: submit a credit card donation", async ({ page }) => {
   await page.goto("http://localhost:8000/pledge_new/?charity=give-directly");
 
   await page.locator("#custom-amount-input").fill("28");

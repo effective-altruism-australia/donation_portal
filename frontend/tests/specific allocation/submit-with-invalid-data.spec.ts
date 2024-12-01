@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 /*
-Ensure that the form does not submit with invalid data when a specific charity
+Ensure that the error page shoes when an invalid direct-linked charity
 is chosen through the url params. e.g. <baseurl>/pledge_new/?charity=charity-that-doesnt-exist
 */
 
-test("Specific allocation: unknown charity", async ({ page }) => {
+test("Direct-linked allocation: unknown charity", async ({ page }) => {
   let testFinished = new Promise((resolve) => {
     page.on("request", async (request) => {
       if (request.url().includes("pledge_new")) {
