@@ -20,13 +20,14 @@
 
 <script>
   class DirectLinkCharitySection {
-    constructor() {
+    constructor(directLinkCharityDetails) {
       $("#direct-link-charity-section").style.display = "block";
+      this.#buildDirectLinkCharitySection(directLinkCharityDetails);
     }
 
     #buildDirectLinkCharitySection(directLinkCharityDetails) {
       if (!directLinkCharityDetails) {
-        showBlock("#error-section");
+        new ErrorSection();
         hide("#donation-frequency-section");
         hide("#allocation-section");
         hide("#specific-allocation-section");

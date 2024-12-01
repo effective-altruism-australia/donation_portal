@@ -1,58 +1,66 @@
-<section id="personal-details-section" style="display: none">
+<section
+  id="personal-details-section"
+  style="display: none"
+>
   <h2 class="text-lg mt-8">Personal Details</h2>
   <div class="flex flex-col gap-24 validate">
     <div>
-      <label for="first-name"> First name </label>
+      <label for="personal-details-section--first-name"> First name </label>
       <input
         type="text"
-        id="first-name"
+        id="personal-details-section--first-name"
         name="first_name"
         class="block w-full p-2 text-md border rounded focus-outline mb-2 mt-1"
+        onchange="PersonalDetailsSection.handleFirstNameChange()"
         required
       />
     </div>
 
     <div>
-      <label for="last-name"> Last name </label>
+      <label for="personal-details-section--last-name"> Last name </label>
       <input
         type="text"
-        id="last-name"
+        id="personal-details-section--last-name"
         name="last_name"
         class="block w-full p-2 text-md border rounded focus-outline mb-2 mt-1"
+        onchange="PersonalDetailsSection.handleLastNameChange()"
         required
       />
     </div>
 
     <div>
-      <label for="email"> Email </label>
+      <label for="personal-details-section--email"> Email </label>
       <input
-        id="email"
+        id="personal-details-section--email"
         name="email"
         type="email"
         class="block w-full p-2 text-md border rounded focus-outline mb-2 mt-1"
+        onchange="PersonalDetailsSection.handleEmailChange()"
         required
       />
     </div>
 
     <div>
-      <label for="postcode"> Postcode </label>
+      <label for="personal-details-section--postcode"> Postcode </label>
       <input
-        id="postcode"
+        id="personal-details-section--postcode"
         name="postcode"
         type="text"
         inputmode="numeric"
         pattern="\d*"
         class="block w-full p-2 text-md border rounded focus-outline mb-2 mt-1"
+        onchange="PersonalDetailsSection.handlePostcodeChange()"
         required
       />
     </div>
 
     <div class="flex flex-col">
-      <label for="country"> Country </label>
+      <label for="personal-details-section--country"> Country </label>
       <select
         name="country"
-        id="country"
+        id="personal-details-section--country"
         class="eaa-select text-md flex flex-grow rounded border h-12 border-none p-2 focus-outline mt-1"
+        onchange="PersonalDetailsSection.handleCountryChange()"
         required
       ></select>
     </div>
@@ -319,6 +327,32 @@
       this.#buildCountriesList();
     }
 
+    static handleFirstNameChange() {
+      formController.setDonorFirstName(
+        $("#personal-details-section--first-name").value
+      );
+    }
+
+    static handleLastNameChange() {
+      formController.setDonorLastName(
+        $("#personal-details-section--last-name").value
+      );
+    }
+
+    static handleEmailChange() {
+      formController.setDonorEmail($("#personal-details-section--email").value);
+    }
+
+    static handlePostcodeChange() {
+      formController.setDonorPostcode(
+        $("#personal-details-section--postcode").value
+      );
+    }
+
+    static handleCountryChange() {
+      formController.setDonorCountry($("#personal-details-section--country").value);
+    }
+
     // Build the country list for the select dropdown
     #buildCountriesList() {
       let countriesListHTML = "";
@@ -329,7 +363,7 @@
         }>${country}</option>`;
       });
 
-      $("#country").innerHTML = countriesListHTML;
+      $("#personal-details-section--country").innerHTML = countriesListHTML;
     }
   }
 </script>

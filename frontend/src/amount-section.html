@@ -111,14 +111,14 @@
 
     static handleSuggestedAmountChange(e) {
       const selectedAmount = e.target.value;
-      formController.setDonationAmount(selectedAmount);
+      formController.setBasicDonationAmount(selectedAmount);
       $("#amount-section--custom-amount").classList.remove("validate");
       $("#amount-section--custom-amount-input").value = "";
     }
 
     static handleCustomAmountChange() {
       const customAmount = $("#amount-section--custom-amount-input").value;
-      formController.setDonationAmount(customAmount);
+      formController.setBasicDonationAmount(customAmount);
       $("#amount-section--donate-25").checked = false;
       $("#amount-section--donate-50").checked = false;
       $("#amount-section--donate-100").checked = false;

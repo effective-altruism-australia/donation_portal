@@ -21,11 +21,10 @@
       <td><h2 class="text-md">Designation</h2></td>
       <td><h2 class="text-md">Amount</h2></td>
     </tr>
-<tr>
+    <tr>
       <td><em>No donation selected</em></td>
       <td>--</td>
     </tr>
-
     <tr>
       <td>Total donation</td>
       <td>0.00</td>
@@ -39,47 +38,84 @@
       $("#total-amount-section").style.display = "block";
     }
 
-    updateTotalDonation() {
-      if ($("#default-allocation").checked) {
-        this.updateTotalDonationDefault();
+    static render(context) {
+      if (context.allocationType === "specific") {
+        TotalAmountSection.#buildSpecificAllocationTable(context);
       } else {
-        this.updateTotalDonationCustom();
+        TotalAmountSection.#buildBasicAllocationTable(context);
       }
     }
 
-    updateTotalDonationDefault() {
-      const donationAmount = Number(
-        $("input[name='donation-amount']:checked").value
-      );
-      const amplifyImpactAmount = Number(
-        $("input[name='amplify-impact-amount']:checked").value
-      );
-      const totalDonation =
-        donationAmount + donationAmount * amplifyImpactAmount;
-      $(
-        "#total-amount-section table tr:last-child td:last-child"
-      ).innerText = `$${totalDonation}`;
+    static #buildBasicAllocationTable(context) {
+      const isMonthly = formController.getDonationFrequency() === "monthly";
+      const amplifyPercentage =
+        context.tipType === "percentage" ? "(" + context.tipSize + "%)" : "";
+      const combinedTotal =
+        context.basicDonationAmount + context.tipDollarAmount;
+      let table = `
+      <tr>
+        <td><h2 class="text-md">Designation</h2></td>
+        <td><h2 class="text-md">Amount</h2></td>
+      </tr>
+      <tr>
+        <td>The most effective charities</td>
+        <td>${context.basicDonationAmount.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td>Effective Altruism Australia ${amplifyPercentage}</td>
+        <td>${context.tipDollarAmount.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td>Total donation ${isMonthly ? " (each month)" : ""}</td>
+        <td>$${combinedTotal.toFixed(2)}</td>
+      </tr>`;
+      $("#total-amount-section table").innerHTML = table;
     }
 
-    static render(tipDollarAmount, donationAmount, combinedAmount) {
-      $("#total-amount-section--table").innerHTML = `
+    static #buildSpecificAllocationTable(context) {
+      const isMonthly = formController.getDonationFrequency() === "monthly";
+
+      const amplifyPercentage =
+        context.tipType === "percentage" ? "(" + context.tipSize + "%)" : "";
+
+      // Create a lookup table for charity names
+      const charityNameLookup = {};
+      const partnerCharities = formController.getPartnerCharities();
+      partnerCharities.forEach((charity) => {
+        charityNameLookup[charity.slug_id] = charity.name;
+      });
+
+      // Calculate the total donation amount
+      let combinedTotal = 0;
+      for (const charity in context.specificAllocations) {
+        combinedTotal += +context.specificAllocations[charity];
+      }
+      combinedTotal = combinedTotal + context.tipDollarAmount;
+      
+      let table = `
+      <tr>
+        <td><h2 class="text-md">Designation</h2></td>
+        <td><h2 class="text-md">Amount</h2></td>
+      </tr>`;
+      Object.keys(context.specificAllocations).forEach((charitySlug) => {
+        const charityAmount = +context.specificAllocations[charitySlug] || 0;
+        if (charityAmount === 0) return;
+        table += `
         <tr>
-          <td><h2 class="text-md">Designation</h2></td>
-          <td><h2 class="text-md">Amount</h2></td>
-        </tr>
-        <tr>
-          <td>Most Effective Charities</td>
-          <td>$${donationAmount}</td>
-        </tr>
-        <tr>
-          <td>Effective Altruism Australia</td>
-          <td>$${tipDollarAmount}</td>
-        </tr>
-        <tr>
-          <td>Total donation</td>
-          <td>$${combinedAmount}</td>
-        </tr>
-      `;
+          <td>${charityNameLookup[charitySlug]}</td>
+          <td>${charityAmount.toFixed(2)}</td>
+        </tr>`;
+      });
+      table += `
+      <tr>
+        <td>Effective Altruism Australia ${amplifyPercentage}</td>
+        <td>${context.tipDollarAmount.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td>Total donation ${isMonthly ? " (each month)" : ""}</td>
+        <td>$${combinedTotal.toFixed(2)}</td>
+      </tr>`;
+      $("#total-amount-section table").innerHTML = table;
     }
   }
 </script>

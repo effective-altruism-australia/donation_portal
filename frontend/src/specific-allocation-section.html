@@ -37,7 +37,18 @@
       $("#specific-allocation-section").style.display = "none";
     }
 
-    // Note: This is only run after the charity data has been fetched in main.js
+    static getSpecificAllocations() {
+      const specificAllocation = {};
+      $$(".specific-charity").forEach((input) => {
+        const amount = parseFloat(input.value);
+        if (amount > 0) {
+          const charitySlug = input.id.split("-amount")[0];
+          specificAllocation[charitySlug] = amount;
+        }
+      });
+      return specificAllocation;
+    }
+
     #buildSpecificAllocationSection(partnerCharities) {
       let specificAllocationSectionHTML = "";
 
@@ -73,7 +84,7 @@
             class="specific-charity inline-block text-md"
             onblur="this.value === '' ? this.classList.remove('validate') : '';"
             onfocus="this.classList.add('validate')"
-            oninput="formController.updateTotal()"
+            oninput="formController.setCharityAllocation('${charity.slug_id}', this.value)"
             style="border: none; outline: none; width: 100%;"
           />
         </span>

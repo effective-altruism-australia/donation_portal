@@ -5,7 +5,7 @@ const template = document.getElementById("donation-form");
 shadow.appendChild(template.content);
 
 class FormController {
-  #allocationType = "default";
+  #allocationType = "default"; // default, specific, direct-link
   #directLinkCharity;
   #directLinkCharityDetails;
   #donationFrequency = "one-time";
@@ -14,20 +14,20 @@ class FormController {
   #donorFirstName;
   #donorLastName;
   #donorPostcode;
-  #howDidYouHearAboutUs;
   #isFestiveGift = false;
   #partnerCharities = [];
-  #paymentMethod;
+  #paymentMethod = "credit-card";
   #showThankYouMessage;
-  #subscribeToCommunity;
-  #subscribeToNewsletter;
-  #subscribeToUpdates;
+  #subscribeToCommunity = false;
+  #subscribeToNewsletter = false;
+  #subscribeToUpdates = true;
   #tipSize = 10;
   #tipType = "percentage";
-  #tipDollarAmount;
-  #donationAmount = 0;
-  #combinedAmount;
+  #tipDollarAmount = 0;
   #stripe;
+  #howDidYouHearAboutUs;
+  #basicDonationAmount = 0;
+  #specificAllocations = {};
 
   constructor() {
     // Get url parameters
@@ -58,31 +58,33 @@ class FormController {
     $("form").innerText = "EAAE Not yet implemented";
   }
 
-  #renderDirectLinkCharityForm() {
-    fetch(ORIGIN + "/partner_charities")
-      .then((response) => response.json())
-      .then((data) => {
-        this.#partnerCharities = data;
-        this.#directLinkCharityDetails = partnerCharities.find(
-          (charity) => charity.slug_id === directLinkCharity
-        );
-        buildDirectLinkCharitySection(directLinkCharityDetails);
-      });
-    showBlock("#donation-frequency-section");
-    showBlock("#direct-link-charity-section");
-    showBlock("#amount-section");
-    showBlock("#amplify-impact-section");
-    showBlock("#total-amount-section");
-    showBlock("#personal-details-section");
-    showBlock("#communications-section");
-    showBlock("#payment-method-section");
-    showBlock("#festive-gift-section");
-    showBlock("#donate-button-section");
+  async #renderDirectLinkCharityForm() {
+    const response = await fetch(ORIGIN + "/partner_charities");
+    this.#partnerCharities = await response.json();
+    this.#partnerCharities.forEach((charity) => {
+      this.#specificAllocations[charity.slug_id] = 0;
+    });
+    this.#directLinkCharityDetails = this.#partnerCharities.find(
+      (charity) => charity.slug_id === this.#directLinkCharity
+    );
+    new DonationFrequencySection();
+    new DirectLinkCharitySection(this.#directLinkCharityDetails);
+    new AmountSection();
+    new AmplifyImpactSection();
+    new TotalAmountSection();
+    new PersonalDetailsSection();
+    new CommunicationsSection();
+    new PaymentMethodSection();
+    new FestiveGiftSection();
+    new DonateButtonSection();
   }
 
   async #renderStandardForm() {
     const response = await fetch(ORIGIN + "/partner_charities");
     this.#partnerCharities = await response.json();
+    this.#partnerCharities.forEach((charity) => {
+      this.#specificAllocations[charity.slug_id] = 0;
+    });
 
     new DonationFrequencySection();
     new AllocationSection();
@@ -97,73 +99,144 @@ class FormController {
     new DonateButtonSection();
   }
 
+  setDonationFrequency(frequency) {
+    this.#donationFrequency = frequency;
+    this.updateTotals();
+  }
+
+  getDonationFrequency() {
+    return this.#donationFrequency;
+  }
+
   setAllocationType(type) {
     this.#allocationType = type;
     if (this.#allocationType === "specific") {
-      SpecificAllocationSection.show();
       AmountSection.hide();
+      SpecificAllocationSection.show();
     } else {
       SpecificAllocationSection.hide();
       AmountSection.show();
     }
+    this.updateTipDollarAmount();
+    this.updateTotals();
   }
 
-  setDonationAmount(amount) {
-    this.#donationAmount = +amount;
+  setBasicDonationAmount(amount) {
+    this.#basicDonationAmount = +amount;
+    this.updateTipDollarAmount();
+    this.updateTotals();
+  }
 
-    if (this.#tipType === "percentage") {
-      this.#tipDollarAmount = this.#donationAmount * (this.#tipSize / 100);
-    } else if (this.#tipType === "dollar") {
-      this.#tipDollarAmount = this.#tipSize;
-    }
-
-    this.#combinedAmount = this.#donationAmount + this.#tipDollarAmount;
-
-    TotalAmountSection.render(
-      this.#tipDollarAmount,
-      this.#donationAmount,
-      this.#combinedAmount
-    );
+  setCharityAllocation(charity, amount) {
+    this.#specificAllocations[charity] = amount;
+    this.updateTipDollarAmount();
+    this.updateTotals();
   }
 
   setTipValues(amount, type) {
     this.#tipType = type;
     this.#tipSize = +amount;
+    this.updateTipDollarAmount();
+    this.updateTotals();
+  }
 
+  #getSpecificAllocationsTotal() {
+    let total = 0;
+    Object.values(this.#specificAllocations).forEach((amount) => {
+      total += +amount;
+    });
+    return total;
+  }
+
+  updateTipDollarAmount() {
+    const totalDonationAmount =
+      this.#allocationType === "specific"
+        ? this.#getSpecificAllocationsTotal()
+        : this.#basicDonationAmount;
     if (this.#tipType === "percentage") {
-      this.#tipDollarAmount = this.#donationAmount * (this.#tipSize / 100);
+      this.#tipDollarAmount = +totalDonationAmount * (this.#tipSize / 100);
     } else if (this.#tipType === "dollar") {
       this.#tipDollarAmount = this.#tipSize;
     }
+  }
 
-    console.log(this.#tipSize, this.#tipType, this.#tipDollarAmount);
-    this.#combinedAmount = this.#donationAmount + this.#tipDollarAmount;
-
-    TotalAmountSection.render(
-      this.#tipDollarAmount,
-      this.#donationAmount,
-      this.#combinedAmount
-    );
+  updateTotals() {
+    TotalAmountSection.render({
+      allocationType: this.#allocationType,
+      basicDonationAmount: this.#basicDonationAmount,
+      specificAllocations: this.#specificAllocations,
+      tipType: this.#tipType,
+      tipSize: this.#tipSize,
+      tipDollarAmount: this.#tipDollarAmount,
+    });
   }
 
   setPaymentMethod(method) {
     this.#paymentMethod = method;
   }
 
+  getPartnerCharities() {
+    return this.#partnerCharities;
+  }
+
+  setFestiveGift(isFestiveGift) {
+    this.#isFestiveGift = isFestiveGift;
+  }
+
+  setDonorFirstName(firstName) {
+    this.#donorFirstName = firstName;
+  }
+
+  setDonorLastName(lastName) {
+    this.#donorLastName = lastName;
+  }
+
+  setDonorEmail(email) {
+    this.#donorEmail = email;
+  }
+
+  setDonorPostcode(postcode) {
+    this.#donorPostcode = postcode;
+  }
+
+  setDonorCountry(country) {
+    this.#donorCountry = country;
+  }
+
+  setSubscribeToUpdates(subscribe) {
+    this.#subscribeToUpdates = subscribe;
+  }
+
+  setSubscribeToNewsletter(subscribe) {
+    this.#subscribeToNewsletter = subscribe;
+  }
+
+  setSubscribeToCommunity(subscribe) {
+    this.#subscribeToCommunity = subscribe;
+  }
+
+  setHowDidYouHearAboutUs(howDidYouHearAboutUs) {
+    this.#howDidYouHearAboutUs = howDidYouHearAboutUs;
+  }
+
   handleFormSubmit() {
-    if (allocation === "specific") {
-      if (totalAmountSpecific < 2) {
+    console.log(this.#paymentMethod);
+
+    if (this.#allocationType === "specific") {
+      if (this.#getSpecificAllocationsTotal() + this.#tipDollarAmount < 2) {
         alert("Please allocate at least $2 across your preferred charities.");
         $("#allocation-section--specific-allocation").focus();
         return false;
       }
     }
 
-    if (allocation === "direct-link" || allocation === "default") {
-      const amount = getAmount() || 0;
-      if (amount < 2) {
+    if (
+      this.#allocationType === "direct-link" ||
+      this.#allocationType === "default"
+    ) {
+      if (this.#basicDonationAmount + this.#tipDollarAmount < 2) {
         alert("Please select an amount of at least $2.");
-        $("#custom-amount-input").focus();
+        $("#amount-section--custom-amount-input").focus();
         return false;
       }
     }
@@ -171,7 +244,7 @@ class FormController {
     $("#loader").style.display = "block";
     $("form").style.opacity = 0.5;
 
-    let formData = buildFormData();
+    let formData = this.#buildFormData();
     fetch(ORIGIN + "/pledge_new/", {
       method: "POST",
       headers: {
@@ -180,7 +253,7 @@ class FormController {
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
-      .then(generateAndSendFestiveCard)
+      .then(this.#generateAndSendFestiveCard)
       .then((data) => this.#handleFormSubmitResponse(data));
     return false;
   }
@@ -194,7 +267,7 @@ class FormController {
     }
 
     if (data.bank_reference) {
-      renderBankTransferInstructions(formData, data);
+      this.#renderBankTransferInstructions(formData, data);
     } else if (data.id) {
       stripe.redirectToCheckout({ sessionId: data.id });
     } else {
@@ -246,53 +319,34 @@ class FormController {
 
   #buildFormData() {
     let formData = {
-      payment_method: $("#credit-card").checked
-        ? "credit-card"
-        : "bank-transfer",
-      recurring_frequency: $("#monthly").checked ? "monthly" : "one-time",
-      recurring: $("#monthly").checked ? true : false,
-      first_name: $("#first-name").value,
-      last_name: $("#last-name").value,
-      email: $("#email").value,
-      subscribe_to_updates: $("#subscribe-to-updates").checked,
-      subscribe_to_newsletter: $("#subscribe-to-newsletter").checked,
-      connect_to_community: $("#connect-to-community").checked,
-      how_did_you_hear_about_us_db: $("#referral-sources").value,
+      payment_method: this.#paymentMethod,
+      recurring_frequency: this.#donationFrequency,
+      recurring: this.#donationFrequency === "monthly" ? true : false,
+      first_name: this.#donorFirstName,
+      last_name: this.#donorLastName,
+      email: this.#donorEmail,
+      subscribe_to_updates: this.#subscribeToUpdates,
+      subscribe_to_newsletter: this.#subscribeToNewsletter,
+      connect_to_community: this.#subscribeToCommunity,
+      how_did_you_hear_about_us_db: this.#howDidYouHearAboutUs,
     };
 
-    if (directLinkCharity || $("#default-allocation").checked) {
-      formData = addStandardAllocationFormData(formData);
+    if (this.#allocationType === "specific") {
+      formData = this.#addSpecificAllocationFormData(formData);
     } else {
-      formData = addSpecificAllocationFormData(formData);
+      formData = this.#addStandardAllocationFormData(formData);
     }
     return formData;
   }
 
   #addStandardAllocationFormData(formData) {
-    const amount = getAmount();
     formData["form-0-id"] = null;
-    formData["form-0-amount"] = amount.toString();
-    formData["form-0-partner_charity"] = directLinkCharity || "unallocated";
+    formData["form-0-amount"] = this.#basicDonationAmount.toString();
+    formData["form-0-partner_charity"] =
+      this.#directLinkCharity || "unallocated";
     formData["form-TOTAL_FORMS"] = 1;
     formData["form-INITIAL_FORMS"] = 1;
     return formData;
-  }
-
-  #getAmount() {
-    let amount = 0;
-    if ($("#custom-amount-input").value !== "") {
-      amount = $("#custom-amount-input").value;
-    } else if ($("#donate-25").checked) {
-      amount = 25;
-    } else if ($("#donate-50").checked) {
-      amount = 50;
-    } else if ($("#donate-100").checked) {
-      amount = 100;
-    } else if ($("#donate-250").checked) {
-      amount = 250;
-    }
-    totalAmountMostEffective = parseInt(amount);
-    return amount;
   }
 
   #addSpecificAllocationFormData(formData) {
