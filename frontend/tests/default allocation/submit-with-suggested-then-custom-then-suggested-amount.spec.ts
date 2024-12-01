@@ -12,7 +12,7 @@ test("Default allocation: submit with suggested, custom, then suggested amount",
 
   await page.getByText("$50").click();
 
-  await page.locator("#custom-amount-input").fill("1");
+  await page.locator("#amount-section--custom-amount-input").fill("1");
 
   await page.getByText("$100").click();
 
@@ -24,7 +24,7 @@ test("Default allocation: submit with suggested, custom, then suggested amount",
 
   await page.getByLabel("Postcode").fill("3000");
 
-  await page.locator("#referral-sources").selectOption("cant-remember");
+  await page.locator("#communications-section--referral-sources").selectOption("cant-remember");
 
   const testFinished = new Promise<void>((resolve) => {
     page.on("request", async (request) => {

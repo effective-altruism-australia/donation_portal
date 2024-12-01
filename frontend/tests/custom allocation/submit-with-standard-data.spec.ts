@@ -22,7 +22,7 @@ test("Custom allocation: submit with standard data", async ({ page }) => {
 
   await page.getByLabel('Postcode').fill('3000');
   
-  await page.locator('#referral-sources').selectOption('cant-remember');
+  await page.locator('#communications-section--referral-sources').selectOption('cant-remember');
   
   const testFinished = new Promise<void>((resolve) => {
     page.on("request", (request) => {

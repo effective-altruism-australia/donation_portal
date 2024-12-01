@@ -8,7 +8,7 @@ selected.
 test("Payment method: submit a bank transaction donation", async ({ page }) => {
   await page.goto("http://localhost:8000/pledge_new/");
 
-  await page.locator("#custom-amount-input").fill("2222");
+  await page.locator("#amount-section--custom-amount-input").fill("2222");
 
   await page.getByLabel("First name").fill("Nathan");
 
@@ -18,7 +18,7 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
 
   await page.getByLabel("Postcode").fill("3000");
 
-  await page.locator("#referral-sources").selectOption("cant-remember");
+  await page.locator("#communications-section--referral-sources").selectOption("cant-remember");
 
   await page.getByText("Bank Transfer", { exact: true }).click();
 

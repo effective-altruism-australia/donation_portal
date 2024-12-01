@@ -8,7 +8,7 @@ through the url params. e.g. <base url>/pledge_new/?charity=give-directly
 test("Direct-linked allocation: submit a credit card donation", async ({ page }) => {
   await page.goto("http://localhost:8000/pledge_new/?charity=give-directly");
 
-  await page.locator("#custom-amount-input").fill("28");
+  await page.locator("#amount-section--custom-amount-input").fill("28");
 
   await page.getByLabel("First name").fill("Nathan");
 
@@ -18,7 +18,7 @@ test("Direct-linked allocation: submit a credit card donation", async ({ page })
 
   await page.getByLabel("Postcode").fill("3000");
 
-  await page.locator("#referral-sources").selectOption("cant-remember");
+  await page.locator("#communications-section--referral-sources").selectOption("cant-remember");
 
   page.on("request", (request) => {
     if (request.url().includes("pledge_new")) {

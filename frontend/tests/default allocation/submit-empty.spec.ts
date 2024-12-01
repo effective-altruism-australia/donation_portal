@@ -16,7 +16,7 @@ test("Default allocation: submit with empty data", async ({ page }) => {
 
   await page.getByLabel('Postcode').fill('3000');
 
-  await page.locator('#referral-sources').selectOption('cant-remember');
+  await page.locator('#communications-section--referral-sources').selectOption('cant-remember');
 
   page.on('dialog', async dialog => {
     expect(dialog.message() === 'Please select an amount of at least $2.');

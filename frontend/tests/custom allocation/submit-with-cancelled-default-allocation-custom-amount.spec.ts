@@ -10,7 +10,7 @@ test("Custom allocation: cancel default allocation and submit with standard data
   
   await page.getByText('The most effective charities^').click();
 
-  await page.locator('#custom-amount-input').fill('1000');
+  await page.locator('#amount-section--custom-amount-input').fill('1000');
 
   await page.getByText('These specific charities').click();
 
@@ -26,7 +26,7 @@ test("Custom allocation: cancel default allocation and submit with standard data
 
   await page.getByLabel('Postcode').fill('3000');
   
-  await page.locator('#referral-sources').selectOption('cant-remember');
+  await page.locator('#communications-section--referral-sources').selectOption('cant-remember');
   
   const testFinished = new Promise<void>((resolve) => {
     page.on("request", (request) => {

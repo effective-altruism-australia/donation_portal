@@ -10,7 +10,7 @@ test("Frequency: submit a monthly donation with custom amount", async ({ page })
   
   await page.getByText('Monthly').click();
 
-  await page.locator('#custom-amount-input').fill('400');
+  await page.locator('#amount-section--custom-amount-input').fill('400');
 
   await page.getByLabel('First name').fill('Nathan');
 
@@ -20,7 +20,7 @@ test("Frequency: submit a monthly donation with custom amount", async ({ page })
 
   await page.getByLabel('Postcode').fill('3000');
   
-  await page.locator('#referral-sources').selectOption('cant-remember');
+  await page.locator('#communications-section--referral-sources').selectOption('cant-remember');
   
   page.on("request", (request) => {
     if (request.url().includes("pledge_new")) {

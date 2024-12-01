@@ -10,7 +10,7 @@ test("Default allocation: submit a default allocation with custom amount", async
   
   await page.getByText('The most effective charities^').click();
   
-  await page.locator('#custom-amount-input').fill('1000');
+  await page.locator('#amount-section--custom-amount-input').fill('1000');
 
   await page.getByLabel('First name').fill('Nathan');
 
@@ -20,7 +20,7 @@ test("Default allocation: submit a default allocation with custom amount", async
 
   await page.getByLabel('Postcode').fill('3000');
   
-  await page.locator('#referral-sources').selectOption('cant-remember');
+  await page.locator('#communications-section--referral-sources').selectOption('cant-remember');
   
   const testFinished = new Promise<void>((resolve) => {
     page.on("request", (request) => {

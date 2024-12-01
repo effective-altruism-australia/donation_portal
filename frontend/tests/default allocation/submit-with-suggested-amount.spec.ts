@@ -22,7 +22,7 @@ test("Default allocation: submit with custom, suggested, then custom amount", as
 
   await page.getByLabel("Postcode").fill("3000");
 
-  await page.locator("#referral-sources").selectOption("cant-remember");
+  await page.locator("#communications-section--referral-sources").selectOption("cant-remember");
 
   page.on("request", (request) => {
     if (request.url().includes("pledge_new")) {

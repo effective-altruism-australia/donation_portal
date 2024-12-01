@@ -8,7 +8,7 @@ works as expected.
 test("Communications: checkboxes work", async ({ page }) => {
   await page.goto("http://localhost:8000/pledge_new/");
 
-  await page.locator("#custom-amount-input").fill("5");
+  await page.locator("#amount-section--custom-amount-input").fill("5");
 
   await page.getByLabel("First name").fill("Nathan");
 
@@ -18,7 +18,7 @@ test("Communications: checkboxes work", async ({ page }) => {
 
   await page.getByLabel("Postcode").fill("3000");
 
-  await page.locator("#referral-sources").selectOption("cant-remember");
+  await page.locator("#communications-section--referral-sources").selectOption("cant-remember");
 
   await page
     .locator("label")

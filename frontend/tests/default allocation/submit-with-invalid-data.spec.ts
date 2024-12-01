@@ -12,7 +12,7 @@ test("Default allocation: submit with invalid data", async ({
 
   await page.getByText("The most effective charities^").click();
 
-  await page.locator('#custom-amount-input').fill('-30');
+  await page.locator('#amount-section--custom-amount-input').fill('-30');
 
   await page.getByLabel("First name").fill("Nathan");
 
@@ -22,7 +22,7 @@ test("Default allocation: submit with invalid data", async ({
 
   await page.getByLabel("Postcode").fill("3000");
 
-  await page.locator("#referral-sources").selectOption("cant-remember");
+  await page.locator("#communications-section--referral-sources").selectOption("cant-remember");
 
   page.on('dialog', async dialog => {
     expect(dialog.message() === 'Please select an amount of at least $2.');
