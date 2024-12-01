@@ -1,0 +1,189 @@
+<style>
+  #amplify-impact-section {
+    display: none;
+    padding: 16px;
+    background-color: var(--eaa-blue-100);
+    border: 1px solid var(--eaa-blue-600);
+    border-radius: 4px;
+    margin-top: 32px;
+
+    h2 {
+      margin-top: 0;
+    }
+
+    #amplify-impact-section--custom-amount-input {
+      display: flex;
+      flex-grow: 1;
+      border: none;
+      background-color: transparent;
+      outline: none;
+      padding: 0.5rem 0.5rem 0.5rem 0.25rem;
+    }
+
+    #amplify-impact-section--custom-amount-input-wrapper {
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      padding-left: 0.5rem;
+      width: 100%;
+      background-color: white;
+    }
+  }
+</style>
+
+<section id="amplify-impact-section">
+  <h2 class="text-lg">Amplify my impact</h2>
+  <p class="text-sm">
+    EA Australia is on a mission to help Australians tackle the world’s most
+    pressing problems. We have big plans to reach more people, improve our
+    infrastructure, and grow our community. With your support, we can help a
+    larger slice of donations made in Australia go toward high impact causes.
+  </p>
+  <div class="radio-group flex gap-2">
+    <input
+      type="radio"
+      id="amplify-impact-section--amount-0"
+      name="amplify-impact-section--amount"
+      value="0"
+      onchange="AmplifyImpactSection.handleSuggestedAmountChange(event)"
+    />
+    <label
+      for="amplify-impact-section--amount-0"
+      class="flex items-center justify-center rounded text-blue"
+    >
+      Skip
+    </label>
+
+    <input
+      type="radio"
+      id="amplify-impact-section--amount-5"
+      name="amplify-impact-section--amount"
+      value="5"
+      onchange="AmplifyImpactSection.handleSuggestedAmountChange(event)"
+    />
+    <label
+      for="amplify-impact-section--amount-5"
+      class="flex items-center justify-center rounded text-blue"
+    >
+      5%
+    </label>
+
+    <input
+      type="radio"
+      id="amplify-impact-section--amount-10"
+      name="amplify-impact-section--amount"
+      value="10"
+      onchange="AmplifyImpactSection.handleSuggestedAmountChange(event)"
+      checked
+    />
+    <label
+      for="amplify-impact-section--amount-10"
+      class="flex items-center justify-center rounded text-blue"
+      >
+      10%
+    </label>
+    
+    <input
+      type="radio"
+      id="amplify-impact-section--amount-20"
+      name="amplify-impact-section--amount"
+      value="20"
+      onchange="AmplifyImpactSection.handleSuggestedAmountChange(event)"
+    />
+    <label
+      for="amplify-impact-section--amount-20"
+      class="flex items-center justify-center rounded text-blue"
+    >
+      20%
+    </label>
+
+    <input
+      type="radio"
+      id="amplify-impact-section--amount-30"
+      name="amplify-impact-section--amount"
+      value="30"
+      onchange="AmplifyImpactSection.handleSuggestedAmountChange(event)"
+    />
+    <label
+      for="amplify-impact-section--amount-30"
+      class="flex items-center justify-center rounded text-blue"
+    >
+      30%
+    </label>
+  </div>
+  <div id="amplify-impact-section--custom-amount" class="flex flex-col validate mb-2">
+    <label class="inline-block mb-2 mt-4" for="custom-amount-input"
+      >Or a custom dollar amount:</label
+    >
+    <span
+      id="amplify-impact-section--custom-amount-input-wrapper"
+      class="border rounded focus-outline"
+    >
+      $
+      <input
+        type="number"
+        inputmode="numeric"
+        min="2"
+        max="999999.99"
+        step="1"
+        id="amplify-impact-section--custom-amount-input"
+        name="custom-amount-input"
+        class="inline-block text-md"
+        onblur="AmplifyImpactSection.handleCustomAmountBlur()"
+        onfocus="AmplifyImpactSection.handleCustomAmountFocus()"
+        oninput="AmplifyImpactSection.handleCustomAmountChange()"
+        placeholder="Enter your custom amount here"
+      />
+    </span>
+  </div>
+</section>
+
+<script>
+  class AmplifyImpactSection {
+    constructor() {
+      $("#amplify-impact-section").style.display = "block";
+    }
+
+    updateTotalDonation(giftAmount) {
+      const donationAmount = 100;
+      const amplifyImpactAmount = 10;
+      const totalDonation = donationAmount + amplifyImpactAmount;
+      $(
+        "#amplify-impact-section table tr:last-child td:last-child"
+      ).textContent = totalDonation;
+    }
+
+    static handleAmplifyImpactChange() {
+      formController.updateTotal();
+    }
+
+    static handleCustomAmountBlur() {
+      const customAmountInput = $("#amplify-impact-section--custom-amount-input");
+      if (customAmountInput.value === "") {
+        customAmountInput.classList.remove("validate");
+      }
+    }
+    
+    static handleCustomAmountChange() {
+      const customAmountInput = $("#amplify-impact-section--custom-amount-input");
+      formController.setTipValues(customAmountInput.value, "dollar");
+    }
+
+    static handleCustomAmountFocus() {
+      $("#amplify-impact-section--custom-amount").classList.add("validate");
+      $("#amplify-impact-section--amount-0").checked = false;
+      $("#amplify-impact-section--amount-5").checked = false;
+      $("#amplify-impact-section--amount-10").checked = false;
+      $("#amplify-impact-section--amount-20").checked = false;
+      $("#amplify-impact-section--amount-30").checked = false;
+    }
+
+    static handleSuggestedAmountChange(e) {
+      const selectedAmount = e.target.value;
+      formController.setTipValues(selectedAmount, "percentage");
+      $("#amplify-impact-section--custom-amount-input").value = "";
+      $("#amplify-impact-section--custom-amount").classList.remove("validate");
+    }
+
+  }
+</script>

@@ -1,63 +1,75 @@
 <style>
-  #custom-amount-input {
-    display: flex;
-    flex-grow: 1;
-    border: none;
-    background-color: transparent;
-    outline: none;
-    padding: 0.5rem 0.5rem 0.5rem 0.25rem;
-  }
-  #input-wrapper {
-    display: flex;
-    flex-grow: 1;
-    align-items: center;
-    padding-left: 0.5rem;
-    width: 100%;
-    background-color: white;
+  #amount-section {
+    display: none;
+
+    #amount-section--custom-amount-input {
+      display: flex;
+      flex-grow: 1;
+      border: none;
+      background-color: transparent;
+      outline: none;
+      padding: 0.5rem 0.5rem 0.5rem 0.25rem;
+    }
+
+    #amount-section--custom-amount-input-wrapper {
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      padding-left: 0.5rem;
+      width: 100%;
+      background-color: white;
+    }
   }
 </style>
 
-<section id="amount-section" style="display: none">
+<section id="amount-section">
   <h2 class="text-lg mt-8">I would like to gift</h2>
   <div class="radio-group flex gap-2">
     <input
       type="radio"
-      id="donate-25"
+      id="amount-section--donate-25"
       name="donation-amount"
       value="25"
-      onchange="$('#custom-amount').classList.remove('validate'); $('#custom-amount-input').value = '';"
+      onchange="AmountSection.handleSuggestedAmountChange(event)"
     />
-    <label for="donate-25" class="rounded text-blue">$25</label>
+    <label for="amount-section--donate-25" class="rounded text-blue">$25</label>
     <input
       type="radio"
-      id="donate-50"
+      id="amount-section--donate-50"
       name="donation-amount"
       value="50"
-      onchange="$('#custom-amount').classList.remove('validate'); $('#custom-amount-input').value = '';"
+      onchange="AmountSection.handleSuggestedAmountChange(event)"
     />
-    <label for="donate-50" class="rounded text-blue">$50</label>
+    <label for="amount-section--donate-50" class="rounded text-blue">$50</label>
     <input
       type="radio"
-      id="donate-100"
+      id="amount-section--donate-100"
       name="donation-amount"
       value="100"
-      onchange="$('#custom-amount').classList.remove('validate'); $('#custom-amount-input').value = '';"
+      onchange="AmountSection.handleSuggestedAmountChange(event)"
     />
-    <label for="donate-100" class="rounded text-blue">$100</label>
+    <label for="amount-section--donate-100" class="rounded text-blue"
+      >$100</label
+    >
     <input
       type="radio"
-      id="donate-250"
+      id="amount-section--donate-250"
       name="donation-amount"
       value="250"
-      onchange="$('#custom-amount').classList.remove('validate'); $('#custom-amount-input').value = '';"
+      onchange="AmountSection.handleSuggestedAmountChange(event)"
     />
-    <label for="donate-250" class="rounded text-blue">$250</label>
+    <label for="amount-section--donate-250" class="rounded text-blue"
+      >$250</label
+    >
   </div>
-  <div id="custom-amount" class="flex flex-col validate mb-2">
+  <div id="amount-section--custom-amount" class="flex flex-col validate mb-2">
     <label class="inline-block mb-2 mt-4" for="custom-amount-input"
       >Or a custom amount:</label
     >
-    <span id="input-wrapper" class="border rounded">
+    <span
+      id="amount-section--custom-amount-input-wrapper"
+      class="border rounded focus-outline"
+    >
       $
       <input
         type="number"
@@ -65,14 +77,60 @@
         min="2"
         max="999999.99"
         step="1"
-        id="custom-amount-input"
+        id="amount-section--custom-amount-input"
         name="custom-amount-input"
         class="inline-block text-md"
-        onblur="this.value === '' ? $('#custom-amount').classList.remove('validate') : '';"
-        onfocus="$('#custom-amount').classList.add('validate'); $('#input-wrapper').classList.add('selected'); $('#donate-25').checked = false; $('#donate-50').checked = false; $('#donate-100').checked = false; $('#donate-250').checked = false;"
-        tabindex="-1"
+        onblur="AmountSection.handleCustomAmountBlur()"
+        onfocus="AmountSection.handleCustomAmountFocus()"
+        oninput="AmountSection.handleCustomAmountChange()"
         placeholder="Enter your custom amount here"
       />
     </span>
   </div>
 </section>
+
+<script>
+  class AmountSection {
+    constructor() {
+      $("#amount-section").style.display = "block";
+    }
+
+    static handleCustomAmountFocus() {
+      $("#amount-section--custom-amount").classList.add("validate");
+      $("#amount-section--donate-25").checked = false;
+      $("#amount-section--donate-50").checked = false;
+      $("#amount-section--donate-100").checked = false;
+      $("#amount-section--donate-250").checked = false;
+    }
+
+    static handleCustomAmountBlur() {
+      if ($("#amount-section--custom-amount-input").value === "") {
+        $("#amount-section--custom-amount").classList.remove("validate");
+      }
+    }
+
+    static handleSuggestedAmountChange(e) {
+      const selectedAmount = e.target.value;
+      formController.setDonationAmount(selectedAmount);
+      $("#amount-section--custom-amount").classList.remove("validate");
+      $("#amount-section--custom-amount-input").value = "";
+    }
+
+    static handleCustomAmountChange() {
+      const customAmount = $("#amount-section--custom-amount-input").value;
+      formController.setDonationAmount(customAmount);
+      $("#amount-section--donate-25").checked = false;
+      $("#amount-section--donate-50").checked = false;
+      $("#amount-section--donate-100").checked = false;
+      $("#amount-section--donate-250").checked = false;
+    }
+
+    static show() {
+      $("#amount-section").style.display = "block";
+    }
+
+    static hide() {
+      $("#amount-section").style.display = "none";
+    }
+  }
+</script>

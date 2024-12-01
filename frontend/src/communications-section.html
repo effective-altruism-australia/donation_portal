@@ -1,4 +1,10 @@
-<section id="communications-section" style="display: none">
+<style>
+  #communications-section {
+    display: none;
+  }
+</style>
+
+<section id="communications-section">
   <div class="flex flex-col">
     <h2 class="inline-block text-lg mt-8">How did you hear about us?</h2>
     <select
@@ -44,17 +50,28 @@
 </section>
 
 <script>
-  fetch(ORIGIN + "/referral_sources")
-    .then((response) => response.json())
-    .then((data) => buildReferralSourcesList(data));
+  class CommunicationsSection {
+    constructor() {
+      $("#communications-section").style.display = "block";
+      this.referralSourcesSelect = $("#referral-sources");
+      this.fetchReferralSources();
+    }
 
-  function buildReferralSourcesList(referralSources) {
-    let referralSourcesListHTML = "<option value='' disabled selected>Please select one...</option>";
+    fetchReferralSources() {
+      fetch(ORIGIN + "/referral_sources")
+        .then((response) => response.json())
+        .then((data) => this.buildReferralSourcesList(data));
+    }
 
-    referralSources.forEach((referralSource) => {
-      referralSourcesListHTML += `<option value="${referralSource.value}">${referralSource.label}</option>`;
-    });
+    buildReferralSourcesList(referralSources) {
+      let referralSourcesListHTML =
+        "<option value='' disabled selected>Please select one...</option>";
 
-    $("#referral-sources").innerHTML = referralSourcesListHTML;
+      referralSources.forEach((referralSource) => {
+        referralSourcesListHTML += `<option value="${referralSource.value}">${referralSource.label}</option>`;
+      });
+
+      this.referralSourcesSelect.innerHTML = referralSourcesListHTML;
+    }
   }
 </script>

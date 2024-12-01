@@ -65,7 +65,7 @@
           Recipient's Name, max. 14 characters
         </label>
         <div class="info-icon" tabindex="0">
-          ℹ️
+          ⓘ
           <div class="info-tooltip">
             This will add the recipient’s name to the card’s opening (tip: so if
             it’s for your mum, enter ‘mum’)
@@ -84,7 +84,7 @@
       <div>
         <label for="recipient-email"> Recipient's Email </label>
         <div class="info-icon" tabindex="0">
-          ℹ️
+          ⓘ
           <div class="info-tooltip">
             We’ll send them a <em>one-time</em> email around the 30th of
             December confirming your donation and sharing info on EAA and a
@@ -105,7 +105,7 @@
           Personal message, max. 120 characters (optional)
         </label>
         <div class="info-icon" tabindex="0">
-          ℹ️
+          ⓘ
           <div class="info-tooltip">
             We’ll digitally add this to the card. If you intend to print it, you
             may wish to skip this step and hand-write a message in the space
@@ -132,6 +132,8 @@
 <script>
   class FestiveGiftSection {
     constructor() {
+      $("#festive-gift-section").style.display = "block";
+      
       this.section = $("#festive-gift-section");
       this.checkbox = $("#is-festive-gift");
       this.detailsSection = $("#festive-gift-details-section");
@@ -169,6 +171,4 @@
       this.recipientName.setAttribute("required", "false");
     }
   }
-
-  new FestiveGiftSection();
 </script>

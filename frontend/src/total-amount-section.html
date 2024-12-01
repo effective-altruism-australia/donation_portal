@@ -1,0 +1,85 @@
+<style>
+  #total-amount-section {
+    table {
+      width: 100%;
+    }
+    table td:nth-child(2) {
+      text-align: right;
+    }
+    table tr:last-child {
+      font-weight: bold;
+    }
+    table tr:last-child td:last-child {
+      font-size: 2rem;
+    }
+  }
+</style>
+
+<section id="total-amount-section" style="display: none">
+  <table id="total-amount-section--table">
+    <tr>
+      <td><h2 class="text-md">Designation</h2></td>
+      <td><h2 class="text-md">Amount</h2></td>
+    </tr>
+<tr>
+      <td><em>No donation selected</em></td>
+      <td>--</td>
+    </tr>
+
+    <tr>
+      <td>Total donation</td>
+      <td>0.00</td>
+    </tr>
+  </table>
+</section>
+
+<script>
+  class TotalAmountSection {
+    constructor() {
+      $("#total-amount-section").style.display = "block";
+    }
+
+    updateTotalDonation() {
+      if ($("#default-allocation").checked) {
+        this.updateTotalDonationDefault();
+      } else {
+        this.updateTotalDonationCustom();
+      }
+    }
+
+    updateTotalDonationDefault() {
+      const donationAmount = Number(
+        $("input[name='donation-amount']:checked").value
+      );
+      const amplifyImpactAmount = Number(
+        $("input[name='amplify-impact-amount']:checked").value
+      );
+      const totalDonation =
+        donationAmount + donationAmount * amplifyImpactAmount;
+      $(
+        "#total-amount-section table tr:last-child td:last-child"
+      ).innerText = `$${totalDonation}`;
+    }
+
+    static render(tipDollarAmount, donationAmount, combinedAmount) {
+      $("#total-amount-section--table").innerHTML = `
+        <tr>
+          <td><h2 class="text-md">Designation</h2></td>
+          <td><h2 class="text-md">Amount</h2></td>
+        </tr>
+        <tr>
+          <td>Most Effective Charities</td>
+          <td>$${donationAmount}</td>
+        </tr>
+        <tr>
+          <td>Effective Altruism Australia</td>
+          <td>$${tipDollarAmount}</td>
+        </tr>
+        <tr>
+          <td>Total donation</td>
+          <td>$${combinedAmount}</td>
+        </tr>
+      `;
+    }
+  }
+</script>

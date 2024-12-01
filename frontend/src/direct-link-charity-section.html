@@ -1,0 +1,49 @@
+<style>
+  #direct-link-charity-section {
+    display: none;
+
+    img {
+      width: 100%;
+      max-width: 10rem;
+    }
+  }
+</style>
+
+<section id="direct-link-charity-section">
+  <div class="flex flex-col">
+    <h2 class="text-lg mt-8">I would like to donate to</h2>
+    <div id="direct-link-charity-section--logo">
+      Fetching details of your chosen charity...
+    </div>
+  </div>
+</section>
+
+<script>
+  class DirectLinkCharitySection {
+    constructor() {
+      $("#direct-link-charity-section").style.display = "block";
+    }
+
+    #buildDirectLinkCharitySection(directLinkCharityDetails) {
+      if (!directLinkCharityDetails) {
+        showBlock("#error-section");
+        hide("#donation-frequency-section");
+        hide("#allocation-section");
+        hide("#specific-allocation-section");
+        hide("#direct-link-charity-section");
+        hide("#amount-section");
+        hide("#personal-details-section");
+        hide("#communications-section");
+        hide("#payment-method-section");
+        hide("#thank-you-message");
+        hide("#donate-button-section");
+        return;
+      }
+
+      $("#direct-link-charity-section--logo").innerHTML =
+        directLinkCharityDetails.thumbnail
+          ? `<img src="${ORIGIN}/static/${directLinkCharityDetails.thumbnail}" alt="${directLinkCharityDetails.name}" />`
+          : `<span>${directLinkCharityDetails.name}</span>`;
+    }
+  }
+</script>

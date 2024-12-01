@@ -1,26 +1,31 @@
-<section id="bank-instructions-section" style="display: none">
-  <h2 class="text-lg mt-8">
-    Thank you, <span id="bank-instructions-name"></span>!
-  </h2>
-  <p>
-    Your donation will be allocated to
-    <span id="bank-instructions-charity"></span>.
-  </p>
-  <br />
-  <div
-    class="border"
-    style="
+<style>
+  #bank-instructions-section {
+    display: none;
+
+    .instructions {
       padding: 1rem 1.5rem;
       background: var(--eaa-blue-700);
       color: white;
       border-radius: 3px;
-    "
-  >
+    }
+  }
+</style>
+
+<section id="bank-instructions-section">
+  <h2 class="text-lg mt-8">
+    Thank you, <span id="bank-instructions-section--name"></span>!
+  </h2>
+  <p>
+    Your donation will be allocated to
+    <span id="bank-instructions-section--charity"></span>.
+  </p>
+  <br />
+  <div class="border instructions">
     <h2>What to do next?</h2>
     <p>
       Please make sure that you complete the process by
-      <span id="bank-instructions-frequency"></span> $<span
-        id="bank-instructions-amount"
+      <span id="bank-instructions-section--frequency"></span> $<span
+        id="bank-instructions-section--amount"
       ></span>
       to:
     </p>
@@ -40,7 +45,7 @@
     </p>
     <p>
       <strong>Reference Number</strong><br />
-      <span id="bank-instructions-reference" class="text-lg"></span><br />
+      <span id="bank-instructions-section--reference" class="text-lg"></span><br />
       <span class="text-sm">(Place this in the transaction description)</span>
     </p>
   </div>
@@ -50,7 +55,7 @@
   </p>
   <p>
     We will send you a tax deductible receipt
-    <strong>once we have confirmed the bank transfer</strong>.
+    <em>once we have confirmed the bank transfer</em>.
   </p>
   <p>
     <strong>Any questions?</strong>
@@ -69,3 +74,11 @@
     The Effective Altruism Australia team
   </p>
 </section>
+
+<script>
+  class BankInstructionsSection {
+    constructor() {
+      $("#bank-instructions-section").style.display = "block";
+    }
+  }
+</script>

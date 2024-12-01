@@ -1,4 +1,10 @@
-<section id="thank-you-message" style="display: none">
+<style>
+  #thank-you-message {
+    display: none;
+  }
+</style>
+
+<section id="thank-you-message">
   <h2>Thank you!</h2>
   <p>Your receipt will be sent to your email address.</p>
 
@@ -12,3 +18,11 @@
   <p>Best wishes and thanks,</p>
   <p><strong>The team at Effective Altruism Australia</strong></p>
 </section>
+
+<script>
+  class ThankYouSection {
+    constructor() {
+      $("#thank-you-message").style.display = "block";
+    }
+  }
+</script>

@@ -1,5 +1,7 @@
 /* Set up Theme colours */
 :host {
+  --eaa-blue-100: #edf4f6;
+  --eaa-blue-200: #dcebef;
   --eaa-blue-600: #1592a5;
   --eaa-blue-700: #187485;
 
