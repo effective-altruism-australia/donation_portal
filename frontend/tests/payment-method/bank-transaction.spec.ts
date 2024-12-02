@@ -57,14 +57,14 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
       if (response.url().includes("pledge_new")) {
         expect(response.status()).toBe(200);
         await expect(page.getByText("Thank you, Nathan!")).toBeVisible();
-        await expect(page.getByText("$2222")).toBeVisible();
+        await expect(page.getByText("$2444.20 to:")).toBeVisible();
         await expect(
           page.getByText(
             "Your donation will be allocated to our partner charities."
           )
         ).toBeVisible();
         await page
-          .locator("#bank-instructions-reference")
+          .locator("#bank-instructions-section--reference")
           .textContent()
           .then((text) => {
             expect(text).toMatch(/^[0-9A-F]{12}$/);

@@ -10,7 +10,7 @@ test("Payment method: submit a bank transaction donation for a direct-linked cha
 }) => {
   await page.goto("http://localhost:8000/pledge_new/?charity=give-directly");
 
-  await page.locator("#custom-amount-input").fill("2222");
+  await page.locator("#amount-section--custom-amount-input").fill("2222");
 
   await page.getByLabel("First name").fill("Nathan");
 
@@ -57,12 +57,12 @@ test("Payment method: submit a bank transaction donation for a direct-linked cha
       if (response.url().includes("pledge_new")) {
         expect(response.status()).toBe(200);
         await expect(page.getByText("Thank you, Nathan!")).toBeVisible();
-        await expect(page.getByText("$2222")).toBeVisible();
+        await expect(page.getByText("$2444.20 to:")).toBeVisible();
         await expect(
           page.getByText("Your donation will be allocated to GiveDirectly.")
         ).toBeVisible();
         await page
-          .locator("#bank-instructions-reference")
+          .locator("#bank-instructions-section--reference")
           .textContent()
           .then((text) => {
             expect(text).toMatch(/^[0-9A-F]{12}$/);
