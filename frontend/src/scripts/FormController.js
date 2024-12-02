@@ -25,7 +25,7 @@ class FormController {
   #tipType = "percentage";
   #tipDollarAmount = 0;
   #stripe;
-  #howDidYouHearAboutUs;
+  #howDidYouHearAboutUs = "";
   #basicDonationAmount = 0;
   #specificAllocations = {};
 
@@ -48,6 +48,7 @@ class FormController {
     } else if (this.#directLinkCharity === "eaae") {
       this.#renderEaaeForm();
     } else if (this.#directLinkCharity) {
+      this.#allocationType = "direct-link";
       this.#renderDirectLinkCharityForm();
     } else {
       this.#renderStandardForm();
@@ -220,8 +221,6 @@ class FormController {
   }
 
   handleFormSubmit() {
-    console.log(this.#paymentMethod);
-
     if (this.#allocationType === "specific") {
       if (this.#getSpecificAllocationsTotal() + this.#tipDollarAmount < 2) {
         alert("Please allocate at least $2 across your preferred charities.");
@@ -242,7 +241,6 @@ class FormController {
     }
 
     $("#loader").style.display = "block";
-    $("form").style.opacity = 0.5;
 
     let formData = this.#buildFormData();
     fetch(ORIGIN + "/pledge_new/", {
@@ -253,14 +251,13 @@ class FormController {
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
-      .then(this.#generateAndSendFestiveCard)
-      .then((data) => this.#handleFormSubmitResponse(data));
+      .then((data) => this.#generateAndSendFestiveCard(data))
+      .then((data) => this.#handleFormSubmitResponse(data, formData));
     return false;
   }
 
-  #handleFormSubmitResponse(data) {
+  #handleFormSubmitResponse(data, formData) {
     $("#loader").style.display = "none";
-    $("form").style.opacity = 1;
 
     if (data.sendCardFailed) {
       return;
@@ -277,7 +274,7 @@ class FormController {
   }
 
   #renderBankTransferInstructions(formData, data) {
-    showBlock("#bank-instructions-section");
+    new BankInstructionsSection();
     hide("#festive-gift-section");
     hide("#payment-method-section");
     hide("#specific-allocation-section");
@@ -292,26 +289,35 @@ class FormController {
     hide("#festive-gift-section");
     hide("#thank-you-message");
     hide("#donate-button-section");
-    $("#bank-instructions-name").innerText = formData.first_name;
-    $("#bank-instructions-reference").innerText = data.bank_reference;
+    $("#bank-instructions-section--name").innerText = formData.first_name;
+    $("#bank-instructions-section--reference").innerText = data.bank_reference;
 
     if (formData.recurring) {
-      $("#bank-instructions-frequency").innerText =
+      $("#bank-instructions-section--frequency").innerText =
         "setting up a monthly periodic payment for";
     } else {
-      $("#bank-instructions-frequency").innerText = "making a bank transfer of";
+      $("#bank-instructions-section--frequency").innerText =
+        "making a bank transfer of";
     }
 
-    if (formData["form-0-partner_charity"] === "unallocated") {
-      $("#bank-instructions-charity").innerText = "our partner charities";
-      $("#bank-instructions-amount").innerText = totalAmountMostEffective;
-    } else if (directLinkCharityDetails) {
-      $("#bank-instructions-charity").innerText = directLinkCharityDetails.name;
-      $("#bank-instructions-amount").innerText = totalAmountMostEffective;
+    if (this.#allocationType === "default") {
+      $("#bank-instructions-section--charity").innerText =
+        "our partner charities";
+      $("#bank-instructions-section--amount").innerText = (
+        this.#basicDonationAmount + this.#tipDollarAmount
+      ).toFixed(2);
+    } else if (this.#allocationType === "direct-link") {
+      $("#bank-instructions-section--charity").innerText =
+        this.#directLinkCharityDetails.name;
+      $("#bank-instructions-section--amount").innerText = (
+        this.#basicDonationAmount + this.#tipDollarAmount
+      ).toFixed(2);
     } else {
-      $("#bank-instructions-charity").innerText =
-        "your chosen partner charities";
-      $("#bank-instructions-amount").innerText = totalAmountSpecific;
+      $("#bank-instructions-section--charity").innerText =
+        "your chosen partner charity (or charities)";
+      $("#bank-instructions-section--amount").innerText = (
+        this.#getSpecificAllocationsTotal() + this.#tipDollarAmount
+      ).toFixed(2);
     }
 
     $("#bank-instructions-section").scrollIntoView();
@@ -351,7 +357,7 @@ class FormController {
 
   #addSpecificAllocationFormData(formData) {
     let totalForms = 0;
-    partnerCharities.forEach((charity) => {
+    this.#partnerCharities.forEach((charity) => {
       let amount = $(`#${charity.slug_id}-amount`).value;
       if (amount > 0) {
         formData[`form-${totalForms}-id`] = null;
@@ -366,7 +372,8 @@ class FormController {
   }
 
   async #generateAndSendFestiveCard(data) {
-    if (!isFestiveGift) {
+    if (!this.#isFestiveGift) {
+      console.log("We'er here");
       return data;
     }
 
