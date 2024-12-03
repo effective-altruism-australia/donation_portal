@@ -187,7 +187,7 @@ class FormController {
     return this.#partnerCharities;
   }
 
-  setFestiveGift(isFestiveGift) {
+  setIsFestiveGift(isFestiveGift) {
     this.#isFestiveGift = isFestiveGift;
   }
 
@@ -381,7 +381,7 @@ class FormController {
       return data;
     }
 
-    const formData = buildFormData();
+    const formData = this.#buildFormData();
 
     let charity =
       formData["form-TOTAL_FORMS"] > 1

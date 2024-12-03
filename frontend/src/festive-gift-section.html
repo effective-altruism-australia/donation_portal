@@ -45,13 +45,18 @@
       Are you making this donation as a gift for the festive season?
     </h2>
     <label class="eaa-checkbox mb-4">
-      <input type="checkbox" id="is-festive-gift" name="is-festive-gift" />
+      <input
+        type="checkbox"
+        id="festive-gift-section--is-festive-gift"
+        name="is-festive-gift"
+        onclick="FestiveGiftSection.handleFestiveGiftSection(event)"
+      />
       Yes, this is a gift for the festive season.
       <div class="checkmark rounded"></div>
     </label>
 
     <fieldset
-      id="festive-gift-details-section"
+      id="festive-gift-section--details"
       class="flex flex-col self-stretch mb-4"
       disabled
       style="display: none"
@@ -61,7 +66,7 @@
           Please fill out these details and we’ll email you a personalised card
           to pass on.
         </p>
-        <label for="recipient-name">
+        <label for="festive-gift-section--recipient-name">
           Recipient's first name (14 characters max)
         </label>
         <div class="info-icon" tabindex="0">
@@ -73,7 +78,7 @@
         </div>
         <input
           type="text"
-          id="festive-gift-recipient-name"
+          id="festive-gift-section--recipient-name"
           name="festive-gift-recipient-name"
           class="block w-full p-2 text-md border mt-1 mb-2 rounded focus-outline"
           maxlength="14"
@@ -82,7 +87,9 @@
       </div>
 
       <div>
-        <label for="recipient-email"> Recipient's email </label>
+        <label for="festive-gift-section--recipient-email">
+          Recipient's email
+        </label>
         <div class="info-icon" tabindex="0">
           ⓘ
           <div class="info-tooltip">
@@ -93,7 +100,7 @@
         </div>
         <input
           type="email"
-          id="festive-gift-recipient-email"
+          id="festive-gift-section--recipient-email"
           name="festive-gift-recipient-email"
           class="block w-full p-2 text-md border mt-1 mb-2 rounded focus-outline"
           required
@@ -101,8 +108,8 @@
       </div>
 
       <div>
-        <label for="festive-gift-message">
-          Personal message (optional, 120 characters max) 
+        <label for="festive-gift-section--message">
+          Personal message (optional, 120 characters max)
         </label>
         <div class="info-icon" tabindex="0">
           ⓘ
@@ -113,7 +120,7 @@
           </div>
         </div>
         <textarea
-          id="festive-gift-message"
+          id="festive-gift-section--message"
           name="festive-gift-personal-message"
           class="block w-full h-20 p-2 text-md block p-2 border mt-1 mb-2 rounded focus-outline"
           maxlength="120"
@@ -133,19 +140,6 @@
   class FestiveGiftSection {
     constructor() {
       $("#festive-gift-section").style.display = "block";
-      
-      this.section = $("#festive-gift-section");
-      this.checkbox = $("#is-festive-gift");
-      this.detailsSection = $("#festive-gift-details-section");
-      this.recipientName = $("#festive-gift-recipient-name");
-      this.recipientEmail = $("#festive-gift-recipient-email");
-      this.personalMessage = $("#festive-gift-message");
-
-      this.checkbox.addEventListener("click", () => {
-        this.checkbox.checked
-          ? this.showFestiveGiftSection()
-          : this.hideFestiveGiftSection();
-      });
 
       $$(".info-icon").forEach((icon) => {
         icon.addEventListener("click", () => {
@@ -157,18 +151,37 @@
       });
     }
 
-    showFestiveGiftSection() {
-      this.detailsSection.style.display = "block";
-      this.detailsSection.disabled = false;
-      this.recipientEmail.setAttribute("required", "true");
-      this.recipientName.setAttribute("required", "true");
+    static handleFestiveGiftSection(e) {
+      formController.setIsFestiveGift(e.target.checked);
+      e.target.checked
+        ? this.#showFestiveGiftSection()
+        : this.#hideFestiveGiftSection();
     }
 
-    hideFestiveGiftSection() {
-      this.detailsSection.style.display = "none";
-      this.detailsSection.disabled = true;
-      this.recipientEmail.setAttribute("required", "false");
-      this.recipientName.setAttribute("required", "false");
+    static #showFestiveGiftSection() {
+      $("#festive-gift-section--details").style.display = "block";
+      $("#festive-gift-section--details").disabled = false;
+      $("#festive-gift-section--recipient-email").setAttribute(
+        "required",
+        "true"
+      );
+      $("#festive-gift-section--recipient-name").setAttribute(
+        "required",
+        "true"
+      );
+    }
+
+    static #hideFestiveGiftSection() {
+      $("#festive-gift-section--details").style.display = "none";
+      $("#festive-gift-section--details").disabled = true;
+      $("#festive-gift-section--recipient-email").setAttribute(
+        "required",
+        "false"
+      );
+      $("#festive-gift-section--recipient-name").setAttribute(
+        "required",
+        "false"
+      );
     }
   }
 </script>
