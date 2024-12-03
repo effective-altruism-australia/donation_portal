@@ -33,12 +33,7 @@
 
 <section id="amplify-impact-section">
   <h2 class="text-lg">Amplify my impact</h2>
-  <p class="text-sm">
-    EA Australia is on a mission to help Australians tackle the world’s most
-    pressing problems. We have big plans to reach more people, improve our
-    infrastructure, and grow our community. With your support, we can help a
-    larger slice of donations made in Australia go toward high impact causes.
-  </p>
+  <p>I would like to add</p>
   <div class="radio-group flex gap-2">
     <input
       type="radio"
@@ -79,10 +74,10 @@
     <label
       for="amplify-impact-section--amount-10"
       class="flex items-center justify-center rounded text-blue"
-      >
+    >
       10%
     </label>
-    
+
     <input
       type="radio"
       id="amplify-impact-section--amount-20"
@@ -111,7 +106,10 @@
       30%
     </label>
   </div>
-  <div id="amplify-impact-section--custom-amount" class="flex flex-col validate mb-2">
+  <div
+    id="amplify-impact-section--custom-amount"
+    class="flex flex-col validate mb-2"
+  >
     <label class="inline-block mb-2 mt-4" for="custom-amount-input"
       >Or a custom dollar amount:</label
     >
@@ -136,6 +134,18 @@
       />
     </span>
   </div>
+  <p>
+    To grow Effective Altruism Australia's work
+    <button type="button" popovertarget="festive-gift-section--message-info">
+      ⓘ
+    </button>
+  </p>
+  <div popover id="festive-gift-section--message-info">
+    EA Australia is on a mission to help Australians tackle the world’s most
+    pressing problems. We have big plans to reach more people, improve our
+    infrastructure, and grow our community. With your support, we can help a
+    larger slice of donations made in Australia go toward high impact causes.
+  </div>
 </section>
 
 <script>
@@ -158,14 +168,18 @@
     }
 
     static handleCustomAmountBlur() {
-      const customAmountInput = $("#amplify-impact-section--custom-amount-input");
+      const customAmountInput = $(
+        "#amplify-impact-section--custom-amount-input"
+      );
       if (customAmountInput.value === "") {
         customAmountInput.classList.remove("validate");
       }
     }
-    
+
     static handleCustomAmountChange() {
-      const customAmountInput = $("#amplify-impact-section--custom-amount-input");
+      const customAmountInput = $(
+        "#amplify-impact-section--custom-amount-input"
+      );
       formController.setTipValues(customAmountInput.value, "dollar");
     }
 
@@ -185,6 +199,5 @@
       $("#amplify-impact-section--custom-amount-input").value = "";
       $("#amplify-impact-section--custom-amount").classList.remove("validate");
     }
-
   }
 </script>
