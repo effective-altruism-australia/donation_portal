@@ -258,8 +258,19 @@ class FormController {
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
-      .then((data) => this.#generateAndSendFestiveCard(data))
-      .then((data) => this.#handleFormSubmitResponse(data, formData));
+      .then(async (data) => {
+        await FestiveGiftSection.generateAndSendCard({
+          paymentReference: data,
+          isFestiveGift: this.#isFestiveGift,
+          donorName: this.#donorFirstName,
+          donorEmail: this.#donorEmail,
+          allocationType: this.#allocationType,
+          basicDonationAmount: this.#basicDonationAmount,
+          specificAllocations: this.#specificAllocations,
+          directLinkCharity: this.#directLinkCharity,
+        });
+        this.#handleFormSubmitResponse(data, formData);
+      });
     return false;
   }
 
@@ -374,56 +385,6 @@ class FormController {
     formData["form-TOTAL_FORMS"] = totalForms;
     formData["form-INITIAL_FORMS"] = totalForms;
     return formData;
-  }
-
-  async #generateAndSendFestiveCard(data) {
-    if (!this.#isFestiveGift) {
-      return data;
-    }
-
-    const formData = this.#buildFormData();
-
-    let charity =
-      formData["form-TOTAL_FORMS"] > 1
-        ? "unallocated"
-        : formData["form-0-partner_charity"];
-
-    let amount = 0;
-    Object.keys(formData).forEach((key) => {
-      if (key.match(/form-\d+-amount/)) {
-        amount += parseInt(formData[key]);
-      }
-    });
-
-    const response = await fetch(
-      "https://eaa-festiveseasoncards.deno.dev/api/generate-and-send-card",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          paymentReference: data.bank_reference || data.id,
-          charity: charity,
-          donorName: formData.first_name,
-          donorEmail: formData.email,
-          recipientName: $("#festive-gift-recipient-name").value,
-          recipientEmail: $("#festive-gift-recipient-email").value,
-          amount: String(amount),
-          message: $("#festive-gift-message").value,
-        }),
-      }
-    ).then((response) => response.json());
-
-    if (!response.success) {
-      data.sendCardFailed = true;
-      alert(
-        "We don't seem to be able to create a Christmas card with the details you entered. The card generator said: " +
-          response.message
-      );
-    }
-
-    return data;
   }
 }
 
