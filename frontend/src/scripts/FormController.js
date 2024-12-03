@@ -62,9 +62,6 @@ class FormController {
   async #renderDirectLinkCharityForm() {
     const response = await fetch(ORIGIN + "/partner_charities");
     this.#partnerCharities = await response.json();
-    this.#partnerCharities = this.#partnerCharities.filter(
-      (charity) => charity.slug_id === "eaa-amplify"
-    );
     this.#partnerCharities.forEach((charity) => {
       this.#specificAllocations[charity.slug_id] = 0;
     });
@@ -90,6 +87,9 @@ class FormController {
   async #renderStandardForm() {
     const response = await fetch(ORIGIN + "/partner_charities");
     this.#partnerCharities = await response.json();
+    this.#partnerCharities = this.#partnerCharities.filter(
+      (charity) => charity.slug_id !== "eaa-amplify"
+    );
     this.#partnerCharities.forEach((charity) => {
       this.#specificAllocations[charity.slug_id] = 0;
     });
