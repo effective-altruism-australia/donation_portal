@@ -46,6 +46,13 @@
       }
     }
 
+    static #formatCurrency(amount) {
+      return amount.toLocaleString("en-AU", {
+        style: "currency",
+        currency: "AUD",
+      });
+    }
+
     static #buildBasicAllocationTable(context) {
       const { basicDonationAmount, tipDollarAmount, tipType, tipSize } =
         context;
@@ -54,22 +61,22 @@
         tipType === "percentage" ? "(" + tipSize + "%)" : "";
       const combinedTotal = basicDonationAmount + tipDollarAmount;
       let table = `
-      <tr>
-        <td><h2 class="text-md">Designation</h2></td>
-        <td><h2 class="text-md">Amount</h2></td>
-      </tr>
-      <tr>
-        <td>The most effective charities</td>
-        <td>${basicDonationAmount.toFixed(2)}</td>
-      </tr>
-      <tr>
-        <td>Effective Altruism Australia ${amplifyPercentage}</td>
-        <td>${tipDollarAmount.toFixed(2)}</td>
-      </tr>
-      <tr>
-        <td>Total donation ${isMonthly ? " (each month)" : ""}</td>
-        <td>$${combinedTotal.toFixed(2)}</td>
-      </tr>`;
+        <tr>
+          <td><h2 class="text-md">Designation</h2></td>
+          <td><h2 class="text-md">Amount</h2></td>
+        </tr>
+        <tr>
+          <td>The most effective charities</td>
+          <td>${this.#formatCurrency(basicDonationAmount)}</td>
+        </tr>
+        <tr>
+          <td>Effective Altruism Australia ${amplifyPercentage}</td>
+          <td>${this.#formatCurrency(tipDollarAmount)}</td>
+        </tr>
+        <tr>
+          <td>Total donation ${isMonthly ? " (each month)" : ""}</td>
+          <td>${this.#formatCurrency(combinedTotal)}</td>
+        </tr>`;
       $("#total-amount-section table").innerHTML = table;
     }
 
@@ -96,28 +103,28 @@
       combinedTotal = combinedTotal + tipDollarAmount;
 
       let table = `
-      <tr>
-        <td><h2 class="text-md">Designation</h2></td>
-        <td><h2 class="text-md">Amount</h2></td>
-      </tr>`;
+        <tr>
+          <td><h2 class="text-md">Designation</h2></td>
+          <td><h2 class="text-md">Amount</h2></td>
+        </tr>`;
       Object.keys(specificAllocations).forEach((charitySlug) => {
         const charityAmount = +specificAllocations[charitySlug] || 0;
         if (charityAmount === 0) return;
         table += `
-        <tr>
-          <td>${charityNameLookup[charitySlug]}</td>
-          <td>${charityAmount.toFixed(2)}</td>
-        </tr>`;
+          <tr>
+            <td>${charityNameLookup[charitySlug]}</td>
+            <td>${this.#formatCurrency(charityAmount)}</td>
+          </tr>`;
       });
       table += `
-      <tr>
-        <td>Effective Altruism Australia ${amplifyPercentage}</td>
-        <td>${tipDollarAmount.toFixed(2)}</td>
-      </tr>
-      <tr>
-        <td>Total donation ${isMonthly ? " (each month)" : ""}</td>
-        <td>$${combinedTotal.toFixed(2)}</td>
-      </tr>`;
+        <tr>
+          <td>Effective Altruism Australia ${amplifyPercentage}</td>
+          <td>${this.#formatCurrency(tipDollarAmount)}</td>
+        </tr>
+        <tr>
+          <td>Total donation ${isMonthly ? " (each month)" : ""}</td>
+          <td>${this.#formatCurrency(combinedTotal)}</td>
+        </tr>`;
       $("#total-amount-section table").innerHTML = table;
     }
   }
