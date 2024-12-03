@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 /*
-Ensure that the form doesn't sent with invalid data and prompts the user to
+Ensure that the form doesn't submit with invalid data and prompts the user to
 correct the issues.
 */
 
