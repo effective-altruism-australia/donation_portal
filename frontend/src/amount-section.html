@@ -74,14 +74,14 @@
       <input
         type="number"
         inputmode="numeric"
-        min="2"
+        min="0"
         max="999999.99"
         step="1"
         id="amount-section--custom-amount-input"
         name="custom-amount-input"
         class="inline-block text-md"
         onblur="AmountSection.handleCustomAmountBlur()"
-        onfocus="AmountSection.handleCustomAmountFocus()"
+        onfocus="AmountSection.handleCustomAmountFocus(event)"
         oninput="AmountSection.handleCustomAmountChange()"
         placeholder="Enter your custom amount here"
       />
@@ -95,8 +95,8 @@
       $("#amount-section").style.display = "block";
     }
 
-    static handleCustomAmountFocus() {
-      formController.setBasicDonationAmount(0);
+    static handleCustomAmountFocus(e) {
+      formController.setBasicDonationAmount(e.target.value);
       $("#amount-section--custom-amount").classList.add("validate");
       $("#amount-section--donate-25").checked = false;
       $("#amount-section--donate-50").checked = false;
