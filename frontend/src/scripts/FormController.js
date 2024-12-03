@@ -62,6 +62,9 @@ class FormController {
   async #renderDirectLinkCharityForm() {
     const response = await fetch(ORIGIN + "/partner_charities");
     this.#partnerCharities = await response.json();
+    this.#partnerCharities = this.#partnerCharities.filter(
+      (charity) => charity.slug_id === "eaa-amplify"
+    );
     this.#partnerCharities.forEach((charity) => {
       this.#specificAllocations[charity.slug_id] = 0;
     });
@@ -327,20 +330,25 @@ class FormController {
   }
 
   #addStandardAllocationFormData(formData) {
-    formData["form-0-id"] = null;
-    formData["form-0-amount"] = this.#basicDonationAmount.toString();
-    formData["form-0-partner_charity"] =
-      this.#directLinkCharity || "unallocated";
-    if (this.#tipDollarAmount > 0) {
-      formData["form-1-id"] = null;
-      formData["form-1-amount"] = this.#tipDollarAmount.toFixed(2).toString();
-      formData["form-1-partner_charity"] = "eaa-amplify";
-      formData["form-TOTAL_FORMS"] = 2;
-      formData["form-INITIAL_FORMS"] = 2;
-    } else {
-      formData["form-TOTAL_FORMS"] = 1;
-      formData["form-INITIAL_FORMS"] = 1;
+    let totalForms = 0;
+    if (this.#basicDonationAmount > 0) {
+      formData[`form-${totalForms}-id`] = null;
+      formData[`form-${totalForms}-amount`] =
+        this.#basicDonationAmount.toString();
+      formData[`form-${totalForms}-partner_charity`] =
+        this.#directLinkCharity || "unallocated";
+      totalForms++;
     }
+    if (this.#tipDollarAmount > 0) {
+      formData[`form-${totalForms}-id`] = null;
+      formData[`form-${totalForms}-amount`] = this.#tipDollarAmount
+        .toFixed(2)
+        .toString();
+      formData[`form-${totalForms}-partner_charity`] = "eaa-amplify";
+      totalForms++;
+    }
+    formData["form-TOTAL_FORMS"] = totalForms;
+    formData["form-INITIAL_FORMS"] = totalForms;
     return formData;
   }
 

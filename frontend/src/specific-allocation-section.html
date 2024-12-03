@@ -61,8 +61,6 @@
         categories[charity.category].push(charity);
       });
 
-      delete categories["Help us do more good"];
-
       Object.keys(categories).forEach((catagory) => {
         specificAllocationSectionHTML += `<h3>${catagory}<sup><a href='https://effectivealtruism.org.au/inclusion-criteria/'>ⓘ</a></sup></h3>`;
         categories[catagory].forEach((charity) => {
