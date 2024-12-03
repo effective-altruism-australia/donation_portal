@@ -171,7 +171,7 @@
       } = context;
 
       if (!isFestiveGift) {
-        return;
+        return "success";
       }
 
       const charitiesWithAmounts = [];
@@ -225,14 +225,14 @@
       ).then((response) => response.json());
 
       if (!response.success) {
-        data.sendCardFailed = true;
         alert(
           "We don't seem to be able to create a Christmas card with the details you entered. The card generator said: " +
             response.message
         );
+        return "error";
       }
 
-      return data;
+      return "success";
     }
   }
 </script>

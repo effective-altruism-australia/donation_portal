@@ -102,6 +102,8 @@ input:user-invalid.validate {
   padding: 0;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  width: 18px;
+  height: 18px;
 }
 
 [popovertarget]:hover {

@@ -44,7 +44,7 @@ class FormController {
 
     // Decide which form to build based on the url params
     if (this.#showThankYouMessage) {
-      new ThankYouMessage();
+      new ThankyouSection();
     } else if (this.#directLinkCharity === "eaae") {
       this.#renderEaaeForm();
     } else if (this.#directLinkCharity) {
@@ -60,6 +60,16 @@ class FormController {
   }
 
   async #renderDirectLinkCharityForm() {
+    new AmountSection();
+    new AmplifyImpactSection();
+    new TotalAmountSection();
+    new PersonalDetailsSection();
+    new CommunicationsSection();
+    new PaymentMethodSection();
+    new FestiveGiftSection();
+    new DonateButtonSection();
+    new DonationFrequencySection();
+
     const response = await fetch(ORIGIN + "/partner_charities");
     this.#partnerCharities = await response.json();
     this.#partnerCharities.forEach((charity) => {
@@ -72,8 +82,12 @@ class FormController {
       new ErrorSection();
       return;
     }
-    new DonationFrequencySection();
     new DirectLinkCharitySection(this.#directLinkCharityDetails);
+  }
+
+  async #renderStandardForm() {
+    new DonationFrequencySection();
+    new AllocationSection();
     new AmountSection();
     new AmplifyImpactSection();
     new TotalAmountSection();
@@ -82,9 +96,7 @@ class FormController {
     new PaymentMethodSection();
     new FestiveGiftSection();
     new DonateButtonSection();
-  }
 
-  async #renderStandardForm() {
     const response = await fetch(ORIGIN + "/partner_charities");
     this.#partnerCharities = await response.json();
     this.#partnerCharities = this.#partnerCharities.filter(
@@ -94,17 +106,7 @@ class FormController {
       this.#specificAllocations[charity.slug_id] = 0;
     });
 
-    new DonationFrequencySection();
-    new AllocationSection();
-    new AmountSection();
     new SpecificAllocationSection(this.#partnerCharities);
-    new AmplifyImpactSection();
-    new TotalAmountSection();
-    new PersonalDetailsSection();
-    new CommunicationsSection();
-    new PaymentMethodSection();
-    new FestiveGiftSection();
-    new DonateButtonSection();
   }
 
   setDonationFrequency(frequency) {
@@ -259,7 +261,7 @@ class FormController {
     })
       .then((response) => response.json())
       .then(async (data) => {
-        await FestiveGiftSection.generateAndSendCard({
+        const result = await FestiveGiftSection.generateAndSendCard({
           paymentReference: data,
           isFestiveGift: this.#isFestiveGift,
           donorName: this.#donorFirstName,
@@ -269,18 +271,17 @@ class FormController {
           specificAllocations: this.#specificAllocations,
           directLinkCharity: this.#directLinkCharity,
         });
-        this.#handleFormSubmitResponse(data, formData);
+        $("#loader").style.display = "none";
+        if (result === "error") {
+          return;
+        } else {
+          this.#handleFormSubmitResponse(data, formData);
+        }
       });
     return false;
   }
 
   #handleFormSubmitResponse(data, formData) {
-    $("#loader").style.display = "none";
-
-    if (data.sendCardFailed) {
-      return;
-    }
-
     if (data.bank_reference) {
       this.#renderBankTransferInstructions(formData, data);
     } else if (data.id) {
