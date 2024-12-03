@@ -68,6 +68,10 @@ class FormController {
     this.#directLinkCharityDetails = this.#partnerCharities.find(
       (charity) => charity.slug_id === this.#directLinkCharity
     );
+    if (!this.#directLinkCharityDetails) {
+      new ErrorSection();
+      return;
+    }
     new DonationFrequencySection();
     new DirectLinkCharitySection(this.#directLinkCharityDetails);
     new AmountSection();
@@ -221,23 +225,23 @@ class FormController {
   }
 
   handleFormSubmit() {
-    if (this.#allocationType === "specific") {
-      if (this.#getSpecificAllocationsTotal() + this.#tipDollarAmount < 2) {
-        alert("Please allocate at least $2 across your preferred charities.");
-        $("#allocation-section--specific-allocation").focus();
-        return false;
-      }
+    if (
+      this.#allocationType === "specific" &&
+      this.#getSpecificAllocationsTotal() + this.#tipDollarAmount < 2
+    ) {
+      alert("Please allocate at least $2 across your preferred charities.");
+      $("#allocation-section--specific-allocation").focus();
+      return false;
     }
 
     if (
-      this.#allocationType === "direct-link" ||
-      this.#allocationType === "default"
+      (this.#allocationType === "direct-link" ||
+        this.#allocationType === "default") &&
+      this.#basicDonationAmount + this.#tipDollarAmount < 2
     ) {
-      if (this.#basicDonationAmount + this.#tipDollarAmount < 2) {
-        alert("Please select an amount of at least $2.");
-        $("#amount-section--custom-amount-input").focus();
-        return false;
-      }
+      alert("Please select an amount of at least $2.");
+      $("#amount-section--custom-amount-input").focus();
+      return false;
     }
 
     $("#loader").style.display = "block";
@@ -266,7 +270,7 @@ class FormController {
     if (data.bank_reference) {
       this.#renderBankTransferInstructions(formData, data);
     } else if (data.id) {
-      stripe.redirectToCheckout({ sessionId: data.id });
+      this.#stripe.redirectToCheckout({ sessionId: data.id });
     } else {
       $("form").innerText =
         "Error submitting form. Please try again. If this problem persists, please email info@eaa.org.au.";
@@ -274,7 +278,16 @@ class FormController {
   }
 
   #renderBankTransferInstructions(formData, data) {
-    new BankInstructionsSection();
+    new BankInstructionsSection({
+      allocationType: this.#allocationType,
+      firstName: formData.first_name,
+      bankReference: data.bank_reference,
+      recurring: formData.recurring,
+      basicDonationAmount: this.#basicDonationAmount,
+      tipDollarAmount: this.#tipDollarAmount,
+      specificAllocationsTotal: this.#getSpecificAllocationsTotal(),
+      directLinkCharityDetails: this.#directLinkCharityDetails,
+    });
     hide("#festive-gift-section");
     hide("#payment-method-section");
     hide("#specific-allocation-section");
@@ -289,38 +302,6 @@ class FormController {
     hide("#festive-gift-section");
     hide("#thank-you-message");
     hide("#donate-button-section");
-    $("#bank-instructions-section--name").innerText = formData.first_name;
-    $("#bank-instructions-section--reference").innerText = data.bank_reference;
-
-    if (formData.recurring) {
-      $("#bank-instructions-section--frequency").innerText =
-        "setting up a monthly periodic payment for";
-    } else {
-      $("#bank-instructions-section--frequency").innerText =
-        "making a bank transfer of";
-    }
-
-    if (this.#allocationType === "default") {
-      $("#bank-instructions-section--charity").innerText =
-        "our partner charities";
-      $("#bank-instructions-section--amount").innerText = (
-        this.#basicDonationAmount + this.#tipDollarAmount
-      ).toFixed(2);
-    } else if (this.#allocationType === "direct-link") {
-      $("#bank-instructions-section--charity").innerText =
-        this.#directLinkCharityDetails.name;
-      $("#bank-instructions-section--amount").innerText = (
-        this.#basicDonationAmount + this.#tipDollarAmount
-      ).toFixed(2);
-    } else {
-      $("#bank-instructions-section--charity").innerText =
-        "your chosen partner charity (or charities)";
-      $("#bank-instructions-section--amount").innerText = (
-        this.#getSpecificAllocationsTotal() + this.#tipDollarAmount
-      ).toFixed(2);
-    }
-
-    $("#bank-instructions-section").scrollIntoView();
   }
 
   #buildFormData() {
@@ -350,8 +331,16 @@ class FormController {
     formData["form-0-amount"] = this.#basicDonationAmount.toString();
     formData["form-0-partner_charity"] =
       this.#directLinkCharity || "unallocated";
-    formData["form-TOTAL_FORMS"] = 1;
-    formData["form-INITIAL_FORMS"] = 1;
+    if (this.#tipDollarAmount > 0) {
+      formData["form-1-id"] = null;
+      formData["form-1-amount"] = this.#tipDollarAmount.toFixed(2).toString();
+      formData["form-1-partner_charity"] = "eaa-amplify";
+      formData["form-TOTAL_FORMS"] = 2;
+      formData["form-INITIAL_FORMS"] = 2;
+    } else {
+      formData["form-TOTAL_FORMS"] = 1;
+      formData["form-INITIAL_FORMS"] = 1;
+    }
     return formData;
   }
 
@@ -366,6 +355,14 @@ class FormController {
         totalForms++;
       }
     });
+    if (this.#tipDollarAmount > 0) {
+      formData[`form-${totalForms}-id`] = null;
+      formData[`form-${totalForms}-amount`] = this.#tipDollarAmount
+        .toFixed(2)
+        .toString();
+      formData[`form-${totalForms}-partner_charity`] = "eaa-amplify";
+      totalForms++;
+    }
     formData["form-TOTAL_FORMS"] = totalForms;
     formData["form-INITIAL_FORMS"] = totalForms;
     return formData;
@@ -373,7 +370,6 @@ class FormController {
 
   async #generateAndSendFestiveCard(data) {
     if (!this.#isFestiveGift) {
-      console.log("We'er here");
       return data;
     }
 

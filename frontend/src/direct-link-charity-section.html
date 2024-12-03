@@ -26,21 +26,6 @@
     }
 
     #buildDirectLinkCharitySection(directLinkCharityDetails) {
-      if (!directLinkCharityDetails) {
-        new ErrorSection();
-        hide("#donation-frequency-section");
-        hide("#allocation-section");
-        hide("#specific-allocation-section");
-        hide("#direct-link-charity-section");
-        hide("#amount-section");
-        hide("#personal-details-section");
-        hide("#communications-section");
-        hide("#payment-method-section");
-        hide("#thank-you-message");
-        hide("#donate-button-section");
-        return;
-      }
-
       $("#direct-link-charity-section--logo").innerHTML =
         directLinkCharityDetails.thumbnail
           ? `<img src="${ORIGIN}/static/${directLinkCharityDetails.thumbnail}" alt="${directLinkCharityDetails.name}" />`

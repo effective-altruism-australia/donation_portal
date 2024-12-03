@@ -47,11 +47,12 @@
     }
 
     static #buildBasicAllocationTable(context) {
+      const { basicDonationAmount, tipDollarAmount, tipType, tipSize } =
+        context;
       const isMonthly = formController.getDonationFrequency() === "monthly";
       const amplifyPercentage =
-        context.tipType === "percentage" ? "(" + context.tipSize + "%)" : "";
-      const combinedTotal =
-        context.basicDonationAmount + context.tipDollarAmount;
+        tipType === "percentage" ? "(" + tipSize + "%)" : "";
+      const combinedTotal = basicDonationAmount + tipDollarAmount;
       let table = `
       <tr>
         <td><h2 class="text-md">Designation</h2></td>
@@ -59,11 +60,11 @@
       </tr>
       <tr>
         <td>The most effective charities</td>
-        <td>${context.basicDonationAmount.toFixed(2)}</td>
+        <td>${basicDonationAmount.toFixed(2)}</td>
       </tr>
       <tr>
         <td>Effective Altruism Australia ${amplifyPercentage}</td>
-        <td>${context.tipDollarAmount.toFixed(2)}</td>
+        <td>${tipDollarAmount.toFixed(2)}</td>
       </tr>
       <tr>
         <td>Total donation ${isMonthly ? " (each month)" : ""}</td>
@@ -73,10 +74,12 @@
     }
 
     static #buildSpecificAllocationTable(context) {
+      const { specificAllocations, tipDollarAmount, tipType, tipSize } =
+        context;
       const isMonthly = formController.getDonationFrequency() === "monthly";
 
       const amplifyPercentage =
-        context.tipType === "percentage" ? "(" + context.tipSize + "%)" : "";
+        tipType === "percentage" ? "(" + tipSize + "%)" : "";
 
       // Create a lookup table for charity names
       const charityNameLookup = {};
@@ -87,18 +90,18 @@
 
       // Calculate the total donation amount
       let combinedTotal = 0;
-      for (const charity in context.specificAllocations) {
-        combinedTotal += +context.specificAllocations[charity];
+      for (const charity in specificAllocations) {
+        combinedTotal += +specificAllocations[charity];
       }
-      combinedTotal = combinedTotal + context.tipDollarAmount;
-      
+      combinedTotal = combinedTotal + tipDollarAmount;
+
       let table = `
       <tr>
         <td><h2 class="text-md">Designation</h2></td>
         <td><h2 class="text-md">Amount</h2></td>
       </tr>`;
-      Object.keys(context.specificAllocations).forEach((charitySlug) => {
-        const charityAmount = +context.specificAllocations[charitySlug] || 0;
+      Object.keys(specificAllocations).forEach((charitySlug) => {
+        const charityAmount = +specificAllocations[charitySlug] || 0;
         if (charityAmount === 0) return;
         table += `
         <tr>
@@ -109,7 +112,7 @@
       table += `
       <tr>
         <td>Effective Altruism Australia ${amplifyPercentage}</td>
-        <td>${context.tipDollarAmount.toFixed(2)}</td>
+        <td>${tipDollarAmount.toFixed(2)}</td>
       </tr>
       <tr>
         <td>Total donation ${isMonthly ? " (each month)" : ""}</td>

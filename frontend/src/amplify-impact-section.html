@@ -170,6 +170,7 @@
     }
 
     static handleCustomAmountFocus() {
+      formController.setTipValues(0, "percentage");
       $("#amplify-impact-section--custom-amount").classList.add("validate");
       $("#amplify-impact-section--amount-0").checked = false;
       $("#amplify-impact-section--amount-5").checked = false;

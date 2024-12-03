@@ -96,6 +96,7 @@
     }
 
     static handleCustomAmountFocus() {
+      formController.setBasicDonationAmount(0);
       $("#amount-section--custom-amount").classList.add("validate");
       $("#amount-section--donate-25").checked = false;
       $("#amount-section--donate-50").checked = false;

@@ -45,7 +45,8 @@
     </p>
     <p>
       <strong>Reference Number</strong><br />
-      <span id="bank-instructions-section--reference" class="text-lg"></span><br />
+      <span id="bank-instructions-section--reference" class="text-lg"></span
+      ><br />
       <span class="text-sm">(Place this in the transaction description)</span>
     </p>
   </div>
@@ -77,8 +78,51 @@
 
 <script>
   class BankInstructionsSection {
-    constructor() {
+    constructor(context) {
+      const {
+        firstName,
+        bankReference,
+        recurring,
+        allocationType,
+        basicDonationAmount,
+        tipDollarAmount,
+        specificAllocationsTotal,
+        directLinkCharityDetails,
+      } = context;
+
       $("#bank-instructions-section").style.display = "block";
+      $("#bank-instructions-section--name").innerText = firstName;
+      $("#bank-instructions-section--reference").innerText = bankReference;
+
+      if (recurring) {
+        $("#bank-instructions-section--frequency").innerText =
+          "setting up a monthly periodic payment for";
+      } else {
+        $("#bank-instructions-section--frequency").innerText =
+          "making a bank transfer of";
+      }
+
+      if (allocationType === "default") {
+        $("#bank-instructions-section--charity").innerText =
+          "our partner charities";
+        $("#bank-instructions-section--amount").innerText = (
+          basicDonationAmount + tipDollarAmount
+        ).toFixed(2);
+      } else if (allocationType === "direct-link") {
+        $("#bank-instructions-section--charity").innerText =
+          directLinkCharityDetails.name;
+        $("#bank-instructions-section--amount").innerText = (
+          basicDonationAmount + tipDollarAmount
+        ).toFixed(2);
+      } else {
+        $("#bank-instructions-section--charity").innerText =
+          "your chosen partner charity (or charities)";
+        $("#bank-instructions-section--amount").innerText = (
+          specificAllocationsTotal + tipDollarAmount
+        ).toFixed(2);
+      }
+
+      $("#bank-instructions-section").scrollIntoView();
     }
   }
 </script>
