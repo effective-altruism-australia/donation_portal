@@ -14,7 +14,7 @@ test("Default allocation: submit with invalid data", async ({
 
   await page.locator('#amount-section--custom-amount-input').fill('-30');
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 

@@ -4,27 +4,31 @@ import { expect, test } from "@playwright/test";
 Ensure that the form submits the correct data when a specific donation is made with a custom tip
 */
 
-test("Tipping: submit with specific donation and custom tip", async ({ page }) => {
-  await page.goto('http://localhost:8000/pledge_new/');
-  
-  await page.getByText('These specific charities').click();
-  
-  await page.locator('#malaria-consortium-amount').fill('50');
-  
-  await page.locator('#give-directly-amount').fill('50');
-  
-  await page.locator('#amplify-impact-section--custom-amount-input').fill('20');
-  
-  await page.getByLabel('First name').fill('Nathan');
+test("Tipping: submit with specific donation and custom tip", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/pledge_new/");
 
-  await page.getByLabel('Last name').fill('Sherburn');
+  await page.getByText("These specific charities").click();
 
-  await page.getByLabel('Email', { exact: true }).fill('testing@eaa.org.au');
+  await page.locator("#malaria-consortium-amount").fill("50");
 
-  await page.getByLabel('Postcode').fill('3000');
-  
-  await page.locator('#communications-section--referral-sources').selectOption('cant-remember');
-  
+  await page.locator("#give-directly-amount").fill("50");
+
+  await page.locator("#amplify-impact-section--custom-amount-input").fill("20");
+
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
+
+  await page.getByLabel("Last name").fill("Sherburn");
+
+  await page.getByLabel("Email", { exact: true }).fill("testing@eaa.org.au");
+
+  await page.getByLabel("Postcode").fill("3000");
+
+  await page
+    .locator("#communications-section--referral-sources")
+    .selectOption("cant-remember");
+
   const testFinished = new Promise<void>((resolve) => {
     page.on("request", (request) => {
       if (request.url().includes("pledge_new")) {
@@ -42,15 +46,15 @@ test("Tipping: submit with specific donation and custom tip", async ({ page }) =
         expect(data["form-TOTAL_FORMS"]).toBe(3);
         expect(data["form-INITIAL_FORMS"]).toBe(3);
         expect(data["form-1-id"]).toBe(null);
-        expect(data["form-1-partner_charity"]).toBe("malaria-consortium");
+        expect(data["form-1-partner_charity"]).toBe("give-directly");
         expect(data["form-1-amount"]).toBe("50");
         expect(data["form-0-id"]).toBe(null);
-        expect(data["form-0-partner_charity"]).toBe("give-directly");
+        expect(data["form-0-partner_charity"]).toBe("malaria-consortium");
         expect(data["form-0-amount"]).toBe("50");
         expect(data["form-2-id"]).toBe(null);
         expect(data["form-2-partner_charity"]).toBe("eaa-amplify");
         expect(data["form-2-amount"]).toBe("20.00");
-        
+
         // Make sure things that shouldn't be sent are not sent
         expect(data["is_gift"]).toBe(undefined);
         expect(data["gift_recipient_name"]).toBe(undefined);
@@ -65,6 +69,6 @@ test("Tipping: submit with specific donation and custom tip", async ({ page }) =
   });
 
   await page.getByRole("button", { name: "Donate" }).click();
-  
+
   await testFinished;
 });

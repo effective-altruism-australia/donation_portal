@@ -1,14 +1,14 @@
 import { expect, test } from "@playwright/test";
 
 /*
-Ensure that the form submits the correct data when a "bank transactions" is
-selected.
+Ensure that the form submits the correct data when a direct-linked charity is chosen
+through the url params. e.g. <base url>/pledge_new/?charity=give-directly
 */
 
-test("Payment method: submit a bank transaction donation", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+test("Direct-linked allocation: submit a credit card donation", async ({ page }) => {
+  await page.goto("http://localhost:8000/pledge_new/?charity=give-directly");
 
-  await page.locator("#amount-section--custom-amount-input").fill("2222");
+  await page.locator("#amount-section--custom-amount-input").fill("28");
 
   await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
@@ -20,12 +20,10 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
 
   await page.locator("#communications-section--referral-sources").selectOption("cant-remember");
 
-  await page.getByText("Bank Transfer", { exact: true }).click();
-
   page.on("request", (request) => {
     if (request.url().includes("pledge_new")) {
       let data = JSON.parse(request.postData() || "{}");
-      expect(data["payment_method"]).toBe("bank-transfer");
+      expect(data["payment_method"]).toBe("credit-card");
       expect(data["recurring_frequency"]).toBe("one-time");
       expect(data["recurring"]).toBe(false);
       expect(data["first_name"]).toBe("Nathan");
@@ -38,11 +36,11 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
       expect(data["form-TOTAL_FORMS"]).toBe(2);
       expect(data["form-INITIAL_FORMS"]).toBe(2);
       expect(data["form-0-id"]).toBe(null);
-      expect(data["form-0-partner_charity"]).toBe("unallocated");
-      expect(data["form-0-amount"]).toBe("2222");
+      expect(data["form-0-partner_charity"]).toBe("give-directly");
+      expect(data["form-0-amount"]).toBe("28");
       expect(data["form-1-id"]).toBe(null);
       expect(data["form-1-partner_charity"]).toBe("eaa-amplify");
-      expect(data["form-1-amount"]).toBe("222.20");
+      expect(data["form-1-amount"]).toBe("2.80");
 
       // Make sure things that shouldn't be sent are not sent
       expect(data["is_gift"]).toBe(undefined);
@@ -55,29 +53,6 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
     }
   });
 
-  let testFinished = new Promise((resolve) => {
-    page.on("response", async (response) => {
-      if (response.url().includes("pledge_new")) {
-        expect(response.status()).toBe(200);
-        await expect(page.getByText("Thank you, Nathan!")).toBeVisible();
-        await expect(page.getByText("$2444.20 to:")).toBeVisible();
-        await expect(
-          page.getByText(
-            "Your donation will be allocated to our partner charities."
-          )
-        ).toBeVisible();
-        await page
-          .locator("#bank-instructions-section--reference")
-          .textContent()
-          .then((text) => {
-            expect(text).toMatch(/^[0-9A-F]{12}$/);
-          });
-        resolve(true);
-      }
-    });
-  });
-
   await page.getByRole("button", { name: "Donate" }).click();
 
-  await testFinished;
 });

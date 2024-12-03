@@ -11,7 +11,7 @@ test("Tipping: submit with basic donation and 30% tip", async ({ page }) => {
 
   await page.getByText("30%").click();
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 

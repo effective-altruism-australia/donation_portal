@@ -20,7 +20,7 @@ test("Default allocation: submit with custom, suggested, then custom amount", as
 
   await page.locator('#amount-section--custom-amount-input').fill('10');
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 

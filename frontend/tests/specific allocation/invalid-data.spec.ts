@@ -1,25 +1,41 @@
 import { expect, test } from "@playwright/test";
 
 /*
-Ensure that the error page shoes when an invalid direct-linked charity
-is chosen through the url params. e.g. <baseurl>/pledge_new/?charity=charity-that-doesnt-exist
+Ensure that the form prompts donors to complete the Specific allocation section
+when their data is invalid.
 */
 
-test("Direct-linked allocation: unknown charity", async ({ page }) => {
-  let testFinished = new Promise((resolve) => {
-    page.on("request", async (request) => {
+test("Custom allocation: submit with invalid data", async ({ page }) => {
+
+  await page.goto("http://localhost:8000/pledge_new/");
+
+  await page.getByText("These specific charities").click();
+
+  await page.locator("#malaria-consortium-amount").fill("10");
+
+  await page.locator("#give-directly-amount").fill("-5");
+
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
+
+  await page.getByLabel("Last name").fill("Sherburn");
+
+  await page.getByLabel("Email", { exact: true }).fill("testing@eaa.org.au");
+
+  await page.getByLabel("Postcode").fill("3000");
+
+  await page.locator("#communications-section--referral-sources").selectOption("cant-remember");
+
+  const testFinished = new Promise<void>((resolve) => {
+    page.on("request", (request) => {
+      // The request should never be sent with invalid data
       if (request.url().includes("pledge_new")) {
-        await expect(
-          page.getByText("Something's gone wrong", { exact: true })
-        ).toBeVisible();
-        resolve(true);
+        expect(true).toBe(false);
       }
+      resolve();
     });
   });
 
-  await page.goto(
-    "http://localhost:8000/pledge_new/?charity=charity-that-doesnt-exist"
-  );
-
+  await page.getByRole("button", { name: "Donate" }).click();
+  
   await testFinished;
 });

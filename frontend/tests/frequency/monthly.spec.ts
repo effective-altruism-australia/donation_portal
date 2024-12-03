@@ -12,7 +12,7 @@ test("Frequency: submit a monthly donation with custom amount", async ({ page })
 
   await page.locator('#amount-section--custom-amount-input').fill('400');
 
-  await page.getByLabel('First name').fill('Nathan');
+  await page.getByLabel('First name', {exact:true}).fill('Nathan');
 
   await page.getByLabel('Last name').fill('Sherburn');
 

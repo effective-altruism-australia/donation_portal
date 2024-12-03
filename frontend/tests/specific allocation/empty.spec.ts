@@ -1,16 +1,16 @@
 import { expect, test } from "@playwright/test";
 
 /*
-Ensure that the form prompts donors to complete form when their custom
+Ensure that the form prompts donors to complete form when their Specific
 allocation section is less than 2 dollars.
 */
 
-test("Custom allocation: submit with empty data", async ({ page }) => {
+test("Specific allocation: submit with empty data", async ({ page }) => {
   await page.goto('http://localhost:8000/pledge_new/');
   
   await page.getByText('These specific charities').click();
 
-  await page.getByLabel('First name').fill('Nathan');
+  await page.getByLabel('First name', {exact:true}).fill('Nathan');
 
   await page.getByLabel('Last name').fill('Sherburn');
 

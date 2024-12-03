@@ -14,7 +14,7 @@ test("Frequency: submit a one-time donation with custom amount", async ({ page }
 
   await page.locator('#amount-section--custom-amount-input').fill('600');
 
-  await page.getByLabel('First name').fill('Nathan');
+  await page.getByLabel('First name', {exact:true}).fill('Nathan');
 
   await page.getByLabel('Last name').fill('Sherburn');
 

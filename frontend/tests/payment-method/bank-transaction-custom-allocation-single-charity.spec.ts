@@ -14,7 +14,7 @@ test("Payment method: submit a bank transaction donation for a specific charity"
 
   await page.locator("#give-directly-amount").fill("66");
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 

@@ -16,7 +16,7 @@ test("Payment method: submit a bank transaction donation for a specific selectio
 
   await page.locator("#give-directly-amount").fill("66");
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 
@@ -42,11 +42,11 @@ test("Payment method: submit a bank transaction donation for a specific selectio
       expect(data["form-TOTAL_FORMS"]).toBe(3);
       expect(data["form-INITIAL_FORMS"]).toBe(3);
       expect(data["form-0-id"]).toBe(null);
-      expect(data["form-0-partner_charity"]).toBe("give-directly");
-      expect(data["form-0-amount"]).toBe("66");
+      expect(data["form-0-partner_charity"]).toBe("malaria-consortium");
+      expect(data["form-0-amount"]).toBe("33");
       expect(data["form-1-id"]).toBe(null);
-      expect(data["form-1-partner_charity"]).toBe("malaria-consortium");
-      expect(data["form-1-amount"]).toBe("33");
+      expect(data["form-1-partner_charity"]).toBe("give-directly");
+      expect(data["form-1-amount"]).toBe("66");
       expect(data["form-2-id"]).toBe(null);
       expect(data["form-2-partner_charity"]).toBe("eaa-amplify");
       expect(data["form-2-amount"]).toBe("9.90");

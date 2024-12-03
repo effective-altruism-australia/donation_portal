@@ -11,7 +11,7 @@ test("Tipping: submit with basic donation and custom tip", async ({ page }) => {
 
   await page.locator("#amplify-impact-section--custom-amount-input").fill("20");
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 

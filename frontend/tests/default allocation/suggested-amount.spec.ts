@@ -13,7 +13,7 @@ test("Default allocation: submit with suggested amount", async ({
 
   await page.getByText('$50').click();
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 

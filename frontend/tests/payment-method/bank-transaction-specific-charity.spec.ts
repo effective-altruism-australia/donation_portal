@@ -12,7 +12,7 @@ test("Payment method: submit a bank transaction donation for a direct-linked cha
 
   await page.locator("#amount-section--custom-amount-input").fill("2222");
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 

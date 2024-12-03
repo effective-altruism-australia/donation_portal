@@ -10,7 +10,7 @@ test("Communications: checkboxes work", async ({ page }) => {
 
   await page.locator("#amount-section--custom-amount-input").fill("5");
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 

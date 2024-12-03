@@ -1,16 +1,16 @@
 import { expect, test } from "@playwright/test";
 
 /*
-Ensure that the form submits the correct data when a custom allocation is filled
-out correctly after filling out the default allocation section (using a suggested amount)
+Ensure that the form submits the correct data when a specific allocation is filled
+out correctly after filling out the default allocation section
 */
 
-test("Custom allocation: cancel default allocation and submit with standard data", async ({ page }) => {
+test("Specific allocation: cancel default allocation and submit with standard data", async ({ page }) => {
   await page.goto('http://localhost:8000/pledge_new/');
   
   await page.getByText('The most effective charities^').click();
 
-  await page.getByText('$250').click();
+  await page.locator('#amount-section--custom-amount-input').fill('1000');
 
   await page.getByText('These specific charities').click();
 
@@ -18,7 +18,7 @@ test("Custom allocation: cancel default allocation and submit with standard data
 
   await page.locator('#give-directly-amount').fill('5');
 
-  await page.getByLabel('First name').fill('Nathan');
+  await page.getByLabel('First name', {exact:true}).fill('Nathan');
 
   await page.getByLabel('Last name').fill('Sherburn');
 
@@ -44,12 +44,12 @@ test("Custom allocation: cancel default allocation and submit with standard data
         expect(data["how_did_you_hear_about_us_db"]).toBe("cant-remember");
         expect(data["form-TOTAL_FORMS"]).toBe(3);
         expect(data["form-INITIAL_FORMS"]).toBe(3);
-        expect(data["form-1-id"]).toBe(null);
-        expect(data["form-1-partner_charity"]).toBe("malaria-consortium");
-        expect(data["form-1-amount"]).toBe("5");
         expect(data["form-0-id"]).toBe(null);
-        expect(data["form-0-partner_charity"]).toBe("give-directly");
+        expect(data["form-0-partner_charity"]).toBe("malaria-consortium");
         expect(data["form-0-amount"]).toBe("5");
+        expect(data["form-1-id"]).toBe(null);
+        expect(data["form-1-partner_charity"]).toBe("give-directly");
+        expect(data["form-1-amount"]).toBe("5");
         expect(data["form-2-id"]).toBe(null);
         expect(data["form-2-partner_charity"]).toBe("eaa-amplify");
         expect(data["form-2-amount"]).toBe("1.00");
