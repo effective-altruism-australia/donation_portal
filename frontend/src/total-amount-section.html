@@ -58,7 +58,7 @@
         context;
       const isMonthly = formController.getDonationFrequency() === "monthly";
       const amplifyPercentage =
-        tipType === "percentage" ? "(" + tipSize + "%)" : "";
+        tipType === "percentage" ? "(+" + tipSize + "%)" : "";
       const combinedTotal = basicDonationAmount + tipDollarAmount;
       let table = `
         <tr>
@@ -70,7 +70,7 @@
           <td>${this.#formatCurrency(basicDonationAmount)}</td>
         </tr>
         <tr>
-          <td>Effective Altruism Australia ${amplifyPercentage}</td>
+          <td>Help grow EA Australia's work ${amplifyPercentage}</td>
           <td>${this.#formatCurrency(tipDollarAmount)}</td>
         </tr>
         <tr>
