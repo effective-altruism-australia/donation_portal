@@ -95,9 +95,9 @@ input:user-invalid.validate {
 }
 
 /* Button styling */
-[popovertarget] {
-  background-color: #f0f0f0;
-  border: 1px solid #d0d0d0;
+.more-info-button {
+  background-color: transparent;
+  border: 1px solid black;
   border-radius: 100px;
   padding: 0;
   cursor: pointer;
@@ -106,8 +106,8 @@ input:user-invalid.validate {
   height: 18px;
 }
 
-[popovertarget]:hover {
-  background-color: #e0e0e0;
+.more-info-button:hover {
+  background-color: var(--eaa-blue-200);
 }
 
 /* Optional: Backdrop when popover is open */

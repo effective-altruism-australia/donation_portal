@@ -40,8 +40,12 @@
         <label for="festive-gift-section--recipient-name">
           Recipient's first name (14 characters max)
         </label>
-        <button type="button" popovertarget="festive-gift-section--name-info">
-          ⓘ
+        <button
+          type="button"
+          class="more-info-button"
+          onclick="$('#festive-gift-section--name-info').togglePopover()"
+        >
+          i
         </button>
         <div popover id="festive-gift-section--name-info">
           This will add the recipient’s name to the card’s opening (tip: so if
@@ -61,8 +65,12 @@
         <label for="festive-gift-section--recipient-email">
           Recipient's email
         </label>
-        <button type="button" popovertarget="festive-gift-section--email-info">
-          ⓘ
+        <button
+          type="button"
+          class="more-info-button"
+          onclick="$('#festive-gift-section--email-info').togglePopover()"
+        >
+          i
         </button>
         <div popover id="festive-gift-section--email-info">
           We’ll send them a <em>one-time</em> email around the 30th of December
@@ -84,9 +92,10 @@
         </label>
         <button
           type="button"
-          popovertarget="festive-gift-section--message-info"
+          class="more-info-button"
+          onclick="$('#festive-gift-section--message-info').togglePopover()"
         >
-          ⓘ
+          i
         </button>
         <div popover id="festive-gift-section--message-info">
           We’ll digitally add this to the card. If you intend to print it, you
@@ -104,7 +113,9 @@
       <div class="note-box { font-size: 12px; color: #666; margin-top: 8px;">
         <strong>Note:</strong> the card will be sent to <em>your</em> email
         address, <strong>not the recipient’s</strong>. Please check your spam
-        folder. <a href="https://eaa.org.au/christmascards/#faqs">Click here for FAQs</a>.
+        folder.
+        <a href="https://eaa.org.au/christmascards/#faqs">Click here for FAQs</a
+        >.
       </div>
     </fieldset>
   </div>
@@ -114,15 +125,6 @@
   class FestiveGiftSection {
     constructor() {
       $("#festive-gift-section").style.display = "block";
-
-      $$(".info-icon").forEach((icon) => {
-        icon.addEventListener("click", () => {
-          const tooltip = icon.querySelector(".info-tooltip");
-          tooltip.style.visibility =
-            tooltip.style.visibility === "visible" ? "hidden" : "visible";
-          tooltip.style.opacity = tooltip.style.opacity === "1" ? "0" : "1";
-        });
-      });
     }
 
     static handleFestiveGiftSection(e) {

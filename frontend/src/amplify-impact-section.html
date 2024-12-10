@@ -136,8 +136,12 @@
   </div>
   <p class="mb-1">
     To grow Effective Altruism Australia's work
-    <button type="button" popovertarget="festive-gift-section--message-info">
-      ⓘ
+    <button
+      class="more-info-button"
+      type="button"
+      onclick="$('#festive-gift-section--message-info').togglePopover()"
+    >
+      i
     </button>
   </p>
   <div popover id="festive-gift-section--message-info">
