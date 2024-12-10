@@ -8,9 +8,9 @@
       border: none;
       background-color: transparent;
       outline: none;
-      padding: 0.5rem 0.5rem 0.5rem 0.25rem;
+      padding: 1rem 0.5rem;
     }
-
+    
     #amount-section--custom-amount-input-wrapper {
       display: flex;
       flex-grow: 1;
@@ -18,6 +18,13 @@
       padding-left: 0.5rem;
       width: 100%;
       background-color: white;
+      border: 2px solid var(--eaa-blue-600);
+    }
+
+    .larger-button {
+      padding: 1rem 0;
+      border: 2px solid var(--eaa-blue-600);
+      font-size: 1.2rem;
     }
   }
 </style>
@@ -32,7 +39,7 @@
       value="25"
       onchange="AmountSection.handleSuggestedAmountChange(event)"
     />
-    <label for="amount-section--donate-25" class="rounded text-blue">$25</label>
+    <label for="amount-section--donate-25" class="rounded text-blue larger-button">$25</label>
     <input
       type="radio"
       id="amount-section--donate-50"
@@ -40,7 +47,7 @@
       value="50"
       onchange="AmountSection.handleSuggestedAmountChange(event)"
     />
-    <label for="amount-section--donate-50" class="rounded text-blue">$50</label>
+    <label for="amount-section--donate-50" class="rounded text-blue larger-button">$50</label>
     <input
       type="radio"
       id="amount-section--donate-100"
@@ -48,7 +55,7 @@
       value="100"
       onchange="AmountSection.handleSuggestedAmountChange(event)"
     />
-    <label for="amount-section--donate-100" class="rounded text-blue"
+    <label for="amount-section--donate-100" class="rounded text-blue larger-button"
       >$100</label
     >
     <input
@@ -58,7 +65,7 @@
       value="250"
       onchange="AmountSection.handleSuggestedAmountChange(event)"
     />
-    <label for="amount-section--donate-250" class="rounded text-blue"
+    <label for="amount-section--donate-250" class="rounded text-blue larger-button"
       >$250</label
     >
   </div>
@@ -79,7 +86,7 @@
         step="1"
         id="amount-section--custom-amount-input"
         name="custom-amount-input"
-        class="inline-block text-md"
+        class="inline-block text-md larger-input"
         onblur="AmountSection.handleCustomAmountBlur()"
         onfocus="AmountSection.handleCustomAmountFocus(event)"
         oninput="AmountSection.handleCustomAmountChange()"
