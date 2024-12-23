@@ -331,6 +331,8 @@ class FormController {
       subscribe_to_newsletter: this.#subscribeToNewsletter,
       connect_to_community: this.#subscribeToCommunity,
       how_did_you_hear_about_us_db: this.#howDidYouHearAboutUs,
+      postcode: this.#donorPostcode,
+      country: this.#donorCountry,
     };
 
     if (this.#allocationType === "specific") {
