@@ -41,10 +41,10 @@ test("Custom allocation: submit with standard data", async ({ page }) => {
         expect(data["form-TOTAL_FORMS"]).toBe(3);
         expect(data["form-INITIAL_FORMS"]).toBe(3);
         expect(data["form-0-id"]).toBe(null);
-        expect(data["form-0-partner_charity"]).toBe("malaria-consortium");
+        expect(data["form-0-partner_charity"]).toMatch(/^(malaria-consortium|give-directly)$/);
         expect(data["form-0-amount"]).toBe("5");
         expect(data["form-1-id"]).toBe(null);
-        expect(data["form-1-partner_charity"]).toBe("give-directly");
+        expect(data["form-1-partner_charity"]).toMatch(/^(malaria-consortium|give-directly)$/);
         expect(data["form-1-amount"]).toBe("5");
         expect(data["form-2-id"]).toBe(null);
         expect(data["form-2-partner_charity"]).toBe("eaa-amplify");

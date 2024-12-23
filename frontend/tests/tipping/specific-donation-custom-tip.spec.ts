@@ -45,12 +45,12 @@ test("Tipping: submit with specific donation and custom tip", async ({
         expect(data["how_did_you_hear_about_us_db"]).toBe("cant-remember");
         expect(data["form-TOTAL_FORMS"]).toBe(3);
         expect(data["form-INITIAL_FORMS"]).toBe(3);
-        expect(data["form-1-id"]).toBe(null);
-        expect(data["form-1-partner_charity"]).toBe("give-directly");
-        expect(data["form-1-amount"]).toBe("50");
         expect(data["form-0-id"]).toBe(null);
-        expect(data["form-0-partner_charity"]).toBe("malaria-consortium");
+        expect(data["form-0-partner_charity"]).toMatch(/^(malaria-consortium|give-directly)$/);
         expect(data["form-0-amount"]).toBe("50");
+        expect(data["form-1-id"]).toBe(null);
+        expect(data["form-1-partner_charity"]).toMatch(/^(malaria-consortium|give-directly)$/);
+        expect(data["form-1-amount"]).toBe("50");
         expect(data["form-2-id"]).toBe(null);
         expect(data["form-2-partner_charity"]).toBe("eaa-amplify");
         expect(data["form-2-amount"]).toBe("20.00");

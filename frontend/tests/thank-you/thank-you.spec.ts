@@ -12,7 +12,7 @@ test("Thank you: ensure thankyou page works", async ({ page }) => {
 
   // Check that the "thank you" text is visible on the page
   await expect(
-    page.getByText("Thank you", { exact: true })
+    page.getByText("Thank you!", { exact: true })
   ).toBeVisible();
 
 });
