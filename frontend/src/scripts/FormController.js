@@ -111,7 +111,7 @@ class FormController {
 
   setDonationFrequency(frequency) {
     this.#donationFrequency = frequency;
-    this.updateTotals();
+    this.updateTotalAmountSection();
   }
 
   getDonationFrequency() {
@@ -128,26 +128,26 @@ class FormController {
       AmountSection.show();
     }
     this.updateTipDollarAmount();
-    this.updateTotals();
+    this.updateTotalAmountSection();
   }
 
   setBasicDonationAmount(amount) {
     this.#basicDonationAmount = +amount;
     this.updateTipDollarAmount();
-    this.updateTotals();
+    this.updateTotalAmountSection();
   }
 
   setCharityAllocation(charity, amount) {
     this.#specificAllocations[charity] = amount;
     this.updateTipDollarAmount();
-    this.updateTotals();
+    this.updateTotalAmountSection();
   }
 
   setTipValues(amount, type) {
     this.#tipType = type;
     this.#tipSize = +amount;
     this.updateTipDollarAmount();
-    this.updateTotals();
+    this.updateTotalAmountSection();
   }
 
   #getSpecificAllocationsTotal() {
@@ -170,7 +170,7 @@ class FormController {
     }
   }
 
-  updateTotals() {
+  updateTotalAmountSection() {
     TotalAmountSection.render({
       allocationType: this.#allocationType,
       basicDonationAmount: this.#basicDonationAmount,
