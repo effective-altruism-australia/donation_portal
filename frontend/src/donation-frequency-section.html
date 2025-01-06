@@ -1,21 +1,42 @@
-<section id="donation-frequency-section" style="display: none;">
+<style>
+  #donation-frequency-section {
+    display: none;
+  }
+</style>
+
+<section id="donation-frequency-section">
   <h2 class="text-lg">I would like to give</h2>
 
   <div class="radio-group flex gap-2 mb-4">
     <input
       type="radio"
-      id="one-time"
-      name="recurring_frequency"
+      id="donation-frequency-section--one-time"
+      name="donation-frequency-section--frequency"
       value="one-time"
+      onclick="DonationFrequencySection.handleFrequencyChange(event)"
       checked
     />
-    <label for="one-time" class="rounded text-blue"> One time </label>
+    <label for="donation-frequency-section--one-time" class="rounded text-blue"> One time </label>
     <input
       type="radio"
-      id="monthly"
-      name="recurring_frequency"
+      id="donation-frequency-section--monthly"
+      name="donation-frequency-section--frequency"
+      onclick="DonationFrequencySection.handleFrequencyChange(event)"
       value="monthly"
     />
-    <label for="monthly" class="rounded text-blue"> Monthly </label>
+    <label for="donation-frequency-section--monthly" class="rounded text-blue"> Monthly </label>
   </div>
 </section>
+
+<script>
+  class DonationFrequencySection {
+    constructor() {
+      $("#donation-frequency-section").style.display = "block";
+    }
+
+    static handleFrequencyChange(event) {
+      const frequency = event.target.value;
+      formController.setDonationFrequency(frequency);
+    }
+  }
+</script>

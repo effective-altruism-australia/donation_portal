@@ -34,12 +34,14 @@ const donationFormHtml = `
         ${fs.readFileSync("./src/styles/custom-inputs.css", "utf8")}
       </style>
 
-      <form onsubmit="return handleFormSubmit();">
+      <form onsubmit="return formController.handleFormSubmit();">
         ${fs.readFileSync("./src/donation-frequency-section.html", "utf8")}
         ${fs.readFileSync("./src/allocation-section.html", "utf8")}
-        ${fs.readFileSync("./src/specific-charity-section.html", "utf8")}
+        ${fs.readFileSync("./src/direct-link-charity-section.html", "utf8")}
         ${fs.readFileSync("./src/amount-section.html", "utf8")}
-        ${fs.readFileSync("./src/custom-allocation-section.html", "utf8")}
+        ${fs.readFileSync("./src/specific-allocation-section.html", "utf8")}
+        ${fs.readFileSync("./src/amplify-impact-section.html", "utf8")}
+        ${fs.readFileSync("./src/total-amount-section.html", "utf8")}
         ${fs.readFileSync("./src/personal-details-section.html", "utf8")}
         ${fs.readFileSync("./src/communications-section.html", "utf8")}
         ${fs.readFileSync("./src/payment-method-section.html", "utf8")}
@@ -61,8 +63,7 @@ const donationFormHtml = `
       const STRIPE_API_KEY_EAA = "${process.env.STRIPE_API_KEY_EAA}";
       const ORIGIN = "${process.env.ORIGIN}";
       ${fs.readFileSync("./src/scripts/utilities.js", "utf8")}
-      ${fs.readFileSync("./src/scripts/countries.js", "utf8")}
-      ${fs.readFileSync("./src/scripts/main.js", "utf8")}
+      ${fs.readFileSync("./src/scripts/FormController.js", "utf8")}
     </script>
 
     <!-- Paste this into WordPress: END -->

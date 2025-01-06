@@ -1,6 +1,12 @@
-<section id="donate-button-section" style="display: none;">
+<style>
+  #donate-button-section {
+    display: none;
+  }
+</style>
+
+<section id="donate-button-section">
   <button
-    id="donate-button"
+    id="donate-button-section--donate-button"
     class="mt-8 py-5 px-10 text-white text-md border-none rounded focus-outline"
     type="submit"
     value="Donate"
@@ -8,3 +14,11 @@
     Donate
   </button>
 </section>
+
+<script>
+  class DonateButtonSection {
+    constructor() {
+      $("#donate-button-section").style.display = "block";
+    }
+  }
+</script>

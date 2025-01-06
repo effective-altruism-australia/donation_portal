@@ -1,6 +1,6 @@
 # For local development and testing only.
 
-FROM ubuntu:16.04
+FROM --platform=linux/amd64 ubuntu:16.04
 
 # Install sudo
 RUN apt-get update && apt-get install -y sudo

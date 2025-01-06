@@ -1,20 +1,21 @@
 import { expect, test } from "@playwright/test";
 
 /*
-Ensure that the form doesn't sent with invalid data and prompts the user to
-correct the issues.
+Ensure that the form prompts donors to complete the Specific allocation section
+when their data is invalid.
 */
 
-test("Default allocation: submit with invalid data", async ({
-  page,
-}) => {
+test("Custom allocation: submit with invalid data", async ({ page }) => {
+
   await page.goto("http://localhost:8000/pledge_new/");
 
-  await page.getByText("The most effective charities^").click();
+  await page.getByText("These specific charities").click();
 
-  await page.locator('#custom-amount-input').fill('-30');
+  await page.locator("#malaria-consortium-amount").fill("10");
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.locator("#give-directly-amount").fill("-5");
+
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 
@@ -22,12 +23,7 @@ test("Default allocation: submit with invalid data", async ({
 
   await page.getByLabel("Postcode").fill("3000");
 
-  await page.locator("#referral-sources").selectOption("cant-remember");
-
-  page.on('dialog', async dialog => {
-    expect(dialog.message() === 'Please select an amount of at least $2.');
-    await dialog.dismiss();
-  });
+  await page.locator("#communications-section--referral-sources").selectOption("cant-remember");
 
   const testFinished = new Promise<void>((resolve) => {
     page.on("request", (request) => {

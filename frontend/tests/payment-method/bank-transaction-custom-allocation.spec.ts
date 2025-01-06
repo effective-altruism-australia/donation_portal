@@ -5,7 +5,7 @@ Ensure that the form submits the correct data when a "bank transactions" is
 selected for a specific charity.
 */
 
-test("Payment method: submit a bank transaction donation for a custom selection of charities", async ({
+test("Payment method: submit a bank transaction donation for a specific selection of charities", async ({
   page,
 }) => {
   await page.goto("http://localhost:8000/pledge_new/");
@@ -16,7 +16,7 @@ test("Payment method: submit a bank transaction donation for a custom selection 
 
   await page.locator("#give-directly-amount").fill("66");
 
-  await page.getByLabel("First name").fill("Nathan");
+  await page.getByLabel("First name", { exact: true }).fill("Nathan");
 
   await page.getByLabel("Last name").fill("Sherburn");
 
@@ -39,20 +39,26 @@ test("Payment method: submit a bank transaction donation for a custom selection 
       expect(data["subscribe_to_newsletter"]).toBe(false);
       expect(data["connect_to_community"]).toBe(false);
       expect(data["how_did_you_hear_about_us_db"]).toBe("");
-      expect(data["form-TOTAL_FORMS"]).toBe(2);
-      expect(data["form-INITIAL_FORMS"]).toBe(2);
+      expect(data["form-TOTAL_FORMS"]).toBe(3);
+      expect(data["form-INITIAL_FORMS"]).toBe(3);
       expect(data["form-0-id"]).toBe(null);
-      expect(data["form-0-partner_charity"]).toBe("give-directly");
-      expect(data["form-0-amount"]).toBe("66");
+      expect(data["form-0-partner_charity"]).toMatch(/^(malaria-consortium|give-directly)$/);
+      expect(data["form-0-amount"]).toMatch(/^(66|33)$/);
       expect(data["form-1-id"]).toBe(null);
-      expect(data["form-1-partner_charity"]).toBe("malaria-consortium");
-      expect(data["form-1-amount"]).toBe("33");
+      expect(data["form-1-partner_charity"]).toMatch(/^(malaria-consortium|give-directly)$/);
+      expect(data["form-1-amount"]).toMatch(/^(66|33)$/);
+      expect(data["form-2-id"]).toBe(null);
+      expect(data["form-2-partner_charity"]).toBe("eaa-amplify");
+      expect(data["form-2-amount"]).toBe("9.90");
 
       // Make sure things that shouldn't be sent are not sent
       expect(data["is_gift"]).toBe(undefined);
       expect(data["gift_recipient_name"]).toBe(undefined);
       expect(data["gift_recipient_email"]).toBe(undefined);
       expect(data["gift_personal_message"]).toBe(undefined);
+      expect(data["form-3-id"]).toBe(undefined);
+      expect(data["form-3-partner_charity"]).toBe(undefined);
+      expect(data["form-3-amount"]).toBe(undefined);
     }
   });
 
@@ -61,12 +67,16 @@ test("Payment method: submit a bank transaction donation for a custom selection 
       if (response.url().includes("pledge_new")) {
         expect(response.status()).toBe(200);
         await expect(page.getByText("Thank you, Nathan!")).toBeVisible();
-        await expect(page.getByText("$99 to:")).toBeVisible({ timeout: 10000});
+        await expect(page.getByText("$108.90 to:")).toBeVisible({
+          timeout: 10000,
+        });
         await expect(
-          page.getByText("Your donation will be allocated to your chosen partner charities.")
+          page.getByText(
+            "Your donation will be allocated to your chosen partner charity (or charities)."
+          )
         ).toBeVisible();
         await page
-          .locator("#bank-instructions-reference")
+          .locator("#bank-instructions-section--reference")
           .textContent()
           .then((text) => {
             expect(text).toMatch(/^[0-9A-F]{12}$/);

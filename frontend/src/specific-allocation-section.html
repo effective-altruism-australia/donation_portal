@@ -1,0 +1,93 @@
+<style>
+  #specific-allocation-section {
+    display: none;
+
+    .charity-option {
+      justify-content: end;
+      align-items: center;
+      text-align: right;
+      padding-bottom: 0.5rem;
+
+      span {
+        margin: 0 0 0 1rem;
+        max-width: 7rem;
+        width: 100%;
+      }
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+</style>
+
+<section id="specific-allocation-section">Fetching charity details...</section>
+
+<script>
+  class SpecificAllocationSection {
+    constructor(partnerCharities) {
+      this.#buildSpecificAllocationSection(partnerCharities);
+    }
+
+    static show() {
+      $("#specific-allocation-section").style.display = "block";
+    }
+
+    static hide() {
+      $("#specific-allocation-section").style.display = "none";
+    }
+
+    static getSpecificAllocations() {
+      const specificAllocation = {};
+      $$(".specific-charity").forEach((input) => {
+        const amount = parseFloat(input.value);
+        if (amount > 0) {
+          const charitySlug = input.id.split("-amount")[0];
+          specificAllocation[charitySlug] = amount;
+        }
+      });
+      return specificAllocation;
+    }
+
+    #buildSpecificAllocationSection(partnerCharities) {
+      let specificAllocationSectionHTML = "";
+
+      let categories = {
+        "Our recommended charities": [],
+        "Other charities we support": [],
+      };
+      partnerCharities.forEach((charity) => {
+        categories[charity.category].push(charity);
+      });
+
+      Object.keys(categories).forEach((catagory) => {
+        specificAllocationSectionHTML += `<h3>${catagory}<sup><a href='https://effectivealtruism.org.au/inclusion-criteria/'>ⓘ</a></sup></h3>`;
+        categories[catagory].forEach((charity) => {
+          specificAllocationSectionHTML += `
+            <div class="flex charity-option">
+              <label for="${charity.slug_id}">${charity.name}</label>
+              <span class="flex items-center rounded p-2 text-md border focus-outline">
+                $
+                <input
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  max="999999.99"
+                  step="0.01"
+                  id="${charity.slug_id}-amount"
+                  name="${charity.slug_id}-amount"
+                  class="specific-charity inline-block text-md"
+                  onblur="this.value === '' ? this.classList.remove('validate') : '';"
+                  onfocus="this.classList.add('validate')"
+                  oninput="formController.setCharityAllocation('${charity.slug_id}', this.value)"
+                  style="border: none; outline: none; width: 100%;"
+                />
+              </span>
+            </div>`;
+        });
+      });
+      $("#specific-allocation-section").innerHTML =
+        specificAllocationSectionHTML;
+    }
+  }
+</script>

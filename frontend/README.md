@@ -8,13 +8,12 @@ This form is designed to replace our react-based donation form. The goals of thi
 **Easy to customise** - just clone this repo and change the HTML/CSS/JS as needed.
 **Easy to maintain** - only a few hundred lines of simple code that beginners can grok.
 
-## Terminology
-
+## Allocation terminology
 | Term   | Description   |
 |--------|---------------|
-| Default allocation | This option allocates the donation to the most effective charities (according to us), based on evidence and need. This option is selected by default in the standard form. |
-| Custom allocation  | This option allows donors to allocate their donation to our various partner charities. This option can be selected in the standard form. |
-| Specific charity | A specific charity is an EAA partner charity selected by visiting our  `/donate`  url with  `?charity=charity_name`  appended to the end. Specific charities are not relevant to the standard form. |
+| Most effective (default) | This option allocates the donation to the most effective charities (according to us), based on evidence and need. This option is selected by default in the standard form. |
+| Specific charity (or charities)  | This option allows donors to allocate their donation to our various partner charities. This option can be selected in the standard form. |
+| Direct link charity | A direct link charity is an EAA partner charity selected by visiting our  `/donate`  url with  `?charity=charity_name`  appended to the end. Direct link charities are not relevant to the standard form. |
 
 ## Compatibility
 We try to only use features that are "Widely available" according to [Baseline](https://web.dev/baseline) to ensure compatibility with all modern browsers.
