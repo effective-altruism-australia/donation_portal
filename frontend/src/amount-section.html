@@ -1,0 +1,144 @@
+<style>
+  #amount-section {
+    display: none;
+
+    #amount-section--custom-amount-input {
+      display: flex;
+      flex-grow: 1;
+      border: none;
+      background-color: transparent;
+      outline: none;
+      padding: 1rem 0.5rem;
+    }
+    
+    #amount-section--custom-amount-input-wrapper {
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      padding-left: 0.5rem;
+      width: 100%;
+      background-color: white;
+      border: 2px solid var(--eaa-blue-600);
+    }
+
+    .larger-button {
+      padding: 1rem 0;
+      border: 2px solid var(--eaa-blue-600);
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<section id="amount-section">
+  <h2 class="text-lg mt-8">I would like to gift</h2>
+  <div class="radio-group flex gap-2">
+    <input
+      type="radio"
+      id="amount-section--donate-25"
+      name="donation-amount"
+      value="25"
+      onchange="AmountSection.handleSuggestedAmountChange(event)"
+    />
+    <label for="amount-section--donate-25" class="rounded text-blue larger-button">$25</label>
+    <input
+      type="radio"
+      id="amount-section--donate-50"
+      name="donation-amount"
+      value="50"
+      onchange="AmountSection.handleSuggestedAmountChange(event)"
+    />
+    <label for="amount-section--donate-50" class="rounded text-blue larger-button">$50</label>
+    <input
+      type="radio"
+      id="amount-section--donate-100"
+      name="donation-amount"
+      value="100"
+      onchange="AmountSection.handleSuggestedAmountChange(event)"
+    />
+    <label for="amount-section--donate-100" class="rounded text-blue larger-button"
+      >$100</label
+    >
+    <input
+      type="radio"
+      id="amount-section--donate-250"
+      name="donation-amount"
+      value="250"
+      onchange="AmountSection.handleSuggestedAmountChange(event)"
+    />
+    <label for="amount-section--donate-250" class="rounded text-blue larger-button"
+      >$250</label
+    >
+  </div>
+  <div id="amount-section--custom-amount" class="flex flex-col validate mb-2">
+    <label class="inline-block mb-2 mt-4" for="custom-amount-input"
+      >Or a custom amount:</label
+    >
+    <span
+      id="amount-section--custom-amount-input-wrapper"
+      class="border rounded focus-outline"
+    >
+      $
+      <input
+        type="number"
+        inputmode="numeric"
+        min="0"
+        max="999999.99"
+        step="0.01"
+        id="amount-section--custom-amount-input"
+        name="custom-amount-input"
+        class="inline-block text-md larger-input"
+        onblur="AmountSection.handleCustomAmountBlur()"
+        onfocus="AmountSection.handleCustomAmountFocus(event)"
+        oninput="AmountSection.handleCustomAmountChange()"
+        placeholder="Enter your custom amount here"
+      />
+    </span>
+  </div>
+</section>
+
+<script>
+  class AmountSection {
+    constructor() {
+      $("#amount-section").style.display = "block";
+    }
+
+    static handleCustomAmountFocus(e) {
+      formController.setBasicDonationAmount(e.target.value);
+      $("#amount-section--custom-amount").classList.add("validate");
+      $("#amount-section--donate-25").checked = false;
+      $("#amount-section--donate-50").checked = false;
+      $("#amount-section--donate-100").checked = false;
+      $("#amount-section--donate-250").checked = false;
+    }
+
+    static handleCustomAmountBlur() {
+      if ($("#amount-section--custom-amount-input").value === "") {
+        $("#amount-section--custom-amount").classList.remove("validate");
+      }
+    }
+
+    static handleSuggestedAmountChange(e) {
+      const selectedAmount = e.target.value;
+      formController.setBasicDonationAmount(selectedAmount);
+      $("#amount-section--custom-amount").classList.remove("validate");
+      $("#amount-section--custom-amount-input").value = "";
+    }
+
+    static handleCustomAmountChange() {
+      const customAmount = $("#amount-section--custom-amount-input").value;
+      formController.setBasicDonationAmount(customAmount);
+      $("#amount-section--donate-25").checked = false;
+      $("#amount-section--donate-50").checked = false;
+      $("#amount-section--donate-100").checked = false;
+      $("#amount-section--donate-250").checked = false;
+    }
+
+    static show() {
+      $("#amount-section").style.display = "block";
+    }
+
+    static hide() {
+      $("#amount-section").style.display = "none";
+    }
+  }
+</script>

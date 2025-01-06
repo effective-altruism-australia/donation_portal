@@ -8,19 +8,23 @@
 		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
 		"dockerfile": "../../Dockerfile.ubuntu24.04"
 	},
-
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [8000],
-
+	"forwardPorts": [
+		8000
+	],
 	// Uncomment the next line to run commands after the container is created.
-	"postCreateCommand": "cat /etc/os-release"
-
+	"postCreateCommand": "cat /etc/os-release",
 	// Configure tool-specific properties.
-	// "customizations": {},
-
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python@2021.9.1246542782",
+				"ms-python.debugpy@2023.1.12492010"
+			]
+		}
+	}
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
 }

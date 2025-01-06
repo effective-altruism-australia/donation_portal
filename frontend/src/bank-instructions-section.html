@@ -1,0 +1,128 @@
+<style>
+  #bank-instructions-section {
+    display: none;
+
+    .instructions {
+      padding: 1rem 1.5rem;
+      background: var(--eaa-blue-700);
+      color: white;
+      border-radius: 3px;
+    }
+  }
+</style>
+
+<section id="bank-instructions-section">
+  <h2 class="text-lg mt-8">
+    Thank you, <span id="bank-instructions-section--name"></span>!
+  </h2>
+  <p>
+    Your donation will be allocated to
+    <span id="bank-instructions-section--charity"></span>.
+  </p>
+  <br />
+  <div class="border instructions">
+    <h2>What to do next?</h2>
+    <p>
+      Please make sure that you complete the process by
+      <span id="bank-instructions-section--frequency"></span> $<span
+        id="bank-instructions-section--amount"
+      ></span>
+      to:
+    </p>
+    <p>
+      <strong>Account Name</strong><br />
+      <span class="text-lg">Effective Altruism Australia</span><br />
+      <span class="text-sm">(Don't worry if it doesn't fit)</span>
+    </p>
+    <p>
+      <strong>BSB</strong><br />
+      <span class="text-lg">083 170</span>
+    </p>
+
+    <p>
+      <strong>Account No</strong><br />
+      <span class="text-lg">306 556 167</span>
+    </p>
+    <p>
+      <strong>Reference Number</strong><br />
+      <span id="bank-instructions-section--reference" class="text-lg"></span
+      ><br />
+      <span class="text-sm">(Place this in the transaction description)</span>
+    </p>
+  </div>
+  <br />
+  <p>
+    <strong>Receipt</strong>
+  </p>
+  <p>
+    We will send you a tax deductible receipt
+    <em>once we have confirmed the bank transfer</em>.
+  </p>
+  <p>
+    <strong>Any questions?</strong>
+  </p>
+  <p>
+    Please email us at <a href="mailto:info@eaa.org.au">info@eaa.org.au</a> or
+    call us on <a href="tel:+61492841596">+61 492 841 596</a>, if you have any
+    questions.
+  </p>
+  <p>
+    We have also emailed you these instructions – please check your spam folder
+    if you have not received them.
+  </p>
+  <p>
+    Best wishes and thanks,<br /><br />
+    The Effective Altruism Australia team
+  </p>
+</section>
+
+<script>
+  class BankInstructionsSection {
+    constructor(context) {
+      const {
+        firstName,
+        bankReference,
+        recurring,
+        allocationType,
+        basicDonationAmount,
+        tipDollarAmount,
+        specificAllocationsTotal,
+        directLinkCharityDetails,
+      } = context;
+
+      $("#bank-instructions-section").style.display = "block";
+      $("#bank-instructions-section--name").innerText = firstName;
+      $("#bank-instructions-section--reference").innerText = bankReference;
+
+      if (recurring) {
+        $("#bank-instructions-section--frequency").innerText =
+          "setting up a monthly periodic payment for";
+      } else {
+        $("#bank-instructions-section--frequency").innerText =
+          "making a bank transfer of";
+      }
+
+      if (allocationType === "default") {
+        $("#bank-instructions-section--charity").innerText =
+          "our partner charities";
+        $("#bank-instructions-section--amount").innerText = (
+          basicDonationAmount + tipDollarAmount
+        ).toFixed(2);
+      } else if (allocationType === "direct-link") {
+        $("#bank-instructions-section--charity").innerText =
+          directLinkCharityDetails.name;
+        $("#bank-instructions-section--amount").innerText = (
+          basicDonationAmount + tipDollarAmount
+        ).toFixed(2);
+      } else {
+        $("#bank-instructions-section--charity").innerText =
+          "your chosen partner charity (or charities)";
+        $("#bank-instructions-section--amount").innerText = (
+          specificAllocationsTotal + tipDollarAmount
+        ).toFixed(2);
+      }
+
+      $("#bank-instructions-section").scrollIntoView();
+    }
+  }
+</script>

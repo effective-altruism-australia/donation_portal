@@ -1,0 +1,55 @@
+<style>
+  #allocation-section {
+    display: none;
+  }
+</style>
+
+<section id="allocation-section">
+  <h2 class="text-lg mt-8">I would like my gift to go to</h2>
+  <div class="radio-group flex gap-2 mb-4">
+    <input
+      type="radio"
+      id="allocation-section--default-allocation"
+      name="allocation-section--allocation-type"
+      value="default"
+      checked
+      onclick="AllocationSection.handleDefaultAllocationChange();"
+    />
+    <label for="allocation-section--default-allocation" class="flex items-center justify-center rounded text-blue">
+      The most effective charities^
+    </label>
+
+    <input
+      type="radio"
+      id="allocation-section--specific-allocation"
+      name="allocation-section--allocation-type"
+      value="specific"
+      onclick="AllocationSection.handleSpecificAllocationChange();"
+    />
+    <label for="allocation-section--specific-allocation" class="flex items-center justify-center rounded text-blue">
+      These specific charities
+    </label>
+  </div>
+  <p class="text-sm">
+    ^According to EAA. We select the most effective charities each quarter
+    based on evidence and need. You can read more about how we evaluate
+    charities
+    <a href="https://effectivealtruism.org.au/evaluating-charities/">here</a>.
+  </p>
+</section>
+
+<script>
+  class AllocationSection {
+    constructor() {
+      $("#allocation-section").style.display = "block";
+    }
+
+    static handleSpecificAllocationChange() {
+      formController.setAllocationType("specific");
+    }
+
+    static handleDefaultAllocationChange() {
+      formController.setAllocationType("default");
+    }
+  }
+</script>

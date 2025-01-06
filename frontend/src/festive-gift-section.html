@@ -1,0 +1,240 @@
+<style>
+  #festive-gift-section {
+    .note-box {
+      background-color: #fff8e2;
+      border: 1px solid #f9e7b8;
+      padding: 8px;
+      border-radius: 4px;
+      color: #a17400;
+    }
+  }
+</style>
+
+<section id="festive-gift-section" style="display: none">
+  <div class="flex flex-col items-start validate">
+    <h2 class="text-lg mt-8">
+      Are you making this donation as a gift for the festive season?
+    </h2>
+    <label class="eaa-checkbox mb-4">
+      <input
+        type="checkbox"
+        id="festive-gift-section--is-festive-gift"
+        name="is-festive-gift"
+        onclick="FestiveGiftSection.handleFestiveGiftSection(event)"
+      />
+      Yes, this is a gift for the festive season.
+      <div class="checkmark rounded"></div>
+    </label>
+
+    <fieldset
+      id="festive-gift-section--details"
+      class="flex flex-col self-stretch mb-4"
+      disabled
+      style="display: none"
+    >
+      <div>
+        <p>
+          Please fill out these details and we’ll email you a personalised card
+          to pass on.
+        </p>
+        <label for="festive-gift-section--recipient-name">
+          Recipient's first name (14 characters max)
+        </label>
+        <button
+          type="button"
+          class="more-info-button"
+          onclick="$('#festive-gift-section--name-info').togglePopover()"
+        >
+          i
+        </button>
+        <div popover id="festive-gift-section--name-info">
+          This will add the recipient’s name to the card’s opening (tip: so if
+          it’s for your mum, enter ‘mum’)
+        </div>
+        <input
+          type="text"
+          id="festive-gift-section--recipient-name"
+          name="festive-gift-recipient-name"
+          class="block w-full p-2 text-md border mt-1 mb-2 rounded focus-outline"
+          maxlength="14"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="festive-gift-section--recipient-email">
+          Recipient's email
+        </label>
+        <button
+          type="button"
+          class="more-info-button"
+          onclick="$('#festive-gift-section--email-info').togglePopover()"
+        >
+          i
+        </button>
+        <div popover id="festive-gift-section--email-info">
+          We’ll send them a <em>one-time</em> email around the 30th of December
+          confirming your donation and sharing info on EAA and a match offer. If
+          you’d prefer, you may enter your email address.
+        </div>
+        <input
+          type="email"
+          id="festive-gift-section--recipient-email"
+          name="festive-gift-recipient-email"
+          class="block w-full p-2 text-md border mt-1 mb-2 rounded focus-outline"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="festive-gift-section--message">
+          Personal message (optional, 120 characters max)
+        </label>
+        <button
+          type="button"
+          class="more-info-button"
+          onclick="$('#festive-gift-section--message-info').togglePopover()"
+        >
+          i
+        </button>
+        <div popover id="festive-gift-section--message-info">
+          We’ll digitally add this to the card. If you intend to print it, you
+          may wish to skip this step and hand-write a message in the space
+          instead. Or leave it blank entirely!
+        </div>
+        <textarea
+          id="festive-gift-section--message"
+          name="festive-gift-personal-message"
+          class="block w-full h-20 p-2 text-md block p-2 border mt-1 mb-2 rounded focus-outline"
+          maxlength="120"
+        ></textarea>
+        <!-- TODO: Add character count if time permits -->
+      </div>
+      <div class="note-box { font-size: 12px; color: #666; margin-top: 8px;">
+        <strong>Note:</strong> the card will be sent to <em>your</em> email
+        address, <strong>not the recipient’s</strong>. Please check your spam
+        folder.
+        <a href="https://eaa.org.au/christmascards/#faqs">Click here for FAQs</a
+        >.
+      </div>
+    </fieldset>
+  </div>
+</section>
+
+<script>
+  class FestiveGiftSection {
+    constructor() {
+      $("#festive-gift-section").style.display = "block";
+    }
+
+    static handleFestiveGiftSection(e) {
+      formController.setIsFestiveGift(e.target.checked);
+      e.target.checked
+        ? this.#showFestiveGiftSection()
+        : this.#hideFestiveGiftSection();
+    }
+
+    static #showFestiveGiftSection() {
+      $("#festive-gift-section--details").style.display = "block";
+      $("#festive-gift-section--details").disabled = false;
+      $("#festive-gift-section--recipient-email").setAttribute(
+        "required",
+        "true"
+      );
+      $("#festive-gift-section--recipient-name").setAttribute(
+        "required",
+        "true"
+      );
+    }
+
+    static #hideFestiveGiftSection() {
+      $("#festive-gift-section--details").style.display = "none";
+      $("#festive-gift-section--details").disabled = true;
+      $("#festive-gift-section--recipient-email").setAttribute(
+        "required",
+        "false"
+      );
+      $("#festive-gift-section--recipient-name").setAttribute(
+        "required",
+        "false"
+      );
+    }
+
+    static async generateAndSendCard(context) {
+      const {
+        paymentReference,
+        isFestiveGift,
+        donorName,
+        donorEmail,
+        allocationType,
+        basicDonationAmount,
+        specificAllocations,
+        directLinkCharity,
+      } = context;
+
+      if (!isFestiveGift) {
+        return "success";
+      }
+
+      const charitiesWithAmounts = [];
+      Object.keys(specificAllocations).forEach((charity) => {
+        if (specificAllocations[charity] > 0) {
+          charitiesWithAmounts.push({
+            charity: charity,
+            amount: specificAllocations[charity],
+          });
+        }
+      });
+
+      let charity, amount;
+      if (allocationType === "direct-link") {
+        charity = directLinkCharity;
+        amount = basicDonationAmount;
+      } else if (allocationType === "default") {
+        charity = "unallocated";
+        amount = basicDonationAmount;
+      } else if (
+        allocationType === "specific" &&
+        charitiesWithAmounts.length === 1
+      ) {
+        charity = charitiesWithAmounts[0].charity;
+        amount = charitiesWithAmounts[0].amount;
+      } else {
+        charity = "unallocated";
+        amount = 0;
+        charitiesWithAmounts.forEach((charity) => (amount += charity.amount));
+      }
+
+      const response = await fetch(
+        "https://eaa-festiveseasoncards.deno.dev/api/generate-and-send-card",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            paymentReference:
+              paymentReference.bank_reference || paymentReference.id,
+            charity: charity,
+            donorName: donorName,
+            donorEmail: donorEmail,
+            recipientName: $("#festive-gift-section--recipient-name").value,
+            recipientEmail: $("#festive-gift-section--recipient-email").value,
+            amount: String(amount),
+            message: $("#festive-gift-section--message").value,
+          }),
+        }
+      ).then((response) => response.json());
+
+      if (!response.success) {
+        alert(
+          "We don't seem to be able to create a Christmas card with the details you entered. The card generator said: " +
+            response.message
+        );
+        return "error";
+      }
+
+      return "success";
+    }
+  }
+</script>
