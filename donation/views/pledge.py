@@ -195,6 +195,12 @@ def process_session_completed(data):
 @app.task()
 def process_payment_intent_succeeded(data, org):
     print(org)
+
+    # Ignore duplicate events (Stripe sometimes sends the same event multiple times).
+    # See here for more: https://docs.stripe.com/webhooks#handle-duplicate-events
+    if StripeTransaction.objects.filter(payment_intent_id=data['id']).exists():
+        return
+
     stripe.api_key = settings.STRIPE_API_KEY_DICT.get(org)
     
     if org == "eaa":
