@@ -1,6 +1,6 @@
 # For local development and testing only.
 
-FROM ubuntu:24.04
+FROM --platform=linux/amd64 ubuntu:24.04
 
 # Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get upgrade -y \
         # Additional libraries that some Python packages might need
         libncursesw5-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
         # Useful tools
-        wget curl git vim sudo \
+        wget curl git vim \
         # App specific dependencies
         wkhtmltopdf \
         xauth \
@@ -29,11 +29,13 @@ RUN apt-get update && apt-get upgrade -y \
         libpq-dev \
         # Redis
         redis-server \
+        # Sudo
+        sudo \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create a new user "devuser" with user ID 1000
-RUN useradd -m -s /bin/bash -u 1000 devuser
+# Create a new user "devuser"
+RUN useradd -ms /bin/bash devuser
 
 # Add the user to the sudo group
 RUN usermod -aG sudo devuser
@@ -45,45 +47,35 @@ RUN echo "devuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER devuser
 
 # Install pyenv
+ENV PYENV_ROOT=/home/devuser/.pyenv
+ENV PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 RUN curl https://pyenv.run | bash
+RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
+    echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
+    echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc && \
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.profile && \
+    echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile && \
+    echo 'eval "$(pyenv init - bash)"' >> ~/.profile
 
-# Add pyenv initialization to bash profile
-RUN echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+# # Install Python versions
+RUN pyenv install 3.13.1
 
-# Install Python versions
-RUN pyenv install 2.7.18
+# # Set global Python version
+RUN pyenv global 3.13.1
 
-# Set global Python version
-RUN pyenv global 2.7.18
-
-# Start PostgreSQL, set a password and create eaa database
+# # Start PostgreSQL, set a password and create eaa database
 USER postgres
 RUN service postgresql start && \
-  psql -c "ALTER USER postgres PASSWORD 'password';" && \
-  psql -c "CREATE ROLE eaa WITH LOGIN PASSWORD 'password';" && \
-  psql -c "CREATE DATABASE donations;" && \
-  psql -c "GRANT ALL PRIVILEGES ON DATABASE donations TO eaa;"
+    psql -c "ALTER USER postgres PASSWORD 'password';" && \
+    psql -c "CREATE ROLE eaa WITH LOGIN PASSWORD 'password';" && \
+    psql -c "CREATE DATABASE donations;" && \
+    psql -c "GRANT ALL PRIVILEGES ON DATABASE donations TO eaa;"
 USER devuser
 
-# Upgrade pip to the last version that supports Python 2.7 and install the last
-# version of virtualenv that works for Python 2.7
-RUN pip install --upgrade "pip<21.0" && \
-  pip install virtualenv==16.7.10
-
 # Install nvm and node
-ENV NVM_DIR=/root/.nvm
-RUN mkdir $NVM_DIR && \
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
-  . $NVM_DIR/nvm.sh && nvm install 8.14.0
-
-# Copy over python dependencies
-# COPY deps deps
-
-# Create and activate a Python virtual environment and install the dependencies
-# RUN virtualenv donation_portal_env && \
-#   . donation_portal_env/bin/activate && \
-#   pip install -r deps/pip.base && \
-#   pip install -r deps/pip
+RUN export NVM_DIR="$HOME/.nvm" && \
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
+    . $NVM_DIR/nvm.sh && nvm install 22  
 
 # Document that the service listens on port 8000. Note, this doesn't actually
 # open the port - you'll need to run `docker run -p 8000:8000 <image name>`.
