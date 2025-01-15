@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
                 ('reference', models.TextField(blank=True)),
                 ('unique_id', models.TextField(unique=True, editable=False)),
                 ('its_not_a_donation', models.BooleanField(default=False)),
-                ('pledge', models.ForeignKey(blank=True, to='donation.Pledge', null=True)),
+                ('pledge', models.ForeignKey(blank=True, to='donation.Pledge', null=True, on_delete=models.CASCADE)),
                 ('time_reconciled', models.DateTimeField(null=True, editable=False, blank=True)),
             ],
         ),

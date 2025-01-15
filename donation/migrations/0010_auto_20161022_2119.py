@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pledge',
             name='recipient_org',
-            field=models.ForeignKey(default=1, to='donation.PartnerCharity'),
+            field=models.ForeignKey(default=1, to='donation.PartnerCharity', on_delete=models.CASCADE),
             preserve_default=False,
         ),
         migrations.AlterField(

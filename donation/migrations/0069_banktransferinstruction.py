@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('time_sent', models.DateTimeField(null=True, blank=True)),
                 ('email', models.EmailField(max_length=254)),
                 ('failed_message', models.TextField(default='', editable=False, blank=True)),
-                ('pledge', models.OneToOneField(to='donation.Pledge')),
+                ('pledge', models.OneToOneField(to='donation.Pledge', on_delete=models.CASCADE)),
             ],
         ),
     ]

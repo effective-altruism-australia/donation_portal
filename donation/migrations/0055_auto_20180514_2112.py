@@ -31,6 +31,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='pledgecomponent',
             name='pledge',
-            field=models.ForeignKey(related_name='components', to='donation.Pledge'),
+            field=models.ForeignKey(related_name='components', to='donation.Pledge', on_delete=models.CASCADE),
         ),
     ]

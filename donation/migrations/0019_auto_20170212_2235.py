@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PinTransaction',
             fields=[
-                ('pintransaction_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='pinpayments.PinTransaction')),
+                ('pintransaction_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='pinpayments.PinTransaction', on_delete=models.CASCADE)),
             ],
             bases=('pinpayments.pintransaction',),
         ),
@@ -47,6 +47,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pintransaction',
             name='pledge',
-            field=models.ForeignKey(to='donation.Pledge'),
+            field=models.ForeignKey(to='donation.Pledge', on_delete=models.CASCADE),
         ),
     ]

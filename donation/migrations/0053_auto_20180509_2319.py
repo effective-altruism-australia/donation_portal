@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='pledge',
             name='recipient_org',
-            field=models.ForeignKey(to='donation.PartnerCharity', null=True),
+            field=models.ForeignKey(to='donation.PartnerCharity', null=True, on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='pledgecomponent',
