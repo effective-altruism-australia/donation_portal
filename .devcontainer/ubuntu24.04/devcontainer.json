@@ -20,6 +20,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"ms-python.python"
 			]
 		}
 	}
