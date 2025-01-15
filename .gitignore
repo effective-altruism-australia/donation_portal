@@ -47,6 +47,8 @@ secrets/
 celerybeat-schedule
 ipynb_checkpoints/
 venv/
+.venv
+__pycache__/
 
 # PyCharm
 .idea/
