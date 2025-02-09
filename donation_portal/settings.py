@@ -144,13 +144,13 @@ if ENABLE_SENTRY:
 # Date from which to start sending receipts automatically (inclusive)
 AUTOMATION_START_DATE = datetime.date(2016, 10, 19)
 
-CORS_ORIGIN_WHITELIST = (
-    'donations.effectivealtruism.org.au',
-    'effectivealtruism.org.au',
-    'eaa.org.au',
-    'dev.effectivealtruism.org.au',
-    'localhost:8000'
-)
+CORS_ORIGIN_WHITELIST = [
+    'https://donations.effectivealtruism.org.au',
+    'https://effectivealtruism.org.au',
+    'https://eaa.org.au',
+    'https://dev.effectivealtruism.org.au',
+    'http://localhost:8000'
+]
 
 #########
 # Webpack
