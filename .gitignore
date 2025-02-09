@@ -44,7 +44,7 @@ secrets/
 # Python
 *.py[cod]
 *.ipynb
-celerybeat-schedule
+celerybeat-schedule*
 ipynb_checkpoints/
 venv/
 .venv
