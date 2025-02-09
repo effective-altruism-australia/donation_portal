@@ -5,24 +5,37 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Django: Debug tests",
+      "type": "debugpy",
+      "request": "launch",
+      "django": true,
+      "autoStartBrowser": false,
+      "python": "${workspaceRoot}/.venv/bin/python",
+      "program": "${workspaceFolder}/manage.py",
+      "args": [
+        "test",
+        "donation.tests.test_emails"
+      ],
+    },
+    {
       "name": "Django: Runserver",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "stopOnEntry": false,
-      "python": "${workspaceRoot}/donation_portal_env/bin/python",
+      "python": "${workspaceRoot}/.venv/bin/python",
       "program": "${workspaceRoot}/manage.py",
       "args": [
         "runserver",
-        "--no-color",
+        // "--no-color",
         "--noreload"
       ],
     },
     {
       "name": "Django: Shell",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "stopOnEntry": false,
-      "python": "${workspaceRoot}/donation_portal_env/bin/python",
+      "python": "${workspaceRoot}/.venv/bin/python",
       "program": "${workspaceRoot}/manage.py",
       "args": [
         "shell"
