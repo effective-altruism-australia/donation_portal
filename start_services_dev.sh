@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start the virtual environment
-source donation_portal_env/bin/activate
+source .venv/bin/activate
 
 # Run stripe webhook listener
 echo "**************************************************************"
