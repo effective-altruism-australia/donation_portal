@@ -77,6 +77,9 @@ RUN export NVM_DIR="$HOME/.nvm" && \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
     . $NVM_DIR/nvm.sh && nvm install 22  
 
+# Fix "missing locales" errors in this Ubuntu image
+RUN sudo locale-gen "en_US.UTF-8"
+
 # Document that the service listens on port 8000. Note, this doesn't actually
 # open the port - you'll need to run `docker run -p 8000:8000 <image name>`.
 EXPOSE 8000
