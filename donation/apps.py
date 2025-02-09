@@ -1,11 +1,10 @@
 from django.apps import AppConfig
+from celery import Celery
 
 
 class DonationConfig(AppConfig):
     name = 'donation'
 
     def ready(self):
-        # Make celery disover these tasks
-        from .emails import *
-        from .tasks import *
-        from .views.pledge import *
+        app = Celery('donation_portal')
+        app.autodiscover_tasks()
