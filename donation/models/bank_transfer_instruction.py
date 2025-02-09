@@ -7,7 +7,7 @@ from .pledge import Pledge
 
 class BankTransferInstruction(models.Model):
     time_sent = models.DateTimeField(blank=True, null=True)
-    pledge = models.OneToOneField(Pledge)
+    pledge = models.OneToOneField(Pledge, on_delete=models.CASCADE)
     # The email on the pledge might get edited, so let's record the one we used here.
     email = models.EmailField()
     failed_message = models.TextField(blank=True, editable=False, default='')

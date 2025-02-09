@@ -21,7 +21,7 @@ class BankTransaction(models.Model):
     reference = models.TextField(blank=True)
     unique_id = models.TextField(unique=True, editable=False)
     do_not_reconcile = models.BooleanField(default=False)
-    pledge = models.ForeignKey(Pledge, blank=True, null=True)
+    pledge = models.ForeignKey(Pledge, blank=True, null=True, on_delete=models.CASCADE)
     time_reconciled = models.DateTimeField(blank=True, null=True, editable=False)
     bank_account_id = models.TextField()
     match_future_statement_text = models.BooleanField(
@@ -29,7 +29,7 @@ class BankTransaction(models.Model):
                                  'to the same pledge. This should only be ticked if the text is reasonably unique. '
                                  'e.g. Do NOT tick it if the text is "donation", or "GiveDirectly" etc.')
     is_eaae = models.BooleanField(default=False)
-    def __unicode__(self):
+    def __str__(self):
         return ("UNRECONCILED -- " if not self.reconciled else "") + \
                "{0.date} -- {0.amount} -- {0.bank_statement_text}".format(self)
 
@@ -117,6 +117,8 @@ class StripeTransaction(models.Model):
     amount = models.DecimalField(decimal_places=2, max_digits=12)
     fees = models.DecimalField(decimal_places=2, max_digits=12)
     reference = models.TextField(blank=True)
+    # TODO: Consider changing from DO_NOTHING to SET_NULL
+    # I think do nothing will cause an integrity error in Postgres if the pledge is deleted
     pledge = models.ForeignKey(Pledge, blank=True, null=True, on_delete=models.DO_NOTHING)
     payment_intent_id = models.CharField(max_length=100, null=True, blank=True)
     charge_id = models.CharField(max_length=100, null=True, blank=True)

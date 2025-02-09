@@ -8,7 +8,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from enumfields import Enum, EnumIntegerField
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .partner_charity import PartnerCharity
 
@@ -147,8 +147,8 @@ class Pledge(models.Model):
     def donor_portal(self):
         return 'https://donations.effectivealtruism.org.au' + reverse('donor-portal-eaae' if self.is_eaae else 'donor-portal-eaa', kwargs={'customer_id': self.stripe_customer_id})
 
-    def __unicode__(self):
-        components = ', '.join([c.__unicode__() for c in self.components.all()])
+    def __str__(self):
+        components = ', '.join([c.__str__() for c in self.components.all()])
         return "Pledge of {1} by {0.first_name} {0.last_name}, " \
                "made on {2}. Reference {0.reference}".format(self, components, self.completed_time.date())
 
@@ -159,8 +159,8 @@ class PledgeComponent(models.Model):
     class Meta:
         unique_together = ('pledge', 'partner_charity')
 
-    pledge = models.ForeignKey(Pledge, related_name='components')
-    partner_charity = models.ForeignKey(PartnerCharity, related_name='pledge_components')
+    pledge = models.ForeignKey(Pledge, related_name='components', on_delete=models.CASCADE)
+    partner_charity = models.ForeignKey(PartnerCharity, related_name='pledge_components', on_delete=models.CASCADE)
     amount = models.DecimalField(decimal_places=2, max_digits=12,
                                  validators=[MinValueValidator(decimal.Decimal(1) / 100)])
 
@@ -168,6 +168,6 @@ class PledgeComponent(models.Model):
     def proportion(self):
         return self.amount / self.pledge.amount
 
-    def __unicode__(self):
+    def __str__(self):
         return "${0.amount} to {0.partner_charity}".format(self)
 

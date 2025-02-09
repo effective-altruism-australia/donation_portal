@@ -21,7 +21,7 @@ def send_partner_charity_reports(test=True):
         partners['GiveDirectly'] += partners['GiveDirectly Basic income research']
         del partners['GiveDirectly Basic income research']
 
-    for partner, ids in partners.iteritems():
+    for partner, ids in partners.items():
         # Start time is when we last reported
         last_report_datetime = PartnerCharityReport.objects.filter(partner__id=ids[0]
                                                                    ).aggregate(Max('date'))[
@@ -117,7 +117,7 @@ def send_partner_charity_reports(test=True):
             message.send()
 
         except Exception as e:
-            print e.message
+            print(e.message)
             client.captureException()
 
         # Create internal report (personal information included)
@@ -142,7 +142,7 @@ def send_partner_charity_reports(test=True):
             message.send()
 
         except Exception as e:
-            print e.message
+            print(e.message)
             client.captureException()
 
         if not test:

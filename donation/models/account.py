@@ -23,7 +23,7 @@ class XeroReconciledDate(models.Model):
     # BankTransaction objects. The BankTransaction objects will be missing things like workplace giving.
     date = models.DateField()
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.date)
 
     def save(self, *args, **kwargs):

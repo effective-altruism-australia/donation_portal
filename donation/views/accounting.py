@@ -4,7 +4,7 @@ from datetime import date
 
 import arrow
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Max, Sum, Min, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -110,7 +110,7 @@ def donation_counter(request):
     #     .aggregate(Min('date'))['date__min']
 
     # return render(request, 'donation_counter.html', {'form': form,
-    #                                                  'totals': sorted(totals.iteritems()),
+    #                                                  'totals': sorted(totals.items()),
     #                                                  'grand_total': sum(filter(None, totals.values())),
     #                                                  'error_message': error_message,
     #                                                  'xero_reconciled_date': xero_reconciled_date,
@@ -163,7 +163,7 @@ def _accounting_reconciliation(request, is_eaae):
     #     'date')
 
     # return render(request, 'reconciliation.html', {'form': form,
-    #                                                'totals': sorted(totals.iteritems()),
+    #                                                'totals': sorted(totals.items()),
     #                                                'grand_total': grand_total,
     #                                                'exceptions': exceptions})
 

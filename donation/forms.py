@@ -1,6 +1,6 @@
 import arrow
 from django import forms
-from django.forms.extras.widgets import SelectDateWidget
+from django.forms.widgets import SelectDateWidget
 from enumfields.fields import EnumChoiceField
 
 from donation.models import RecurringFrequency, Pledge, ReferralSource, PaymentMethod, PartnerCharity, PledgeComponent, \

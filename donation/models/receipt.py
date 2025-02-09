@@ -89,7 +89,7 @@ class Receipt(models.Model):
         else:
             return "Sending failed. No failure message."
 
-    def __unicode__(self):
+    def __str__(self):
         if self.bank_transaction:
             transaction_part = ("Receipt for bank donation of ${0.bank_transaction.amount}" +
                                 " on {0.bank_transaction.date}").format(self)
@@ -143,7 +143,7 @@ class EOFYReceipt(models.Model):
         else:
             return "Sending failed. No failure message."
 
-    def __unicode__(self):
+    def __str__(self):
         details = "{0.year} EOFY Receipt for {0.email}".format(self)
         failed_part = " - Sending failed: {0.failed_message}".format(self) if self.failed else ""
         return details + failed_part

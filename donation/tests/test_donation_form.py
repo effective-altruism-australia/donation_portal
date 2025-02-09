@@ -91,7 +91,7 @@ class DonationFormTestCase(StaticLiveServerTestCase):
         }
         form_values.update(kwargs)
 
-        for field_name, value in form_values.iteritems():
+        for field_name, value in form_values.items():
             input = self.selenium.find_element_by_name('payment.%s' % field_name)
             input.send_keys(value)
 
@@ -103,7 +103,7 @@ class DonationFormTestCase(StaticLiveServerTestCase):
             'personal_message': 'Gift message'
         }
         form_values.update(kwargs)
-        for field_name, value in form_values.iteritems():
+        for field_name, value in form_values.items():
             input = self.selenium.find_element_by_name('gift.%s' % field_name)
             input.send_keys(value)
 
