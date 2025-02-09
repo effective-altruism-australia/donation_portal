@@ -13,7 +13,7 @@ from donation.models import PledgeComponent, BankTransaction, Receipt, Pledge, E
 class EmailTestCase(TestCase):
     def setUp(self):
         partner_charity = mommy.make(PartnerCharity, name='Friendly Partner Name')
-        self.pledge = mommy.make(Pledge, email='andrewbirdemail@gmail.com')
+        self.pledge = mommy.make(Pledge, email='nathan.sherburn@eaa.org.au')
         mommy.make(PledgeComponent, pledge=self.pledge, partner_charity=partner_charity)
         self.bank_transaction = mommy.make(BankTransaction, amount=self.pledge.amount, pledge=self.pledge)
 
@@ -45,8 +45,10 @@ class EmailTestCase(TestCase):
         self.assert_emails_sent()
 
     def test_gift_notification(self):
+        # Test that the email is not sent if the pledge is not a gift
         send_gift_notification(self.bank_transaction.donation.id)
         self.assertFalse(self.pledge.gift_message_sent)
+        # Test that the email is sent if the pledge is a gift
         self.pledge.is_gift = True
         self.pledge.gift_recipient_email = 'test@example.com'
         self.pledge.save()

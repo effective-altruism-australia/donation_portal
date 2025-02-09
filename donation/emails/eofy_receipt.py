@@ -5,7 +5,7 @@ import shutil
 import tempfile
 
 import pdfkit
-from PyPDF2 import PdfFileReader, PdfFileMerger
+from PyPDF2 import PdfReader, PdfMerger
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.db.models.functions import Lower
@@ -56,7 +56,7 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
             # ubuntu 16.04. Easiest to combine multiple pages using a separate library.
 
             tempdir = tempfile.mkdtemp()
-            merger = PdfFileMerger()
+            merger = PdfMerger()
 
             for page in [1, 2]:
                 page_name = 'receipt_html_page_{0}'.format(page)
@@ -65,7 +65,7 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
                 setattr(eofy_receipt, page_name, html)
                 file_name = os.path.join(tempdir, page_name + '.pdf')
                 pdfkit.from_string(html, file_name)
-                merger.append(PdfFileReader(file_name, "rb"))
+                merger.append(PdfReader(file_name, "rb"))
 
             merger.write(eofy_receipt.pdf_receipt_location)
 
@@ -96,7 +96,7 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
 
         except Exception as e:
             client.captureException()
-            eofy_receipt.failed_message = e.message if e.message else "Sending failed"
+            eofy_receipt.failed_message = str(e) if str(e) else "Sending failed"
         finally:
             shutil.rmtree(tempdir)
         if not test:

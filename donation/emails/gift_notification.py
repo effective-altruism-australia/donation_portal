@@ -43,5 +43,5 @@ def send_gift_notification(donation_id):
         pledge.gift_message_sent = True
         pledge.save()
     except Exception as e:
-        print e.message
+        print(e)
         client.captureException()
