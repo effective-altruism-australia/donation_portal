@@ -117,7 +117,7 @@ class ReceiptInline(admin.TabularInline):
     fields = ('status',)
     can_delete = False
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
@@ -248,7 +248,7 @@ class VersionInline(admin.TabularInline):
     fields = ['content_type', 'object_repr']
     readonly_fields = fields
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
@@ -259,7 +259,7 @@ class RevisionAdmin(admin.ModelAdmin):
     date_hierarchy = 'date_created'
     inlines = (VersionInline,)
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
     def has_delete_permission(self, request, obj=None):
