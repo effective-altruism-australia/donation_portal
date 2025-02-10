@@ -66,8 +66,9 @@ def download_spreadsheet(request, extra_fields=None):
     if not os.path.exists(location):
         # Note that the values call below is required to create a donation object for each associated pledge component
         queryset = Donation.objects.filter(date__gte=start, date__lte=end).order_by('datetime')
+        donation_ids = list(queryset.values_list('id', flat=True))
         from donation.tasks import export_spreadsheet
-        export_spreadsheet.delay(location, queryset, template)
+        export_spreadsheet.delay(location, donation_ids, template)
         return HttpResponse("Please wait 5 minutes and refresh this page again.")
     else:
         response = HttpResponse(open(location).read(),
@@ -76,13 +77,13 @@ def download_spreadsheet(request, extra_fields=None):
         return response
 
 
-def write_spreadsheet(location, querysets, template, cleaned=False):
+def write_spreadsheet(location, donations, template, cleaned=False):
     with xlsxwriter.Workbook(location, {'default_date_format': 'dd mmm yyyy'}) as wb:
-        for name, queryset in querysets.items():
+        for name, donation in donations.items():
             ws = wb.add_worksheet(name=name)
             ws.write_row(0, 0, template.keys())
             row_number = 0
-            for row in queryset.values_list(*template.values()):
+            for row in donation.values_list(*template.values()):
                 if cleaned:
                     row_list = list(row)
                     if not row_list[9]:

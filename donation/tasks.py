@@ -5,6 +5,7 @@ from mailchimp3 import MailChimp
 from mailchimp3.mailchimpclient import MailChimpError
 from raven.contrib.django.raven_compat.models import client
 
+from donation.models.donation import Donation
 from donation.models.pledge import Pledge
 from donation_portal.eaacelery import app
 from .eaaxero import import_bank_transactions, import_trial_balance as import_trial_balance_non_delayed
@@ -75,5 +76,6 @@ def add_pledge_contact_to_ea_newsletter(pledge_id):
 
 
 @app.task()
-def export_spreadsheet(location, queryset, template):
-    write_spreadsheet(location, {'Donations': queryset}, template, cleaned=False)
+def export_spreadsheet(location, donation_ids, template):
+    donations = Donation.objects.filter(id__in=donation_ids)
+    write_spreadsheet(location, {'Donations': donations}, template, cleaned=False)
