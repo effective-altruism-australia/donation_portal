@@ -50,26 +50,6 @@ def download_receipt(request, pk, secret):
     response['Content-Disposition'] = 'attachment; filename="EAA_Receipt_{0}.pdf"'.format(receipt.pk)
     return response
 
-
-class PledgeJS(View):
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super(PledgeJS, self).dispatch(request, *args, **kwargs)
-
-    @xframe_options_exempt
-    def get(self, request):
-        with open(os.path.join(settings.BASE_DIR, 'react/build/webpack-stats.json')) as f:
-            data = json.load(f)
-
-        time_last_compiled = datetime.datetime.utcfromtimestamp(data['endTime'] / 1000)
-        time_last_compiled.timetuple()
-
-        url = data['chunks']['donation_form'][0]['publicPath']
-
-        response = HttpResponseRedirect(url, content_type="application/x-javascript")
-        response['Last-Modified'] = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time_last_compiled.timetuple())
-        return response
-
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -122,22 +102,7 @@ class PledgeView(View):
             for component in component_formset.forms:
                 component.instance.pledge = pledge
             component_formset.save()
-
-            # HACK: when on the environment form, if someone submits an unallocated donation, we want to
-            # just route the funds to the main EAAE partner charity
-            # Check if "environment" is in the URL
-            is_eaae = pledge.get_is_eaae
-            if "?charity=eaae" in request.META.get('HTTP_REFERER', None):
-                if pledge.components.count() == 1:
-                    c = pledge.components.get()
-                    if c.partner_charity.slug_id == "unallocated":
-                        c.partner_charity = PartnerCharity.objects.get(slug_id="eaae")
-                        c.save()
-                        is_eaae = True
-                        
-
             
-            pledge.is_eaae = is_eaae
             pledge.save()
 
         response_data = {}

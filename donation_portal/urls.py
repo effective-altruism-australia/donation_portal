@@ -7,7 +7,7 @@ from django.views.static import serve
 from donation.views.accounting import accounting_reconciliation, donation_counter, accounting_reconciliation_eaae
 from donation.views.export import render_export_page, download_spreadsheet, download_full_spreadsheet
 from donation.views.form_data import PartnerCharityView, ReferralSourceView
-from donation.views.pledge import stripe_webhooks_eaae, stripe_billing_portal_eaae, PledgeView, download_receipt, PledgeJS, stripe_webhooks, stripe_billing_portal
+from donation.views.pledge import stripe_webhooks_eaae, stripe_billing_portal_eaae, PledgeView, download_receipt, stripe_webhooks, stripe_billing_portal
 from donation.views.impact_calculator import ImpactCalculator
 from donation.views.xero_views import process_callback_view, start_xero_auth_view
 
@@ -23,8 +23,6 @@ urlpatterns = [
     path("download_full_spreadsheet/", download_full_spreadsheet, name="download-full-spreadsheet"),
     path("download_spreadsheet/", download_spreadsheet, name="download-spreadsheet"),
     # Donations
-    # url(r'^pledge/([0-9])/$', pledge, name='pledge')
-    path("pledge.js", PledgeJS.as_view(), name="pledge-js"),
     path("pledge_new/", PledgeView.as_view(), name="pledge-new"),
 
     path("receipt/<int:pk>/<slug:secret>/", download_receipt, name="download-receipt"),

@@ -29,7 +29,6 @@ django-ipware
 django-paypal
 django-pinpayments==1.0.11
 django-reversion
-django-webpack-loader
 gunicorn
 mailchimp3
 mock

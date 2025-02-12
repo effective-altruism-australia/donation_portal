@@ -31,7 +31,6 @@ INSTALLED_APPS = (
     'reversion',
     'donation.apps.DonationConfig',
     'paypal.standard.ipn',
-    'webpack_loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -151,26 +150,6 @@ CORS_ORIGIN_WHITELIST = [
     'https://dev.effectivealtruism.org.au',
     'http://localhost:8000'
 ]
-
-#########
-# Webpack
-#########
-
-STATICFILES_DIRS = STATICFILES_DIRS + (
-    os.path.join(BASE_DIR, 'react', 'build'),
-    os.path.join(BASE_DIR, 'react', 'public'),
-)
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundle/',
-
-        'STATS_FILE': os.path.join(BASE_DIR, 'react/build/webpack-stats.json'),
-
-        # This disables polling in production. We assume the bundles are built and stay unchanged while the application is running.
-        'CACHE': not DEBUG,
-    }
-}
 
 CACHES = {
      'default': {
