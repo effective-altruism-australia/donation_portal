@@ -57,7 +57,11 @@
         "Other charities we support": [],
       };
       partnerCharities.forEach((charity) => {
-        categories[charity.category].push(charity);
+        if (charity.category === "Our recommended charities") {
+          categories["Our recommended charities"].push(charity);
+        } else {
+          categories["Other charities we support"].push(charity);
+        }
       });
 
       Object.keys(categories).forEach((catagory) => {
