@@ -11,7 +11,7 @@ class FormController {
   #directLinkCharity;
   #directLinkCharityDetails;
   #donationFrequency = "one-time"; // one-time or monthly
-  #donorCountry;
+  #donorCountry = "Australia";
   #donorEmail;
   #donorFirstName;
   #donorLastName;
@@ -293,6 +293,7 @@ class FormController {
     hide("#allocation-section");
     hide("#donation-frequency-section");
     hide("#direct-link-charity-section");
+    hide("#thankyou-section");
     hide("#donate-button-section");
   }
 
@@ -339,7 +340,7 @@ class FormController {
       totalForms++;
     }
     formData["form-TOTAL_FORMS"] = totalForms;
-    formData["form-INITIAL_FORMS"] = totalForms;
+    formData["form-INITIAL_FORMS"] = 0;
     return formData;
   }
 
@@ -363,7 +364,7 @@ class FormController {
       totalForms++;
     }
     formData["form-TOTAL_FORMS"] = totalForms;
-    formData["form-INITIAL_FORMS"] = totalForms;
+    formData["form-INITIAL_FORMS"] = 0;
     return formData;
   }
 }
