@@ -1,2 +1,0 @@
-export const SET_CHARITY = "SET_CHARITY";
-export const SET_DONATION_RESULT = "SET_DONATION_RESULT";
