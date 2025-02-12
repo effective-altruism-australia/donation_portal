@@ -1,0 +1,107 @@
+<style>
+  #communications-section {
+    display: none;
+  }
+</style>
+
+<section id="communications-section">
+  <div class="flex flex-col">
+    <h2 class="inline-block text-lg mt-8">How did you hear about us?</h2>
+    <select
+      placeholder="Select an option"
+      name="communications-section--referral-sources"
+      id="communications-section--referral-sources"
+      class="eaa-select text-md flex flex-grow mb-4 rounded border h-12 border-none p-2 focus-outline"
+      onchange="CommunicationsSection.handleReferralSourceChange()"
+    ></select>
+  </div>
+
+  <div class="flex flex-col items-start">
+    <label class="eaa-checkbox mb-4">
+      <input
+        type="checkbox"
+        id="communications-section--subscribe-to-updates"
+        name="communications-section--subscribe-to-updates"
+        onclick="CommunicationsSection.handleSubscribeToUpdatesChange()"
+        checked
+      />
+      Send me news and updates
+      <div class="checkmark rounded"></div>
+    </label>
+
+    <label class="eaa-checkbox mb-4">
+      <input
+        type="checkbox"
+        id="communications-section--subscribe-to-newsletter"
+        name="communications-section--subscribe-to-newsletter"
+        onclick="CommunicationsSection.handleSubscribeToNewsletterChange()"
+      />
+      Subscribe me to the global Effective Altruism newsletter
+      <div class="checkmark rounded"></div>
+    </label>
+
+    <label class="eaa-checkbox">
+      <input
+        type="checkbox"
+        id="communications-section--connect-to-community"
+        name="communications-section--connect-to-community"
+        onclick="CommunicationsSection.handleConnectToCommunityChange()"
+      />
+      Connect me with my local Effective Altruism community
+      <div class="checkmark rounded"></div>
+    </label>
+  </div>
+</section>
+
+<script>
+  class CommunicationsSection {
+    constructor() {
+      $("#communications-section").style.display = "block";
+      this.referralSourcesSelect = $(
+        "#communications-section--referral-sources"
+      );
+      this.fetchReferralSources();
+    }
+
+    fetchReferralSources() {
+      fetch(ORIGIN + "/referral_sources")
+        .then((response) => response.json())
+        .then((data) => this.buildReferralSourcesList(data));
+    }
+
+    buildReferralSourcesList(referralSources) {
+      let referralSourcesListHTML =
+        "<option value='' disabled selected>Please select one...</option>";
+
+      referralSources.forEach((referralSource) => {
+        referralSourcesListHTML += `<option value="${referralSource.value}">${referralSource.label}</option>`;
+      });
+
+      this.referralSourcesSelect.innerHTML = referralSourcesListHTML;
+    }
+
+    static handleSubscribeToUpdatesChange() {
+      formController.setSubscribeToUpdates(
+        $("#communications-section--subscribe-to-updates").checked
+      );
+    }
+
+    static handleSubscribeToNewsletterChange() {
+      formController.setSubscribeToNewsletter(
+        $("#communications-section--subscribe-to-newsletter").checked
+      );
+    }
+
+    static handleConnectToCommunityChange() {
+      formController.setSubscribeToCommunity(
+        $("#communications-section--connect-to-community").checked
+      );
+    }
+
+    static handleReferralSourceChange() {
+      formController.setHowDidYouHearAboutUs(
+        $("#communications-section--referral-sources").value
+      );
+    }
+  }
+</script>

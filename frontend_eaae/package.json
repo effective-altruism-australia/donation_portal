@@ -1,0 +1,19 @@
+{
+  "name": "eaae-donation-form",
+  "version": "1.0.0",
+  "description": "A simplified version of the EAA donation form. This is a temporary form for EAAE until we combine the two donation forms.",
+  "engines": {
+    "node": ">=22.4.1"
+  },
+  "main": "build.js",
+  "scripts": {
+    "build": "node --env-file=prod.env build.js",
+    "dev": "node --env-file=dev.env --watch-path=./src build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nathan Sherburn",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.7.4"
+  }
+}

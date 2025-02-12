@@ -1,0 +1,218 @@
+<style>
+  #specific-allocation-section {
+    display: none;
+
+    .charity-option {
+      justify-content: end;
+      align-items: center;
+      text-align: right;
+      padding-bottom: 0.5rem;
+
+      span {
+        margin: 0 0 0 1rem;
+        max-width: 7rem;
+        width: 100%;
+      }
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    #specific-allocation-section--custom-amount-input {
+      display: flex;
+      flex-grow: 1;
+      border: none;
+      background-color: transparent;
+      outline: none;
+      padding: 1rem 0.5rem;
+    }
+
+    #specific-allocation-section--custom-amount-input-wrapper {
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      padding-left: 0.5rem;
+      width: 100%;
+      background-color: white;
+      border: 2px solid var(--eaa-blue-600);
+    }
+
+    .larger-button {
+      padding: 1rem 0;
+      border: 2px solid var(--eaa-blue-600);
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<section id="specific-allocation-section">
+  <h2 class="text-lg mt-8">I would like to gift</h2>
+  <div class="radio-group flex gap-2">
+    <input
+      type="radio"
+      id="specific-allocation-section--donate-25"
+      name="donation-amount"
+      value="25"
+      onchange="SpecificAllocationSection.handleSuggestedAmountChange(event)"
+    />
+    <label
+      for="specific-allocation-section--donate-25"
+      class="rounded text-blue larger-button"
+      >$25</label
+    >
+    <input
+      type="radio"
+      id="specific-allocation-section--donate-50"
+      name="donation-amount"
+      value="50"
+      onchange="SpecificAllocationSection.handleSuggestedAmountChange(event)"
+    />
+    <label
+      for="specific-allocation-section--donate-50"
+      class="rounded text-blue larger-button"
+      >$50</label
+    >
+    <input
+      type="radio"
+      id="specific-allocation-section--donate-100"
+      name="donation-amount"
+      value="100"
+      onchange="SpecificAllocationSection.handleSuggestedAmountChange(event)"
+    />
+    <label
+      for="specific-allocation-section--donate-100"
+      class="rounded text-blue larger-button"
+      >$100</label
+    >
+    <input
+      type="radio"
+      id="specific-allocation-section--donate-250"
+      name="donation-amount"
+      value="250"
+      onchange="SpecificAllocationSection.handleSuggestedAmountChange(event)"
+    />
+    <label
+      for="specific-allocation-section--donate-250"
+      class="rounded text-blue larger-button"
+      >$250</label
+    >
+  </div>
+  <div
+    id="specific-allocation-section--custom-amount"
+    class="flex flex-col validate mb-2"
+  >
+    <label class="inline-block mb-2 mt-4" for="custom-amount-input"
+      >Or a custom amount:</label
+    >
+    <span
+      id="specific-allocation-section--custom-amount-input-wrapper"
+      class="border rounded focus-outline"
+    >
+      $
+      <input
+        type="number"
+        inputmode="numeric"
+        min="0"
+        max="999999.99"
+        step="0.01"
+        id="specific-allocation-section--custom-amount-input"
+        name="custom-amount-input"
+        class="inline-block text-md larger-input"
+        onblur="SpecificAllocationSection.handleCustomAmountBlur()"
+        onfocus="SpecificAllocationSection.handleCustomAmountFocus(event)"
+        oninput="SpecificAllocationSection.handleCustomAmountChange()"
+        placeholder="Enter your custom amount here"
+      />
+    </span>
+  </div>
+
+  <div
+    class="flex flex-col"
+    style="
+      border: 1px solid green;
+      background-color: #efffe2;
+      padding: 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+    "
+  >
+    <h2 class="text-lg" style="margin-top: 0;">Support our work</h2>
+
+    <label for="eaae-operations" style="margin-bottom: 16px;"
+      >As with any charity, running EA Australia Environment has costs. If you feel we provide a useful service, you can support our work directly by entering an additional amount here.</label
+    >
+    <span
+      class="flex items-center rounded p-2 text-md border focus-outline"
+      style="background-color: white;"
+    >
+      $
+      <input
+        type="number"
+        inputmode="numeric"
+        min="0"
+        max="999999.99"
+        step="0.01"
+        id="eaae-operations-amount"
+        name="eaae-operations-amount"
+        class="specific-charity inline-block text-md"
+        onblur="this.value === '' ? this.classList.remove('validate') : '';"
+        onfocus="this.classList.add('validate')"
+        oninput="formController.setEaaeOpsAmount(this.value)"
+        style="border: none; outline: none; width: 100%; min-width: 150px;"
+      />
+    </span>
+  </div>
+</section>
+
+<script>
+  class SpecificAllocationSection {
+    constructor(partnerCharities) {
+      $("#specific-allocation-section").style.display = "block";
+    }
+
+
+    static handleCustomAmountFocus(e) {
+      formController.setEaaeAmount(e.target.value);
+      $("#specific-allocation-section--custom-amount").classList.add("validate");
+      $("#specific-allocation-section--donate-25").checked = false;
+      $("#specific-allocation-section--donate-50").checked = false;
+      $("#specific-allocation-section--donate-100").checked = false;
+      $("#specific-allocation-section--donate-250").checked = false;
+    }
+
+    static handleCustomAmountBlur() {
+      if ($("#specific-allocation-section--custom-amount-input").value === "") {
+        $("#specific-allocation-section--custom-amount").classList.remove("validate");
+      }
+    }
+
+    static handleSuggestedAmountChange(e) {
+      const selectedAmount = e.target.value;
+      formController.setEaaeAmount(selectedAmount);
+      $("#specific-allocation-section--custom-amount").classList.remove("validate");
+      $("#specific-allocation-section--custom-amount-input").value = "";
+    }
+
+    static handleCustomAmountChange() {
+      const customAmount = $("#specific-allocation-section--custom-amount-input").value;
+      formController.setEaaeAmount(customAmount);
+      $("#specific-allocation-section--donate-25").checked = false;
+      $("#specific-allocation-section--donate-50").checked = false;
+      $("#specific-allocation-section--donate-100").checked = false;
+      $("#specific-allocation-section--donate-250").checked = false;
+    }
+
+    static getSpecificAllocations() {
+      const specificAllocation = {};
+      $$(".specific-charity").forEach((input) => {
+        const amount = parseFloat(input.value);
+        if (amount > 0) {
+          const charitySlug = input.id.split("-amount")[0];
+          specificAllocation[charitySlug] = amount;
+        }
+      });
+      return specificAllocation;
+    }
+  }
+</script>

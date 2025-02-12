@@ -1,0 +1,96 @@
+<style>
+  #total-amount-section {
+    table {
+      width: 100%;
+    }
+    table td:nth-child(2) {
+      text-align: right;
+    }
+    table tr:last-child {
+      font-weight: bold;
+    }
+    table tr:nth-last-child(2) td {
+      padding-bottom: 0.5rem;
+    }
+    table tr:last-child td:last-child {
+      font-size: 2rem;
+      padding: 1rem 0;
+    }
+    .tax-deductible {
+      font-size: 0.8rem;
+      font-weight: normal;
+      color: #666;
+      margin-top: -1.5em;
+      line-height: 1;
+    }
+    .total-donation {
+      line-height: 1;
+    }
+  }
+</style>
+
+<section id="total-amount-section" style="display: none">
+  <table id="total-amount-section--table">
+    <tr>
+      <td><h2 class="text-md">Designation</h2></td>
+      <td><h2 class="text-md">Amount</h2></td>
+    </tr>
+    <tr>
+      <td><em>No donation selected</em></td>
+      <td>--</td>
+    </tr>
+    <tr>
+      <td>Total donation</td>
+      <td>0.00</td>
+    </tr>
+  </table>
+</section>
+
+<script>
+  class TotalAmountSection {
+    constructor() {
+      $("#total-amount-section").style.display = "block";
+    }
+
+    static render(specificAllocations) {
+      TotalAmountSection.#buildSpecificAllocationTable(specificAllocations);
+    }
+
+    static #formatCurrency(amount) {
+      return amount.toLocaleString("en-AU", {
+        style: "currency",
+        currency: "AUD",
+      });
+    }
+
+    static #buildSpecificAllocationTable(context) {
+      const { eaaeAmount, eaaeOpsAmount } = context;
+      const isMonthly = formController.getDonationFrequency() === "monthly";
+      let combinedTotal = eaaeAmount+ eaaeOpsAmount;
+
+      let table = `
+        <tr>
+          <td><h2 class="text-lg mt-8">Summary</h2></td>
+          <td><h2 class="text-lg mt-8">Amount</h2></td>
+        </tr>
+        <tr>
+          <td>The most effective climate charities</td>
+          <td>${this.#formatCurrency(eaaeAmount)}</td>
+        </tr>
+        <tr>
+          <td>Effective Altruism Australia Environment Operations</td>
+          <td>${this.#formatCurrency(eaaeOpsAmount)}</td>
+        </tr>
+        <tr>
+          <td>
+            <div class='total-donation'>TOTAL DONATION ${
+              isMonthly ? "(each month)" : ""
+            }</div><br />
+            <div class='tax-deductible'>100% tax deductible</div>
+          </td>
+          <td>${this.#formatCurrency(combinedTotal)}</td>
+        </tr>`;
+      $("#total-amount-section table").innerHTML = table;
+    }
+  }
+</script>

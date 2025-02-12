@@ -1,0 +1,59 @@
+<style>
+  #payment-method-section {
+    display: none;
+  }
+</style>
+
+<section id="payment-method-section">
+  <h2 class="text-lg mt-8">Payment Method</h2>
+
+  <div class="radio-group flex gap-2">
+    <input
+      type="radio"
+      id="payment-method-section--credit-card"
+      name="payment-method-section--method"
+      value="credit-card"
+      onclick="PaymentMethodSection.handlePaymentMethodChange('credit-card')"
+      checked
+    />
+    <label for="payment-method-section--credit-card" class="rounded text-blue">Credit Card</label>
+
+    <input
+      type="radio"
+      id="payment-method-section--bank-transfer"
+      name="payment-method-section--method"
+      value="bank-transfer"
+      onclick="PaymentMethodSection.handlePaymentMethodChange('bank-transfer')"
+    />
+    <label for="payment-method-section--bank-transfer" class="rounded text-blue">
+      Bank Transfer
+    </label>
+  </div>
+
+  <div id="payment-method-section--bank-details-message" style="display: none; opacity: 0;">
+    <div class="mt-4">
+      After you submit this form, we will give you our account details and a
+      unique reference number. You can then log in to your bank and make a bank
+      transfer using these details.
+    </div>
+  </div>
+</section>
+
+<script>
+  class PaymentMethodSection {
+    constructor() {
+      $("#payment-method-section").style.display = "block";
+    }
+
+    static handlePaymentMethodChange(method) {
+      if (method === "bank-transfer") {
+        $("#payment-method-section--bank-details-message").style.display = "block";
+        $("#payment-method-section--bank-details-message").style.opacity = 1;
+      } else {
+        $("#payment-method-section--bank-details-message").style.display = "none";
+        $("#payment-method-section--bank-details-message").style.opacity = 0;
+      }
+      formController.setPaymentMethod(method);
+    }
+  }
+</script>
