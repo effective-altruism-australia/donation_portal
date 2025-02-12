@@ -70,9 +70,11 @@ RUN pyenv global 3.13.1
 USER postgres
 RUN service postgresql start && \
     psql -c "ALTER USER postgres PASSWORD 'password';" && \
-    psql -c "CREATE ROLE eaa WITH LOGIN PASSWORD 'password';" && \
+    psql -c "CREATE ROLE eaa WITH LOGIN CREATEDB SUPERUSER PASSWORD 'password';" && \
     psql -c "CREATE DATABASE donations;" && \
-    psql -c "GRANT ALL PRIVILEGES ON DATABASE donations TO eaa;"
+    psql -c "GRANT ALL PRIVILEGES ON DATABASE donations TO eaa;" && \
+    psql -d donations -c "ALTER SCHEMA public OWNER TO eaa;" && \
+    psql -d donations -c "GRANT ALL ON SCHEMA public TO eaa;"
 USER devuser
 
 # Install nvm and node
