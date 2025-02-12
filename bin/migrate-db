@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-sudo -H salt-call state.apply postgresql.server.databases
-sudo -H salt-call state.apply eaa.db.migrate

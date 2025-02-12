@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-cd ~/donation_portal/react
-npm run build
-~/donation_portal/manage.py collectstatic --noinput
