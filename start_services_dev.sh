@@ -12,6 +12,9 @@ echo "**************************************************************"
 # Start PostgreSQL service
 sudo service postgresql start
 
+# Memcached
+sudo service memcached start
+
 # Start Redis service
 sudo service redis-server start
 

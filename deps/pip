@@ -57,7 +57,7 @@ pyparsing==2.1.10
 PyPDF2==1.26.0
 pytest==4.0.1
 python-dateutil==2.6.0
-python-memcached==1.59
+memcached>=1.51
 python-postmark==0.4.12
 pytz==2016.10
 pyxero==0.9.3

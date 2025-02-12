@@ -36,7 +36,7 @@ model-mommy
 pdfkit
 Pillow
 psycopg2
-PyCrypto
+pymemcache
 PyPDF2
 pytest
 python-dateutil
