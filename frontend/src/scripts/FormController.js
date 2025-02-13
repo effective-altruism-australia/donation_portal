@@ -11,7 +11,7 @@ class FormController {
   #directLinkCharity;
   #directLinkCharityDetails;
   #donationFrequency = "one-time"; // one-time or monthly
-  #donorCountry;
+  #donorCountry = "Australia";
   #donorEmail;
   #donorFirstName;
   #donorLastName;
@@ -98,6 +98,7 @@ class FormController {
     const response = await fetch(ORIGIN + "/partner_charities");
     this.#partnerCharities = await response.json();
     this.#partnerCharities = this.#partnerCharities.filter(
+      // We don't want to show EAA Amplify in the list of partner charities
       (charity) => charity.slug_id !== "eaa-amplify"
     );
     this.#partnerCharities.forEach((charity) => {
@@ -185,6 +186,10 @@ class FormController {
 
   getPartnerCharities() {
     return this.#partnerCharities;
+  }
+
+  getHowDidYouHearAboutUs() {
+    return this.#howDidYouHearAboutUs;
   }
 
   setDonorFirstName(firstName) {
