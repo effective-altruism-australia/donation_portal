@@ -1,33 +1,33 @@
-// We're using Shadow DOM to isolate this donation form's design from WordPress's CSS
+// We're using Shadow DOM to isolate this donation form from WordPress's CSS/JS.
+// https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM
 const host = document.querySelector("#donation-form-host");
 const shadow = host.attachShadow({ mode: "open" });
 const template = document.getElementById("donation-form");
 shadow.appendChild(template.content);
 
 class FormController {
-  #allocationType = "default"; // default, specific, direct-link
+  #allocationType = "default"; // default, specific or direct-link
+  #basicDonationAmount = 0;
   #directLinkCharity;
   #directLinkCharityDetails;
-  #donationFrequency = "one-time";
+  #donationFrequency = "one-time"; // one-time or monthly
   #donorCountry;
   #donorEmail;
   #donorFirstName;
   #donorLastName;
   #donorPostcode;
-  #isFestiveGift = false;
+  #howDidYouHearAboutUs = "";
   #partnerCharities = [];
-  #paymentMethod = "credit-card";
+  #paymentMethod = "credit-card"; // credit-card or bank-transfer
   #showThankYouMessage;
+  #specificAllocations = {};
+  #stripe;
   #subscribeToCommunity = false;
   #subscribeToNewsletter = false;
   #subscribeToUpdates = true;
-  #tipSize = 10;
-  #tipType = "percentage";
   #tipDollarAmount = 0;
-  #stripe;
-  #howDidYouHearAboutUs = "";
-  #basicDonationAmount = 0;
-  #specificAllocations = {};
+  #tipSize = 10;
+  #tipType = "percentage"; // percentage or dollar
 
   constructor() {
     // Get url parameters
@@ -66,7 +66,6 @@ class FormController {
     new PersonalDetailsSection();
     new CommunicationsSection();
     new PaymentMethodSection();
-    new FestiveGiftSection();
     new DonateButtonSection();
     new DonationFrequencySection();
 
@@ -94,7 +93,6 @@ class FormController {
     new PersonalDetailsSection();
     new CommunicationsSection();
     new PaymentMethodSection();
-    new FestiveGiftSection();
     new DonateButtonSection();
 
     const response = await fetch(ORIGIN + "/partner_charities");
@@ -189,10 +187,6 @@ class FormController {
     return this.#partnerCharities;
   }
 
-  setIsFestiveGift(isFestiveGift) {
-    this.#isFestiveGift = isFestiveGift;
-  }
-
   setDonorFirstName(firstName) {
     this.#donorFirstName = firstName;
   }
@@ -261,22 +255,8 @@ class FormController {
     })
       .then((response) => response.json())
       .then(async (data) => {
-        const result = await FestiveGiftSection.generateAndSendCard({
-          paymentReference: data,
-          isFestiveGift: this.#isFestiveGift,
-          donorName: this.#donorFirstName,
-          donorEmail: this.#donorEmail,
-          allocationType: this.#allocationType,
-          basicDonationAmount: this.#basicDonationAmount,
-          specificAllocations: this.#specificAllocations,
-          directLinkCharity: this.#directLinkCharity,
-        });
         $("#loader").style.display = "none";
-        if (result === "error") {
-          return;
-        } else {
-          this.#handleFormSubmitResponse(data, formData);
-        }
+        this.#handleFormSubmitResponse(data, formData);
       });
     return false;
   }
@@ -303,7 +283,6 @@ class FormController {
       specificAllocationsTotal: this.#getSpecificAllocationsTotal(),
       directLinkCharityDetails: this.#directLinkCharityDetails,
     });
-    hide("#festive-gift-section");
     hide("#payment-method-section");
     hide("#specific-allocation-section");
     hide("#amplify-impact-section");
@@ -314,8 +293,6 @@ class FormController {
     hide("#allocation-section");
     hide("#donation-frequency-section");
     hide("#direct-link-charity-section");
-    hide("#festive-gift-section");
-    hide("#thank-you-message");
     hide("#donate-button-section");
   }
 
