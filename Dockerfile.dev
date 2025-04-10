@@ -5,13 +5,10 @@ FROM --platform=linux/amd64 ubuntu:24.04
 # Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Set environment variables
-ENV PYENV_ROOT=/root/.pyenv
-ENV PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
-
 # Update and install dependencies
-RUN apt-get update && apt-get upgrade -y \
-    && apt-get install -y \
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
         # Essential build tools
         build-essential \
         # Libraries for building Python
@@ -35,9 +32,9 @@ RUN apt-get update && apt-get upgrade -y \
         sudo \
         # Memcached
         memcached \
-        libmemcached-tools \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+        libmemcached-tools && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Create a new user "devuser"
 RUN useradd -ms /bin/bash devuser
@@ -51,24 +48,11 @@ RUN echo "devuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 # Switch to the new user
 USER devuser
 
-# Install pyenv
-ENV PYENV_ROOT=/home/devuser/.pyenv
-ENV PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
-RUN curl https://pyenv.run | bash
-RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
-    echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
-    echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc && \
-    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.profile && \
-    echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile && \
-    echo 'eval "$(pyenv init - bash)"' >> ~/.profile
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/0.6.14/install.sh | sh
+ENV PATH="/root/.local/bin/:$PATH"
 
-# # Install Python versions
-RUN pyenv install 3.13.1
-
-# # Set global Python version
-RUN pyenv global 3.13.1
-
-# # Start PostgreSQL, set a password and create eaa database
+# Start PostgreSQL, set a password and create eaa database
 USER postgres
 RUN service postgresql start && \
     psql -c "ALTER USER postgres PASSWORD 'password';" && \
