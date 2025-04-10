@@ -34,14 +34,6 @@
   <div class="radio-group flex gap-2">
     <input
       type="radio"
-      id="amount-section--donate-25"
-      name="donation-amount"
-      value="25"
-      onchange="AmountSection.handleSuggestedAmountChange(event)"
-    />
-    <label for="amount-section--donate-25" class="rounded text-blue larger-button">$25</label>
-    <input
-      type="radio"
       id="amount-section--donate-50"
       name="donation-amount"
       value="50"
@@ -67,6 +59,16 @@
     />
     <label for="amount-section--donate-250" class="rounded text-blue larger-button"
       >$250</label
+    >
+    <input
+      type="radio"
+      id="amount-section--donate-500"
+      name="donation-amount"
+      value="500"
+      onchange="AmountSection.handleSuggestedAmountChange(event)"
+    />
+    <label for="amount-section--donate-500" class="rounded text-blue larger-button"
+      >$500</label
     >
   </div>
   <div id="amount-section--custom-amount" class="flex flex-col validate mb-2">
