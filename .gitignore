@@ -1,4 +1,4 @@
-# OS X stuff
+# OSX stuff
 .Trashes/
 ._*
 .AppleDouble
@@ -34,10 +34,6 @@ logs/
 *.tmp
 tmp/
 
-# Config files
-local_settings.py
-salt_settings.py
-
 # Secrets
 secrets/
 
@@ -49,32 +45,25 @@ ipynb_checkpoints/
 venv/
 .venv
 __pycache__/
-
-# PyCharm
-.idea/
-
-# Rope
-.ropeproject/
+.pytest_cache/
+*.coverage
 
 # Uploaded/downloaded files; receipts
 /media
 
+# Certs
 *.pem
 *.crt
 
-.pytest_cache/
-
+# Redis database dump files
 *.rdb
-*.coverage
 
-# Salt
-deploy/pillar/eaa.sls*
-
-donation_portal_env
-
-# Frontend
+# Frontend tests
 frontend/node_modules/
 frontend/test-results/
 frontend/playwright-report/
 frontend/blob-report/
 frontend/playwright/.cache/
+
+# Environment files
+.env
