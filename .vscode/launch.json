@@ -26,7 +26,6 @@
       "program": "${workspaceRoot}/manage.py",
       "args": [
         "runserver",
-        // "--no-color",
         "--noreload"
       ],
     },
