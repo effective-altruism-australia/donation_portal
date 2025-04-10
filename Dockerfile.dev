@@ -20,10 +20,12 @@ RUN apt-get update && apt-get upgrade -y \
         libncursesw5-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
         # Useful tools
         wget curl git vim \
-        # App specific dependencies
+        # Webkit html to pdf
         wkhtmltopdf \
-        xauth \
+        # Virtual X server for wkhtmltopdf
         xvfb \
+        # Authentication for X server
+        xauth \
         # PostgreSQL
         postgresql \
         libpq-dev \
