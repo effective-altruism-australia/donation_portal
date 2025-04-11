@@ -53,7 +53,7 @@ const donationFormHtml = `
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-      const STRIPE_API_KEY_EAAE = "${process.env.STRIPE_API_KEY_EAAE}";
+      const STRIPE_API_KEY_EAAE = "${process.env.STRIPE_PUBLIC_KEY_EAAE}";
       const ORIGIN = "${process.env.ORIGIN}";
       ${fs.readFileSync("./src/scripts/utilities.js", "utf8")}
       ${fs.readFileSync("./src/scripts/FormController.js", "utf8")}
