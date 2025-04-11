@@ -1,5 +1,5 @@
 [project]
-name = "donation-portal-python3"
+name = "donation-portal"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
