@@ -1,5 +1,5 @@
---- a/.venv/lib/python3.13/site-packages/pinpayments/models.py
-+++ b/.venv/lib/python3.13/site-packages/pinpayments/models.py
+--- a/.venv/lib/python3.12/site-packages/pinpayments/models.py
++++ b/.venv/lib/python3.12/site-packages/pinpayments/models.py
 @@ -12,1 +12,1 @@
 -from django.utils.translation import ugettext_lazy as _
 +from django.utils.translation import gettext_lazy as _
