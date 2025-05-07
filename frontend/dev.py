@@ -12,7 +12,7 @@ from watchdog.events import FileSystemEventHandler
 script_dir = pathlib.Path(__file__).parent.absolute()
 
 # Port for the local server
-PORT = 8000
+PORT = 8001
 
 class BuildHandler(FileSystemEventHandler):
     """Handler for rebuilding the form when files change"""
@@ -46,11 +46,12 @@ def start_server():
     
     # Create the HTTP server
     handler = http.server.SimpleHTTPRequestHandler
+    os.chdir(script_dir / 'dist')
     httpd = socketserver.TCPServer(("", PORT), handler)
     
-    print(f"Server started at http://localhost:{PORT}/dist/")
+    print(f"Server started at http://localhost:{PORT}/")
     print("Opening browser...")
-    webbrowser.open(f"http://localhost:{PORT}/dist/")
+    webbrowser.open(f"http://localhost:{PORT}/")
     
     try:
         print("Press Ctrl+C to stop the server")

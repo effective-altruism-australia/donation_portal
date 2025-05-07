@@ -1,8 +1,16 @@
 import os
 import pathlib
+from dotenv import load_dotenv
+
 
 # Get the directory where the script is located
 script_dir = pathlib.Path(__file__).parent.absolute()
+
+# Construct the absolute path to the .env file
+dotenv_path = os.path.join(script_dir, '../.env')
+
+# Load the .env file
+load_dotenv(dotenv_path=dotenv_path)
 
 # Note: The "Paste this into WordPress" instructions below are for the final
 # output. Do not copy and paste any of the code in this file into WordPress.
