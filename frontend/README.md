@@ -18,28 +18,6 @@ This form is designed to replace our react-based donation form. The goals of thi
 ## Compatibility
 We try to only use features that are "Widely available" according to [Baseline](https://web.dev/baseline) to ensure compatibility with all modern browsers.
 
-## Requirements
-- NodeJS version v22.9.01 (this only used to concat the files and for development convenience. We will replace all need for NodeJS with Python once the rest of the project has moved to Python 3).
-
-## Deployment
-__Note: the deployment process has changed to allow us to avoid iframes and to move beyond NodeJS version 8 (the latest version available for our current server). To deploy, do the following on your *local* machine:__
-
-1. Run `npm run build` to concatenate the src files into a single file that will be located at `donation/templates/donation_form.html`.
-2. Copy the section between the relevant comments in `donation/templates/donation_form.html` into the WordPress site.
-
-## Development
-
-### Without Django (recommended)
-If you're just working on the frontend, you can avoid setting up Django.
-1. Run `npx http-server -p 8000 ../donation/templates/` from the `frontend` directory to serve the files.
-2. Run `npm run dev` from the `frontend` directory to watch files for changes and rebuild the concatenated file at `donation/templates/donation_form.html`.
-3. Visit the page at `localhost:8000/donation_form.html` to see the form.
-
-### With Django
-1. Follow the instructions to setup and run the Django server (`python manage.py runserver`).
-2. Run `npm run dev` from the `frontend` directory to watch files for changes and rebuild the concatenated file at `donation/templates/donation_form.html`.
-3. Visit the page at `localhost:8000/pledge_new` to see the form.
-
 ## Testing
 
 ### With VSCode Playwright extension (recommended)
