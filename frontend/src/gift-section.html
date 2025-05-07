@@ -64,21 +64,21 @@
 <script>
   class GiftSection {
     constructor() {
-      $("#gift-section").style.display = "block";
+      showBlock("#gift-section");
     }
 
     showGiftSection() {
-      showFlex("#gift-details-section");
-      $("#gift-details-section").disabled = false;
-      $("#recipient-name").setAttribute("required", "true");
-      $("#recipient-email").setAttribute("required", "true");
+      showFlex("#gift-section--details-section");
+      $("#gift-section--details-section").disabled = false;
+      $("#gift-section--recipient-name").setAttribute("required", "true");
+      $("#gift-section--recipient-email").setAttribute("required", "true");
     }
 
     hideGiftSection() {
-      hide("#gift-details-section");
-      $("#gift-details-section").disabled = true;
-      $("#recipient-name").setAttribute("required", "false");
-      $("#recipient-email").setAttribute("required", "false");
+      hide("#gift-section--details-section");
+      $("#gift-section--details-section").disabled = true;
+      $("#gift-section--recipient-name").setAttribute("required", "false");
+      $("#gift-section--recipient-email").setAttribute("required", "false");
     }
   }
 </script>

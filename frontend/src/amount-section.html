@@ -101,16 +101,16 @@
 <script>
   class AmountSection {
     constructor() {
-      $("#amount-section").style.display = "block";
+      showBlock("#amount-section");
     }
 
     static handleCustomAmountFocus(e) {
       formController.setBasicDonationAmount(e.target.value);
       $("#amount-section--custom-amount").classList.add("validate");
-      $("#amount-section--donate-25").checked = false;
       $("#amount-section--donate-50").checked = false;
       $("#amount-section--donate-100").checked = false;
       $("#amount-section--donate-250").checked = false;
+      $("#amount-section--donate-500").checked = false;
     }
 
     static handleCustomAmountBlur() {
@@ -129,18 +129,18 @@
     static handleCustomAmountChange() {
       const customAmount = $("#amount-section--custom-amount-input").value;
       formController.setBasicDonationAmount(customAmount);
-      $("#amount-section--donate-25").checked = false;
       $("#amount-section--donate-50").checked = false;
       $("#amount-section--donate-100").checked = false;
       $("#amount-section--donate-250").checked = false;
+      $("#amount-section--donate-500").checked = false;
     }
 
     static show() {
-      $("#amount-section").style.display = "block";
+      showBlock("#amount-section");
     }
 
     static hide() {
-      $("#amount-section").style.display = "none";
+      hide("#amount-section");
     }
   }
 </script>

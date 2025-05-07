@@ -42,16 +42,14 @@
 <script>
   class PaymentMethodSection {
     constructor() {
-      $("#payment-method-section").style.display = "block";
+      showBlock("#payment-method-section");
     }
 
     static handlePaymentMethodChange(method) {
       if (method === "bank-transfer") {
-        $("#payment-method-section--bank-details-message").style.display = "block";
-        $("#payment-method-section--bank-details-message").style.opacity = 1;
+        showBlock("#payment-method-section--bank-details-message");
       } else {
-        $("#payment-method-section--bank-details-message").style.display = "none";
-        $("#payment-method-section--bank-details-message").style.opacity = 0;
+        hide("#payment-method-section--bank-details-message");
       }
       formController.setPaymentMethod(method);
     }

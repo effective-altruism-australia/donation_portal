@@ -248,7 +248,7 @@ class FormController {
       return false;
     }
 
-    $("#loader").style.display = "block";
+    showBlock("#loader");
 
     let formData = this.#buildFormData();
     fetch(ORIGIN + "/pledge_new/", {
@@ -260,7 +260,7 @@ class FormController {
     })
       .then((response) => response.json())
       .then(async (data) => {
-        $("#loader").style.display = "none";
+        hide("#loader");
         this.#handleFormSubmitResponse(data, formData);
       });
     return false;

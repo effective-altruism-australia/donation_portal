@@ -124,7 +124,7 @@
 <script>
   class FestiveGiftSection {
     constructor() {
-      $("#festive-gift-section").style.display = "block";
+      showBlock("#festive-gift-section");
     }
 
     static handleFestiveGiftSection(e) {
@@ -135,7 +135,7 @@
     }
 
     static #showFestiveGiftSection() {
-      $("#festive-gift-section--details").style.display = "block";
+      showBlock("#festive-gift-section--details");
       $("#festive-gift-section--details").disabled = false;
       $("#festive-gift-section--recipient-email").setAttribute(
         "required",
@@ -148,7 +148,7 @@
     }
 
     static #hideFestiveGiftSection() {
-      $("#festive-gift-section--details").style.display = "none";
+      hide("#festive-gift-section--details");
       $("#festive-gift-section--details").disabled = true;
       $("#festive-gift-section--recipient-email").setAttribute(
         "required",
