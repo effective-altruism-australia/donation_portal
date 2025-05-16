@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='banktransaction',
             name='bank_account_id',
-            field=models.TextField(default=settings.XERO_INCOMING_ACCOUNT_ID),
+            field=models.TextField(default=settings.XERO_INCOMING_ACCOUNT_ID_DICT['eaa']),
             preserve_default=False,
         ),
     ]
