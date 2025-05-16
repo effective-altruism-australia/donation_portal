@@ -14,7 +14,7 @@ def generate_xero_bank_data_for_tests():
     passed_params = {
         "fromDate": str(datetime.date(2018, 7, 29)),
         "toDate": str(datetime.date(2018, 8, 1)),
-        "bankAccountID": settings.XERO_INCOMING_ACCOUNT_ID
+        "bankAccountID": settings.XERO_INCOMING_ACCOUNT_ID_DICT['eaa']
     }
     bank_transactions = xero.reports.get('BankStatement', params=passed_params)
     bank_transactions[0]['Rows'][1]['Rows'] = bank_transactions[0]['Rows'][1]['Rows'][0:5]  # Keep first 5
