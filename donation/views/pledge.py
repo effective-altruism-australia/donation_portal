@@ -30,7 +30,13 @@ import logging
 logger = logging.getLogger(__name__)
 stripe.api_version = "2020-08-27"
 
-r = StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+r = StrictRedis(
+    host=settings.REDIS_HOST, port=settings.REDIS_PORT,
+    username=settings.REDIS_USERNAME,
+    password=settings.REDIS_PASSWORD,
+    db=0
+)
+
 rate_limiter = Limiter(r,
                        action='test_credit_card',
                        limit=settings.CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS,
