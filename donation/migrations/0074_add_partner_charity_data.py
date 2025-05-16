@@ -11,10 +11,10 @@ class Migration(migrations.Migration):
     def add_partner_charity_data(apps, schema_editor):
         PartnerCharity = apps.get_model('donation', 'PartnerCharity')
 
-        for charity in json.loads(open('donation/migrations/0074_charity_data.json').read()):
+        for charity in json.loads(open('donation/migrations/0074_charity_data.json', 'r', encoding='utf-8').read()):
             partners = PartnerCharity.objects.filter(slug_id=charity['slug_id'])
             if not partners.exists():
-                print('Partner charity missing: %s' % charity['slug_id'])
+                print('Probably safe to ignore but the %s partner charity was missing during database migration.' % charity['slug_id'])
             else:
                 partner = partners.get()
                 partner.bio = charity['bio']
