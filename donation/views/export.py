@@ -71,7 +71,7 @@ def download_spreadsheet(request, extra_fields=None):
         export_spreadsheet.delay(location, donation_ids, template)
         return HttpResponse("Please wait 5 minutes and refresh this page again.")
     else:
-        response = HttpResponse(open(location).read(),
+        response = HttpResponse(open(location, 'rb').read(),
                                 content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
         return response
