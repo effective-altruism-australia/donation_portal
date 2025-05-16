@@ -51,8 +51,8 @@ def download_receipt(request, pk, secret):
         receipt = Receipt.objects.get(pk=pk, secret=secret)
     except Receipt.DoesNotExist:
         return HttpResponseRedirect('/pledge')
-    response = HttpResponse(open(receipt.pdf_receipt_location).read(),
-                            content_type='application/pdf')
+    response = HttpResponse(open(receipt.pdf_receipt_location, 'rb').read(),
+                        content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="EAA_Receipt_{0}.pdf"'.format(receipt.pk)
     return response
 
