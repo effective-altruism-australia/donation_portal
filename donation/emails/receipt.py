@@ -12,7 +12,6 @@ from raven.contrib.django.raven_compat.models import client
 
 from donation.models import Receipt
 from donation_portal.eaacelery import app
-from .gift_notification import send_gift_notification
 
 
 @receiver(post_save, sender=Receipt)
@@ -22,8 +21,6 @@ def create_and_send_receipt(sender, instance, created, **kwargs):
         if receipt.sent:
             raise Exception("Receipt already sent.")
         try:
-            if receipt.pledge.is_gift and not receipt.pledge.gift_message_sent:
-                send_gift_notification.delay(receipt.donation.id)
             # Store receipts in database, for auditing purposes
             receipt.receipt_html = render_to_string('receipts/receipt.html',
                                                     {'unique_reference': receipt.pk,
