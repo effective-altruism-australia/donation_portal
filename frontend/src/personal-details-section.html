@@ -10,7 +10,7 @@
         type="text"
         id="personal-details-section--first-name"
         name="first_name"
-        class="block w-full p-2 text-md border rounded focus-outline mb-2 mt-1"
+        class="block w-full p-2 text-md border rounded-full focus-outline px-4 mb-2 mt-1"
         onchange="PersonalDetailsSection.handleFirstNameChange()"
         required
       />
@@ -22,7 +22,7 @@
         type="text"
         id="personal-details-section--last-name"
         name="last_name"
-        class="block w-full p-2 text-md border rounded focus-outline mb-2 mt-1"
+        class="block w-full p-2 text-md border rounded-full focus-outline px-4 mb-2 mt-1"
         onchange="PersonalDetailsSection.handleLastNameChange()"
         required
       />
@@ -34,7 +34,7 @@
         id="personal-details-section--email"
         name="email"
         type="email"
-        class="block w-full p-2 text-md border rounded focus-outline mb-2 mt-1"
+        class="block w-full p-2 text-md border rounded-full focus-outline px-4 mb-2 mt-1"
         onchange="PersonalDetailsSection.handleEmailChange()"
         required
       />
@@ -48,7 +48,7 @@
         type="text"
         inputmode="numeric"
         pattern="\d*"
-        class="block w-full p-2 text-md border rounded focus-outline mb-2 mt-1"
+        class="block w-full p-2 text-md border rounded-full focus-outline px-4 mb-2 mt-1"
         onchange="PersonalDetailsSection.handlePostcodeChange()"
         maxlength="4"
         required
@@ -60,7 +60,7 @@
       <select
         name="country"
         id="personal-details-section--country"
-        class="eaa-select text-md flex flex-grow rounded border h-12 border-none p-2 focus-outline mt-1"
+        class="eaa-select text-md flex flex-grow rounded-full border h-12 border-none p-2 focus-outline mt-1 px-4"
         onchange="PersonalDetailsSection.handleCountryChange()"
         required
       ></select>
@@ -365,6 +365,14 @@
       });
 
       $("#personal-details-section--country").innerHTML = countriesListHTML;
+    }
+
+    static hide() {
+      hide("#personal-details-section");
+    }
+
+    static show() {
+      showBlock("#personal-details-section");
     }
   }
 </script>

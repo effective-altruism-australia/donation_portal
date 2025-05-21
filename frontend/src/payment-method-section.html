@@ -16,7 +16,7 @@
       onclick="PaymentMethodSection.handlePaymentMethodChange('credit-card')"
       checked
     />
-    <label for="payment-method-section--credit-card" class="rounded text-blue">Credit Card</label>
+    <label for="payment-method-section--credit-card" class="rounded-full text-blue">Credit Card</label>
 
     <input
       type="radio"
@@ -25,7 +25,7 @@
       value="bank-transfer"
       onclick="PaymentMethodSection.handlePaymentMethodChange('bank-transfer')"
     />
-    <label for="payment-method-section--bank-transfer" class="rounded text-blue">
+    <label for="payment-method-section--bank-transfer" class="rounded-full text-blue">
       Bank Transfer
     </label>
   </div>
@@ -52,6 +52,14 @@
         hide("#payment-method-section--bank-details-message");
       }
       formController.setPaymentMethod(method);
+    }
+
+    static hide() {
+      hide("#payment-method-section");
+    }
+
+    static show() {
+      showBlock("#payment-method-section");
     }
   }
 </script>

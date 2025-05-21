@@ -79,6 +79,14 @@ class FormController {
     );
     if (!this.#directLinkCharityDetails) {
       new ErrorSection();
+      AmountSection.hide();
+      AmplifyImpactSection.hide();
+      TotalAmountSection.hide();
+      PersonalDetailsSection.hide();
+      CommunicationsSection.hide();
+      PaymentMethodSection.hide();
+      DonateButtonSection.hide();
+      DonationFrequencySection.hide();
       return;
     }
     new DirectLinkCharitySection(this.#directLinkCharityDetails);

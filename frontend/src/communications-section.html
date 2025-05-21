@@ -11,7 +11,7 @@
       placeholder="Select an option"
       name="communications-section--referral-sources"
       id="communications-section--referral-sources"
-      class="eaa-select text-md flex flex-grow mb-4 rounded border h-12 border-none p-2 focus-outline"
+      class="eaa-select text-md flex flex-grow mb-4 rounded-full border h-12 border-none p-2 px-4 focus-outline"
       onchange="CommunicationsSection.handleReferralSourceChange()"
     ></select>
   </div>
@@ -26,7 +26,7 @@
         checked
       />
       Send me news and updates
-      <div class="checkmark rounded"></div>
+      <div class="checkmark rounded-sm"></div>
     </label>
 
     <label class="eaa-checkbox mb-4">
@@ -37,7 +37,7 @@
         onclick="CommunicationsSection.handleSubscribeToNewsletterChange()"
       />
       Subscribe me to the global Effective Altruism newsletter
-      <div class="checkmark rounded"></div>
+      <div class="checkmark rounded-sm"></div>
     </label>
 
     <label class="eaa-checkbox">
@@ -48,7 +48,7 @@
         onclick="CommunicationsSection.handleConnectToCommunityChange()"
       />
       Connect me with my local Effective Altruism community
-      <div class="checkmark rounded"></div>
+      <div class="checkmark rounded-sm"></div>
     </label>
   </div>
 </section>
@@ -102,6 +102,14 @@
       formController.setHowDidYouHearAboutUs(
         $("#communications-section--referral-sources").value
       );
+    }
+
+    static hide() {
+      hide("#communications-section");
+    }
+
+    static show() {
+      showBlock("#communications-section");
     }
   }
 </script>

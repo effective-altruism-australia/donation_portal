@@ -15,8 +15,8 @@
       checked
       onclick="AllocationSection.handleDefaultAllocationChange();"
     />
-    <label for="allocation-section--default-allocation" class="flex items-center justify-center rounded text-blue">
-      The most effective charities^
+    <label for="allocation-section--default-allocation" class="flex items-center justify-center rounded-full text-blue px-10">
+      <span>The most effective charities<sup>✧</sup></span>
     </label>
 
     <input
@@ -26,12 +26,12 @@
       value="specific"
       onclick="AllocationSection.handleSpecificAllocationChange();"
     />
-    <label for="allocation-section--specific-allocation" class="flex items-center justify-center rounded text-blue">
+    <label for="allocation-section--specific-allocation" class="flex items-center justify-center rounded-full text-blue px-4">
       These specific charities
     </label>
   </div>
   <p class="text-sm">
-    ^According to EAA. We select the most effective charities each quarter
+    <sup>✧</sup> According to our evaluations. We select the most effective charities each quarter
     based on evidence and need. You can read more about how we evaluate
     charities
     <a href="https://effectivealtruism.org.au/evaluating-charities/">here</a>.
