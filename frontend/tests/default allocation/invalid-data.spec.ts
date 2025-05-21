@@ -8,9 +8,9 @@ correct the issues.
 test("Default allocation: submit with invalid data", async ({
   page,
 }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
-  await page.getByText("The most effective charities^").click();
+  await page.getByText("The most effective charities✧").click();
 
   await page.locator('#amount-section--custom-amount-input').fill('-30');
 
@@ -40,6 +40,6 @@ test("Default allocation: submit with invalid data", async ({
   });
 
   await page.getByRole("button", { name: "Donate" }).click();
-  
+
   await testFinished;
 });

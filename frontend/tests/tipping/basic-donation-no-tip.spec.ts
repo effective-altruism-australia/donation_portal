@@ -5,9 +5,9 @@ Ensure that the form sends the right data when a basic donation with no tip is s
 */
 
 test("Tipping: submit with basic donation and no tip", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
-  await page.getByText("$50").click();
+  await page.getByText("$50", { exact: true }).click();
 
   await page.getByText("Skip", { exact: true }).click();
 
@@ -38,7 +38,7 @@ test("Tipping: submit with basic donation and no tip", async ({ page }) => {
         expect(data["connect_to_community"]).toBe(false);
         expect(data["how_did_you_hear_about_us_db"]).toBe("cant-remember");
         expect(data["form-TOTAL_FORMS"]).toBe(1);
-        expect(data["form-INITIAL_FORMS"]).toBe(1);
+        expect(data["form-INITIAL_FORMS"]).toBe(0);
         expect(data["form-0-id"]).toBe(null);
         expect(data["form-0-partner_charity"]).toBe("unallocated");
         expect(data["form-0-amount"]).toBe("50");

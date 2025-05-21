@@ -6,7 +6,7 @@ through the url params. e.g. <base url>/pledge_new/?charity=give-directly
 */
 
 test("Direct-linked allocation: submit a credit card donation", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/?charity=give-directly");
+  await page.goto("http://localhost:8001?charity=give-directly");
 
   await page.locator("#amount-section--custom-amount-input").fill("28");
 
@@ -34,7 +34,7 @@ test("Direct-linked allocation: submit a credit card donation", async ({ page })
       expect(data["connect_to_community"]).toBe(false);
       expect(data["how_did_you_hear_about_us_db"]).toBe("cant-remember");
       expect(data["form-TOTAL_FORMS"]).toBe(2);
-      expect(data["form-INITIAL_FORMS"]).toBe(2);
+      expect(data["form-INITIAL_FORMS"]).toBe(0);
       expect(data["form-0-id"]).toBe(null);
       expect(data["form-0-partner_charity"]).toBe("give-directly");
       expect(data["form-0-amount"]).toBe("28");

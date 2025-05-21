@@ -6,7 +6,7 @@ allocation section is empty.
 */
 
 test("Default allocation: submit with empty data", async ({ page }) => {
-  await page.goto('http://localhost:8000/pledge_new/');
+  await page.goto('http://localhost:8001');
   
   await page.getByLabel('First name', {exact:true}).fill('Nathan');
 

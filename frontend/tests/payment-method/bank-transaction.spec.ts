@@ -6,7 +6,7 @@ selected.
 */
 
 test("Payment method: submit a bank transaction donation", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
   await page.locator("#amount-section--custom-amount-input").fill("2222");
 
@@ -36,7 +36,7 @@ test("Payment method: submit a bank transaction donation", async ({ page }) => {
       expect(data["connect_to_community"]).toBe(false);
       expect(data["how_did_you_hear_about_us_db"]).toBe("cant-remember");
       expect(data["form-TOTAL_FORMS"]).toBe(2);
-      expect(data["form-INITIAL_FORMS"]).toBe(2);
+      expect(data["form-INITIAL_FORMS"]).toBe(0);
       expect(data["form-0-id"]).toBe(null);
       expect(data["form-0-partner_charity"]).toBe("unallocated");
       expect(data["form-0-amount"]).toBe("2222");

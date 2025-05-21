@@ -5,7 +5,7 @@ Ensure that a Christmas card is generated with default allocation and 30% tip wh
 */
 
 test("Christmas gift: default allocation with 30% tip", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
   await page.locator("#amount-section--custom-amount-input").fill("1000");
 

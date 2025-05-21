@@ -6,7 +6,7 @@ out correctly
 */
 
 test("Custom allocation: submit with standard data", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
   await page.getByText("These specific charities").click();
 

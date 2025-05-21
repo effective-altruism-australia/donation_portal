@@ -6,7 +6,7 @@ works as expected.
 */
 
 test("Communications: all checkboxes selected", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
   await page.locator("#amount-section--custom-amount-input").fill("5");
 
@@ -47,7 +47,7 @@ test("Communications: all checkboxes selected", async ({ page }) => {
         expect(data["connect_to_community"]).toBe(true);
         expect(data["how_did_you_hear_about_us_db"]).toBe("cant-remember");
         expect(data["form-TOTAL_FORMS"]).toBe(2);
-        expect(data["form-INITIAL_FORMS"]).toBe(2);
+        expect(data["form-INITIAL_FORMS"]).toBe(0);
         expect(data["form-0-id"]).toBeNull();
         expect(data["form-0-amount"]).toBe("5");
         expect(data["form-0-partner_charity"]).toBe("unallocated");

@@ -7,7 +7,7 @@ when their data is invalid.
 
 test("Custom allocation: submit with invalid data", async ({ page }) => {
 
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
   await page.getByText("These specific charities").click();
 

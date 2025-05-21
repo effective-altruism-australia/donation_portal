@@ -6,7 +6,7 @@ allocation section is less than 2 dollars.
 */
 
 test("Specific allocation: submit with empty data", async ({ page }) => {
-  await page.goto('http://localhost:8000/pledge_new/');
+  await page.goto('http://localhost:8001');
   
   await page.getByText('These specific charities').click();
 

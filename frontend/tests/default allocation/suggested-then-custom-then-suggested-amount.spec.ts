@@ -8,9 +8,9 @@ allocation amounts (i.e. suggested amounts and custom amounts)
 test("Default allocation: submit with suggested, custom, then suggested amount", async ({
   page,
 }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
-  await page.getByText("$50").click();
+  await page.getByText("$50", { exact: true }).click();
 
   await page.locator("#amount-section--custom-amount-input").fill("1");
 
@@ -41,14 +41,14 @@ test("Default allocation: submit with suggested, custom, then suggested amount",
         expect(data["connect_to_community"]).toBe(false);
         expect(data["how_did_you_hear_about_us_db"]).toBe("cant-remember");
         expect(data["form-TOTAL_FORMS"]).toBe(2);
-        expect(data["form-INITIAL_FORMS"]).toBe(2);
+        expect(data["form-INITIAL_FORMS"]).toBe(0);
         expect(data["form-0-id"]).toBe(null);
         expect(data["form-0-partner_charity"]).toBe("unallocated");
         expect(data["form-0-amount"]).toBe("100");
         expect(data["form-1-id"]).toBe(null);
         expect(data["form-1-partner_charity"]).toBe("eaa-amplify");
         expect(data["form-1-amount"]).toBe("10.00");
-  
+
         // Make sure things that shouldn't be sent are not sent
         expect(data["is_gift"]).toBe(undefined);
         expect(data["gift_recipient_name"]).toBe(undefined);

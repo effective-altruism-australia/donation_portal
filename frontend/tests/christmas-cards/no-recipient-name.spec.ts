@@ -5,7 +5,7 @@ Ensure that the form prompts donors to complete form when their recipient name i
 */
 
 test("Christmas gift: submit with empty data", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
   await page.locator("#amount-section--custom-amount-input").fill("1000");
 

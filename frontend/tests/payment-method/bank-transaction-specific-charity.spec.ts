@@ -8,7 +8,7 @@ selected for a direct-linked charity.
 test("Payment method: submit a bank transaction donation for a direct-linked charity", async ({
   page,
 }) => {
-  await page.goto("http://localhost:8000/pledge_new/?charity=give-directly");
+  await page.goto("http://localhost:8001?charity=give-directly");
 
   await page.locator("#amount-section--custom-amount-input").fill("2222");
 
@@ -36,7 +36,7 @@ test("Payment method: submit a bank transaction donation for a direct-linked cha
       expect(data["connect_to_community"]).toBe(false);
       expect(data["how_did_you_hear_about_us_db"]).toBe("");
       expect(data["form-TOTAL_FORMS"]).toBe(2);
-      expect(data["form-INITIAL_FORMS"]).toBe(2);
+      expect(data["form-INITIAL_FORMS"]).toBe(0);
       expect(data["form-0-id"]).toBe(null);
       expect(data["form-0-partner_charity"]).toBe("give-directly");
       expect(data["form-0-amount"]).toBe("2222");

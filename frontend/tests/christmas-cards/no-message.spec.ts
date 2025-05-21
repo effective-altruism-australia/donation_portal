@@ -6,7 +6,7 @@ message is entered.
 */
 
 test("Christmas gift: default allocation with no tip", async ({ page }) => {
-  await page.goto("http://localhost:8000/pledge_new/");
+  await page.goto("http://localhost:8001");
 
   await page.locator("#amount-section--custom-amount-input").fill("1000");
 

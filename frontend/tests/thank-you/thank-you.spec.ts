@@ -7,7 +7,7 @@ Ensure thankyou page works
 test("Thank you: ensure thankyou page works", async ({ page }) => {
 
   await page.goto(
-    "http://localhost:8000/pledge_new/?thankyou"
+    "http://localhost:8001?thankyou"
   );
 
   // Check that the "thank you" text is visible on the page
