@@ -78,6 +78,9 @@
 .flex-grow {
   flex-grow: 1;
 }
+.flex-wrap {	
+  flex-wrap: wrap;
+}
 .gap-2 {
   gap: 0.5rem;
 }
