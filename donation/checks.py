@@ -36,9 +36,8 @@ def check_redis_connection(app_configs, **kwargs):
             username=settings.REDIS_USERNAME,
             password=settings.REDIS_PASSWORD,
             db=0,
-            ssl=True,
+            ssl=settings.REDIS_USE_SSL,
         )
-        print("About to ping.")
         r.ping()
         print("Redis connection successful.")
     except RedisError as e:
