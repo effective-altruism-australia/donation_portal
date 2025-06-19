@@ -109,6 +109,13 @@ class FormController {
       // We don't want to show EAA Amplify in the list of partner charities
       (charity) => charity.slug_id !== "eaa-amplify"
     );
+    this.#partnerCharities.push({
+      category:	"Our recommended charities",
+      is_eaae:	false,
+      slug_id:	"unallocated",
+      name:	"Top Charities Fund",
+      thumbnail:	"thumbnails/logo_eaa.png"
+    });
     this.#partnerCharities.forEach((charity) => {
       this.#specificAllocations[charity.slug_id] = 0;
     });

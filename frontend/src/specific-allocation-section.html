@@ -53,23 +53,36 @@
       let specificAllocationSectionHTML = "";
 
       let categories = {
-        "Our recommended charities": [],
+        "Our top recommended charities & funds": [],
         "Other charities we support": [],
       };
       partnerCharities.forEach((charity) => {
         if (charity.category === "Our recommended charities") {
-          categories["Our recommended charities"].push(charity);
+          categories["Our top recommended charities & funds"].push(charity);
         } else {
           categories["Other charities we support"].push(charity);
         }
       });
 
-      Object.keys(categories).forEach((catagory) => {
-        specificAllocationSectionHTML += `<h3>${catagory}<sup><a href='https://effectivealtruism.org.au/inclusion-criteria/'>ⓘ</a></sup></h3>`;
-        categories[catagory].forEach((charity) => {
+      Object.keys(categories).forEach((category) => {
+        specificAllocationSectionHTML += `<h3>${category}<sup><a href='https://effectivealtruism.org.au/inclusion-criteria/'>ⓘ</a></sup></h3>`;
+        
+        // Sort charities to put Top Charities Fund and All Grants Fund at the end
+        let sortedCharities = categories[category];
+        if (category === "Our top recommended charities & funds") {
+          const fundNames = ["Top Charities Fund", "All Grants Fund"];
+          const regularCharities = sortedCharities.filter(charity => !fundNames.includes(charity.name));
+          const funds = sortedCharities.filter(charity => fundNames.includes(charity.name));
+          sortedCharities = [...funds.reverse(), ...regularCharities];
+        }
+        
+        sortedCharities.forEach((charity) => {
+          const charityName = (charity.name === "Top Charities Fund" || charity.name === "All Grants Fund") 
+            ? `<i>${charity.name}</i>` 
+            : charity.name;
           specificAllocationSectionHTML += `
             <div class="flex charity-option">
-              <label for="${charity.slug_id}">${charity.name}</label>
+              <label for="${charity.slug_id}">${charityName}</label>
               <span class="flex items-center rounded-sm p-2 text-md border focus-outline">
                 $
                 <input
