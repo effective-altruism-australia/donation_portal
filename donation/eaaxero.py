@@ -12,9 +12,6 @@ from django.conf import settings
 from .models import BankTransaction, Account
 from xero.constants import XeroScopes
 from xero.auth import OAuth2Credentials
-from xero import Xero
-from xero.auth import OAuth2Credentials
-from xero.constants import XeroScopes
 
 
 def xero(tenant):
