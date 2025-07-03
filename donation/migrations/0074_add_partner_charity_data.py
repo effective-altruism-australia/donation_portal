@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         for charity in json.loads(open('donation/migrations/0074_charity_data.json', 'r', encoding='utf-8').read()):
             partners = PartnerCharity.objects.filter(slug_id=charity['slug_id'])
             if not partners.exists():
-                print('Probably safe to ignore but the %s partner charity was missing during database migration.' % charity['slug_id'])
+                continue
             else:
                 partner = partners.get()
                 partner.bio = charity['bio']
