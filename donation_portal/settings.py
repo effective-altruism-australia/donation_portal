@@ -12,7 +12,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ## Django setup ##
 ##################
 
-DEBUG = os.getenv("DEBUG", False)  # Do NOT set to "True" in production
+# Do NOT set to "True" in production
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -31,7 +32,7 @@ INSTALLED_APPS = (
     "paypal.standard.ipn",
 )
 
-MIDDLEWARE = (
+MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -40,7 +41,7 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-)
+]
 
 TEMPLATES = [
     {
@@ -145,7 +146,7 @@ DATABASES = {
         "HOST": os.getenv("PGHOST"),
         "PORT": os.getenv("PGPORT"),
         "OPTIONS": {
-            "sslmode": "require",
+            "sslmode": os.getenv("PGSSLMODE"),
         },
         "DISABLE_SERVER_SIDE_CURSORS": True,
     }
@@ -160,6 +161,7 @@ REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = os.getenv("REDIS_PORT")
 REDIS_USERNAME = os.getenv("REDIS_USERNAME")
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
+REDIS_USE_SSL = os.getenv("REDIS_USE_SSL").lower() == "true"
 
 
 ############
@@ -215,6 +217,7 @@ EAA_INFO_EMAIL = "info@eaa.org.au"
 POSTMARK_SENDER = "donations@eaa.org.au"
 POSTMARK_API_KEY = os.getenv("POSTMARK_API_KEY")
 MAILCHIMP_API_KEY = os.getenv("MAILCHIMP_API_KEY")
+EA_NEWSLETTER_MAILCHIMP_API_KEY = os.getenv("EA_NEWSLETTER_MAILCHIMP_API_KEY")
 
 
 ###########
