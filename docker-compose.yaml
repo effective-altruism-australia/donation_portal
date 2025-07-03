@@ -1,5 +1,5 @@
 # This can be useful for local development where you want to run Django on your
-# local machine with supporting services like PostgreSQL and Redis in docker 
+# local machine with supporting services like PostgreSQL and Redis in Docker 
 # containers. Useful for things like automated testing which requires a display
 # server, or running locally installed apps like Claude Code.
 
@@ -19,6 +19,11 @@ services:
     image: redis:8.0.1
     ports:
       - "6379:6379"
+
+  memcached:
+    image: memcached:1.6.38
+    ports:
+      - "11211:11211"
 
 volumes:
   postgres_data:
