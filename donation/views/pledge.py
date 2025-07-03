@@ -34,7 +34,8 @@ r = StrictRedis(
     host=settings.REDIS_HOST, port=settings.REDIS_PORT,
     username=settings.REDIS_USERNAME,
     password=settings.REDIS_PASSWORD,
-    db=0
+    db=0,
+    ssl=settings.REDIS_USE_SSL,
 )
 
 rate_limiter = Limiter(r,
