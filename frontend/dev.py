@@ -11,7 +11,9 @@ from watchdog.events import FileSystemEventHandler
 # Get the directory where the script is located
 script_dir = pathlib.Path(__file__).parent.absolute()
 
-# Port for the local server
+# Note: PORT must be 8000 if you want to access the api at
+# https://donations.effectivealtruism.org.au/partner_charities or 
+# https://donations.effectivealtruism.org.au/referral_sources
 PORT = 8001
 
 class BuildHandler(FileSystemEventHandler):
