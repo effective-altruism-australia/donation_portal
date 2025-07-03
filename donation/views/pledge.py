@@ -138,8 +138,8 @@ class PledgeView(View):
             session_options = {
                 'payment_method_types': ['card'],
                 'line_items': line_items,
-                'success_url': 'http://localhost:8000/pledge_new/?thankyou' if settings.DEBUG else 'https://effectivealtruism.org.au/donate/?thankyou',
-                'cancel_url': 'http://localhost:8000/pledge_new/' if settings.DEBUG else 'https://effectivealtruism.org.au/donate/',
+                'success_url': 'http://localhost:8001?thankyou' if settings.DEBUG else 'https://effectivealtruism.org.au/donate/?thankyou',
+                'cancel_url': 'http://localhost:8001' if settings.DEBUG else 'https://effectivealtruism.org.au/donate/',
             }
             if (pledge.recurring_frequency == RecurringFrequency.MONTHLY):
                 session_options['mode'] = 'subscription'
