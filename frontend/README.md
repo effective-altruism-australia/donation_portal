@@ -19,12 +19,4 @@ This form is designed to replace our react-based donation form. The goals of thi
 We try to only use features that are "Widely available" according to [Baseline](https://web.dev/baseline) to ensure compatibility with all modern browsers.
 
 ## Testing
-
-### With VSCode Playwright extension (recommended)
-1. Run `npm install` and then `npx playwright install` to install the necessary dependencies.
-2. Install the Playwright VSCode extension. This is particularly useful for creating new tests as it lets you record your actions in the browser.
-3. Run the tests from VSCode's "Testing" sidebar.
-
-### Commandline
-1. Run `npm install` and then `npx playwright install` to install the necessary dependencies.
-2. Run `npx playwright test` to run the tests from the command line.
+TODO
