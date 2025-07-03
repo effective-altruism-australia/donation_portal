@@ -1,3 +1,7 @@
+# This can be useful for local development where you want to run Django on your
+# local machine with supporting services like PostgreSQL and Redis in docker 
+# containers.
+
 services:
   db:
     image: postgres:17.5
