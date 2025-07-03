@@ -21,8 +21,11 @@ sudo service redis-server start
 # Start celery
 celery -A donation_portal worker --beat -l INFO &
 
+# Collect static files
+./manage.py collectstatic --noinput
+
 # Apply database migrations
-python manage.py migrate
+uv run manage.py migrate
 
 # Run the Django development server
-python manage.py runserver 0.0.0.0:8000
+uv run manage.py runserver 0.0.0.0:8000
