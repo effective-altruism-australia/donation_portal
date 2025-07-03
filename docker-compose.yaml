@@ -1,6 +1,7 @@
 # This can be useful for local development where you want to run Django on your
 # local machine with supporting services like PostgreSQL and Redis in docker 
-# containers.
+# containers. Useful for things like automated testing which requires a display
+# server, or running locally installed apps like Claude Code.
 
 services:
   db:
