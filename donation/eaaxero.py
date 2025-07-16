@@ -36,8 +36,8 @@ def xero_report_to_iterator(xero_report):
         yield dict(zip(headers, [cell[u'Value'] for cell in row[u'Cells']]))
 
 
-def import_bank_transactions(manual=False, tenant = 'eaa'):
-    to_date = date.today()
+def import_bank_transactions(manual=False, tenant = 'eaa', to_date=None):
+    to_date = date.fromisoformat(to_date) if isinstance(to_date, str) else date.today()
     from_date = to_date - timedelta(settings.XERO_DAYS_TO_IMPORT)
     import_bank_transactions_from_account(settings.XERO_INCOMING_ACCOUNT_ID_DICT.get(tenant), from_date, to_date, manual, tenant)
 
