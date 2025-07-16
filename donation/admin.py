@@ -137,7 +137,16 @@ class StripeTransactionAdmin(VersionAdmin):
     fields = list_display + ('customer_id', )
 
     def pledge_link(self, obj):
-        return mark_safe('<a href="/admin/donation/pledge/%s/">%s</a>' % (obj.pledge_id, str(obj.pledge)))
+        try:
+            if obj.pledge is None:
+                pledge_str = "None"
+            else:
+                pledge_unicode = unicode(obj.pledge)
+                pledge_str = pledge_unicode.encode('utf-8', 'replace')
+            return mark_safe('<a href="/admin/donation/pledge/%s/">%s</a>' % (obj.pledge_id, pledge_str))
+        except (UnicodeDecodeError, UnicodeEncodeError, TypeError):
+            # If all else fails, just show the ID
+            return mark_safe('<a href="/admin/donation/pledge/%s/">[Pledge %s]</a>' % (obj.pledge_id, obj.pledge_id))
 
     def resend_receipts(self, request, queryset):
         transactions = list(queryset.all())
