@@ -1,4 +1,5 @@
 # pip install PyCrypto PyXero cryptography
+import time
 from datetime import date, timedelta
 from decimal import Decimal
 import hashlib
@@ -101,6 +102,7 @@ def to_decimal(s):
 def import_trial_balance(org):
     balance_date = date(2016, 1, 31)
     while balance_date < date.today():
+        time.sleep(1)  # Avoid hitting Xero API rate limits
         trial_balance = xero(org).reports.get('TrialBalance', params={u'Date': balance_date})
 
         for row in xero_report_to_iterator(trial_balance):
