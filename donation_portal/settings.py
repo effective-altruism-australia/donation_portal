@@ -91,6 +91,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 CORS_ORIGIN_WHITELIST = [
+    "https://staging.effectivealtruism.org.au",
     "https://donations.effectivealtruism.org.au",
     "https://donate.effectivealtruism.org.au",
     "https://dev.effectivealtruism.org.au",
