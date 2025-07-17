@@ -4,6 +4,7 @@
 # server, or running locally installed apps like Claude Code.
 
 services:
+  # Main database for the donation portal
   db:
     image: postgres:17.5
     environment:
@@ -15,15 +16,21 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  redis:
+  # This is a Redis instance for caching
+  redis-cache:
     image: redis:8.0.1
     ports:
       - "6379:6379"
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    container_name: redis-cache
 
-  memcached:
-    image: memcached:1.6.38
+  # This is a separate Redis instance for queueing celery tasks
+  redis-queue:
+    image: redis:8.0.1
     ports:
-      - "11211:11211"
+      - "6380:6379"
+    command: redis-server --maxmemory 128mb --maxmemory-policy noeviction
+    container_name: redis-queue
 
 volumes:
   postgres_data:
