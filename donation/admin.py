@@ -223,6 +223,8 @@ class ReceiptAdmin(VersionAdmin):
                      'email', 'pledge__email',
                      'bank_transaction__reference']
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('pledge', 'bank_transaction', 'stripe_transaction')
 
 class ReferralSourceAdmin(VersionAdmin):
     list_filter = ('enabled',)
