@@ -39,12 +39,12 @@ class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
         `self.value()`.
         """
         if not self.value():
-            return BankTransaction.objects.all()
+            return queryset
         unreconciled = BankTransaction.objects.filter(pledge__isnull=True, do_not_reconcile=False)
         if self.value() == 'Unreconciled':
             return unreconciled
         else:  # 'Reconciled'
-            return BankTransaction.objects.all().exclude(id__in=unreconciled.values('id'))
+            return queryset.exclude(id__in=unreconciled.values('id'))
 
 
 class PledgeFundsReceivedFilter(admin.SimpleListFilter):
@@ -165,7 +165,11 @@ class BankTransactionAdmin(VersionAdmin):
     list_filter = (BankTransactionReconciliationListFilter, "is_eaae")
     inlines = (ReceiptInline,)
     ordering = ('-date', '-id',)
-
+    
+    # Prefetch pledges to avoid N+1 queries when displaying bank transactions
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('pledge')
+    
     class Meta:
         model = BankTransaction
 
