@@ -127,7 +127,9 @@ CELERYBEAT_SCHEDULE = {
     },
 }
 BROKER_CONNECTION_RETRY_ON_STARTUP = True
-BROKER_URL = os.getenv("REDIS_URL")
+BROKER_URL = os.getenv("REDIS_CELERY_URL")
+CELERY_BROKER_URL = os.getenv("REDIS_CELERY_URL")
+CELERY_RESULT_BACKEND = os.getenv("REDIS_CELERY_URL")
 CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS = 6
 CREDIT_CARD_RATE_LIMIT_PERIOD = 12 * 60 * 60
 CREDIT_CARD_RATE_LIMIT_ENABLED = True
@@ -157,11 +159,11 @@ DATABASES = {
 ## Redis ##
 ###########
 
-REDIS_HOST = os.getenv("REDIS_HOST")
-REDIS_PORT = os.getenv("REDIS_PORT")
-REDIS_USERNAME = os.getenv("REDIS_USERNAME")
-REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
-REDIS_USE_SSL = os.getenv("REDIS_USE_SSL").lower() == "true"
+REDIS_HOST = os.getenv("REDIS_CELERY_HOST")
+REDIS_PORT = os.getenv("REDIS_CELERY_PORT")
+REDIS_USERNAME = os.getenv("REDIS_CELERY_USERNAME")
+REDIS_PASSWORD = os.getenv("REDIS_CELERY_PASSWORD")
+REDIS_USE_SSL = os.getenv("REDIS_CELERY_USE_SSL").lower() == "true"
 
 
 ############
@@ -200,9 +202,9 @@ TENANT_IDS = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-        "LOCATION": "127.0.0.1:11211",
-        "TIMEOUT": 60 * 60 * 60 * 24,
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.environ.get("REDIS_CACHE_URL"),
+        "TIMEOUT": 60 * 60 * 60 * 24,  # 24 hours
         "OPTIONS": {},
     }
 }
