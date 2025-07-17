@@ -230,13 +230,18 @@ class PartnerCharityAdmin(VersionAdmin):
               'active',
               'impact_text', 'impact_cost', "category", "is_eaae")
 
+class PartnerCharityReportAdmin(admin.ModelAdmin):
+    list_display = ('partner', 'date', 'time_sent')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('partner')
 
 admin.site.register(Pledge, PledgeAdmin)
 admin.site.register(BankTransaction, BankTransactionAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(PartnerCharity, PartnerCharityAdmin)
 admin.site.register(XeroReconciledDate)
-admin.site.register(PartnerCharityReport)
+admin.site.register(PartnerCharityReport, PartnerCharityReportAdmin)
 admin.site.register(ReferralSource, ReferralSourceAdmin)
 admin.site.register(StripeTransaction, StripeTransactionAdmin)
 
