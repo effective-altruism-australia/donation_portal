@@ -281,6 +281,11 @@ class RevisionAdmin(admin.ModelAdmin):
     date_hierarchy = 'date_created'
     inlines = (VersionInline,)
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user').prefetch_related(
+            'version_set__content_type'
+        )
+
     def has_add_permission(self, request, obj=None):
         return False
 
