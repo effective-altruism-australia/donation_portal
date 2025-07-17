@@ -141,7 +141,13 @@ class StripeTransactionAdmin(VersionAdmin):
     readonly_fields = list_display
     fields = list_display + ('customer_id', )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('pledge').prefetch_related(
+          'pledge__components__partner_charity'
+        )
+    
     def pledge_link(self, obj):
+        # Make sure this works with latest data - it broke around 2025-06-28
         return mark_safe('<a href="/admin/donation/pledge/%s/">%s</a>' % (obj.pledge_id, str(obj.pledge)))
 
     def resend_receipts(self, request, queryset):
