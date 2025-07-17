@@ -75,15 +75,15 @@ class PledgeFundsReceivedFilter(admin.SimpleListFilter):
         `self.value()`.
         """
         if not self.value():
-            return Pledge.objects.all()
+            return queryset
         # Only payments by bank transfer can be unpaid.
         paid_pledges_by_bank_transfer = BankTransaction.objects.filter(pledge__isnull=False).values_list('pledge__id',
                                                                                                          flat=True)
-        unpaid = Pledge.objects.filter(payment_method=PaymentMethod.BANK).exclude(id__in=paid_pledges_by_bank_transfer)
+        unpaid = queryset.filter(payment_method=PaymentMethod.BANK).exclude(id__in=paid_pledges_by_bank_transfer)
         if self.value() == 'No':
             return unpaid
         else:  # 'No'
-            return Pledge.objects.all().exclude(id__in=unpaid.values('id'))
+            return queryset.exclude(id__in=unpaid.values('id'))
 
 
 class PledgeComponentInline(admin.TabularInline):
@@ -105,6 +105,11 @@ class PledgeAdmin(VersionAdmin):
     list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency', 'payment_method', "is_eaae")
     inlines = [PledgeComponentInline, StripeTransactionInline]
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related(
+            'components__partner_charity'
+        )
+    
     class Meta:
         model = Pledge
 
