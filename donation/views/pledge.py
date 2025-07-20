@@ -166,8 +166,6 @@ def process_session_completed(data):
 
 @app.task()
 def process_payment_intent_succeeded(data, org):
-    print(org)
-
     # Ignore duplicate events (Stripe sometimes sends the same event multiple times).
     # See here for more: https://docs.stripe.com/webhooks#handle-duplicate-events
     if StripeTransaction.objects.filter(payment_intent_id=data['id']).exists():
@@ -217,7 +215,7 @@ def _stripe_webhooks(request, org):
         process_session_completed.delay(data)
     
     if from_stripe['type'] == 'payment_intent.succeeded':
-        print(org)
+        # I'm guessing this 2min delay is to allow the process_session_completed task to run first
         process_payment_intent_succeeded.apply_async(countdown=60 * 2, args=(data, org))
     return HttpResponse(status=201)
 

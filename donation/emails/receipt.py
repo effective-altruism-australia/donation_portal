@@ -1,7 +1,7 @@
 import time
 
 import arrow
-import pdfkit
+from weasyprint import HTML
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.db.models.signals import post_save
@@ -22,21 +22,26 @@ def create_and_send_receipt(sender, instance, created, **kwargs):
             raise Exception("Receipt already sent.")
         try:
             # Store receipts in database, for auditing purposes
-            receipt.receipt_html = render_to_string('receipts/receipt.html',
-                                                    {'unique_reference': receipt.pk,
-                                                     'pledge': receipt.pledge,
-                                                     'transaction': receipt.transaction,
-                                                     "is_eaae": receipt.pledge.is_eaae,
-                                                     "abn": receipt.pledge.abn,
-                                                     })
-            pdfkit.from_string(receipt.receipt_html, receipt.pdf_receipt_location)
+            receipt.receipt_html = render_to_string(
+                "receipts/receipt.html",
+                {
+                    "unique_reference": receipt.pk,
+                    "pledge": receipt.pledge,
+                    "transaction": receipt.transaction,
+                    "is_eaae": receipt.pledge.is_eaae,
+                    "abn": receipt.pledge.abn,
+                    "base_url": settings.BASE_URL,
+                },
+            )
+
+            HTML(string=receipt.receipt_html).write_pdf(receipt.pdf_receipt_location)
             receipt.save()
 
             email_receipt.delay(receipt.id)
 
         except Exception as e:
             client.captureException()
-            receipt.failed_message = e.message if e.message else "Sending failed"
+            receipt.failed_message = str(e) if str(e) else "Sending failed"
             receipt.save()
 
 
@@ -62,13 +67,15 @@ def email_receipt(receipt_id):
                              .shift(years=+1 if received_date.month > 6 else 0)
                              .date())
 
-        context = {'pledge': receipt.pledge,
-                   'transaction': receipt.transaction,
-                   'date_str': date_str,
-                   'eofy_receipt_date': eofy_receipt_date,
-                   "is_eaae": receipt.pledge.is_eaae,
-                    "abn": receipt.pledge.abn,
-                   }
+        context = {
+            "pledge": receipt.pledge,
+            "transaction": receipt.transaction,
+            "date_str": date_str,
+            "eofy_receipt_date": eofy_receipt_date,
+            "is_eaae": receipt.pledge.is_eaae,
+            "abn": receipt.pledge.abn,
+            "base_url": settings.BASE_URL,
+        }
         body_plain_txt = render_to_string('receipts/receipt_message.txt', context)
         body_html = render_to_string('receipts/receipt_message.html', context)
         message = EmailMultiAlternatives(
@@ -88,5 +95,5 @@ def email_receipt(receipt_id):
         receipt.time_sent = timezone.now()
     except Exception as e:
         client.captureException()
-        receipt.failed_message = e.message if e.message else "Sending failed"
+        receipt.failed_message = str(e) if str(e) else "Sending failed"
     receipt.save()

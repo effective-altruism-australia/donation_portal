@@ -1,11 +1,7 @@
 import datetime
 import itertools
-import os
-import shutil
-import tempfile
 
-import pdfkit
-from PyPDF2 import PdfReader, PdfMerger
+from weasyprint import HTML
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.db.models.functions import Lower
@@ -33,14 +29,16 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
     for donations_from_email in generate_data_for_eofy_receipts(year, is_eaae):
         pledge = donations_from_email[-1].pledge
         email = pledge.email
-        context = {'email': email,
-                   'name': u"{0.first_name} {0.last_name}".format(pledge),
-                   'two_digit_year': year - 2000,
-                   'total_amount': sum((donation.amount for donation in donations_from_email)),
-                   'donations': donations_from_email,
-                   "is_eaae": is_eaae,
-                   "abn": "57 659 447 417" if is_eaae else "87 608 863 467"
-                   }
+        context = {
+            "email": email,
+            "name": "{0.first_name} {0.last_name}".format(pledge),
+            "two_digit_year": year - 2000,
+            "total_amount": sum((donation.amount for donation in donations_from_email)),
+            "donations": donations_from_email,
+            "is_eaae": is_eaae,
+            "abn": "57 659 447 417" if is_eaae else "87 608 863 467",
+            "base_url": settings.BASE_URL,
+        }
 
         # Enforce not sending multiple receipts by default
         if not test and EOFYReceipt.objects.filter(year=year, email=email,
@@ -52,28 +50,27 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
                                    is_eaae=is_eaae)
 
         try:
-            # Note: wkhtmltopdf can combine multiple html pages into one pdf, but not the version on
-            # ubuntu 16.04. Easiest to combine multiple pages using a separate library.
+            # Generate both pages as HTML
+            page_1_html = render_to_string('receipts/eofy_receipt_page_1.html', context)
+            page_2_html = render_to_string('receipts/eofy_receipt_page_2.html', context)
+            
+            # Store receipts in database, for auditing purposes
+            eofy_receipt.receipt_html_page_1 = page_1_html
+            eofy_receipt.receipt_html_page_2 = page_2_html
+            
+            # Combine both pages into a single HTML document
+            combined_html = page_1_html + '<div style="page-break-before: always;"></div>' + page_2_html
+            
+            # Generate PDF using WeasyPrint
+            HTML(string=combined_html).write_pdf(eofy_receipt.pdf_receipt_location)
 
-            tempdir = tempfile.mkdtemp()
-            merger = PdfMerger()
-
-            for page in [1, 2]:
-                page_name = 'receipt_html_page_{0}'.format(page)
-                html = render_to_string('receipts/eofy_receipt_page_{0}.html'.format(page), context)
-                # Store receipts in database, for auditing purposes
-                setattr(eofy_receipt, page_name, html)
-                file_name = os.path.join(tempdir, page_name + '.pdf')
-                pdfkit.from_string(html, file_name)
-                merger.append(PdfReader(file_name, "rb"))
-
-            merger.write(eofy_receipt.pdf_receipt_location)
-
-            context = {'first_name': pledge.first_name,
-                       'two_digit_year': year - 2000,
-                       "is_eaae": is_eaae,
-                        "abn": "57 659 447 417" if is_eaae else "87 608 863 467"
-                       }
+            context = {
+                "first_name": pledge.first_name,
+                "two_digit_year": year - 2000,
+                "is_eaae": is_eaae,
+                "abn": "57 659 447 417" if is_eaae else "87 608 863 467",
+                "base_url": settings.BASE_URL,
+            }
             body_html = render_to_string('receipts/eofy_receipt_message.html', context)
             body_plain_txt = render_to_string('receipts/eofy_receipt_message.txt', context)
 
@@ -97,7 +94,5 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
         except Exception as e:
             client.captureException()
             eofy_receipt.failed_message = str(e) if str(e) else "Sending failed"
-        finally:
-            shutil.rmtree(tempdir)
         if not test:
             eofy_receipt.save()
