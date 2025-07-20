@@ -1,5 +1,6 @@
 import datetime
 import os
+import logging
 
 from dotenv import load_dotenv
 from celery.schedules import crontab
@@ -13,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ##################
 
 # Do NOT set to "True" in production
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = os.getenv("DEBUG").lower() == "true"
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -59,18 +60,75 @@ TEMPLATES = [
     },
 ]
 
+class ColoredFormatter(logging.Formatter):
+    COLORS = {
+        'DEBUG': '\033[36m',    # Cyan
+        'INFO': '\033[32m',     # Green
+        'WARNING': '\033[33m',  # Yellow
+        'ERROR': '\033[31m',    # Red
+        'CRITICAL': '\033[35m', # Magenta
+    }
+    RESET = '\033[0m'
+    
+    def format(self, record):
+        color = self.COLORS.get(record.levelname, '')
+        record.levelname = f"{color}{record.levelname}{self.RESET}"
+        return super().format(record)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'colored': {
+            '()': ColoredFormatter,
+            'format': '{levelname} {asctime} [{module}:{lineno}] {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'file': {
+            'format': '{levelname} {asctime} [{module}:{lineno}] {funcName} - {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'colored',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'django.log',
+            'maxBytes': 10*1024*1024,  # 10MB
+            'backupCount': 5,
+            'formatter': 'file',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'django.db.backends': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
 WSGI_APPLICATION = "donation_portal.wsgi.application"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 EMAIL_BACKEND = "postmark.django_backend.EmailBackend"
 
-ENABLE_DEBUG_TOOLBAR = os.getenv("ENABLE_DEBUG_TOOLBAR", "False").lower() == "true"
+ENABLE_DEBUG_TOOLBAR = DEBUG
 
 if ENABLE_DEBUG_TOOLBAR and DEBUG:
     INSTALLED_APPS += ("debug_toolbar",)
     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
     INTERNAL_IPS = ["127.0.0.1"]
 
-ENABLE_SENTRY = os.getenv("USE_SENTRY", "False").lower() == "true"
+ENABLE_SENTRY = os.getenv("USE_SENTRY").lower() == "true"
 
 if ENABLE_SENTRY:
     INSTALLED_APPS += ("raven.contrib.django.raven_compat",)
@@ -100,10 +158,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
     "http://localhost:8001",
 ]
-if DEBUG:
-    BASE_URL = "http://localhost:8000"
-else:
-    BASE_URL = "https://donations.effectivealtruism.org.au"
+
+BASE_URL = os.getenv("ORIGIN")
 
 
 ############
@@ -128,9 +184,11 @@ CELERYBEAT_SCHEDULE = {
     },
 }
 BROKER_CONNECTION_RETRY_ON_STARTUP = True
-BROKER_URL = os.getenv("REDIS_CELERY_URL")
-CELERY_BROKER_URL = os.getenv("REDIS_CELERY_URL")
-CELERY_RESULT_BACKEND = os.getenv("REDIS_CELERY_URL")
+BROKER_URL = os.getenv("REDIS_URL")
+CELERY_BROKER_URL = os.getenv("REDIS_URL")
+CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")
+CELERY_TASK_ALWAYS_EAGER = DEBUG
+CELERY_TASK_EAGER_PROPAGATES = DEBUG
 CREDIT_CARD_RATE_LIMIT_MAX_TRANSACTIONS = 6
 CREDIT_CARD_RATE_LIMIT_PERIOD = 12 * 60 * 60
 CREDIT_CARD_RATE_LIMIT_ENABLED = True
@@ -160,11 +218,11 @@ DATABASES = {
 ## Redis ##
 ###########
 
-REDIS_HOST = os.getenv("REDIS_CELERY_HOST")
-REDIS_PORT = os.getenv("REDIS_CELERY_PORT")
-REDIS_USERNAME = os.getenv("REDIS_CELERY_USERNAME")
-REDIS_PASSWORD = os.getenv("REDIS_CELERY_PASSWORD")
-REDIS_USE_SSL = os.getenv("REDIS_CELERY_USE_SSL").lower() == "true"
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_PORT = os.getenv("REDIS_PORT")
+REDIS_USERNAME = os.getenv("REDIS_USERNAME")
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
+REDIS_USE_SSL = os.getenv("REDIS_USE_SSL").lower() == "true"
 
 
 ############
@@ -203,8 +261,8 @@ TENANT_IDS = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": os.environ.get("REDIS_CACHE_URL"),
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+        "LOCATION": "127.0.0.1:11211",
         "TIMEOUT": 60 * 60 * 60 * 24,  # 24 hours
         "OPTIONS": {},
     }
@@ -216,7 +274,7 @@ CACHES = {
 ###########
 
 TESTING_EMAIL = os.getenv("TESTING_EMAIL")
-EAA_INFO_EMAIL = "info@eaa.org.au"
+EAA_INFO_EMAIL = os.getenv("TESTING_EMAIL") if DEBUG else "info@eaa.org.au"
 POSTMARK_SENDER = "donations@eaa.org.au"
 POSTMARK_API_KEY = os.getenv("POSTMARK_API_KEY")
 MAILCHIMP_API_KEY = os.getenv("MAILCHIMP_API_KEY")
