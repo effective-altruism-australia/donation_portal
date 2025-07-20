@@ -16,21 +16,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # This is a Redis instance for caching
-  redis-cache:
+  # Redis for queueing celery tasks
+  redis:
     image: redis:8.0.1
     ports:
       - "6379:6379"
-    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
-    container_name: redis-cache
+    command: redis-server --maxmemory 2gb --maxmemory-policy volatile-lru
 
-  # This is a separate Redis instance for queueing celery tasks
-  redis-queue:
-    image: redis:8.0.1
+  # Memcached for django caching
+  memcached:
+    image: memcached:1.6.38
     ports:
-      - "6380:6379"
-    command: redis-server --maxmemory 128mb --maxmemory-policy noeviction
-    container_name: redis-queue
-
+      - "11211:11211"
+      
 volumes:
   postgres_data:
