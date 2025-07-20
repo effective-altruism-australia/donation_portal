@@ -1,9 +1,9 @@
 # A simple dependency free donation form
-This form is designed to replace our react-based donation form. The goals of this form are to be:
+
+The goals of this form are to be:
 
 **Dependency free** - no need to regularly update dependencies.
 **Easy to deploy** - just copy and paste the HTML into the WordPress site.
-**Visually improved** - and matches the design of the rest of our WordPress site.
 **Accessible** - follows best practices for accessibility.
 **Easy to customise** - just clone this repo and change the HTML/CSS/JS as needed.
 **Easy to maintain** - only a few hundred lines of simple code that beginners can grok.
