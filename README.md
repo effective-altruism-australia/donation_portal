@@ -1,14 +1,26 @@
 # Payment backend for Effective Altruism Australia
 
-## Requirements
+## System Dependencies
 * [uv](https://docs.astral.sh/uv)
-* Postgres connection details
+* weasyprint
+* pango
+* glib
+* cairo
+* gobject-introspection
+* gdk-pixbuf
+* libffi
+
+## Services
+* Postgres
 * Redis
+* Memcache
 * Celery
-* Mailchimp API key
-* Postmark API key
-* Stripe API keys
-* Xero API keys and Account IDs
+
+## API Keys
+* Mailchimp
+* Postmark
+* Stripe
+* Xero (+ Account IDs)
 
 ## Development
 You have a few options for setting up a development environment.
