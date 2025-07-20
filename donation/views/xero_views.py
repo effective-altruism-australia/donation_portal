@@ -21,7 +21,7 @@ def start_xero_auth_view(request):
 def process_callback_view(request):
     cred_state = caches['default'].get('xero_creds')
     credentials = OAuth2Credentials(**cred_state)
-    auth_secret = 'https://' + request.META['HTTP_HOST'] + request.META['RAW_URI']
+    auth_secret = request.build_absolute_uri()
     credentials.verify(auth_secret)
     credentials.set_default_tenant()
     caches['default'].set('xero_creds', credentials.state)
