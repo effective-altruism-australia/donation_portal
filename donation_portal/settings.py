@@ -158,6 +158,10 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
     "http://localhost:8001",
 ]
+ALLOWED_HOSTS = [
+    "staging.effectivealtruism.org.au",
+    "donations.effectivealtruism.org.au",
+]
 
 BASE_URL = os.getenv("ORIGIN")
 
