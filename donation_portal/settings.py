@@ -157,6 +157,7 @@ CORS_ORIGIN_WHITELIST = [
 ALLOWED_HOSTS = [
     "staging.effectivealtruism.org.au",
     "donations.effectivealtruism.org.au",
+    "localhost",
 ]
 CSRF_TRUSTED_ORIGINS = [
     'https://staging.effectivealtruism.org.au',
