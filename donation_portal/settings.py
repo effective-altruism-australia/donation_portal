@@ -162,6 +162,10 @@ ALLOWED_HOSTS = [
     "staging.effectivealtruism.org.au",
     "donations.effectivealtruism.org.au",
 ]
+CSRF_TRUSTED_ORIGINS = [
+    'https://staging.effectivealtruism.org.au',
+    'https://donations.effectivealtruism.org.au',
+]
 
 BASE_URL = os.getenv("ORIGIN")
 
