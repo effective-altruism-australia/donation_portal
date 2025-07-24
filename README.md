@@ -23,7 +23,6 @@
 * Xero (+ Account IDs)
 
 ## Development
-You have a few options for setting up a development environment.
 
 ### Development Frontend
 * `uv sync` to create a virtual environment and install dependencies
