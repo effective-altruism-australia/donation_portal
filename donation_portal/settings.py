@@ -151,15 +151,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 CORS_ORIGIN_WHITELIST = [
     "https://staging.effectivealtruism.org.au",
     "https://donations.effectivealtruism.org.au",
+    "https://effectivealtruism.org.au",
     "http://localhost:8000",
     "http://localhost:8001",
 ]
 ALLOWED_HOSTS = [
+    "effectivealtruism.org.au",
     "staging.effectivealtruism.org.au",
     "donations.effectivealtruism.org.au",
     "localhost",
 ]
 CSRF_TRUSTED_ORIGINS = [
+    "https://effectivealtruism.org.au",
     'https://staging.effectivealtruism.org.au',
     'https://donations.effectivealtruism.org.au',
 ]
