@@ -14,8 +14,8 @@ class DateRangeSelector(forms.Form):
 
         years = range(2016, arrow.now().year + 1)
         if last_month:
-            start_date = arrow.now().replace(months=-1).replace(day=1).date()
-            end_date = arrow.now().replace(day=1).replace(days=-1).date()
+            start_date = arrow.now().shift(months=-1).replace(day=1).date()
+            end_date = arrow.now().replace(day=1).shift(days=-1).date()
         else:
             start_date = arrow.Arrow(2016, 1, 1).date()
             end_date = arrow.now().date()
