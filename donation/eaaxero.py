@@ -71,12 +71,12 @@ def import_bank_transactions_from_account(bank_account_id, from_date, to_date, m
         # Create a unique id to simplify import. Note that it's more robust to not include the balance in the hash
         # since then if there's a error, e.g., a missing transactions, which does happen in xero from time to time,
         # then fixing it will not cause all later unique id's to change.
-        unique_id = hashlib.md5("x".join([bank_statement_text, str(bank_statement_date), amount])).hexdigest()
+        unique_id = hashlib.md5("x".join([bank_statement_text, str(bank_statement_date), amount]).encode('utf-8')).hexdigest()
 
         # A donor may make two or more identical donations on the same day. Deal with this:
         rows_seen[unique_id] += 1
         if rows_seen[unique_id] > 1:
-            unique_id = hashlib.md5(unique_id + str(rows_seen[unique_id])).hexdigest()
+            unique_id = hashlib.md5((unique_id + str(rows_seen[unique_id])).encode('utf-8')).hexdigest()
         
         if "STRIPE EFFECTIVE ALT" in bank_statement_text:
             continue
