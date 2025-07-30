@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Xero Auth</title>
+    <style>
+        body { font-family: Arial; margin: 50px; text-align: center; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    {% if success %}
+        <h2 class="success">✓ Connected to Xero</h2>
+        {% if tenant_info %}
+            <p>Organization: {{ tenant_info.name }}</p>
+        {% endif %}
+    {% else %}
+        <h2 class="error">✗ Connection Failed</h2>
+        {% if error_message %}
+            <p>{{ error_message }}</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

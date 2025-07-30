@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.cache import caches
+from django.shortcuts import render
 
 from xero import Xero
 from xero.auth import OAuth2Credentials
@@ -19,11 +20,41 @@ def start_xero_auth_view(request):
 
 
 def process_callback_view(request):
-    cred_state = caches['default'].get('xero_creds')
-    credentials = OAuth2Credentials(**cred_state)
-    auth_secret = request.build_absolute_uri()
-    credentials.verify(auth_secret)
-    credentials.set_default_tenant()
-    caches['default'].set('xero_creds', credentials.state)
-
-    return HttpResponse()
+    context = {
+        'success': False,
+        'error_message': None,
+        'tenant_info': None
+    }
+    
+    try:
+        cred_state = caches['default'].get('xero_creds')
+        if not cred_state:
+            context['error_message'] = 'No authentication state found. Please restart the login process.'
+            return render(request, 'xero_callback_status.html', context)
+        
+        credentials = OAuth2Credentials(**cred_state)
+        auth_secret = request.build_absolute_uri()
+        credentials.verify(auth_secret)
+        credentials.set_default_tenant()
+        caches['default'].set('xero_creds', credentials.state)
+        
+        # Get tenant information for display
+        try:
+            xero = Xero(credentials)
+            organisations = xero.organisations.all()
+            if organisations:
+                context['tenant_info'] = {
+                    'name': organisations[0]['Name'],
+                    'short_code': organisations[0]['ShortCode'],
+                    'country_code': organisations[0]['CountryCode']
+                }
+        except Exception as e:
+            # Even if we can't get org info, the login might have worked
+            context['tenant_info'] = {'name': 'Organization details unavailable'}
+        
+        context['success'] = True
+        
+    except Exception as e:
+        context['error_message'] = f'Authentication failed: {str(e)}'
+    
+    return render(request, 'xero_callback_status.html', context)
