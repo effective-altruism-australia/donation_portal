@@ -40,6 +40,7 @@ def total_donations_for_partner(start_date, end_date, partner, payment_method=No
                .aggregate(Sum('amount_maybe_less_fees'))['amount_maybe_less_fees__sum'] or 0
 
 
+@login_required
 def donation_counter(request):
     if request.method == 'POST':
         form = DateRangeSelector(request.POST)
@@ -65,14 +66,14 @@ def donation_counter(request):
 
     xero_start_date = start
     xero_end_date = min(xero_reconciled_date, end)
-    django_start_date = max(arrow.get(xero_reconciled_date).replace(days=1).date(), start)
+    django_start_date = max(arrow.get(xero_reconciled_date).shift(days=1).date(), start)
     django_end_date = end
 
     # This will only give correct answers if you specify whole months during the period we take data from xero.
     # We don't do the accounting in a way that provides daily data so this is not possible to improve.
     error_message = ''
     if (xero_start_date <= xero_reconciled_date and xero_start_date.day != 1) or \
-            arrow.get(xero_end_date).replace(days=1).date().day != 1:
+            arrow.get(xero_end_date).shift(days=1).date().day != 1:
         error_message = "You must specify complete months for this period because of the way we do the accounting" + \
                         " in xero. Please set the start date to the start of a month and the end date to the end of" + \
                         " a month."
