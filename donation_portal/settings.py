@@ -4,6 +4,7 @@ import logging
 
 from dotenv import load_dotenv
 from celery.schedules import crontab
+import sentry_sdk
 
 load_dotenv()
 
@@ -128,10 +129,14 @@ if ENABLE_DEBUG_TOOLBAR and DEBUG:
     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
     INTERNAL_IPS = ["127.0.0.1"]
 
-ENABLE_SENTRY = os.getenv("USE_SENTRY").lower() == "true"
 
-if ENABLE_SENTRY:
-    INSTALLED_APPS += ("raven.contrib.django.raven_compat",)
+if os.getenv("USE_SENTRY").lower() == "true":
+    sentry_sdk.init(
+        dsn=os.getenv("SENTRY_DSN"),
+        # Add data like request headers and IP for users,
+        # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+        send_default_pii=True,
+    )
 
 # Internationalization
 LANGUAGE_CODE = "en-au"
