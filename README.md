@@ -7,6 +7,7 @@
 * Postgres
 * Redis
 * Memcached
+
 Note: When developing locally, you can use the `docker-compose.yaml` file to fire up Postgres, Redis and Memcached services. This avoids you having to install them locally.
 
 ## API Keys
@@ -20,6 +21,7 @@ Note: When developing locally, you can use the `docker-compose.yaml` file to fir
 ### Development Frontend
 * `uv sync` to create a virtual environment and install dependencies
 * `uv run frontend/dev.py` to start a dev server with auto-rebuilds upon changes in `./frontend/src`
+
 Note: the donation form needs to make API calls to get the list of charity partners and referral sources. You can set the `ORIGIN` in `.env` to be `donations.effectivealtruism.org.au` or `localhost:8000` depending on whether you want to use the live production values or values from your locally running Django dev server.
 
 ### Development Backend
@@ -33,8 +35,3 @@ Note: the donation form needs to make API calls to get the list of charity partn
 2. Chose managed Postgres so that we don't need to deal with updates or security patches
 3. Chose to use public end points with IP restricted access for Postgres as the speed and security costs vs an internal endpoint are negligible while the benefit of making it available to (e.g. Retool) is large
 4. Considered app services and a containerised app rather than a VM but realised it would be more complicated than it's worth due to needing separate Redis, Celery and storage services. It's also easier from a debugging perspective if all the services (aside from the db) are on the same machine.
-
-# TODO:
-- Xero will need to be tested in prod - I don't have control over the response url and can't use localhost
-- [ ] Note prod permissions on media files
-- [ ] Double check if there's better permissions on db we can use
