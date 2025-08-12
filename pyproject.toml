@@ -28,7 +28,7 @@ dependencies = [
     "django-pymemcache==1.0.0",
     "django-reversion==5.1.0",
     "gunicorn==23.0.0",
-    "h11==0.14.0",
+    "h11==0.16.0",
     "idna==3.10",
     "iniconfig==2.1.0",
     "kombu==5.5.2",
