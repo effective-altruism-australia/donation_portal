@@ -19,7 +19,7 @@ dependencies = [
     "click-plugins==1.1.1",
     "click-repl==0.3.0",
     "cryptography==44.0.2",
-    "Django==5.1.8",
+    "Django==5.1.10",
     "django-cors-headers==4.7.0",
     "django-enumfields==2.1.1",
     "django-ipware==7.0.1",
