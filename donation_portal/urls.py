@@ -46,8 +46,6 @@ urlpatterns = [
 
 urlpatterns += staticfiles_urlpatterns()
 
-urlpatterns.append(path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}))
-
 # Only include the debug toolbar URLs if DEBUG is True
 if settings.DEBUG and settings.ENABLE_DEBUG_TOOLBAR:
     from debug_toolbar.toolbar import debug_toolbar_urls
