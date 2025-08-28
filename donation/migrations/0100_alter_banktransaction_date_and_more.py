@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('donation', '0099_auto_20230920_1111'),
+        ("donation", "0099_auto_20230920_1111"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='banktransaction',
-            name='date',
+            model_name="banktransaction",
+            name="date",
             field=models.DateField(),
         ),
         migrations.AlterField(
-            model_name='receipt',
-            name='failed_message',
-            field=models.TextField(blank=True, default='', editable=False),
+            model_name="receipt",
+            name="failed_message",
+            field=models.TextField(blank=True, default="", editable=False),
         ),
         migrations.AlterField(
-            model_name='stripetransaction',
-            name='date',
+            model_name="stripetransaction",
+            name="date",
             field=models.DateField(),
         ),
     ]

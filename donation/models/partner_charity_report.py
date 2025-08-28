@@ -13,5 +13,6 @@ class PartnerCharityReport(models.Model):
 
     def __str__(self):
         date_until = arrow.get(self.date).shift(days=-1).date()
-        return "Report to {0.partner.name} for donations up to and including {1}, sent {0.time_sent}".format(self,
-                                                                                                             date_until)
+        return "Report to {0.partner.name} for donations up to and including {1}, sent {0.time_sent}".format(
+            self, date_until
+        )

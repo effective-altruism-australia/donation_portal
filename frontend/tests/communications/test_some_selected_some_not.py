@@ -13,7 +13,7 @@ async def test_communications_checkboxes_work():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False, slow_mo=500)
         page = await browser.new_page()
-        
+
         await page.goto("http://localhost:8001")
 
         await page.locator("#amount-section--custom-amount-input").fill("5")
@@ -26,21 +26,27 @@ async def test_communications_checkboxes_work():
 
         await page.get_by_label("Postcode").fill("3000")
 
-        await page.locator("#communications-section--referral-sources").select_option("cant-remember")
+        await page.locator("#communications-section--referral-sources").select_option(
+            "cant-remember"
+        )
 
-        await (page.locator("label")
-               .filter(has_text="Send me news and updates")
-               .locator("div")
-               .click())
+        await (
+            page.locator("label")
+            .filter(has_text="Send me news and updates")
+            .locator("div")
+            .click()
+        )
 
-        await (page.locator("label")
-               .filter(has_text="Connect me with my local")
-               .locator("div")
-               .click())
+        await (
+            page.locator("label")
+            .filter(has_text="Connect me with my local")
+            .locator("div")
+            .click()
+        )
 
         # Set up request interception to capture the pledge_new request
         request_data = {}
-        
+
         def handle_request(request):
             if "pledge_new" in request.url:
                 if request.post_data:
@@ -81,5 +87,5 @@ async def test_communications_checkboxes_work():
         assert "form-2-id" not in request_data
         assert "form-2-amount" not in request_data
         assert "form-2-partner_charity" not in request_data
-        
+
         await browser.close()

@@ -13,7 +13,7 @@ async def test_default_allocation_submit_with_suggested_custom_then_suggested_am
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False, slow_mo=500)
         page = await browser.new_page()
-        
+
         await page.goto("http://localhost:8001")
 
         await page.get_by_text("$50", exact=True).click()
@@ -30,11 +30,13 @@ async def test_default_allocation_submit_with_suggested_custom_then_suggested_am
 
         await page.get_by_label("Postcode").fill("3000")
 
-        await page.locator("#communications-section--referral-sources").select_option("cant-remember")
+        await page.locator("#communications-section--referral-sources").select_option(
+            "cant-remember"
+        )
 
         # Set up request interception to capture the pledge_new request
         request_data = {}
-        
+
         def handle_request(request):
             if "pledge_new" in request.url:
                 if request.post_data:
@@ -75,5 +77,5 @@ async def test_default_allocation_submit_with_suggested_custom_then_suggested_am
         assert "form-2-id" not in request_data
         assert "form-2-partner_charity" not in request_data
         assert "form-2-amount" not in request_data
-        
+
         await browser.close()

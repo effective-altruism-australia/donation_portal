@@ -13,11 +13,11 @@ async def test_default_allocation_submit_with_custom_amount():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False, slow_mo=500)
         page = await browser.new_page()
-        
+
         await page.goto("http://localhost:8001")
-        
+
         await page.get_by_text("The most effective charities✧").click()
-        
+
         await page.locator("#amount-section--custom-amount-input").fill("1000")
 
         await page.get_by_label("First name", exact=True).fill("Nathan")
@@ -27,12 +27,14 @@ async def test_default_allocation_submit_with_custom_amount():
         await page.get_by_label("Email", exact=True).fill("testing@eaa.org.au")
 
         await page.get_by_label("Postcode").fill("3000")
-        
-        await page.locator("#communications-section--referral-sources").select_option("cant-remember")
+
+        await page.locator("#communications-section--referral-sources").select_option(
+            "cant-remember"
+        )
 
         # Set up request interception to capture the pledge_new request
         request_data = {}
-        
+
         def handle_request(request):
             if "pledge_new" in request.url:
                 if request.post_data:
@@ -64,7 +66,7 @@ async def test_default_allocation_submit_with_custom_amount():
         assert request_data["form-1-id"] is None
         assert request_data["form-1-partner_charity"] == "eaa-amplify"
         assert request_data["form-1-amount"] == "100.00"
-        
+
         # Make sure things that shouldn't be sent are not sent
         assert "is_gift" not in request_data
         assert "gift_recipient_name" not in request_data
@@ -73,5 +75,5 @@ async def test_default_allocation_submit_with_custom_amount():
         assert "form-2-id" not in request_data
         assert "form-2-partner_charity" not in request_data
         assert "form-2-amount" not in request_data
-        
+
         await browser.close()

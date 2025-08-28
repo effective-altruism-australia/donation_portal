@@ -9,20 +9,17 @@ from donation.models import BankTransferInstruction
 
 def send_bank_transfer_instructions(pledge):
     bank_transfer_instruction, _ = BankTransferInstruction.objects.update_or_create(
-        pledge=pledge,
-        defaults={
-            'email': pledge.email
-        }
+        pledge=pledge, defaults={"email": pledge.email}
     )
     try:
         assert not bank_transfer_instruction.sent
 
-        context = {'pledge': pledge, 'is_eaae': pledge.is_eaae}
-        body = render_to_string('bank_transfer_instructions.txt', context)
-        body_html = render_to_string('bank_transfer_instructions.html', context)
+        context = {"pledge": pledge, "is_eaae": pledge.is_eaae}
+        body = render_to_string("bank_transfer_instructions.txt", context)
+        body_html = render_to_string("bank_transfer_instructions.html", context)
 
         message = EmailMultiAlternatives(
-            subject='Instructions to complete your donation',
+            subject="Instructions to complete your donation",
             body=body,
             to=[pledge.email],
             # There is a filter in info@eaa.org.au

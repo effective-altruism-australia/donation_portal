@@ -7,17 +7,27 @@ from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 from reversion.models import Revision, Version
 
-from .models import Pledge, PledgeComponent, BankTransaction, Receipt, PartnerCharity, XeroReconciledDate, \
-    PaymentMethod, PartnerCharityReport, ReferralSource, StripeTransaction
+from .models import (
+    Pledge,
+    PledgeComponent,
+    BankTransaction,
+    Receipt,
+    PartnerCharity,
+    XeroReconciledDate,
+    PaymentMethod,
+    PartnerCharityReport,
+    ReferralSource,
+    StripeTransaction,
+)
 
 
 class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
     # right admin sidebar just above the filter options.
-    title = 'reconciliation'
+    title = "reconciliation"
 
     # Parameter for the filter that will be used in the URL query.
-    parameter_name = 'reconciliation'
+    parameter_name = "reconciliation"
 
     def lookups(self, request, model_admin):
         """
@@ -28,8 +38,8 @@ class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
         in the right sidebar.
         """
         return (
-            ('Unreconciled', 'Unreconciled'),
-            ('Reconciled', 'Reconciled'),
+            ("Unreconciled", "Unreconciled"),
+            ("Reconciled", "Reconciled"),
         )
 
     def queryset(self, request, queryset):
@@ -40,20 +50,22 @@ class BankTransactionReconciliationListFilter(admin.SimpleListFilter):
         """
         if not self.value():
             return queryset
-        unreconciled = BankTransaction.objects.filter(pledge__isnull=True, do_not_reconcile=False)
-        if self.value() == 'Unreconciled':
+        unreconciled = BankTransaction.objects.filter(
+            pledge__isnull=True, do_not_reconcile=False
+        )
+        if self.value() == "Unreconciled":
             return unreconciled
         else:  # 'Reconciled'
-            return queryset.exclude(id__in=unreconciled.values('id'))
+            return queryset.exclude(id__in=unreconciled.values("id"))
 
 
 class PledgeFundsReceivedFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
     # right admin sidebar just above the filter options.
-    title = 'funds received'
+    title = "funds received"
 
     # Parameter for the filter that will be used in the URL query.
-    parameter_name = 'funds_received'
+    parameter_name = "funds_received"
 
     def lookups(self, request, model_admin):
         """
@@ -64,8 +76,8 @@ class PledgeFundsReceivedFilter(admin.SimpleListFilter):
         in the right sidebar.
         """
         return (
-            ('Yes', 'Received'),
-            ('No', 'Not Received'),
+            ("Yes", "Received"),
+            ("No", "Not Received"),
         )
 
     def queryset(self, request, queryset):
@@ -77,49 +89,63 @@ class PledgeFundsReceivedFilter(admin.SimpleListFilter):
         if not self.value():
             return queryset
         # Only payments by bank transfer can be unpaid.
-        paid_pledges_by_bank_transfer = BankTransaction.objects.filter(pledge__isnull=False).values_list('pledge__id',
-                                                                                                         flat=True)
-        unpaid = queryset.filter(payment_method=PaymentMethod.BANK).exclude(id__in=paid_pledges_by_bank_transfer)
-        if self.value() == 'No':
+        paid_pledges_by_bank_transfer = BankTransaction.objects.filter(
+            pledge__isnull=False
+        ).values_list("pledge__id", flat=True)
+        unpaid = queryset.filter(payment_method=PaymentMethod.BANK).exclude(
+            id__in=paid_pledges_by_bank_transfer
+        )
+        if self.value() == "No":
             return unpaid
         else:  # 'No'
-            return queryset.exclude(id__in=unpaid.values('id'))
+            return queryset.exclude(id__in=unpaid.values("id"))
 
 
 class PledgeComponentInline(admin.TabularInline):
-    fields = ('partner_charity', 'amount',)
+    fields = (
+        "partner_charity",
+        "amount",
+    )
     model = PledgeComponent
     extra = 0
 
 
 class StripeTransactionInline(admin.TabularInline):
     model = StripeTransaction
-    fields = ('amount', 'date', 'stripe_transaction')
+    fields = ("amount", "date", "stripe_transaction")
     readonly_fields = fields
     extra = 0
 
 
 class PledgeAdmin(VersionAdmin):
-    search_fields = ('first_name', 'last_name', 'reference', 'email')
-    readonly_fields = ('ip', 'completed_time')
-    list_filter = (PledgeFundsReceivedFilter, 'recurring', 'recurring_frequency', 'payment_method', "is_eaae")
+    search_fields = ("first_name", "last_name", "reference", "email")
+    readonly_fields = ("ip", "completed_time")
+    list_filter = (
+        PledgeFundsReceivedFilter,
+        "recurring",
+        "recurring_frequency",
+        "payment_method",
+        "is_eaae",
+    )
     inlines = [PledgeComponentInline, StripeTransactionInline]
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related(
-            'components__partner_charity'
+        return (
+            super()
+            .get_queryset(request)
+            .prefetch_related("components__partner_charity")
         )
-    
+
     class Meta:
         model = Pledge
 
 
 # TODO We're not really using this as an Inline and it has confusing presentation. Better to create our own widget.
 class ReceiptInline(admin.TabularInline):
-    readonly_fields = ('status',)
+    readonly_fields = ("status",)
     model = Receipt
     extra = 0
-    fields = ('status',)
+    fields = ("status",)
     can_delete = False
 
     def has_add_permission(self, request, obj=None):
@@ -128,32 +154,53 @@ class ReceiptInline(admin.TabularInline):
 
 class BankTransactionForm(forms.ModelForm):
     model = BankTransaction
+
     def clean(self):
         form_data = super(BankTransactionForm, self).clean()
-        if form_data['do_not_reconcile'] and form_data['reference']:
-            self.add_error('do_not_reconcile', 'If do not reconcile is ticked, there should not be any reference')
+        if form_data["do_not_reconcile"] and form_data["reference"]:
+            self.add_error(
+                "do_not_reconcile",
+                "If do not reconcile is ticked, there should not be any reference",
+            )
 
         return form_data
 
 
 class StripeTransactionAdmin(VersionAdmin):
-    list_display = ('reference', 'datetime', 'pledge_link', 'amount', 'fees', 'stripe_transaction')
+    list_display = (
+        "reference",
+        "datetime",
+        "pledge_link",
+        "amount",
+        "fees",
+        "stripe_transaction",
+    )
     readonly_fields = list_display
-    fields = list_display + ('customer_id', )
+    fields = list_display + ("customer_id",)
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('pledge').prefetch_related(
-          'pledge__components__partner_charity'
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("pledge")
+            .prefetch_related("pledge__components__partner_charity")
         )
-    
+
     def pledge_link(self, obj):
         # Make sure this works with latest data - it broke around 2025-06-28
-        return mark_safe('<a href="/admin/donation/pledge/%s/">%s</a>' % (obj.pledge_id, str(obj.pledge)))
+        return mark_safe(
+            '<a href="/admin/donation/pledge/%s/">%s</a>'
+            % (obj.pledge_id, str(obj.pledge))
+        )
 
     def resend_receipts(self, request, queryset):
         transactions = list(queryset.all())
         if len(transactions) > 8:
-            self.message_user(request, "Please select at most 8 transactions at once.", level=messages.WARNING)
+            self.message_user(
+                request,
+                "Please select at most 8 transactions at once.",
+                level=messages.WARNING,
+            )
             return
         any_receipts_sent = False
         for t in transactions:
@@ -164,46 +211,54 @@ class StripeTransactionAdmin(VersionAdmin):
 
     resend_receipts.short_description = "Resend receipts for selected transactions"
 
-    actions = ['resend_receipts']
+    actions = ["resend_receipts"]
 
 
 class BankTransactionAdmin(VersionAdmin):
     # TODO make a filter for needs_to_be_reconciled transactions
     # https://docs.djangoproject.com/en/1.8/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
     form = BankTransactionForm
-    search_fields = ('bank_statement_text', 'reference')
-    readonly_fields = ('date', 'amount', 'bank_statement_text', 'reconciled', 'pledge')
+    search_fields = ("bank_statement_text", "reference")
+    readonly_fields = ("date", "amount", "bank_statement_text", "reconciled", "pledge")
     list_filter = (BankTransactionReconciliationListFilter, "is_eaae")
     inlines = (ReceiptInline,)
-    ordering = ('-date', '-id',)
-    
+    ordering = (
+        "-date",
+        "-id",
+    )
+
     # Prefetch pledges to avoid N+1 queries when displaying bank transactions
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('pledge')
-    
+        return super().get_queryset(request).select_related("pledge")
+
     class Meta:
         model = BankTransaction
 
     fieldsets = (
-        ("Bank Transaction", {
-            'fields': ('date',
-                       'amount',
-                       ('bank_statement_text', 'match_future_statement_text'),
-                       'reference',
-                       'reconciled',
-                       'pledge',
-                       )
-        }),
-        ("Do not reconcile", {
-            'fields': ('do_not_reconcile',
-                       )
-        }),
+        (
+            "Bank Transaction",
+            {
+                "fields": (
+                    "date",
+                    "amount",
+                    ("bank_statement_text", "match_future_statement_text"),
+                    "reference",
+                    "reconciled",
+                    "pledge",
+                )
+            },
+        ),
+        ("Do not reconcile", {"fields": ("do_not_reconcile",)}),
     )
 
     def resend_receipts(self, request, queryset):
         bank_transactions = list(queryset.all())
         if len(bank_transactions) > 8:
-            self.message_user(request, "Please select at most 8 transactions at once.", level=messages.WARNING)
+            self.message_user(
+                request,
+                "Please select at most 8 transactions at once.",
+                level=messages.WARNING,
+            )
             return
 
         for bank_transaction in bank_transactions:
@@ -212,42 +267,66 @@ class BankTransactionAdmin(VersionAdmin):
                 bank_transaction.resend_receipt()
                 any_receipts_sent = True
             except BankTransaction.NotReconciledException:
-                self.message_user(request, "Cannot send receipts for unreconciled transactions.", level=messages.ERROR)
+                self.message_user(
+                    request,
+                    "Cannot send receipts for unreconciled transactions.",
+                    level=messages.ERROR,
+                )
         if any_receipts_sent:
             self.message_user(request, "Additional receipts sent.")
 
     resend_receipts.short_description = "Resend receipts for selected transactions"
 
-    actions = ['resend_receipts']
+    actions = ["resend_receipts"]
 
 
 class ReceiptAdmin(VersionAdmin):
-    readonly_fields = ('status',)
-    fields = ('status',)
-    actions = ['send_receipts', ]
-    search_fields = ['pledge__reference', 'pledge__first_name',
-                     'email', 'pledge__email',
-                     'bank_transaction__reference']
+    readonly_fields = ("status",)
+    fields = ("status",)
+    actions = [
+        "send_receipts",
+    ]
+    search_fields = [
+        "pledge__reference",
+        "pledge__first_name",
+        "email",
+        "pledge__email",
+        "bank_transaction__reference",
+    ]
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('pledge', 'bank_transaction', 'stripe_transaction')
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("pledge", "bank_transaction", "stripe_transaction")
+        )
+
 
 class ReferralSourceAdmin(VersionAdmin):
-    list_filter = ('enabled',)
-    ordering = ('order',)
+    list_filter = ("enabled",)
+    ordering = ("order",)
 
 
 class PartnerCharityAdmin(VersionAdmin):
-    fields = ('name', 'slug_id', 'email', 
-              'email_cc', 
-              'active',
-              'impact_text', 'impact_cost', "category", "is_eaae")
+    fields = (
+        "name",
+        "slug_id",
+        "email",
+        "email_cc",
+        "active",
+        "impact_text",
+        "impact_cost",
+        "category",
+        "is_eaae",
+    )
+
 
 class PartnerCharityReportAdmin(admin.ModelAdmin):
-    list_display = ('partner', 'date', 'time_sent')
+    list_display = ("partner", "date", "time_sent")
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('partner')
+        return super().get_queryset(request).select_related("partner")
+
 
 admin.site.register(Pledge, PledgeAdmin)
 admin.site.register(BankTransaction, BankTransactionAdmin)
@@ -263,11 +342,12 @@ admin.site.register(StripeTransaction, StripeTransactionAdmin)
 # A global list of admin actions
 ################################
 
+
 class VersionInline(admin.TabularInline):
     model = Version
     extra = 0
     can_delete = False
-    fields = ['content_type', 'object_repr']
+    fields = ["content_type", "object_repr"]
     readonly_fields = fields
 
     def has_add_permission(self, request, obj=None):
@@ -275,15 +355,18 @@ class VersionInline(admin.TabularInline):
 
 
 class RevisionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'comment', 'date_created')
-    readonly_fields = ('user', 'comment', 'date_created')
-    search_fields = ('=user__username', '=user__email')
-    date_hierarchy = 'date_created'
+    list_display = ("user", "comment", "date_created")
+    readonly_fields = ("user", "comment", "date_created")
+    search_fields = ("=user__username", "=user__email")
+    date_hierarchy = "date_created"
     inlines = (VersionInline,)
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('user').prefetch_related(
-            'version_set__content_type'
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("user")
+            .prefetch_related("version_set__content_type")
         )
 
     def has_add_permission(self, request, obj=None):

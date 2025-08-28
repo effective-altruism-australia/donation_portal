@@ -8,14 +8,16 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('donation', '0035_amend_donation_view'),
+        ("donation", "0035_amend_donation_view"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='banktransaction',
-            name='bank_account_id',
-            field=models.TextField(default=settings.XERO_INCOMING_ACCOUNT_ID_DICT['eaa']),
+            model_name="banktransaction",
+            name="bank_account_id",
+            field=models.TextField(
+                default=settings.XERO_INCOMING_ACCOUNT_ID_DICT["eaa"]
+            ),
             preserve_default=False,
         ),
     ]

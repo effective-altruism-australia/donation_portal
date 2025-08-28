@@ -61,59 +61,61 @@ TEMPLATES = [
     },
 ]
 
+
 class ColoredFormatter(logging.Formatter):
     COLORS = {
-        'DEBUG': '\033[36m',    # Cyan
-        'INFO': '\033[32m',     # Green
-        'WARNING': '\033[33m',  # Yellow
-        'ERROR': '\033[31m',    # Red
-        'CRITICAL': '\033[35m', # Magenta
+        "DEBUG": "\033[36m",  # Cyan
+        "INFO": "\033[32m",  # Green
+        "WARNING": "\033[33m",  # Yellow
+        "ERROR": "\033[31m",  # Red
+        "CRITICAL": "\033[35m",  # Magenta
     }
-    RESET = '\033[0m'
-    
+    RESET = "\033[0m"
+
     def format(self, record):
-        color = self.COLORS.get(record.levelname, '')
+        color = self.COLORS.get(record.levelname, "")
         record.levelname = f"{color}{record.levelname}{self.RESET}"
         return super().format(record)
 
+
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'colored': {
-            '()': ColoredFormatter,
-            'format': '{levelname} {asctime} [{module}:{lineno}] {message}',
-            'style': '{',
-            'datefmt': '%Y-%m-%d %H:%M:%S',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "colored": {
+            "()": ColoredFormatter,
+            "format": "{levelname} {asctime} [{module}:{lineno}] {message}",
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
-        'file': {
-            'format': '{levelname} {asctime} [{module}:{lineno}] {funcName} - {message}',
-            'style': '{',
-            'datefmt': '%Y-%m-%d %H:%M:%S',
-        },
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'colored',
-        },
-        'file': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'django.log',
-            'maxBytes': 10*1024*1024,  # 10MB
-            'backupCount': 5,
-            'formatter': 'file',
+        "file": {
+            "format": "{levelname} {asctime} [{module}:{lineno}] {funcName} - {message}",
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "colored",
         },
-        'django.db.backends': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': False,
+        "file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": "django.log",
+            "maxBytes": 10 * 1024 * 1024,  # 10MB
+            "backupCount": 5,
+            "formatter": "file",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+        },
+        "django.db.backends": {
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
+            "propagate": False,
         },
     },
 }
@@ -168,8 +170,8 @@ ALLOWED_HOSTS = [
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://effectivealtruism.org.au",
-    'https://staging.effectivealtruism.org.au',
-    'https://donations.effectivealtruism.org.au',
+    "https://staging.effectivealtruism.org.au",
+    "https://donations.effectivealtruism.org.au",
 ]
 
 BASE_URL = os.getenv("ORIGIN")

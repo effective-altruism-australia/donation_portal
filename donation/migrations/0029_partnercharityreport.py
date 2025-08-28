@@ -7,16 +7,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('donation', '0028_auto_20170509_1943'),
+        ("donation", "0028_auto_20170509_1943"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PartnerCharityReport',
+            name="PartnerCharityReport",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('date', models.DateField()),
-                ('partner', models.ForeignKey(to='donation.PartnerCharity', on_delete=models.CASCADE)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                ("date", models.DateField()),
+                (
+                    "partner",
+                    models.ForeignKey(
+                        to="donation.PartnerCharity", on_delete=models.CASCADE
+                    ),
+                ),
             ],
         ),
     ]

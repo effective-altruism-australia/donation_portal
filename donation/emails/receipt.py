@@ -57,14 +57,18 @@ def email_receipt(receipt_id):
         if receipt.bank_transaction:
             received_date = receipt.bank_transaction.date
         else:
-            received_date = arrow.get(receipt.stripe_transaction.date).to(settings.TIME_ZONE)
+            received_date = arrow.get(receipt.stripe_transaction.date).to(
+                settings.TIME_ZONE
+            )
 
-        date_str = received_date.strftime('%-d %b %Y')
-        eofy_receipt_date = (arrow.get(received_date)
-                             .replace(month=7)
-                             .replace(day=31)
-                             .shift(years=+1 if received_date.month > 6 else 0)
-                             .date())
+        date_str = received_date.strftime("%-d %b %Y")
+        eofy_receipt_date = (
+            arrow.get(received_date)
+            .replace(month=7)
+            .replace(day=31)
+            .shift(years=+1 if received_date.month > 6 else 0)
+            .date()
+        )
 
         context = {
             "pledge": receipt.pledge,
@@ -75,10 +79,10 @@ def email_receipt(receipt_id):
             "abn": receipt.pledge.abn,
             "base_url": settings.BASE_URL,
         }
-        body_plain_txt = render_to_string('receipts/receipt_message.txt', context)
-        body_html = render_to_string('receipts/receipt_message.html', context)
+        body_plain_txt = render_to_string("receipts/receipt_message.txt", context)
+        body_html = render_to_string("receipts/receipt_message.html", context)
         message = EmailMultiAlternatives(
-            subject='Receipt for your donation to Effective Altruism Australia',
+            subject="Receipt for your donation to Effective Altruism Australia",
             body=body_plain_txt,
             to=[receipt.pledge.email],
             # There is a filter in info@eaa.org.au
@@ -89,7 +93,7 @@ def email_receipt(receipt_id):
             from_email=settings.POSTMARK_SENDER,
         )
         message.attach_alternative(body_html, "text/html")
-        message.attach_file(receipt.pdf_receipt_location, mimetype='application/pdf')
+        message.attach_file(receipt.pdf_receipt_location, mimetype="application/pdf")
         message.send()
         receipt.time_sent = timezone.now()
     except Exception as e:

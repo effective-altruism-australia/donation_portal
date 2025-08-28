@@ -14,7 +14,7 @@ async def test_payment_method_submit_bank_transaction_donation_for_specific_sele
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False, slow_mo=500)
         page = await browser.new_page()
-        
+
         await page.goto("http://localhost:8001")
 
         await page.get_by_text("These specific charities").click()
@@ -35,7 +35,7 @@ async def test_payment_method_submit_bank_transaction_donation_for_specific_sele
 
         # Set up request interception to capture the pledge_new request
         request_data = {}
-        
+
         def handle_request(request):
             if "pledge_new" in request.url:
                 if request.post_data:
@@ -45,19 +45,25 @@ async def test_payment_method_submit_bank_transaction_donation_for_specific_sele
 
         # Set up response handler to check the UI after submission
         response_received = False
-        
+
         async def handle_response(response):
             nonlocal response_received
             if "pledge_new" in response.url:
                 assert response.status == 200
                 await expect(page.get_by_text("Thank you, Nathan!")).to_be_visible()
-                await expect(page.get_by_text("$108.90 to:")).to_be_visible(timeout=10000)
+                await expect(page.get_by_text("$108.90 to:")).to_be_visible(
+                    timeout=10000
+                )
                 await expect(
-                    page.get_by_text("Your donation will be allocated to your chosen partner charity (or charities).")
+                    page.get_by_text(
+                        "Your donation will be allocated to your chosen partner charity (or charities)."
+                    )
                 ).to_be_visible()
-                
+
                 # Check that the reference follows the expected pattern
-                reference_text = await page.locator("#bank-instructions-section--reference").text_content()
+                reference_text = await page.locator(
+                    "#bank-instructions-section--reference"
+                ).text_content()
                 assert re.match(r"^[0-9A-F]{12}$", reference_text)
                 response_received = True
 
@@ -82,10 +88,16 @@ async def test_payment_method_submit_bank_transaction_donation_for_specific_sele
         assert request_data["form-TOTAL_FORMS"] == 3
         assert request_data["form-INITIAL_FORMS"] == 0
         assert request_data["form-0-id"] is None
-        assert re.match(r"^(malaria-consortium|give-directly)$", request_data["form-0-partner_charity"])
+        assert re.match(
+            r"^(malaria-consortium|give-directly)$",
+            request_data["form-0-partner_charity"],
+        )
         assert re.match(r"^(66|33)$", request_data["form-0-amount"])
         assert request_data["form-1-id"] is None
-        assert re.match(r"^(malaria-consortium|give-directly)$", request_data["form-1-partner_charity"])
+        assert re.match(
+            r"^(malaria-consortium|give-directly)$",
+            request_data["form-1-partner_charity"],
+        )
         assert re.match(r"^(66|33)$", request_data["form-1-amount"])
         assert request_data["form-2-id"] is None
         assert request_data["form-2-partner_charity"] == "eaa-amplify"
@@ -102,5 +114,5 @@ async def test_payment_method_submit_bank_transaction_donation_for_specific_sele
 
         # Ensure response was processed
         assert response_received
-        
+
         await browser.close()

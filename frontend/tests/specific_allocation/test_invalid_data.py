@@ -12,7 +12,7 @@ async def test_custom_allocation_submit_with_invalid_data():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False, slow_mo=500)
         page = await browser.new_page()
-        
+
         await page.goto("http://localhost:8001")
 
         await page.get_by_text("These specific charities").click()
@@ -29,11 +29,13 @@ async def test_custom_allocation_submit_with_invalid_data():
 
         await page.get_by_label("Postcode").fill("3000")
 
-        await page.locator("#communications-section--referral-sources").select_option("cant-remember")
+        await page.locator("#communications-section--referral-sources").select_option(
+            "cant-remember"
+        )
 
         # Set up request handler to ensure no request is sent with invalid data
         request_sent = False
-        
+
         def handle_request(request):
             nonlocal request_sent
             if "pledge_new" in request.url:
@@ -48,5 +50,5 @@ async def test_custom_allocation_submit_with_invalid_data():
 
         # The request should never be sent with invalid data
         assert not request_sent, "No request should be sent with invalid data"
-        
+
         await browser.close()

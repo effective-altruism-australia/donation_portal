@@ -14,7 +14,7 @@ async def test_payment_method_submit_bank_transaction_donation_for_direct_linked
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False, slow_mo=500)
         page = await browser.new_page()
-        
+
         await page.goto("http://localhost:8001?charity=give-directly")
 
         await page.locator("#amount-section--custom-amount-input").fill("2222")
@@ -31,7 +31,7 @@ async def test_payment_method_submit_bank_transaction_donation_for_direct_linked
 
         # Set up request interception to capture the pledge_new request
         request_data = {}
-        
+
         def handle_request(request):
             if "pledge_new" in request.url:
                 if request.post_data:
@@ -41,7 +41,7 @@ async def test_payment_method_submit_bank_transaction_donation_for_direct_linked
 
         # Set up response handler to check the UI after submission
         response_received = False
-        
+
         async def handle_response(response):
             nonlocal response_received
             if "pledge_new" in response.url:
@@ -51,9 +51,11 @@ async def test_payment_method_submit_bank_transaction_donation_for_direct_linked
                 await expect(
                     page.get_by_text("Your donation will be allocated to GiveDirectly.")
                 ).to_be_visible()
-                
+
                 # Check that the reference follows the expected pattern
-                reference_text = await page.locator("#bank-instructions-section--reference").text_content()
+                reference_text = await page.locator(
+                    "#bank-instructions-section--reference"
+                ).text_content()
                 assert re.match(r"^[0-9A-F]{12}$", reference_text)
                 response_received = True
 
@@ -95,5 +97,5 @@ async def test_payment_method_submit_bank_transaction_donation_for_direct_linked
 
         # Ensure response was processed
         assert response_received
-        
+
         await browser.close()

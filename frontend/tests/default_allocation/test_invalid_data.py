@@ -12,7 +12,7 @@ async def test_default_allocation_submit_with_invalid_data():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False, slow_mo=500)
         page = await browser.new_page()
-        
+
         await page.goto("http://localhost:8001")
 
         await page.get_by_text("The most effective charities✧").click()
@@ -27,11 +27,13 @@ async def test_default_allocation_submit_with_invalid_data():
 
         await page.get_by_label("Postcode").fill("3000")
 
-        await page.locator("#communications-section--referral-sources").select_option("cant-remember")
+        await page.locator("#communications-section--referral-sources").select_option(
+            "cant-remember"
+        )
 
         # Set up dialog handler to check the alert message
         dialog_message = None
-        
+
         async def handle_dialog(dialog):
             nonlocal dialog_message
             dialog_message = dialog.message
@@ -42,7 +44,7 @@ async def test_default_allocation_submit_with_invalid_data():
 
         # Set up request handler to ensure no request is sent with invalid data
         request_sent = False
-        
+
         def handle_request(request):
             nonlocal request_sent
             if "pledge_new" in request.url:
@@ -58,5 +60,5 @@ async def test_default_allocation_submit_with_invalid_data():
         # Verify that the dialog was shown and no request was sent
         assert dialog_message == "Please select an amount of at least $2."
         assert not request_sent, "No request should be sent with invalid data"
-        
+
         await browser.close()

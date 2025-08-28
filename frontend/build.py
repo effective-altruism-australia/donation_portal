@@ -7,14 +7,14 @@ from dotenv import load_dotenv
 script_dir = pathlib.Path(__file__).parent.absolute()
 
 # Construct the absolute path to the .env file
-dotenv_path = os.path.join(script_dir, '../.env')
+dotenv_path = os.path.join(script_dir, "../.env")
 
 # Load the .env file
 load_dotenv(dotenv_path=dotenv_path)
 
 # Note: The "Paste this into WordPress" instructions below are for the final
 # output. Do not copy and paste any of the code in this file into WordPress.
-donation_form_html = f'''
+donation_form_html = f"""
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -79,13 +79,13 @@ donation_form_html = f'''
     <!-- Paste this into WordPress: END -->
   
   </body>
-</html>'''
+</html>"""
 
 # Create dist directory relative to script location
-dist_dir = script_dir / 'dist'
+dist_dir = script_dir / "dist"
 os.makedirs(dist_dir, exist_ok=True)
 
-with open(dist_dir / 'index.html', 'w') as f:
+with open(dist_dir / "index.html", "w") as f:
     f.write(donation_form_html)
 
 print("Build finished!")

@@ -6,10 +6,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('donation', '0053_auto_20180509_2319'),
+        ("donation", "0053_auto_20180509_2319"),
     ]
 
-    operations = [migrations.RunSQL("""
+    operations = [
+        migrations.RunSQL(
+            """
     DROP VIEW IF EXISTS donation_donationcomponent;
 
     CREATE VIEW donation_donationcomponent AS
@@ -32,7 +34,8 @@ class Migration(migrations.Migration):
           left join pinpayments_pintransaction as pin
             on pin.id = d.pin_transaction_id);
     """,
-                                    reverse_sql="""
+            reverse_sql="""
                                     DROP VIEW IF EXISTS donation_donationcomponent;
-                                    """)
-                  ]
+                                    """,
+        )
+    ]

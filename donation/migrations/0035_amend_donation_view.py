@@ -7,10 +7,12 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('donation', '0034_auto_20170630_0743'),
+        ("donation", "0034_auto_20170630_0743"),
     ]
 
-    operations = [migrations.RunSQL("""
+    operations = [
+        migrations.RunSQL(
+            """
     DROP VIEW IF EXISTS donation_donation;
 
     CREATE VIEW donation_donation AS
@@ -35,5 +37,6 @@ class Migration(migrations.Migration):
               id AS pin_transaction_id
        FROM pinpayments_pintransaction A JOIN donation_pintransaction B ON (A.id = B.pintransaction_ptr_id)
        WHERE processed=TRUE AND succeeded=TRUE);
-    """)
+    """
+        )
     ]

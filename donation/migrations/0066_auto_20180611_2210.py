@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('donation', '0065_add_unallocated_and_eaa_partner'),
+        ("donation", "0065_add_unallocated_and_eaa_partner"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='partnercharity',
-            name='order',
+            model_name="partnercharity",
+            name="order",
             field=models.IntegerField(null=True, blank=True),
         ),
     ]

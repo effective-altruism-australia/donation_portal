@@ -16,8 +16,13 @@ from .pledge import Pledge
 # existing Pledge (if any) and search for a matching one.
 class BankTransaction(models.Model):
     date = models.DateField()
-    bank_statement_text = models.TextField(blank=True, )
-    amount = models.DecimalField(decimal_places=2, max_digits=12, )
+    bank_statement_text = models.TextField(
+        blank=True,
+    )
+    amount = models.DecimalField(
+        decimal_places=2,
+        max_digits=12,
+    )
     reference = models.TextField(blank=True)
     unique_id = models.TextField(unique=True, editable=False)
     do_not_reconcile = models.BooleanField(default=False)
@@ -25,13 +30,17 @@ class BankTransaction(models.Model):
     time_reconciled = models.DateTimeField(blank=True, null=True, editable=False)
     bank_account_id = models.TextField()
     match_future_statement_text = models.BooleanField(
-        default=False, help_text='Tick this box if we should link all future transactions with this text '
-                                 'to the same pledge. This should only be ticked if the text is reasonably unique. '
-                                 'e.g. Do NOT tick it if the text is "donation", or "GiveDirectly" etc.')
+        default=False,
+        help_text="Tick this box if we should link all future transactions with this text "
+        "to the same pledge. This should only be ticked if the text is reasonably unique. "
+        'e.g. Do NOT tick it if the text is "donation", or "GiveDirectly" etc.',
+    )
     is_eaae = models.BooleanField(default=False)
+
     def __str__(self):
-        return ("UNRECONCILED -- " if not self.reconciled else "") + \
-               "{0.date} -- {0.amount} -- {0.bank_statement_text}".format(self)
+        return (
+            "UNRECONCILED -- " if not self.reconciled else ""
+        ) + "{0.date} -- {0.amount} -- {0.bank_statement_text}".format(self)
 
     @property
     def reconciled(self):
@@ -41,11 +50,12 @@ class BankTransaction(models.Model):
     @classmethod
     def from_db(cls, db, field_names, values):
         instance = super(BankTransaction, cls).from_db(db, field_names, values)
-        instance._loaded_reference = values[field_names.index('reference')]
+        instance._loaded_reference = values[field_names.index("reference")]
         return instance
 
     def save(self, *args, **kwargs):
         from .receipt import Receipt
+
         if self._state.adding:
             self.find_reference_in_bank_statement_text()
         elif self.reference != self._loaded_reference:
@@ -56,12 +66,12 @@ class BankTransaction(models.Model):
         # Things marked 'do_not_reconcile' should have any existing reconciliation removed
         if self.do_not_reconcile:
             self.pledge = None
-            self.reference = ''
+            self.reference = ""
         # Save it immediately because there could be an exception trying to reconcile
         super(BankTransaction, self).save(*args, **kwargs)
         matched_with_pledge = self.reconcile()
         if matched_with_pledge:
-            kwargs['force_insert'] = False  # can't force_insert twice
+            kwargs["force_insert"] = False  # can't force_insert twice
             self.time_reconciled = timezone.now()
             super(BankTransaction, self).save(*args, **kwargs)
             # Generate a receipt object.
@@ -80,12 +90,17 @@ class BankTransaction(models.Model):
 
             # Next, try to find a pledge by looking for previously reconciled transactions with identical
             # bank_statement_text.
-            earlier_references = BankTransaction.objects.filter(bank_statement_text=self.bank_statement_text,
-                                                                pledge__isnull=False, match_future_statement_text=True
-                                                                ) \
-                .exclude(id=self.id) \
-                .order_by('reference').distinct('reference') \
-                .values_list('reference', flat=True)
+            earlier_references = (
+                BankTransaction.objects.filter(
+                    bank_statement_text=self.bank_statement_text,
+                    pledge__isnull=False,
+                    match_future_statement_text=True,
+                )
+                .exclude(id=self.id)
+                .order_by("reference")
+                .distinct("reference")
+                .values_list("reference", flat=True)
+            )
             if len(earlier_references) == 1:
                 self.reference = earlier_references[0]
                 self.pledge = Pledge.objects.get(reference=self.reference)
@@ -96,15 +111,18 @@ class BankTransaction(models.Model):
 
     def resend_receipt(self):
         from .receipt import Receipt
+
         if not self.pledge:
-            raise BankTransaction.NotReconciledException("Can't send receipt, transaction is not reconciled.")
+            raise BankTransaction.NotReconciledException(
+                "Can't send receipt, transaction is not reconciled."
+            )
         Receipt.objects.create_from_bank_transaction(self)
 
     def find_reference_in_bank_statement_text(self):
         # TODO do this by lookup, after switching form from drupal. We won't do that now,
         # since we may import bank statements before pledges.
-        match = re.search(r'(^|\s)[0-9a-fA-F]{12}($|\s)', self.bank_statement_text)
-        self.reference = match.group(0).strip().upper() if match else ''
+        match = re.search(r"(^|\s)[0-9a-fA-F]{12}($|\s)", self.bank_statement_text)
+        self.reference = match.group(0).strip().upper() if match else ""
 
 
 class PinTransaction(BasePinTransaction):
@@ -119,11 +137,16 @@ class StripeTransaction(models.Model):
     reference = models.TextField(blank=True)
     # TODO: Consider changing from DO_NOTHING to SET_NULL
     # I think do nothing will cause an integrity error in Postgres if the pledge is deleted
-    pledge = models.ForeignKey(Pledge, blank=True, null=True, on_delete=models.DO_NOTHING)
+    pledge = models.ForeignKey(
+        Pledge, blank=True, null=True, on_delete=models.DO_NOTHING
+    )
     payment_intent_id = models.CharField(max_length=100, null=True, blank=True)
     charge_id = models.CharField(max_length=100, null=True, blank=True)
     customer_id = models.CharField(max_length=100, null=True, blank=True)
 
     def stripe_transaction(self):
-        return mark_safe('<a href="{0}">{0}</a>'.format(
-            'https://dashboard.stripe.com/payments/%s' % self.payment_intent_id))
+        return mark_safe(
+            '<a href="{0}">{0}</a>'.format(
+                "https://dashboard.stripe.com/payments/%s" % self.payment_intent_id
+            )
+        )

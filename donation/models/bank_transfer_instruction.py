@@ -10,7 +10,7 @@ class BankTransferInstruction(models.Model):
     pledge = models.OneToOneField(Pledge, on_delete=models.CASCADE)
     # The email on the pledge might get edited, so let's record the one we used here.
     email = models.EmailField()
-    failed_message = models.TextField(blank=True, editable=False, default='')
+    failed_message = models.TextField(blank=True, editable=False, default="")
 
     @property
     def sent(self):
@@ -18,4 +18,4 @@ class BankTransferInstruction(models.Model):
 
     @property
     def failed(self):
-        return self.failed_message != ''
+        return self.failed_message != ""

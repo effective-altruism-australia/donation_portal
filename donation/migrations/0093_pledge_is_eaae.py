@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('donation', '0092_partnercharity_is_eaae'),
+        ("donation", "0092_partnercharity_is_eaae"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pledge',
-            name='is_eaae',
+            model_name="pledge",
+            name="is_eaae",
             field=models.BooleanField(default=False),
         ),
     ]

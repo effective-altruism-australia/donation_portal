@@ -6,10 +6,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('donation', '0086_update_donation_view'),
+        ("donation", "0086_update_donation_view"),
     ]
 
-    operations = [migrations.RunSQL("""
+    operations = [
+        migrations.RunSQL(
+            """
     DROP VIEW IF EXISTS donation_donationcomponent;
 
     CREATE VIEW donation_donationcomponent AS
@@ -35,7 +37,8 @@ class Migration(migrations.Migration):
           left join donation_stripetransaction as stripe
             on stripe.id = d.stripe_transaction_id) t);
     """,
-                                    reverse_sql="""
+            reverse_sql="""
                                     DROP VIEW IF EXISTS donation_donationcomponent;
-                                    """)
-                  ]
+                                    """,
+        )
+    ]

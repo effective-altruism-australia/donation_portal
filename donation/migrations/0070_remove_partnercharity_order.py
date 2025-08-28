@@ -7,12 +7,12 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('donation', '0069_banktransferinstruction'),
+        ("donation", "0069_banktransferinstruction"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='partnercharity',
-            name='order',
+            model_name="partnercharity",
+            name="order",
         ),
     ]

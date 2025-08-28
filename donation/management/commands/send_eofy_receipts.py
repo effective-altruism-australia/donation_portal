@@ -4,7 +4,7 @@ from donation.emails import send_eofy_receipts
 
 
 class Command(BaseCommand):
-    help = 'Send EOFY receipts'
+    help = "Send EOFY receipts"
 
     def handle(self, *args, **options):
         send_eofy_receipts(test=False, is_eaae=True)

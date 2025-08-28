@@ -15,7 +15,10 @@ class Account(models.Model):
     ytd_amount = models.DecimalField(decimal_places=2, max_digits=12)
 
     class Meta:
-        unique_together = ('date', 'name',)
+        unique_together = (
+            "date",
+            "name",
+        )
 
 
 class XeroReconciledDate(models.Model):
@@ -32,4 +35,5 @@ class XeroReconciledDate(models.Model):
         # Do it on on user's thread not via celery for obviousness.
         # Lazy imports because circular dependencies
         from .. import tasks
+
         tasks.import_trial_balance.delay()

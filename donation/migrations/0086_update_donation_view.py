@@ -7,10 +7,12 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('donation', '0085_auto_20210103_1112'),
+        ("donation", "0085_auto_20210103_1112"),
     ]
 
-    operations = [migrations.RunSQL("""
+    operations = [
+        migrations.RunSQL(
+            """
     DROP VIEW IF EXISTS donation_donation CASCADE;
 
     CREATE VIEW donation_donation AS
@@ -51,5 +53,6 @@ class Migration(migrations.Migration):
               NULL::int AS stripe_transaction_id
        FROM pinpayments_pintransaction A JOIN donation_pintransaction B ON (A.id = B.pintransaction_ptr_id)
        WHERE processed=TRUE AND succeeded=TRUE);
-    """)
+    """
+        )
     ]

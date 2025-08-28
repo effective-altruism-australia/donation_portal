@@ -2,7 +2,7 @@ import os
 import django
 
 # Set up Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'donation_portal.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "donation_portal.settings")
 django.setup()
 
 # Now import your task
