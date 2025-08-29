@@ -61,7 +61,11 @@ def add_pledge_contact_to_mailchimp(pledge_id):
             },
         )
     except MailChimpError as e:
-        if e[0]["title"] not in ("Invalid Resource", "Member Exists"):
+        if (
+            e.args
+            and isinstance(e.args[0], dict)
+            and e.args[0].get("title") not in ("Invalid Resource", "Member Exists")
+        ):
             client.captureException()
 
 
@@ -84,7 +88,11 @@ def add_pledge_contact_to_ea_newsletter(pledge_id):
             },
         )
     except MailChimpError as e:
-        if e[0]["title"] not in ("Invalid Resource", "Member Exists"):
+        if (
+            e.args
+            and isinstance(e.args[0], dict)
+            and e.args[0].get("title") not in ("Invalid Resource", "Member Exists")
+        ):
             client.captureException()
 
 
