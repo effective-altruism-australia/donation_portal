@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import hashlib
 import os
 import random
 import string
@@ -155,10 +156,11 @@ class EOFYReceipt(models.Model):
 
     @property
     def pdf_receipt_location(self):
+        email_hash = hashlib.sha256(self.email.encode()).hexdigest()[:16]
         return os.path.join(
             settings.MEDIA_ROOT,
             "eofy_receipts",
-            "EAA_EOFY_Receipt_{0}_{1}.pdf".format(self.year, self.email),
+            "EAA_EOFY_Receipt_{0}_{1}.pdf".format(self.year, email_hash),
         )
 
     @property
