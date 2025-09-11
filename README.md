@@ -29,3 +29,19 @@ Note: the donation form needs to make API calls to get the list of charity partn
 * `uv sync` to create a virtual environment and install dependencies
 * `source bin/apply_patches.sh` to patch old dependencies
 * `uv run manage.py runserver` to start the Django dev server
+
+## Production
+
+### Deploying frontend
+* Update the `.env` file to use the appropriate production variables
+* `uv run frontend/build.py` to build for production
+* Copy and paste the output code into a WordPress HTML element
+
+### Deploying backend
+* Set up services for Celery beat, Celery workers, Redis, Postgres and Memcached
+* Update the `.env` file to use the appropriate production variables
+* `uv sync` to create a virtual environment and install dependencies
+* `source bin/apply_patches.sh` to patch old dependencies
+* Create and run a Gunicorn/Django service
+
+For details consult the "EAA & EAAE Manual".

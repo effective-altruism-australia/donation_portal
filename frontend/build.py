@@ -88,4 +88,8 @@ os.makedirs(dist_dir, exist_ok=True)
 with open(dist_dir / "index.html", "w") as f:
     f.write(donation_form_html)
 
-print("Build finished!")
+origin = os.environ.get('ORIGIN', '')
+if 'localhost' in origin:
+    print("DEVELOPMENT build complete")
+else:
+    print("PRODUCTION build complete")
