@@ -18,7 +18,7 @@ from django.views.decorators.http import require_POST
 from django.views.generic import View
 from donation.models.partner_charity import PartnerCharity
 from raven.contrib.django.raven_compat.models import client
-from redis import StrictRedis
+from redis import Redis
 from rratelimit import Limiter
 
 from donation.forms import PledgeForm, PledgeComponentFormSet
@@ -36,7 +36,7 @@ import logging
 logger = logging.getLogger(__name__)
 stripe.api_version = "2020-08-27"
 
-r = StrictRedis(
+r = Redis(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
     username=settings.REDIS_USERNAME,

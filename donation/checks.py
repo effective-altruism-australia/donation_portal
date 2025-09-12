@@ -8,7 +8,7 @@ from django.core.cache import caches
 from django.conf import settings
 
 import stripe
-from redis import StrictRedis
+from redis import Redis
 from redis.exceptions import RedisError
 
 
@@ -33,7 +33,7 @@ def check_redis_connection(app_configs, **kwargs):
     """Verify Redis is accessible for rate limiting and Celery broker."""
     errors = []
     try:
-        r = StrictRedis(
+        r = Redis(
             host=settings.REDIS_HOST,
             port=settings.REDIS_PORT,
             username=settings.REDIS_USERNAME,
