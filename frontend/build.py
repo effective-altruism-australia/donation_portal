@@ -39,6 +39,11 @@ donation_form_html = f"""
 
     <!-- WARNING: If you're looking at this from within WordPress, please note that any changes you make here will be lost! Please submit changes as pull requests to: https://github.com/effective-altruism-australia/donation_portal -->
 
+    <script
+      src="https://js.sentry-cdn.com/d205ff693a7fc76ead4d172e310f66ff.min.js"
+      crossorigin="anonymous"
+    ></script>
+
     <template id="donation-form">
       <style>
         {open(script_dir / 'src/styles/main.css', 'r').read()}
