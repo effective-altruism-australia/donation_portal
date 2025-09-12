@@ -29,7 +29,7 @@ dependencies = [
     "pytz==2025.2",
     "pyxero==0.9.4",
     "raven==6.10.0",
-    "redis==5.2.1",
+    "redis==6.4.0",
     "rratelimit==0.0.5",
     "sentry-sdk[django]>=2.34.0",
     "setuptools==78.1.1",
