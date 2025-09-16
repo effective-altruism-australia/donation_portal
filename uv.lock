@@ -494,7 +494,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = "==1.1.0" },
     { name = "python-postmark", specifier = "==0.6.1" },
     { name = "pytz", specifier = "==2025.2" },
-    { name = "pyxero", specifier = "==0.9.4" },
+    { name = "pyxero", specifier = "==0.9.5" },
     { name = "raven", specifier = "==6.10.0" },
     { name = "redis", specifier = "==6.4.0" },
     { name = "rratelimit", specifier = "==0.0.5" },
@@ -944,7 +944,7 @@ wheels = [
 
 [[package]]
 name = "pyxero"
-version = "0.9.4"
+version = "0.9.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
@@ -953,9 +953,9 @@ dependencies = [
     { name = "requests" },
     { name = "requests-oauthlib" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/9a/26826490efd77b5cf1faf53245facf7a26b69f2573416a8716a49911a1dd/pyxero-0.9.4.tar.gz", hash = "sha256:7c708b607e6fe75c7c35bea7d33fff6861f41d1c9eb6a7ceaaec72c4ea1fd66d", size = 54483, upload-time = "2023-09-30T02:31:57.021Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/15/a74b99ee610e5ad2dae244c953d96edf03210c5fc29b50a3761b793ed88b/pyxero-0.9.5.tar.gz", hash = "sha256:ae020f7440df0fd5fe1ef177c2328c6de3265dd48b93d5b905f383e8c0350dd0", size = 55545, upload-time = "2025-06-04T22:33:52.159Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/99/61/8e337a846ae647cc044124033f3b05208eb9e1037ccb43fb06c0c12b4a27/pyxero-0.9.4-py3-none-any.whl", hash = "sha256:9385bb434d74b42f3404e42ff37fa1a3d20e2f9140ece83f877685de498e45fc", size = 30467, upload-time = "2023-09-30T02:31:55.216Z" },
+    { url = "https://files.pythonhosted.org/packages/75/34/2243088476cace0f1c36e5b04e2788aa04f47fe6a2ee42df41667dcfff7b/pyxero-0.9.5-py3-none-any.whl", hash = "sha256:863f82fe7c376aea84bd01151f6e05ca974df025d6cfdfaf65485645bd47631b", size = 32244, upload-time = "2025-06-04T22:33:50.915Z" },
 ]
 
 [[package]]

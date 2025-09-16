@@ -27,7 +27,7 @@ dependencies = [
     "python-dotenv==1.1.0",
     "python-postmark==0.6.1",
     "pytz==2025.2",
-    "pyxero==0.9.4",
+    "pyxero==0.9.5",
     "raven==6.10.0",
     "redis==6.4.0",
     "rratelimit==0.0.5",
