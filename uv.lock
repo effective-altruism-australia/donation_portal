@@ -500,7 +500,7 @@ requires-dist = [
     { name = "rratelimit", specifier = "==0.0.5" },
     { name = "sentry-sdk", extras = ["django"], specifier = ">=2.34.0" },
     { name = "setuptools", specifier = "==78.1.1" },
-    { name = "stripe", specifier = "==12.0.0" },
+    { name = "stripe", specifier = "==12.5.1" },
     { name = "watchdog", specifier = ">=6.0.0" },
     { name = "weasyprint", specifier = ">=65.1" },
     { name = "xlsxwriter", specifier = "==3.2.2" },
@@ -1057,15 +1057,15 @@ wheels = [
 
 [[package]]
 name = "stripe"
-version = "12.0.0"
+version = "12.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "requests" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a0/d6/7d20b2431106c68004924fc9d437c346c447f2ef045f6cc83b52d6c22db1/stripe-12.0.0.tar.gz", hash = "sha256:1bc64192b6bd853fa75e2246ad553baa28e27e348eb2c3336b4d8b021d27aae5", size = 1369861, upload-time = "2025-04-01T21:12:58.773Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bd/92/f1b72783e13662026efc7d3f0fc201230edab55edd1604326a97162d8ce4/stripe-12.5.1.tar.gz", hash = "sha256:5407d092c355c31393e767d2dcb2d5a8c3980caa9a073acb32d0ccb3c01b04b5", size = 1432826, upload-time = "2025-09-05T13:27:07.976Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e2/c0/09ae7c4d31fc325d8c70da888a08e40bfddd52b5bce92b86d7902e391466/stripe-12.0.0-py2.py3-none-any.whl", hash = "sha256:1105bbceca8c0aead941c7c3ec676727610cb6437b6e8905379f2ccc370eeafd", size = 1613508, upload-time = "2025-04-01T21:12:56.637Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/8d/f4c2f047eedc943aea573cb56af2c9481b2d97ee8de9819f8c5d87e9ba34/stripe-12.5.1-py2.py3-none-any.whl", hash = "sha256:39b47b331dfe933ce6cf6bd654e0ae9ba082caa9d1dd8d0ae9ae48293975f115", size = 1664067, upload-time = "2025-09-05T13:27:05.559Z" },
 ]
 
 [[package]]
