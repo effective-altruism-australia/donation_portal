@@ -3,7 +3,7 @@ import time
 from django.conf import settings
 from mailchimp3 import MailChimp
 from mailchimp3.mailchimpclient import MailChimpError
-from raven.contrib.django.raven_compat.models import client
+import sentry_sdk
 
 from donation.models.donation import Donation
 from donation.models.pledge import Pledge
@@ -66,7 +66,7 @@ def add_pledge_contact_to_mailchimp(pledge_id):
             and isinstance(e.args[0], dict)
             and e.args[0].get("title") not in ("Invalid Resource", "Member Exists")
         ):
-            client.captureException()
+            sentry_sdk.capture_exception()
 
 
 @app.task()
@@ -93,7 +93,7 @@ def add_pledge_contact_to_ea_newsletter(pledge_id):
             and isinstance(e.args[0], dict)
             and e.args[0].get("title") not in ("Invalid Resource", "Member Exists")
         ):
-            client.captureException()
+            sentry_sdk.capture_exception()
 
 
 @app.task()

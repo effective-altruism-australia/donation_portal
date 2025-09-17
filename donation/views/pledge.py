@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import View
 from donation.models.partner_charity import PartnerCharity
-from raven.contrib.django.raven_compat.models import client
+import sentry_sdk
 from redis import Redis
 from rratelimit import Limiter
 
@@ -95,7 +95,7 @@ class PledgeView(View):
         component_formset = PledgeComponentFormSet(body)
 
         if not (pledge_form.is_valid() and component_formset.is_valid()):
-            client.captureMessage(
+            sentry_sdk.capture_message(
                 str(pledge_form.errors) + str(component_formset.errors), data=body
             )
             return JsonResponse(

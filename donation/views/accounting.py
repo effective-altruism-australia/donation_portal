@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.db.models import Max, Sum, Min, F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from raven.contrib.django.raven_compat.models import client
+import sentry_sdk
 
 from donation.forms import DateRangeSelector
 from donation.models import (
@@ -218,7 +218,7 @@ def _accounting_reconciliation(request, is_eaae):
             "Error: transaction reconciled to pledge and also marked 'Do not reconcile', please check "
             "bank transactions with id: %s" % ", ".join(qs.values_list("id", flat=True))
         )
-        client.captureException(
+        sentry_sdk.capture_exception(
             "Error: transaction reconciled to pledge and also marked 'Do not reconcile'"
         )
         return HttpResponse(message)

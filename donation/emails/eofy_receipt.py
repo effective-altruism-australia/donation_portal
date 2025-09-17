@@ -7,7 +7,7 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from django.db.models.functions import Lower
 from django.template.loader import render_to_string
 from django.utils import timezone
-from raven.contrib.django.raven_compat.models import client
+import sentry_sdk
 
 from donation.models import Donation, EOFYReceipt
 
@@ -108,7 +108,7 @@ def send_eofy_receipts(test=True, year=None, is_eaae=False):
                 eofy_receipt.time_sent = timezone.now()
 
         except Exception as e:
-            client.captureException()
+            sentry_sdk.capture_exception()
             eofy_receipt.failed_message = str(e) if str(e) else "Sending failed"
         if not test:
             eofy_receipt.save()

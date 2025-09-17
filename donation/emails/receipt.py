@@ -8,7 +8,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.utils import timezone
-from raven.contrib.django.raven_compat.models import client
+import sentry_sdk
 
 from donation.models import Receipt
 from donation_portal.eaacelery import app
@@ -40,7 +40,7 @@ def create_and_send_receipt(sender, instance, created, **kwargs):
             email_receipt.delay(receipt.id)
 
         except Exception as e:
-            client.captureException()
+            sentry_sdk.capture_exception()
             receipt.failed_message = str(e) if str(e) else "Sending failed"
             receipt.save()
 
@@ -97,6 +97,6 @@ def email_receipt(receipt_id):
         message.send()
         receipt.time_sent = timezone.now()
     except Exception as e:
-        client.captureException()
+        sentry_sdk.capture_exception()
         receipt.failed_message = str(e) if str(e) else "Sending failed"
     receipt.save()

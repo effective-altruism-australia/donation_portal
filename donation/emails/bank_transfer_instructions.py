@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
 from django.utils import timezone
-from raven.contrib.django.raven_compat.models import client
+import sentry_sdk
 
 from donation.models import BankTransferInstruction
 
@@ -36,6 +36,6 @@ def send_bank_transfer_instructions(pledge):
 
     except Exception as e:
         bank_transfer_instruction.failed_message = e.message
-        client.captureException()
+        sentry_sdk.capture_exception()
 
     bank_transfer_instruction.save()

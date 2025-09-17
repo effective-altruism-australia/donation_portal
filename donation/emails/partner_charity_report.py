@@ -8,7 +8,7 @@ from django.core.mail import EmailMessage
 from django.db.models import Max, Q
 from django.template.loader import render_to_string
 from django.utils import timezone
-from raven.contrib.django.raven_compat.models import client
+import sentry_sdk
 
 from donation.models import PartnerCharity, PartnerCharityReport, Donation
 from donation.views.export import write_spreadsheet
@@ -129,7 +129,7 @@ def send_partner_charity_reports(test=True):
 
         except Exception as e:
             print(e.message)
-            client.captureException()
+            sentry_sdk.capture_exception()
 
         # Create internal report (personal information included)
         try:
@@ -159,7 +159,7 @@ def send_partner_charity_reports(test=True):
 
         except Exception as e:
             print(e.message)
-            client.captureException()
+            sentry_sdk.capture_exception()
 
         if not test:
             partner = PartnerCharity.objects.get(id=ids[0])
